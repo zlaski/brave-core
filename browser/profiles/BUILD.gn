@@ -1,8 +1,11 @@
 source_set("profiles") {
   sources = [
+    "brave_profile.cc",
+    "brave_profile.h",
     "brave_profile_manager.cc",
     "brave_profile_manager.h",
   ]
+
   deps = [
     "//base",
     "//chrome/browser",

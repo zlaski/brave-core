@@ -123,6 +123,16 @@ void BraveProfileManager::LaunchTorProcess(Profile* profile) {
     tor::TorConfig config(path, proxy);
     tor_profile_service->LaunchTor(config);
   }
+
+  return BraveProfile::CreateProfile(path, NULL, Profile::CREATE_MODE_SYNCHRONOUS);
+}
+
+Profile* BraveProfileManager::CreateProfileAsyncHelper(
+                                                    const base::FilePath& path,
+                                                    Delegate* delegate) {
+  return BraveProfile::CreateProfile(path,
+                                     delegate,
+                                     Profile::CREATE_MODE_ASYNCHRONOUS);
 }
 
 // This overridden method doesn't clear |kDefaultSearchProviderDataPrefName|.

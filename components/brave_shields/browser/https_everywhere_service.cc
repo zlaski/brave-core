@@ -80,6 +80,18 @@ std::string leveldbGet(leveldb::DB* db, const std::string &key) {
 
 namespace brave_shields {
 
+const std::string kHTTPSEverywhereComponentName("Brave HTTPS Everywhere Updater");
+const std::string kHTTPSEverywhereComponentId("oofiananboodjbbmdelgdommihjbkfag");
+
+const std::string kHTTPSEverywhereComponentBase64PublicKey =
+    "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvn9zSMjTmhkQyrZu5UdN"
+    "350nPqLoSeCYngcC7yDFwaUHjoBQXCZqGeDC69ciCQ2mlRhcV2nxXqlUDkiC6+7m"
+    "651nI+gi4oVqHagc7EFUyGA0yuIk7qIMvCBdH7wbET27de0rzbRzRht9EKzEjIhC"
+    "BtoPnmyrO/8qPrH4XR4cPfnFPuJssBBxC1B35H7rh0Br9qePhPDDe9OjyqYxPuio"
+    "+YcC9obL4g5krVrfrlKLfFNpIewUcJyBpSlCgfxEyEhgDkK9cILTMUi5vC7GxS3P"
+    "OtZqgfRg8Da4i+NwmjQqrz0JFtPMMSyUnmeMj+mSOL4xZVWr8fU2/GOCXs9gczDp"
+    "JwIDAQAB";
+
 bool HTTPSEverywhereService::g_ignore_port_for_test_(false);
 std::string HTTPSEverywhereService::g_https_everywhere_component_id_(
     kHTTPSEverywhereComponentId);
