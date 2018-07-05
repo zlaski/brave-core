@@ -4,6 +4,8 @@ source_set("profiles") {
     "brave_profile.h",
     "brave_profile_manager.cc",
     "brave_profile_manager.h",
+    "brave_session_profile.cc",
+    "brave_session_profile.h",
   ]
 
   deps = [

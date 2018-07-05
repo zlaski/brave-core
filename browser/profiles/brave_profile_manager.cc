@@ -6,6 +6,8 @@
 
 #include "base/metrics/histogram_macros.h"
 #include "brave/browser/profiles/brave_profile.h"
+#include "brave/browser/profiles/brave_session_profile.h"
+#include "chrome/common/chrome_constants.h"
 
 BraveProfileManager::BraveProfileManager(const base::FilePath& user_data_dir)
     : ProfileManager(user_data_dir) {}
@@ -20,6 +22,19 @@ Profile* BraveProfileManager::CreateProfileHelper(const base::FilePath& path) {
 Profile* BraveProfileManager::CreateProfileAsyncHelper(
                                                     const base::FilePath& path,
                                                     Delegate* delegate) {
+  LOG(ERROR) << chrome::kMultiProfileDirPrefix;
+  LOG(ERROR) << path.AsUTF8Unsafe();
+
+  if (StartsWith(path.BaseName().MaybeAsASCII(), chrome::kMultiProfileDirPrefix,
+      base::CompareCase::INSENSITIVE_ASCII)) {
+    LOG(ERROR) << "create session profile";
+    return BraveSessionProfile::CreateProfile(path,
+                                              delegate,
+                                              Profile::CREATE_MODE_ASYNCHRONOUS,
+                                              GetPrimaryUserProfile());
+  }
+
+  LOG(ERROR) << "create regular profile";
   return BraveProfile::CreateProfile(path,
                                      delegate,
                                      Profile::CREATE_MODE_ASYNCHRONOUS);
