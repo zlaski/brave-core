@@ -24,17 +24,9 @@ class TrackingProtectionServiceTest;
 
 namespace brave_shields {
 
-const std::string kTrackingProtectionComponentName("Brave Tracking Protection Updater");
-const std::string kTrackingProtectionComponentId("afalakplffnnnlkncjhbmahjfjhmlkal");
-
-const std::string kTrackingProtectionComponentBase64PublicKey =
-    "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs4TIQXRCftLpGmQZxmm6"
-    "AU8pqGKLoDyi537HGQyRKcK7j/CSXCf3vwJr7xkV72p7bayutuzyNZ3740QxBPie"
-    "sfBOp8bBb8d2VgTHP3b+SuNmK/rsSRsMRhT05x8AAr/7ab6U3rW0Gsalm2653xnn"
-    "QS8vt0s62xQTmC+UMXowaSLUZ0Be/TOu6lHZhOeo0NBMKc6PkOu0R1EEfP7dJR6S"
-    "M/v4dBUBZ1HXcuziVbCXVyU51opZCMjlxyUlQR9pTGk+Zh5sDn1Vw1MwLnWiEfQ4"
-    "EGL1V7GeI4vgLoOLgq7tmhEratHGCfC1IHm9luMACRr/ybMI6DQJOvgBvecb292F"
-    "xQIDAQAB";
+extern const std::string kTrackingProtectionComponentName;
+extern const std::string kTrackingProtectionComponentId;
+extern const std::string kTrackingProtectionComponentBase64PublicKey;
 
 // The brave shields service in charge of tracking protection and init.
 class TrackingProtectionService : public BaseBraveShieldsService {

@@ -19,17 +19,9 @@ class AdBlockServiceTest;
 
 namespace brave_shields {
 
-const std::string kAdBlockComponentName("Brave Ad Block Updater");
-const std::string kAdBlockComponentId("cffkpbalmllkdoenhmdmpbkajipdjfam");
-
-const std::string kAdBlockComponentBase64PublicKey =
-    "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs0qzJmHSgIiw7IGFCxij"
-    "1NnB5hJ5ZQ1LKW9htL4EBOaMJvmqaDs/wfq0nw/goBHWsqqkMBynRTu2Hxxirvdb"
-    "cugn1Goys5QKPgAvKwDHJp9jlnADWm5xQvPQ4GE1mK1/I3ka9cEOCzPW6GI+wGLi"
-    "VPx9VZrxHHsSBIJRaEB5Tyi5bj0CZ+kcfMnRTsXIBw3C6xJgCVKISQUkd8mawVvG"
-    "vqOhBOogCdb9qza5eJ1Cgx8RWKucFfaWWxKLOelCiBMT1Hm1znAoVBHG/blhJJOD"
-    "5HcH/heRrB4MvrE1J76WF3fvZ03aHVcnlLtQeiNNOZ7VbBDXdie8Nomf/QswbBGa"
-    "VwIDAQAB";
+extern const std::string kAdBlockComponentName;
+extern const std::string kAdBlockComponentId;
+extern const std::string kAdBlockComponentBase64PublicKey;
 
 // The brave shields service in charge of ad-block checking and init.
 class AdBlockService : public AdBlockBaseService {
