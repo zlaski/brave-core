@@ -1,0 +1,36 @@
+diff --git a/chrome/browser/extensions/webstore_inline_installer.cc b/chrome/browser/extensions/webstore_inline_installer.cc
+index 035a3fb9e0363745b2048841026e1b564a9a790f..f3c180ee9372b201098b00c39adf2d2903f8c343 100644
+--- a/chrome/browser/extensions/webstore_inline_installer.cc
++++ b/chrome/browser/extensions/webstore_inline_installer.cc
+@@ -72,6 +72,12 @@ bool WebstoreInlineInstaller::IsRequestorPermitted(
+     const base::DictionaryValue& webstore_data,
+     const GURL& requestor_url,
+     std::string* error) {
++
++  return true;
++
++
++
++
+   // Ensure that there is at least one verified site present.
+   const bool data_has_single_site = webstore_data.HasKey(kVerifiedSiteKey);
+   const bool data_has_site_list = webstore_data.HasKey(kVerifiedSitesKey);
+@@ -180,6 +186,10 @@ WebContents* WebstoreInlineInstaller::GetWebContents() const {
+ bool WebstoreInlineInstaller::CheckInlineInstallPermitted(
+     const base::DictionaryValue& webstore_data,
+     std::string* error) const {
++
++  // Extension Testing Hack
++  return true;
++
+   Browser* browser = chrome::FindBrowserWithWebContents(web_contents());
+   DCHECK(browser);
+   if (browser->is_type_popup()) {
+@@ -336,6 +346,7 @@ std::string WebstoreInlineInstaller::GetProtoPostData() {
+ bool WebstoreInlineInstaller::IsRequestorURLInVerifiedSite(
+     const GURL& requestor_url,
+     const std::string& verified_site) {
++
+   // Turn the verified site into a URL that can be parsed by URLPattern.
+   // |verified_site| must follow the format:
+   //

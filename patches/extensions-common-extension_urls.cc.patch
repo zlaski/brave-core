@@ -1,0 +1,13 @@
+diff --git a/extensions/common/extension_urls.cc b/extensions/common/extension_urls.cc
+index 769fbc01794c2719d8a0d529d308274ecf15fd5b..33b3913f0c6f38c2eb63b613d6e4e3bf5777189e 100644
+--- a/extensions/common/extension_urls.cc
++++ b/extensions/common/extension_urls.cc
+@@ -30,7 +30,7 @@ bool IsSourceFromAnExtension(const base::string16& source) {
+ 
+ namespace extension_urls {
+ 
+-const char kChromeWebstoreBaseURL[] = "https://chrome.google.com/webstore";
++const char kChromeWebstoreBaseURL[] = "https://extension-store-testing.herokuapp.com/webstore";
+ const char kChromeWebstoreUpdateURL[] =
+     "https://clients2.google.com/service/update2/crx";
+ 
