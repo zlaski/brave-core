@@ -69,12 +69,12 @@ class RewardsServiceImpl : public RewardsService,
   void GetGrant(const std::string& lang, const std::string& paymentId) override;
   void GetGrantCaptcha() override;
   void SolveGrantCaptcha(const std::string& solution) const override;
-  std::string GetWalletPassphrase() const override;
+  void GetWalletPassphrase(GetWalletPassphraseCallback callback) const override;
   unsigned int GetNumExcludedSites() const override;
   void RecoverWallet(const std::string passPhrase) const override;
   void GetContentSiteList(uint32_t start,
                           uint32_t limit,
-     const GetContentSiteListCallback& callback) override;
+                          GetContentSiteListCallback callback) override;
   void OnLoad(SessionID tab_id, const GURL& url) override;
   void OnUnload(SessionID tab_id) override;
   void OnShow(SessionID tab_id) override;

@@ -50,6 +50,7 @@ class RewardsDOMHandler : public WebUIMessageHandler,
   void GetGrant(const base::ListValue* args);
   void GetGrantCaptcha(const base::ListValue* args);
   void GetWalletPassphrase(const base::ListValue* args);
+  void OnGetWalletPassphrase(const std::string& passphrase);
   void RecoverWallet(const base::ListValue* args);
   void SolveGrantCaptcha(const base::ListValue* args);
   void GetReconcileStamp(const base::ListValue* args);
@@ -352,10 +353,16 @@ void RewardsDOMHandler::GetGrantCaptcha(const base::ListValue* args) {
 }
 
 void RewardsDOMHandler::GetWalletPassphrase(const base::ListValue* args) {
-  if (rewards_service_ && web_ui()->CanCallJavascript()) {
-    std::string pass = rewards_service_->GetWalletPassphrase();
+  if (rewards_service_)
+    rewards_service_->GetWalletPassphrase(
+        base::BindOnce(&RewardsDOMHandler::OnGetWalletPassphrase,
+                      weak_factory_.GetWeakPtr()));
+}
 
-    web_ui()->CallJavascriptFunctionUnsafe("brave_rewards.walletPassphrase", base::Value(pass));
+void RewardsDOMHandler::OnGetWalletPassphrase(const std::string& passphrase) {
+  if (web_ui()->CanCallJavascript()) {
+    web_ui()->CallJavascriptFunctionUnsafe("brave_rewards.walletPassphrase",
+        base::Value(passphrase));
   }
 }
 
@@ -528,7 +535,8 @@ void RewardsDOMHandler::RestorePublishers(const base::ListValue *args) {
   }
 }
 
-void RewardsDOMHandler::OnGetContentSiteList(std::unique_ptr<brave_rewards::ContentSiteList> list, uint32_t record) {
+void RewardsDOMHandler::OnGetContentSiteList(
+    std::unique_ptr<brave_rewards::ContentSiteList> list, uint32_t record) {
   if (web_ui()->CanCallJavascript()) {
     auto publishers = std::make_unique<base::ListValue>();
     for (auto const& item : *list) {

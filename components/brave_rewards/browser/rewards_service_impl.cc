@@ -40,6 +40,7 @@
 #include "components/favicon/core/favicon_service.h"
 #include "components/favicon_base/favicon_types.h"
 #include "components/grit/brave_components_resources.h"
+#include "content/public/browser/browser_thread.h"
 #include "content_site.h"
 #include "extensions/browser/event_router.h"
 #include "extensions/browser/extension_api_frame_id_map.h"
@@ -195,7 +196,7 @@ void PostWriteCallback(
 void GetContentSiteListInternal(
     uint32_t start,
     uint32_t limit,
-    const GetContentSiteListCallback& callback,
+    GetContentSiteListCallback callback,
     const ledger::PublisherInfoList& publisher_list,
     uint32_t next_record) {
   std::unique_ptr<ContentSiteList> site_list(new ContentSiteList);
@@ -310,7 +311,7 @@ void RewardsServiceImpl::CreateWallet() {
 
 void RewardsServiceImpl::GetContentSiteList(
     uint32_t start, uint32_t limit,
-    const GetContentSiteListCallback& callback) {
+    GetContentSiteListCallback callback) {
   auto now = base::Time::Now();
   ledger::PublisherInfoFilter filter;
   filter.category = ledger::PUBLISHER_CATEGORY::AUTO_CONTRIBUTE;
@@ -856,7 +857,8 @@ void RewardsServiceImpl::OnURLFetchComplete(
 void RunIOTaskCallback(
     base::WeakPtr<RewardsServiceImpl> rewards_service,
     std::function<void(void)> callback) {
-  content::BrowserThread::PostTask(content::BrowserThread::UI, FROM_HERE,
+  content::BrowserThread::PostTask(
+      content::BrowserThread::UI, FROM_HERE,
       base::BindOnce(&RewardsServiceImpl::OnIOTaskComplete,
                       rewards_service,
                       callback));
@@ -990,8 +992,11 @@ void RewardsServiceImpl::TriggerOnGrantCaptcha(const std::string& image, const s
     observer.OnGrantCaptcha(this, image, hint);
 }
 
-std::string RewardsServiceImpl::GetWalletPassphrase() const {
-  return ledger_->GetWalletPassphrase();
+void RewardsServiceImpl::GetWalletPassphrase(
+    GetWalletPassphraseCallback callback) const {
+  const std::string passphrase = ledger_->GetWalletPassphrase();
+  base::SequencedTaskRunnerHandle::Get()->
+      PostTask(FROM_HERE, base::BindOnce(std::move(callback), passphrase));
 }
 
 unsigned int RewardsServiceImpl::GetNumExcludedSites() const {

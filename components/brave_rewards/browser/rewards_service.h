@@ -35,6 +35,9 @@ using GetContentSiteListCallback =
     base::Callback<void(std::unique_ptr<ContentSiteList>,
         uint32_t /* next_record */)>;
 
+using GetWalletPassphraseCallback =
+    base::OnceCallback<void(const std::string&)>;
+
 class RewardsService : public KeyedService {
  public:
   RewardsService();
@@ -44,11 +47,12 @@ class RewardsService : public KeyedService {
   virtual void GetWalletProperties() = 0;
   virtual void GetContentSiteList(uint32_t start,
                                   uint32_t limit,
-                                const GetContentSiteListCallback& callback) = 0;
+                                  GetContentSiteListCallback callback) = 0;
   virtual void GetGrant(const std::string& lang, const std::string& paymentId) = 0;
   virtual void GetGrantCaptcha() = 0;
   virtual void SolveGrantCaptcha(const std::string& solution) const = 0;
-  virtual std::string GetWalletPassphrase() const = 0;
+  virtual void GetWalletPassphrase(
+      GetWalletPassphraseCallback callback) const = 0;
   virtual unsigned int GetNumExcludedSites() const = 0;
   virtual void RecoverWallet(const std::string passPhrase) const = 0;
   virtual void ExcludePublisher(const std::string publisherKey) const = 0;
