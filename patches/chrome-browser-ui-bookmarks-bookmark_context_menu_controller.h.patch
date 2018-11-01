@@ -1,0 +1,16 @@
+diff --git a/chrome/browser/ui/bookmarks/bookmark_context_menu_controller.h b/chrome/browser/ui/bookmarks/bookmark_context_menu_controller.h
+index 482f5f617d82ec7c2fbf573a65c20d36f556538b..9e30d76ac174a3528534a685662e647bc6856e2c 100644
+--- a/chrome/browser/ui/bookmarks/bookmark_context_menu_controller.h
++++ b/chrome/browser/ui/bookmarks/bookmark_context_menu_controller.h
+@@ -75,6 +75,11 @@ class BookmarkContextMenuController
+     navigator_ = navigator;
+   }
+ 
++ protected:
++  virtual void AddBraveMenuItems1();
++  virtual void AddBraveMenuItemsN(int count);
++  friend class BraveBookmarkContextMenuController;
++
+  private:
+   void BuildMenu();
+ 

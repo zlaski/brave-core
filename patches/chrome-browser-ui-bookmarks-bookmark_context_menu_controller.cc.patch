@@ -1,0 +1,20 @@
+diff --git a/chrome/browser/ui/bookmarks/bookmark_context_menu_controller.cc b/chrome/browser/ui/bookmarks/bookmark_context_menu_controller.cc
+index cc991209839da5d5812bba3288cca20408beb0e4..9e21005416b1bafd1502c336442bb057b5678664 100644
+--- a/chrome/browser/ui/bookmarks/bookmark_context_menu_controller.cc
++++ b/chrome/browser/ui/bookmarks/bookmark_context_menu_controller.cc
+@@ -76,6 +76,7 @@ void BookmarkContextMenuController::BuildMenu() {
+             IDS_BOOKMARK_BAR_OPEN_IN_NEW_WINDOW);
+     AddItem(IDC_BOOKMARK_BAR_OPEN_ALL_INCOGNITO,
+             IDS_BOOKMARK_BAR_OPEN_INCOGNITO);
++    AddBraveMenuItems1();
+   } else {
+     int count = chrome::OpenCount(parent_window_, selection_);
+     AddItem(IDC_BOOKMARK_BAR_OPEN_ALL,
+@@ -90,6 +91,7 @@ void BookmarkContextMenuController::BuildMenu() {
+     AddItem(IDC_BOOKMARK_BAR_OPEN_ALL_INCOGNITO,
+             l10n_util::GetPluralStringFUTF16(
+                 IDS_BOOKMARK_BAR_OPEN_ALL_COUNT_INCOGNITO, incognito_count));
++    AddBraveMenuItemsN(count);
+   }
+ 
+   AddSeparator();
