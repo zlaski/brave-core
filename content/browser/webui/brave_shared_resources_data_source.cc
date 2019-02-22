@@ -13,6 +13,7 @@
 #include "base/strings/string_piece.h"
 #include "base/strings/string_util.h"
 #include "base/task/post_task.h"
+#include "brave/common/extensions/extension_constants.h"
 #include "build/build_config.h"
 #include "content/public/browser/browser_task_traits.h"
 #include "content/public/browser/browser_thread.h"
@@ -190,13 +191,18 @@ BraveSharedResourcesDataSource::GetAccessControlAllowOriginForOrigin(
   // According to CORS spec, Access-Control-Allow-Origin header doesn't support
   // wildcards, so we need to set its value explicitly by passing the |origin|
   // back.
+  LOG(ERROR) << "BRAVESHARED " << origin;
   std::string allowed_origin_prefix = kChromeUIScheme;
   allowed_origin_prefix += "://";
-  if (!base::StartsWith(origin, allowed_origin_prefix,
+  if (base::StartsWith(origin, allowed_origin_prefix,
                         base::CompareCase::SENSITIVE)) {
-    return "null";
+    return origin;
   }
-  return origin;
+  if ((origin == "chrome-extension://" + (std::string)brave_extension_id) ||
+      (origin == "chrome-extension://" + (std::string)brave_rewards_extension_id)) {
+    return origin;
+  }
+  return "null";
 }
 
 bool BraveSharedResourcesDataSource::IsGzipped(const std::string& path) const {
