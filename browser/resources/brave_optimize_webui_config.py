@@ -5,12 +5,6 @@
 
 import os
 
-def vulcanize_base_args():
-  return [
-    '--exclude', 'chrome://brave-resources/fonts/muli.css',
-    '--exclude', 'chrome://brave-resources/fonts/poppins.css',
-  ]
-
 def url_mappings(src_path):
   br_resources_path = os.path.join(src_path, 'brave', 'ui', 'webui', 'resources')
   return [

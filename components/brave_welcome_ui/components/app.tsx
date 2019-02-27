@@ -25,8 +25,6 @@ import { Background, BackgroundContainer } from 'brave-ui/features/welcome/image
 import * as welcomeActions from '../actions/welcome_actions'
 
 // Assets
-import '../../fonts/muli.css'
-import '../../fonts/poppins.css'
 import 'emptykit.css'
 
 interface Props {

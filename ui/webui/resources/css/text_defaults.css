@@ -11,8 +11,8 @@
  * anything to take precedence.
  */
 
-@import url(chrome://brave-resources/fonts/muli.css);
-@import url(chrome://brave-resources/fonts/poppins.css);
+@import url("chrome://brave-resources/fonts/muli.css");
+@import url("chrome://brave-resources/fonts/poppins.css");
 
 html {
   direction: $i18n{textDirection};
