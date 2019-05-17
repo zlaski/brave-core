@@ -7,6 +7,9 @@ import { Reducer } from 'redux'
 // Constant
 import { types } from '../constants/tip_types'
 
+// Util
+import { normalizeSocialUrl } from '../utils'
+
 export const defaultState: RewardsTip.State = {
   finished: false,
   error: false,
@@ -38,6 +41,11 @@ const publishersReducer: Reducer<RewardsTip.State> = (state: RewardsTip.State = 
       }
       const publisher: RewardsTip.Publisher = payload.data
       if (publisher && publisher.publisherKey) {
+        if (publisher.social) {
+          // Sanitize the publisher social URL before it is passed to HTML
+          publisher.social.url = normalizeSocialUrl(publisher.social.type,
+            publisher.social.url)
+        }
         state.publishers[publisher.publisherKey] = publisher
       }
       break
