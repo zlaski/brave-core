@@ -4,6 +4,8 @@
 
 #include "brave/components/brave_shields/browser/brave_resource_dispatcher_host_delegate.h"
 
+#define ChromeExtensionsBrowserClient BraveExtensionsBrowserClient
 #define ChromeResourceDispatcherHostDelegate BraveResourceDispatcherHostDelegate
 #include "../../../../chrome/browser/browser_process_impl.cc"
 #undef ChromeResourceDispatcherHostDelegate
+#undef ChromeExtensionsBrowserClient
