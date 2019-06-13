@@ -1,0 +1,13 @@
+diff --git a/chrome/browser/task_manager/providers/service_worker_task_provider.cc b/chrome/browser/task_manager/providers/service_worker_task_provider.cc
+index 4809f74b485d7fd3672d3610e0473e79e8cdd886..2a83e74742a3b1b288a154c7a9ccf51635c8739f 100644
+--- a/chrome/browser/task_manager/providers/service_worker_task_provider.cc
++++ b/chrome/browser/task_manager/providers/service_worker_task_provider.cc
+@@ -114,6 +114,8 @@ void ServiceWorkerTaskProvider::StartUpdating() {
+       // create the tasks if there are any.
+       if (profile->HasOffTheRecordProfile())
+         CreateTasksForProfile(profile->GetOffTheRecordProfile());
++      if (profile->HasTorProfile())
++        CreateTasksForProfile(profile->GetTorProfile());
+     }
+   }
+ }
