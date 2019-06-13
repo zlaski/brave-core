@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/app_controller_mac.mm b/chrome/browser/app_controller_mac.mm
+index 1dd58a5f04df76fdac764ead3293b5dfa85d2d94..52b73a25aed598c1f737832d7095600efbc76de2 100644
+--- a/chrome/browser/app_controller_mac.mm
++++ b/chrome/browser/app_controller_mac.mm
+@@ -851,6 +851,7 @@ static base::mac::ScopedObjCClassSwizzler* g_swizzle_imk_input_session;
+   for (Profile* p : profiles) {
+     if (p->HasOffTheRecordProfile())
+       added_profiles.push_back(p->GetOffTheRecordProfile());
++    if (p->HasTorProfile()) added_profiles.push_back(p->GetTorProfile());
+   }
+   profiles.insert(profiles.end(), added_profiles.begin(), added_profiles.end());
+ 
