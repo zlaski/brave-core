@@ -97,7 +97,7 @@ class BraveProfileSyncService : public syncer::ProfileSyncService,
   BraveSyncClient* GetBraveSyncClient() override;
 #endif
 
-  bool IsBraveSyncEnabled() const override;
+  bool IsBraveSyncEnabled() const;
   bool IsBraveSyncInitialized() const;
   bool IsBraveSyncConfigured() const;
 

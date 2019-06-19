@@ -231,6 +231,9 @@ BraveProfileSyncService::BraveProfileSyncService(Profile* profile,
 
 void BraveProfileSyncService::OnNudgeSyncCycle(
     RecordsListPtr records) {
+  if (!IsBraveSyncEnabled())
+    return;
+
   for (auto& record : *records) {
     record->deviceId = brave_sync_prefs_->GetThisDeviceId();
   }
@@ -781,6 +784,9 @@ bool BraveProfileSyncService::IsBraveSyncConfigured() const {
 
 void BraveProfileSyncService::OnPollSyncCycle(GetRecordsCallback cb,
                                          base::WaitableEvent* wevent) {
+  if (!IsBraveSyncEnabled())
+    return;
+
   if (IsTimeEmpty(brave_sync_prefs_->GetLastFetchTime()))
     SendCreateDevice();
   brave_sync_client_->SendFetchSyncDevices();

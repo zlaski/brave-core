@@ -1,12 +1,12 @@
 diff --git a/components/sync/driver/profile_sync_service.cc b/components/sync/driver/profile_sync_service.cc
-index 3dc7667b7fc5a919f2025c53e040265927e6ea23..a0c7a38db6f26403988f3f8d14a8edb5ef7b8c30 100644
+index 3dc7667b7fc5a919f2025c53e040265927e6ea23..3d4b159331b910d6b7af8ae78bd4db8e021fa594 100644
 --- a/components/sync/driver/profile_sync_service.cc
 +++ b/components/sync/driver/profile_sync_service.cc
 @@ -458,6 +458,7 @@ void ProfileSyncService::StartUpSlowEngineComponents() {
    params.sync_user_agent = MakeUserAgentForSync(channel_);
    params.http_factory_getter = MakeHttpPostProviderFactoryGetter();
    params.authenticated_account_id = GetAuthenticatedAccountInfo().account_id;
-+  if (IsBraveSyncEnabled()) BraveEngineParamsInit(&params);
++  BraveInit(sync_enabled_weak_factory_.GetWeakPtr(), &sync_prefs_, &params);
    DCHECK(!params.authenticated_account_id.empty() || IsLocalSyncEnabled());
    if (!base::FeatureList::IsEnabled(switches::kSyncE2ELatencyMeasurement)) {
      invalidation::InvalidationService* invalidator =
