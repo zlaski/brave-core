@@ -17,54 +17,51 @@ using brave_sync::RecordsList;
 
 namespace syncer {
 
+SyncEngineHost* BraveGetSyncEngineHost(SyncEngineImpl* sync_engine) {
+  return sync_engine->host_;
+}
+
 void OnNudgeSyncCycleOnOwnerThread(base::WeakPtr<SyncEngineImpl> sync_engine,
-                                  SyncEngineHost* host,
                                   brave_sync::RecordsListPtr records_list) {
   if (sync_engine.get())
-    static_cast<BraveProfileSyncService*>(host)->OnNudgeSyncCycle(
-        std::move(records_list));
+    static_cast<BraveProfileSyncService*>(
+        BraveGetSyncEngineHost(sync_engine.get()))->OnNudgeSyncCycle(
+            std::move(records_list));
 }
 
 void OnNudgeSyncCycle(WeakHandle<SyncEngineImpl> sync_engine_impl,
-                      SyncEngineHost* host,
                       brave_sync::RecordsListPtr records_list) {
   sync_engine_impl.Call(FROM_HERE,
                         &OnNudgeSyncCycleOnOwnerThread,
-                        host,
                         base::Passed(&records_list));
 }
 
 void OnPollSyncCycleOnOwnerThread(base::WeakPtr<SyncEngineImpl> sync_engine,
-                                 SyncEngineHost* host,
                                  GetRecordsCallback cb,
                                  base::WaitableEvent* wevent) {
   if (sync_engine.get())
-    static_cast<BraveProfileSyncService*>(host)->OnPollSyncCycle(cb, wevent);
+    static_cast<BraveProfileSyncService*>(
+        BraveGetSyncEngineHost(sync_engine.get()))->OnPollSyncCycle(cb, wevent);
 }
 
 void OnPollSyncCycle(WeakHandle<SyncEngineImpl> sync_engine_impl,
-                     SyncEngineHost* host,
                      GetRecordsCallback cb,
                      base::WaitableEvent* wevent) {
   sync_engine_impl.Call(FROM_HERE,
                         &OnPollSyncCycleOnOwnerThread,
-                        host,
                         cb,
                         wevent);
 }
 
 void BraveInit(WeakHandle<SyncEngineImpl> sync_engine_impl,
-               SyncEngineHost* host,
                SyncManager::InitArgs* args) {
   DCHECK(args);
   args->nudge_sync_cycle_delegate_function =
       base::BindRepeating(&OnNudgeSyncCycle,
-                          sync_engine_impl,
-                          host);
+                          sync_engine_impl);
   args->poll_sync_cycle_delegate_function =
       base::BindRepeating(&OnPollSyncCycle,
-                          sync_engine_impl,
-                          host);
+                          sync_engine_impl);
 }
 
 }  // namespace syncer
