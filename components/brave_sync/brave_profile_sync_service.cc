@@ -176,6 +176,12 @@ void CreateResolveList(
   }
 }
 
+
+void DoDispatchGetRecordsCallback(GetRecordsCallback cb,
+                                  std::unique_ptr<brave_sync::RecordsList> records) {
+  cb.Run(std::move(records));
+}
+
 }   // namespace
 
 BraveProfileSyncService::BraveProfileSyncService(Profile* profile,
@@ -532,7 +538,10 @@ void BraveProfileSyncService::OnResolvedSyncRecords(
   } else if (category_name == kBookmarks) {
     // Send records to syncer
     if (get_record_cb_)
-      engine_->DispatchGetRecordsCallback(get_record_cb_, std::move(records));
+      sync_thread_->task_runner()->PostTask(FROM_HERE,
+          base::BindOnce(&DoDispatchGetRecordsCallback,
+                         get_record_cb_,
+                         std::move(records)));
     SignalWaitableEvent();
   } else if (category_name == kHistorySites) {
     NOTIMPLEMENTED();

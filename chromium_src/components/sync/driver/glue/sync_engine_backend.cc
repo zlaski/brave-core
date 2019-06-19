@@ -50,11 +50,6 @@ void OnPollSyncCycle(WeakHandle<SyncEngineImpl> sync_engine_impl,
                         wevent);
 }
 
-void DoDispatchGetRecordsCallback(GetRecordsCallback cb,
-                                  std::unique_ptr<brave_sync::RecordsList> records) {
-  cb.Run(std::move(records));
-}
-
 void BraveInit(WeakHandle<SyncEngineImpl> sync_engine_impl,
                SyncEngineHost* host,
                SyncManager::InitArgs* args) {
