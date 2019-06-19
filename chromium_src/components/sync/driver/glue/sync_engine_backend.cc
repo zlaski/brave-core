@@ -6,37 +6,40 @@
 #include <utility>
 
 #include "base/memory/weak_ptr.h"
+#include "brave/components/brave_sync/brave_profile_sync_service.h"
 #include "brave/components/brave_sync/jslib_messages.h"
 #include "components/sync/driver/glue/sync_engine_impl.h"
 #include "components/sync/engine/sync_engine_host.h"
 
+using brave_sync::BraveProfileSyncService;
 using brave_sync::GetRecordsCallback;
 using brave_sync::RecordsList;
 
 namespace syncer {
 
-void OnNudgeSyncCycleOnSyncThread(base::WeakPtr<SyncEngineImpl> sync_engine,
+void OnNudgeSyncCycleOnOwnerThread(base::WeakPtr<SyncEngineImpl> sync_engine,
                                   SyncEngineHost* host,
                                   brave_sync::RecordsListPtr records_list) {
   if (sync_engine.get())
-    host->OnNudgeSyncCycle(std::move(records_list));
+    static_cast<BraveProfileSyncService*>(host)->OnNudgeSyncCycle(
+        std::move(records_list));
 }
 
 void OnNudgeSyncCycle(WeakHandle<SyncEngineImpl> sync_engine_impl,
                       SyncEngineHost* host,
                       brave_sync::RecordsListPtr records_list) {
   sync_engine_impl.Call(FROM_HERE,
-                        &OnNudgeSyncCycleOnSyncThread,
+                        &OnNudgeSyncCycleOnOwnerThread,
                         host,
                         base::Passed(&records_list));
 }
 
-void OnPollSyncCycleOnSyncThread(base::WeakPtr<SyncEngineImpl> sync_engine,
+void OnPollSyncCycleOnOwnerThread(base::WeakPtr<SyncEngineImpl> sync_engine,
                                  SyncEngineHost* host,
                                  GetRecordsCallback cb,
                                  base::WaitableEvent* wevent) {
   if (sync_engine.get())
-    host->OnPollSyncCycle(cb, wevent);
+    static_cast<BraveProfileSyncService*>(host)->OnPollSyncCycle(cb, wevent);
 }
 
 void OnPollSyncCycle(WeakHandle<SyncEngineImpl> sync_engine_impl,
@@ -44,7 +47,7 @@ void OnPollSyncCycle(WeakHandle<SyncEngineImpl> sync_engine_impl,
                      GetRecordsCallback cb,
                      base::WaitableEvent* wevent) {
   sync_engine_impl.Call(FROM_HERE,
-                        &OnPollSyncCycleOnSyncThread,
+                        &OnPollSyncCycleOnOwnerThread,
                         host,
                         cb,
                         wevent);
