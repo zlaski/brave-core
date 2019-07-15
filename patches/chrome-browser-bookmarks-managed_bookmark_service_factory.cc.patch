@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/bookmarks/managed_bookmark_service_factory.cc b/chrome/browser/bookmarks/managed_bookmark_service_factory.cc
+index ce25a3ebc68f82897a2072f1f3ee20cd14598418..949d07d66edc553e21b06964a5a9526a8e4511e7 100644
+--- a/chrome/browser/bookmarks/managed_bookmark_service_factory.cc
++++ b/chrome/browser/bookmarks/managed_bookmark_service_factory.cc
+@@ -73,6 +73,7 @@ KeyedService* ManagedBookmarkServiceFactory::BuildServiceInstanceFor(
+ 
+ content::BrowserContext* ManagedBookmarkServiceFactory::GetBrowserContextToUse(
+     content::BrowserContext* context) const {
++  if (brave::IsTorProfile(context)) return brave::GetTorParentProfile(context);
+   return chrome::GetBrowserContextRedirectedInIncognito(context);
+ }
+ 

@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/bookmarks/bookmark_model_factory.cc b/chrome/browser/bookmarks/bookmark_model_factory.cc
+index e54ad07d10fef4824e1b8cebd64a12059d2a5c5c..e80fec038ca70edb4ac2ec2bfd7eb2f64d4b2c87 100644
+--- a/chrome/browser/bookmarks/bookmark_model_factory.cc
++++ b/chrome/browser/bookmarks/bookmark_model_factory.cc
+@@ -87,6 +87,7 @@ void BookmarkModelFactory::RegisterProfilePrefs(
+ 
+ content::BrowserContext* BookmarkModelFactory::GetBrowserContextToUse(
+     content::BrowserContext* context) const {
++  if (brave::IsTorProfile(context)) return brave::GetTorParentProfile(context);
+   return chrome::GetBrowserContextRedirectedInIncognito(context);
+ }
+ 

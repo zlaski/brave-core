@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/supervised_user/supervised_user_settings_service_factory.cc b/chrome/browser/supervised_user/supervised_user_settings_service_factory.cc
+index 8e14e82750b168dfd296d5d25ab9b1c2470d6fc1..951a94efeacff0f0cc1b09f2a0eac834b6bb39b5 100644
+--- a/chrome/browser/supervised_user/supervised_user_settings_service_factory.cc
++++ b/chrome/browser/supervised_user/supervised_user_settings_service_factory.cc
+@@ -36,6 +36,7 @@ SupervisedUserSettingsServiceFactory::BuildServiceInstanceFor(
+ 
+ SimpleFactoryKey* SupervisedUserSettingsServiceFactory::GetKeyToUse(
+     SimpleFactoryKey* key) const {
++  if (brave::IsTorProfilePath(key->GetPath())) return brave::GetTorParentProfileKey(key->GetPath());
+   ProfileKey* profile_key = ProfileKey::FromSimpleFactoryKey(key);
+   if (profile_key->IsOffTheRecord())
+     return profile_key->GetOriginalKey();

@@ -4,4 +4,4 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/browser/profiles/profile_util.h"
-#include "../../../../../../chrome/browser/profiles/profile.cc"  // NOLINT
+#include "../../../../../../chrome/browser/supervised_user/supervised_user_settings_service_factory.cc"  // NOLINT

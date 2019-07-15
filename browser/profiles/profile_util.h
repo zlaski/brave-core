@@ -7,10 +7,24 @@
 #define BRAVE_BROWSER_PROFILES_PROFILE_UTIL_H_
 
 class Profile;
+class ProfileKey;
+
+namespace base {
+class FilePath;
+}
+
+namespace content {
+class BrowserContext;
+}
 
 namespace brave {
 
 bool IsTorProfile(const Profile* profile);
+bool IsTorProfile(content::BrowserContext* context);
+Profile* GetTorParentProfile(content::BrowserContext* context);
+Profile* GetTorParentProfile(base::FilePath tor_path);
+ProfileKey* GetTorParentProfileKey(base::FilePath tor_path);
+bool IsTorProfilePath(base::FilePath path);
 
 // This function is similar to Profile::IsGuestSession. It is used to get
 // around the bug(?) in OffTheRecordProfileImpl::Init() code that calls

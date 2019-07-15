@@ -1,0 +1,18 @@
+diff --git a/chrome/browser/profiles/profile.h b/chrome/browser/profiles/profile.h
+index 15d2512dbeaab66cec2273ad9ed07390b0093824..269a87a8f81f396fc252574bc7156377649fcf6f 100644
+--- a/chrome/browser/profiles/profile.h
++++ b/chrome/browser/profiles/profile.h
+@@ -414,11 +414,12 @@ class Profile : public content::BrowserContext {
+     is_system_profile_ = is_system_profile;
+   }
+ 
++ public:
+   // Returns a newly created ExtensionPrefStore suitable for the supplied
+   // Profile.
+   static PrefStore* CreateExtensionPrefStore(Profile*,
+                                              bool incognito_pref_store);
+-
++ protected:
+  private:
+   bool restored_last_session_;
+ 
