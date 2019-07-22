@@ -1,0 +1,12 @@
+diff --git a/extensions/browser/extension_prefs_factory.cc b/extensions/browser/extension_prefs_factory.cc
+index 9f0864c2df9fbbf86d843170a3342a2642507802..5a3fa86fd4c68b283aa8b543da5d57f0acf708ed 100644
+--- a/extensions/browser/extension_prefs_factory.cc
++++ b/extensions/browser/extension_prefs_factory.cc
+@@ -53,6 +53,7 @@ KeyedService* ExtensionPrefsFactory::BuildServiceInstanceFor(
+   client->GetEarlyExtensionPrefsObservers(context, &prefs_observers);
+   return ExtensionPrefs::Create(
+       context, client->GetPrefServiceForContext(context),
++      BRAVE_CHANGE_INSTALL_DIR_FOR_TOR_PROFILE
+       context->GetPath().AppendASCII(extensions::kInstallDirectoryName),
+       ExtensionPrefValueMapFactory::GetForBrowserContext(context),
+       client->AreExtensionsDisabled(*base::CommandLine::ForCurrentProcess(),
