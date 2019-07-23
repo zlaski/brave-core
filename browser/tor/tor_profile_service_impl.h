@@ -12,6 +12,7 @@
 #include "base/optional.h"
 #include "brave/browser/tor/tor_launcher_factory.h"
 #include "brave/browser/tor/tor_profile_service.h"
+#include "components/prefs/pref_change_registrar.h"
 #include "net/proxy_resolution/proxy_info.h"
 
 class Profile;
@@ -47,8 +48,11 @@ class TorProfileServiceImpl : public TorProfileService,
   void NotifyTorCrashed(int64_t pid);
   void NotifyTorLaunched(bool result, int64_t pid);
 
+  void OnExtensionsPrefChanged(const std::string& pref);
+
  private:
   Profile* profile_;  // NOT OWNED
+  PrefChangeRegistrar pref_change_registrar_;
   TorLauncherFactory* tor_launcher_factory_;  // Singleton
   net::ProxyConfigServiceTor* proxy_config_service_;  // NOT OWNED
   base::WeakPtrFactory<TorProfileServiceImpl> weak_ptr_factory_;

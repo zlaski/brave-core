@@ -23,6 +23,7 @@
 #include "content/public/browser/storage_partition.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_observer.h"
+#include "extensions/browser/pref_names.h"
 #include "mojo/public/cpp/bindings/binding.h"
 #include "mojo/public/cpp/bindings/interface_request.h"
 #include "net/proxy_resolution/proxy_resolution_service.h"
@@ -123,6 +124,12 @@ TorProfileServiceImpl::TorProfileServiceImpl(Profile* profile)
   tor_launcher_factory_ = TorLauncherFactory::GetInstance();
   tor_launcher_factory_->AddObserver(this);
 
+  pref_change_registrar_.Init(profile_->GetPrefs());
+  pref_change_registrar_.Add(
+      extensions::pref_names::kExtensions,
+      base::Bind(&TorProfileServiceImpl::OnExtensionsPrefChanged,
+                 base::Unretained(this)));
+
   if (GetTorPid() < 0) {
     tor::TorConfig config(GetTorExecutablePath(), GetTorProxyURI());
     LaunchTor(config);
@@ -197,6 +204,10 @@ std::unique_ptr<net::ProxyConfigService>
 TorProfileServiceImpl::CreateProxyConfigService() {
   proxy_config_service_ = new net::ProxyConfigServiceTor(GetTorProxyURI());
   return std::unique_ptr<net::ProxyConfigServiceTor>(proxy_config_service_);
+}
+
+void TorProfileServiceImpl::OnExtensionsPrefChanged(const std::string& pref) {
+  LOG(ERROR) << __FUNCTION__ << pref;
 }
 
 }  // namespace tor
