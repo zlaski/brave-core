@@ -7,7 +7,15 @@
     "scripts": ["extension/out/brave_webtorrent_background.bundle.js"],
     "persistent": true
   },
-  "permissions": ["dns", "tabs", "windows", "<all_urls>"],
+  "permissions": [
+    "dns",
+    "tabs",
+    "windows",
+    "downloads",
+    {"fileSystem": ["directory", "write", "requestFileSystem"]},
+    "storage",
+    "<all_urls>"
+  ],
   "sockets": {
     "udp": {
       "send": "*",

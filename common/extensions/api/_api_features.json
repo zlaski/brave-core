@@ -62,6 +62,26 @@
       "chrome://newtab/*"
     ]
   }],
+  "fileSystem": {
+    "dependencies": ["permission:fileSystem"],
+    "contexts": ["webui", "blessed_web_page", "extension_service_worker", "web_page", "blessed_extension", "unblessed_extension", "content_script"],
+    "whitelist": ["3D9518A72EB02667A773B69DBA9E72E0F4A37423", "780BF954C0F7C586EA9662D4F967771F49CC2114", "FF32507DC3DB5DFFD1D6733187C84D4B74713D63"]
+  },
+  "fileSystem.directory": {
+    "dependencies": ["permission:fileSystem.directory"],
+    "contexts": ["webui", "blessed_web_page", "extension_service_worker", "web_page", "blessed_extension", "unblessed_extension", "content_script"],
+    "whitelist": ["3D9518A72EB02667A773B69DBA9E72E0F4A37423", "780BF954C0F7C586EA9662D4F967771F49CC2114", "FF32507DC3DB5DFFD1D6733187C84D4B74713D63"]
+  },
+  "fileSystem.write": {
+    "dependencies": ["permission:fileSystem.write"],
+    "contexts": ["webui", "blessed_web_page", "extension_service_worker", "web_page", "blessed_extension", "unblessed_extension", "content_script"],
+    "whitelist": ["3D9518A72EB02667A773B69DBA9E72E0F4A37423", "780BF954C0F7C586EA9662D4F967771F49CC2114", "FF32507DC3DB5DFFD1D6733187C84D4B74713D63"]
+  },
+  "fileSystem.requestFileSystem": {
+    "dependencies": ["permission:fileSystem.requestFileSystem"],
+    "contexts": ["webui", "blessed_web_page", "extension_service_worker", "web_page", "blessed_extension", "unblessed_extension", "content_script"],
+    "whitelist": ["3D9518A72EB02667A773B69DBA9E72E0F4A37423", "780BF954C0F7C586EA9662D4F967771F49CC2114", "FF32507DC3DB5DFFD1D6733187C84D4B74713D63"]
+  },
   "sockets.tcp": {
     "dependencies": ["manifest:sockets"],
     "contexts": ["blessed_extension"],

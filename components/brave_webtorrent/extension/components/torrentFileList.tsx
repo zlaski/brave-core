@@ -13,11 +13,13 @@ import { File, TorrentObj } from '../constants/webtorrentState'
 
 interface Props {
   torrentId: string
-  torrent?: TorrentObj
+  torrent?: TorrentObj,
+  onSaveAllFiles: (torrent: TorrentObj) => void
 }
 
 export default class TorrentFileList extends React.PureComponent<Props, {}> {
   render () {
+    // const { torrent, torrentId, onSaveAllFiles } = this.props
     const { torrent, torrentId } = this.props
     if (!torrent || !torrent.files) {
       return (
@@ -89,9 +91,68 @@ export default class TorrentFileList extends React.PureComponent<Props, {}> {
       }
     })
 
+    const saveAllFiles = () => {
+      if (!torrent.serverURL || !torrent.files) return
+
+      console.log('torrentFileList.tsx::saveAllFiles called')
+      // @ts-ignore
+      chrome.fileSystem.chooseEntry({
+        type: 'openDirectory'
+      }, onChooseEntry)
+
+      function onChooseEntry (entry: any, fileEntries: any) {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError)
+          // return
+        }
+        console.log(entry)
+        console.log(fileEntries)
+        // onSaveAllFiles(entry)
+      }
+
+      // @ts-ignore
+      chrome.fileSystem.getVolumeList(onGetVolumeList)
+
+      function onGetVolumeList (volumes: any) {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError)
+          // return
+        }
+        console.log(volumes)
+
+        // @ts-ignore
+        chrome.fileSystem.requestFileSystem({
+          volumeId: volumes[0],
+          writable: true
+        }, onRequestFileSystem)
+      }
+
+      function onRequestFileSystem (filesystem: any) {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError)
+          // return
+        }
+        console.log(filesystem)
+      }
+
+      // torrent.files.forEach((file, ix) => {
+      //   const url = torrent.serverURL + '/' + ix + '/' + file.name
+      //   chrome.downloads.download({
+      //     url: url,
+      //     saveAs: false,
+      //     conflictAction: "uniquify"
+      //   }, (downloadId: number) => {
+      //     console.log(downloadId)
+      //   })
+      // })
+    }
+
     return (
       <div>
         <Heading children='Files' level={2} className='torrentHeading' />
+        <a href='#' onClick={saveAllFiles}>
+          Save All Files...
+        </a>
         <Table header={header} rows={rows}>
           <div className='loadingContainer'>
             <div className='__icon'>
