@@ -36,6 +36,9 @@ void ResetBraveShieldsEnabled(Profile* profile, const GURL& url);
 bool GetBraveShieldsEnabled(Profile* profile, const GURL& url);
 bool GetBraveShieldsEnabled(HostContentSettingsMap* map, const GURL& url);
 
+void SetCosmeticFilteringControlType(Profile* profile, ControlType type, const GURL& url);
+ControlType GetCosmeticFilteringControlType(Profile* profile, const GURL& url);
+
 void SetAdControlType(Profile* profile, ControlType type, const GURL& url);
 ControlType GetAdControlType(Profile* profile, const GURL& url);
 

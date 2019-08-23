@@ -160,6 +160,30 @@ bool GetBraveShieldsEnabled(Profile* profile, const GURL& url) {
       HostContentSettingsMapFactory::GetForProfile(profile), url);
 }
 
+void SetCosmeticFilteringControlType(Profile* profile, ControlType type, const GURL& url) {
+  DCHECK(type != ControlType::BLOCK_THIRD_PARTY);
+  auto primary_pattern = GetPatternFromURL(url);
+
+  if (!primary_pattern.IsValid()) {
+    return;
+  }
+
+  HostContentSettingsMapFactory::GetForProfile(profile)
+      ->SetContentSettingCustomScope(primary_pattern,
+                                     ContentSettingsPattern::Wildcard(),
+                                     CONTENT_SETTINGS_TYPE_PLUGINS, kCosmeticFiltering,
+                                     GetDefaultBlockFromControlType(type));
+}
+
+ControlType GetCosmeticFilteringControlType(Profile* profile, const GURL& url) {
+  ContentSetting setting =
+      HostContentSettingsMapFactory::GetForProfile(profile)->GetContentSetting(
+          url, GURL(), CONTENT_SETTINGS_TYPE_PLUGINS, kCosmeticFiltering);
+
+  return setting == CONTENT_SETTING_ALLOW ? ControlType::ALLOW
+                                          : ControlType::BLOCK;
+}
+
 void SetAdControlType(Profile* profile, ControlType type, const GURL& url) {
   DCHECK(type != ControlType::BLOCK_THIRD_PARTY);
   auto primary_pattern = GetPatternFromURL(url);
