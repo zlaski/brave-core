@@ -8,9 +8,21 @@
 
 class Profile;
 
+namespace base {
+class FilePath;
+}
+
+namespace content {
+class BrowserContext;
+}
+
 namespace brave {
 
 bool IsTorProfile(const Profile* profile);
+
+bool IsTorProfile(content::BrowserContext* context);
+
+bool IsTorProfile(base::FilePath path);
 
 // This function is similar to Profile::IsGuestSession. It is used to get
 // around the bug(?) in OffTheRecordProfileImpl::Init() code that calls
@@ -20,6 +32,10 @@ bool IsTorProfile(const Profile* profile);
 // InitializeSearchEngineProviderServiceIfNeeded we can't correctly identify
 // the guest profile by calling IsGuestSession and have to use this function.
 bool IsGuestProfile(Profile* profile);
+
+Profile* GetTorParentProfile(content::BrowserContext* context);
+
+Profile* GetTorParentProfile(base::FilePath path);
 
 }  // namespace brave
 
