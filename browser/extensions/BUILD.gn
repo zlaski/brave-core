@@ -36,6 +36,8 @@ source_set("extensions") {
     "brave_extension_service.h",
     "brave_extensions_browser_api_provider.cc",
     "brave_extensions_browser_api_provider.h",
+    "brave_extensions_browser_client.cc",
+    "brave_extensions_browser_client.h",
     "brave_theme_event_router.cc",
     "brave_theme_event_router.h",
     "brave_tor_client_updater.cc",
