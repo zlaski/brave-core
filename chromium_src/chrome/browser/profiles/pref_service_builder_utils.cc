@@ -5,21 +5,27 @@
 
 #include "chrome/browser/profiles/pref_service_builder_utils.h"
 
-#define RegisterProfilePrefs RegisterProfilePrefs_ChromiumImpl
-#include "../../../../../chrome/browser/profiles/pref_service_builder_utils.cc"
-#undef RegisterProfilePrefs
-
 #include "brave/browser/brave_profile_prefs.h"
+#include "brave/browser/profiles/brave_profile_impl.h"
+#include "brave/browser/profiles/profile_util.h"
 #include "brave/browser/themes/brave_theme_service.h"
 #include "brave/browser/tor/buildflags.h"
 #include "brave/common/pref_names.h"
 #include "brave/components/brave_rewards/browser/rewards_service.h"
+#include "chrome/browser/prefs/pref_service_syncable_util.h"
+#include "chrome/browser/profiles/profile.h"
 #include "chrome/common/pref_names.h"
 #include "components/spellcheck/browser/pref_names.h"
 
 #if BUILDFLAG(ENABLE_TOR)
 #include "brave/browser/tor/tor_profile_service.h"
 #endif
+
+#define CreatePrefService CreatePrefService_ChromiumImpl
+#define RegisterProfilePrefs RegisterProfilePrefs_ChromiumImpl
+#include "../../../../../chrome/browser/profiles/pref_service_builder_utils.cc"
+#undef CreatePrefService
+#undef RegisterProfilePrefs
 
 // Prefs for KeyedService
 void RegisterProfilePrefs(bool is_signin_profile,
@@ -52,4 +58,34 @@ void RegisterProfilePrefs(bool is_signin_profile,
   // Use brave theme by default instead of gtk theme.
   registry->SetDefaultPrefValue(prefs::kUsesSystemTheme, base::Value(false));
 #endif
+}
+
+std::unique_ptr<sync_preferences::PrefServiceSyncable> CreatePrefService(
+    scoped_refptr<user_prefs::PrefRegistrySyncable> pref_registry,
+    PrefStore* extension_pref_store,
+    policy::PolicyService* policy_service,
+    policy::ChromeBrowserPolicyConnector* browser_policy_connector,
+    prefs::mojom::TrackedPreferenceValidationDelegatePtr
+        pref_validation_delegate,
+    scoped_refptr<base::SequencedTaskRunner> io_task_runner,
+    SimpleFactoryKey* key,
+    const base::FilePath& path,
+    bool async_prefs) {
+#if BUILDFLAG(ENABLE_TOR)
+  // Create prefs using the same approach that chromium used when creating an
+  // off-the-record profile from its original profile.
+  if (brave::IsTorProfile(path)) {
+    Profile* original_profile = brave::GetTorParentProfile(path);
+    return CreateIncognitoPrefServiceSyncable(
+        PrefServiceSyncableFromProfile(original_profile),
+        BraveProfileImpl::CreateExtensionPrefStore(original_profile, false),
+        InProcessPrefServiceFactoryFactory::GetInstanceForKey(key)
+            ->CreateDelegate());
+  }
+#endif
+
+  return CreatePrefService_ChromiumImpl(
+      pref_registry, extension_pref_store, policy_service,
+      browser_policy_connector, std::move(pref_validation_delegate),
+      io_task_runner, key, path, async_prefs);
 }
