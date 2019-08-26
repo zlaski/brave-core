@@ -20,6 +20,7 @@ import * as noScriptState from '../../state/noScriptState'
 // APIs
 import {
   setAllowBraveShields,
+  setAllowCosmeticElements,
   setAllowAds,
   setAllowTrackers,
   setAllowHTTPUpgradableResources,
@@ -52,12 +53,17 @@ export default function shieldsPanelReducer (
 
   switch (action.type) {
     case webNavigationTypes.ON_COMMITTED: {
+      const tabData = shieldsPanelState.getActiveTabData(state)
+      if (!tabData) {
+        console.error('Active tab not found')
+        break
+      }
       if (action.isMainFrame) {
         state = shieldsPanelState.resetBlockingStats(state, action.tabId)
         state = shieldsPanelState.resetBlockingResources(state, action.tabId)
         state = noScriptState.resetNoScriptInfo(state, action.tabId, new window.URL(action.url).origin)
       }
-      applyCSSCosmeticFilters(action.tabId, getHostname(action.url))
+      applyCSSCosmeticFilters(action.tabId, getHostname(action.url), tabData.cosmeticBlocking === 'block')
       break
     }
     case windowTypes.WINDOW_REMOVED: {
@@ -175,6 +181,27 @@ export default function shieldsPanelReducer (
           shieldsPanelState.updateShieldsIconBadgeText(state)
         }
       }
+      break
+    }
+    case shieldsPanelTypes.HIDE_COSMETIC_ELEMENTS: {
+      const tabId: number = shieldsPanelState.getActiveTabId(state)
+      const tabData = shieldsPanelState.getActiveTabData(state)
+
+      if (!tabData) {
+        console.error('Active tab not found')
+        break
+      }
+
+      setAllowCosmeticElements(tabData.origin, toggleShieldsValue(action.setting))
+        .then(() => {
+          requestShieldPanelData(shieldsPanelState.getActiveTabId(state))
+          reloadTab(tabId, true).catch(() => {
+            console.error('Tab reload was not successful')
+          })
+        })
+        .catch(() => {
+          console.error('Could not set cosmetic blocking setting')
+        })
       break
     }
     case shieldsPanelTypes.BLOCK_ADS_TRACKERS: {
