@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/content_settings/host_content_settings_map_factory.cc b/chrome/browser/content_settings/host_content_settings_map_factory.cc
+index bcc5cfe3b4839d99da814473ce103a1c125eaf59..33dbd4cabe18d7e7b70f6c18939ffd2388997501 100644
+--- a/chrome/browser/content_settings/host_content_settings_map_factory.cc
++++ b/chrome/browser/content_settings/host_content_settings_map_factory.cc
+@@ -84,6 +84,7 @@ scoped_refptr<RefcountedKeyedService>
+ 
+   scoped_refptr<HostContentSettingsMap> settings_map(new HostContentSettingsMap(
+       profile->GetPrefs(),
++      brave::IsTorProfile(profile) ||
+       profile->IsIncognitoProfile() || profile->IsGuestSession(),
+       /*store_last_modified=*/true,
+       base::FeatureList::IsEnabled(features::kPermissionDelegation)));
