@@ -60,4 +60,9 @@ Profile* GetTorParentProfile(base::FilePath path) {
   return parent_profile;
 }
 
+ProfileKey* GetTorParentProfileKey(base::FilePath path) {
+  DCHECK(IsTorProfile(path));
+  return GetTorParentProfile(path)->GetProfileKey();
+}
+
 }  // namespace brave

@@ -7,6 +7,7 @@
 #define BRAVE_BROWSER_PROFILES_PROFILE_UTIL_H_
 
 class Profile;
+class ProfileKey;
 
 namespace base {
 class FilePath;
@@ -36,6 +37,8 @@ bool IsGuestProfile(Profile* profile);
 Profile* GetTorParentProfile(content::BrowserContext* context);
 
 Profile* GetTorParentProfile(base::FilePath path);
+
+ProfileKey* GetTorParentProfileKey(base::FilePath path);
 
 }  // namespace brave
 
