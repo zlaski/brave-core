@@ -23,7 +23,7 @@ export const getShieldSettingsForTabData = (tabData?: chrome.tabs.Tab) => {
 
   return Promise.all([
     chrome.braveShields.getBraveShieldsEnabledAsync(tabData.url),
-    chrome.braveShields.getCosmeticFilteredElementsAsync(tabData.url),
+    chrome.braveShields.getCosmeticFilteringControlTypeAsync(tabData.url),
     chrome.braveShields.getAdControlTypeAsync(tabData.url),
     chrome.braveShields.getHTTPSEverywhereEnabledAsync(tabData.url),
     chrome.braveShields.getNoScriptControlTypeAsync(tabData.url),
@@ -51,6 +51,7 @@ export const getShieldSettingsForTabData = (tabData?: chrome.tabs.Tab) => {
       hostname,
       id: tabData.id,
       braveShields: 'block',
+      cosmeticBlocking: 0,
       ads: 0,
       trackers: 0,
       httpUpgradableResources: 0,
@@ -97,7 +98,7 @@ export const setAllowBraveShields = (origin: string, setting: string) =>
  * @return a promise which resolves when the setting is set
  */
 export const setAllowCosmeticElements = (origin: string, setting: string) =>
-  chrome.braveShields.setCosmeticFilteredElementsAsync(setting, origin)
+  chrome.braveShields.setCosmeticFilteringControlTypeAsync(setting, origin)
 
 /**
  * Changes the ads at origin to be allowed or blocked.

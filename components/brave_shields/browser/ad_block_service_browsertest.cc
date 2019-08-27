@@ -744,3 +744,112 @@ IN_PROC_BROWSER_TEST_F(AdBlockServiceTest, CancelRequestOptionTest) {
   EXPECT_TRUE(as_expected);
   EXPECT_EQ(browser()->profile()->GetPrefs()->GetUint64(kAdsBlocked), 1ULL);
 }
+
+// Test simple cosmetic filtering
+IN_PROC_BROWSER_TEST_F(AdBlockServiceTest, CosmeticFilteringSimple) {
+  UpdateAdBlockInstanceWithRules(
+      "b.com###ad-banner\n"
+      "##.ad"
+  );
+
+  GURL tab_url = embedded_test_server()->GetURL("b.com",
+                                                "/cosmetic_filtering.html");
+  ui_test_utils::NavigateToURL(browser(), tab_url);
+
+  content::WebContents* contents =
+    browser()->tab_strip_model()->GetActiveWebContents();
+
+  bool as_expected = false;
+  ASSERT_TRUE(ExecuteScriptAndExtractBool(contents,
+                                          "checkSelector('#ad-banner', 'display', 'none')",
+                                          &as_expected));
+  EXPECT_TRUE(as_expected);
+
+  as_expected = false;
+  ASSERT_TRUE(ExecuteScriptAndExtractBool(contents,
+                                          "checkSelector('.ad-banner', 'display', 'block')",
+                                          &as_expected));
+  EXPECT_TRUE(as_expected);
+
+  as_expected = false;
+  ASSERT_TRUE(ExecuteScriptAndExtractBool(contents,
+                                          "checkSelector('.ad', 'display', 'none')",
+                                          &as_expected));
+  EXPECT_TRUE(as_expected);
+}
+
+// Test cosmetic filtering on elements added dynamically
+IN_PROC_BROWSER_TEST_F(AdBlockServiceTest, CosmeticFilteringDynamic) {
+  UpdateAdBlockInstanceWithRules(
+      "##.blockme"
+  );
+
+  GURL tab_url = embedded_test_server()->GetURL("b.com",
+                                                "/cosmetic_filtering.html");
+  ui_test_utils::NavigateToURL(browser(), tab_url);
+
+  content::WebContents* contents =
+    browser()->tab_strip_model()->GetActiveWebContents();
+
+  bool as_expected = false;
+  ASSERT_TRUE(ExecuteScriptAndExtractBool(contents,
+                                          "addElementsDynamically();\n"
+                                          "checkSelector('.blockme', 'display', 'none')",
+                                          &as_expected));
+  EXPECT_TRUE(as_expected);
+
+  as_expected = false;
+  ASSERT_TRUE(ExecuteScriptAndExtractBool(contents,
+                                          "checkSelector('.dontblockme', 'display', 'block')",
+                                          &as_expected));
+  EXPECT_TRUE(as_expected);
+}
+
+// Test custom style rules
+IN_PROC_BROWSER_TEST_F(AdBlockServiceTest, CosmeticFilteringCustomStyle) {
+  UpdateAdBlockInstanceWithRules(
+      "b.com##.ad:style(padding-bottom: 0px)"
+  );
+
+  GURL tab_url = embedded_test_server()->GetURL("b.com",
+                                                "/cosmetic_filtering.html");
+  ui_test_utils::NavigateToURL(browser(), tab_url);
+
+  content::WebContents* contents =
+    browser()->tab_strip_model()->GetActiveWebContents();
+
+  bool as_expected = false;
+  ASSERT_TRUE(ExecuteScriptAndExtractBool(contents,
+                                          "checkSelector('.ad', 'padding-bottom', '0px')",
+                                          &as_expected));
+  EXPECT_TRUE(as_expected);
+}
+
+// Test rules overridden by hostname-specific exception rules
+IN_PROC_BROWSER_TEST_F(AdBlockServiceTest, CosmeticFilteringUnhide) {
+  UpdateAdBlockInstanceWithRules(
+      "##.ad\n"
+      "b.com#@#.ad\n"
+      "###ad-banner\n"
+      "a.com#@##ad-banner"
+  );
+
+  GURL tab_url = embedded_test_server()->GetURL("b.com",
+                                                "/cosmetic_filtering.html");
+  ui_test_utils::NavigateToURL(browser(), tab_url);
+
+  content::WebContents* contents =
+    browser()->tab_strip_model()->GetActiveWebContents();
+
+  bool as_expected = false;
+  ASSERT_TRUE(ExecuteScriptAndExtractBool(contents,
+                                          "checkSelector('.ad', 'display', 'block')",
+                                          &as_expected));
+  EXPECT_TRUE(as_expected);
+
+  as_expected = false;
+  ASSERT_TRUE(ExecuteScriptAndExtractBool(contents,
+                                          "checkSelector('#ad-banner', 'display', 'none')",
+                                          &as_expected));
+  EXPECT_TRUE(as_expected);
+}
