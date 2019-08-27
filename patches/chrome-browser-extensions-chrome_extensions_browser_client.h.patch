@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/extensions/chrome_extensions_browser_client.h b/chrome/browser/extensions/chrome_extensions_browser_client.h
+index ff3c1f0bf9e4ce14457c297ee60cafe7f51d1f1f..26636ad0e0314acbe171fa6724a599b142e27c92 100644
+--- a/chrome/browser/extensions/chrome_extensions_browser_client.h
++++ b/chrome/browser/extensions/chrome_extensions_browser_client.h
+@@ -155,6 +155,7 @@ class ChromeExtensionsBrowserClient : public ExtensionsBrowserClient {
+   std::string GetUserAgent() const override;
+ 
+   static void set_did_chrome_update_for_testing(bool did_update);
++  BRAVE_CHROME_EXTENSIONS_BROWSER_CLIENT_H_
+ 
+  private:
+   friend struct base::LazyInstanceTraitsBase<ChromeExtensionsBrowserClient>;

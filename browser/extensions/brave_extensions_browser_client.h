@@ -18,6 +18,8 @@ class BraveExtensionsBrowserClient : public ChromeExtensionsBrowserClient {
   content::BrowserContext* GetOriginalContext(
       content::BrowserContext* context) override;
 
+  UserScriptListener* GetUserScriptListener() override;
+
   DISALLOW_COPY_AND_ASSIGN(BraveExtensionsBrowserClient);
 };
 
