@@ -6,6 +6,7 @@ import("//brave/components/brave_webtorrent/browser/buildflags/buildflags.gni")
 import("//brave/components/greaselion/browser/buildflags/buildflags.gni")
 import("//build/buildflag_header.gni")
 import("//build/config/features.gni")
+import("//chrome/common/features.gni")
 import("//extensions/buildflags/buildflags.gni")
 import("//third_party/widevine/cdm/widevine.gni")
 
@@ -181,6 +182,13 @@ source_set("browser_process") {
       "brave_wallet/brave_wallet_utils.h",
       "brave_wallet/wallet_installation_permission_request.cc",
       "brave_wallet/wallet_installation_permission_request.h",
+    ]
+  }
+
+  if (enable_background_mode) {
+    sources += [
+      "background/brave_background_mode_manager.cc",
+      "background/brave_background_mode_manager.h",
     ]
   }
 

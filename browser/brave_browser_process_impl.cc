@@ -24,6 +24,7 @@
 #include "brave/components/brave_shields/browser/https_everywhere_service.h"
 #include "brave/components/brave_shields/browser/referrer_whitelist_service.h"
 #include "brave/components/brave_shields/browser/tracking_protection_service.h"
+#include "chrome/common/buildflags.h"
 #include "chrome/common/chrome_paths.h"
 #include "components/component_updater/component_updater_service.h"
 #include "components/component_updater/timer_update_scheduler.h"
@@ -31,6 +32,10 @@
 
 #if BUILDFLAG(BUNDLE_WIDEVINE_CDM)
 #include "brave/browser/widevine/brave_widevine_bundle_manager.h"
+#endif
+
+#if BUILDFLAG(ENABLE_BACKGROUND_MODE)
+#include "brave/browser/background/brave_background_mode_manager.h"
 #endif
 
 #if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
@@ -96,6 +101,18 @@ ProfileManager* BraveBrowserProcessImpl::profile_manager() {
   if (!created_profile_manager_)
     CreateProfileManager();
   return profile_manager_.get();
+}
+
+BackgroundModeManager* BraveBrowserProcessImpl::background_mode_manager() {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+#if BUILDFLAG(ENABLE_BACKGROUND_MODE)
+  if (!background_mode_manager_)
+    CreateBackgroundModeManager();
+  return background_mode_manager_.get();
+#else
+  NOTIMPLEMENTED();
+  return NULL;
+#endif
 }
 
 void BraveBrowserProcessImpl::StartBraveServices() {
@@ -235,6 +252,15 @@ void BraveBrowserProcessImpl::CreateProfileManager() {
   base::FilePath user_data_dir;
   base::PathService::Get(chrome::DIR_USER_DATA, &user_data_dir);
   profile_manager_ = std::make_unique<BraveProfileManager>(user_data_dir);
+}
+
+void BraveBrowserProcessImpl::CreateBackgroundModeManager() {
+#if BUILDFLAG(ENABLE_BACKGROUND_MODE)
+  DCHECK(!background_mode_manager_);
+  background_mode_manager_ = std::make_unique<BraveBackgroundModeManager>(
+      *base::CommandLine::ForCurrentProcess(),
+      &profile_manager()->GetProfileAttributesStorage());
+#endif
 }
 
 #if BUILDFLAG(BUNDLE_WIDEVINE_CDM)
