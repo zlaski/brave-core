@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/extensions/user_script_listener.h b/chrome/browser/extensions/user_script_listener.h
+index c8207ab6aa546c6a0ea9039a5b8dcc94927d0cc0..4bfc522ad3838bd5f8eba46e02cc7ede1f58544b 100644
+--- a/chrome/browser/extensions/user_script_listener.h
++++ b/chrome/browser/extensions/user_script_listener.h
+@@ -47,6 +47,7 @@ class UserScriptListener : public content::NotificationObserver,
+       content::NavigationHandle* navigation_handle);
+ 
+   void SetUserScriptsNotReadyForTesting(content::BrowserContext* context);
++  BRAVE_USER_SCRIPT_LISTENER_H_
+ 
+  private:
+   using URLPatterns = std::list<URLPattern>;
