@@ -1,0 +1,12 @@
+diff --git a/extensions/browser/process_manager_factory.cc b/extensions/browser/process_manager_factory.cc
+index e8929c5da2551212689238bb30991e869da26614..09538f763c3832f3be256d527b5ffe3a83ad69b4 100644
+--- a/extensions/browser/process_manager_factory.cc
++++ b/extensions/browser/process_manager_factory.cc
+@@ -50,6 +50,7 @@ KeyedService* ProcessManagerFactory::BuildServiceInstanceFor(
+ 
+ BrowserContext* ProcessManagerFactory::GetBrowserContextToUse(
+     BrowserContext* context) const {
++  BRAVE_GET_BROWSER_CONTEXT_TO_USE
+   // ProcessManager::Create handles guest and incognito profiles, returning an
+   // IncognitoProcessManager in incognito mode.
+   return context;
