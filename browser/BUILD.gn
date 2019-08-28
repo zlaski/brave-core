@@ -239,6 +239,12 @@ source_set("browser_process") {
       "//google_update",
     ]
   }
+
+  if (is_mac) {
+    deps += [
+      "//brave/browser/apps/app_shim",
+    ]
+  }
 }
 
 buildflag_header("sparkle_buildflags") {
