@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+#include "brave/browser/profiles/profile_util.h"
 #include "brave/common/webui_url_constants.h"
 #include "chrome/browser/ui/browser_navigator_params.h"
 #include "chrome/common/webui_url_constants.h"
@@ -10,7 +11,7 @@
 
 namespace {
 
-void AdjustNavigateParamsForURLBraveImpl(NavigateParams* params) {
+void BraveAdjustNavigateParamsForURL(NavigateParams* params) {
   if (params->url.SchemeIs(content::kBraveUIScheme)) {
     GURL::Replacements replacements;
     replacements.SetSchemeStr(content::kChromeUIScheme);
@@ -30,4 +31,14 @@ bool IsHostAllowedInIncognitoBraveImpl(const base::StringPiece& host) {
 
 }  // namespace
 
+#define BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL_1 \
+  BraveAdjustNavigateParamsForURL(params);
+
+#define BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL_2     \
+  if (brave::IsTorProfile(profile)) {              \
+    profile = brave::GetTorParentProfile(profile); \
+  }
+
 #include "../../../../chrome/browser/ui/browser_navigator.cc"  // NOLINT
+#undef BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL_1
+#undef BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL_2
