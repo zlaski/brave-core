@@ -90,6 +90,11 @@
         </settings-radio-group>
       </div>
     </div>
+    <settings-toggle-button id="cosmeticFilteringControlType"
+        pref="{{prefs.brave.cosmetic_filtering_default}}"
+        label="$i18n{cosmeticFilteringControlLabel}"
+        on-settings-boolean-control-change="onCosmeticFilteringControlChange_">
+    </settings-toggle-button>
     <settings-toggle-button id="adControlType"
         pref="{{prefs.brave.ad_default}}"
         label="$i18n{adControlLabel}"

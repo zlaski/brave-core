@@ -328,6 +328,9 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
       <message name="IDS_SETTINGS_BRAVE_SHIELDS_DEFAULTS_ADVANCED_VIEW_LABEL" desc="Default Brave advanced view title label">
         Advanced view
       </message>
+      <message name="IDS_SETTINGS_BRAVE_SHIELDS_COSMETIC_FILTERING_CONTROL_LABEL" desc="Default Brave block first-party ads control setting label">
+        Block first-party ads
+      </message>
       <message name="IDS_SETTINGS_BRAVE_SHIELDS_AD_CONTROL_LABEL" desc="Default Brave block cross-site trackers control setting label">
         Block cross-site trackers
       </message>

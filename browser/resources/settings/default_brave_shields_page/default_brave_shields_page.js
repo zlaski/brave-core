@@ -75,6 +75,9 @@ Polymer({
     return val1 === val2;
   },
 
+  onCosmeticFilteringControlChange_: function() {
+    this.browserProxy_.setCosmeticFilteringControlType(this.$.cosmeticFilteringControlType.checked);
+  },
   onAdControlChange_: function() {
     this.browserProxy_.setAdControlType(this.$.adControlType.checked);
   },

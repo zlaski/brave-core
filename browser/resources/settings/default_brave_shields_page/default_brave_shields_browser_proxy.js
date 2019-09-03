@@ -8,6 +8,15 @@ cr.define('settings', function() {
     /**
      * @return {!Promise<string>}
      */
+    getCosmeticFilteringControlType() {}
+    /**
+     * @param {string} value name.
+     */
+    setCosmeticFilteringControlType(value) {}
+
+    /**
+     * @return {!Promise<string>}
+     */
     getAdControlType() {}
     /**
      * @param {string} value name.
@@ -47,6 +56,16 @@ cr.define('settings', function() {
    * @implements {settings.DefaultBraveShieldsBrowserProxy}
    */
   class DefaultBraveShieldsBrowserProxyImpl {
+    /** @override */
+    getCosmeticFilteringControlType() {
+      return cr.sendWithPromise('getCosmeticFilteringControlType');
+    }
+
+    /** @override */
+    setCosmeticFilteringControlType(value) {
+      chrome.send('setCosmeticFilteringControlType', [value]);
+    }
+
     /** @override */
     getAdControlType() {
       return cr.sendWithPromise('getAdControlType');

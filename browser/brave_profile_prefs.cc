@@ -61,6 +61,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   // Default Brave shields
   registry->RegisterBooleanPref(kHTTPSEVerywhereControlType, true);
   registry->RegisterBooleanPref(kNoScriptControlType, false);
+  registry->RegisterBooleanPref(kCosmeticFilteringControlType, true);
   registry->RegisterBooleanPref(kAdControlType, true);
   // > advanced view is defaulted to true for EXISTING users; false for new
   bool is_new_user = false;
