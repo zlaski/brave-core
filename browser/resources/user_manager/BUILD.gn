@@ -1,0 +1,19 @@
+import("//chrome/browser/resources/optimize_webui.gni")
+import("//chrome/common/features.gni")
+import("//tools/grit/grit_rule.gni")
+
+grit("resources") {
+  source = "user_manager_resources.grd"
+
+  source_is_generated = optimize_webui
+
+  outputs = [
+    "grit/brave_user_manager_resources.h",
+    "grit/brave_user_manager_resources_map.cc",
+    "grit/brave_user_manager_resources_map.h",
+    "brave_user_manager_resources.pak",
+  ]
+
+  output_dir = "$root_gen_dir/brave/browser/resources/user_manager"
+  resource_ids = "//brave/browser/resources/resource_ids"
+}

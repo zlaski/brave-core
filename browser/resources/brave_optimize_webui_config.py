@@ -5,12 +5,21 @@
 
 import os
 
+br_usermanager_resources_path = os.path.join(
+  src_path, 'brave', 'browser', 'resources', 'user_manager')
+
 def vulcanize_base_args():
   return [
     # Exclude anything that contains dynamic content, e.g. l18n strings
     # or is large and can be cached across webui pages.
     '--exclude', 'chrome://brave-resources/fonts/muli.css',
     '--exclude', 'chrome://brave-resources/fonts/poppins.css',
+    # Certain Chromium webui resources are not unpacked to build dir
+    # before building like the settings webui resources are.
+    # Therefore we cannot 'merge' with brave's extra resource files
+    # before the build. Instead, we create a separate path
+    # which points at Brave's resources.
+    ('chrome://md-user-manager/brave/', br_history_resources_path),
   ]
 
 def url_mappings(src_path):
