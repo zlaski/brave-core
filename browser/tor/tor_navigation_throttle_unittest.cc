@@ -42,6 +42,7 @@ class TorNavigationThrottleUnitTest : public testing::Test {
         temp_dir_.GetPath().AppendASCII(TestingProfile::kTestUserProfileDir));
     Profile* tor_profile = profile_manager->GetProfile(
         BraveProfileManager::GetTorProfilePath());
+    ASSERT_EQ(tor_profile->GetParentProfile(), profile);
     web_contents_ =
         content::WebContentsTester::CreateTestWebContents(profile, nullptr);
     tor_web_contents_ =

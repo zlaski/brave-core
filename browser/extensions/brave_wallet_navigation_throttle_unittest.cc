@@ -209,8 +209,10 @@ TEST_F(BraveWalletNavigationThrottleUnitTest, ChromeWalletDisabledByPref) {
 TEST_F(BraveWalletNavigationThrottleUnitTest,
     ChromeWalletNotAvailInTorProfile) {
   ProfileManager* profile_manager = g_browser_process->profile_manager();
+  Profile* profile = ProfileManager::GetLastUsedProfile();
   Profile* tor_profile = profile_manager->GetProfile(
       BraveProfileManager::GetTorProfilePath());
+  ASSERT_EQ(tor_profile->GetParentProfile(), profile);
   std::unique_ptr<content::WebContents> tor_web_contents =
       content::WebContentsTester::CreateTestWebContents(tor_profile, nullptr);
 
