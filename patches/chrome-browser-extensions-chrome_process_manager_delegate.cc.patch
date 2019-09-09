@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/extensions/chrome_process_manager_delegate.cc b/chrome/browser/extensions/chrome_process_manager_delegate.cc
-index 9d7ba9e948e1021f714c396cbc4ccc5689b29505..cfe6d6b958b1364492b74c2f7aa490f55ce2893d 100644
+index e79841d929b54d4d919aaa34188d0c61e024e65e..06fb3d3d84ba3e96a61a6301423ddbfa1c35f248 100644
 --- a/chrome/browser/extensions/chrome_process_manager_delegate.cc
 +++ b/chrome/browser/extensions/chrome_process_manager_delegate.cc
-@@ -168,6 +168,7 @@ void ChromeProcessManagerDelegate::OnBrowserOpened(Browser* browser) {
+@@ -164,6 +164,7 @@ void ChromeProcessManagerDelegate::OnBrowserAdded(Browser* browser) {
      Profile* original_profile = profile->GetOriginalProfile();
      ProcessManager* original_manager = ProcessManager::Get(original_profile);
      DCHECK(original_manager);
