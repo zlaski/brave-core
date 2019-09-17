@@ -31,7 +31,6 @@ void BraveUserScriptListener::Observe(
       if (brave::IsTorProfile(profile)) {
         return;
       }
-
       break;
     }
     default:

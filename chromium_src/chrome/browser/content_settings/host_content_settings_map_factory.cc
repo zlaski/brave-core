@@ -4,4 +4,4 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/browser/profiles/profile_util.h"
-#include "../../../../../../chrome/browser/content_settings/host_content_settings_map_factory.cc"
+#include "../../../../../chrome/browser/content_settings/host_content_settings_map_factory.cc"

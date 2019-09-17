@@ -39,6 +39,6 @@ bool IsHostAllowedInIncognitoBraveImpl(const base::StringPiece& host) {
     profile = brave::GetTorParentProfile(profile); \
   }
 
-#include "../../../../chrome/browser/ui/browser_navigator.cc"  // NOLINT
+#include "../../../../../chrome/browser/ui/browser_navigator.cc"
 #undef BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL_1
 #undef BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL_2
