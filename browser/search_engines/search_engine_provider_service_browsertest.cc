@@ -162,7 +162,8 @@ IN_PROC_BROWSER_TEST_F(SearchEngineProviderServiceTest,
   service->SetUserSelectedDefaultSearchProvider(&other_url);
 }
 
-// Check changed provider in tor profile is retained across the sessions.
+// Check changed provider in tor profile should not be retained across the
+// sessions.
 IN_PROC_BROWSER_TEST_F(SearchEngineProviderServiceTest,
                        CheckDefaultTorProfileSearchProviderTest) {
   ScopedTorLaunchPreventerForTest prevent_tor_process;
@@ -173,11 +174,12 @@ IN_PROC_BROWSER_TEST_F(SearchEngineProviderServiceTest,
   Profile* tor_profile = BrowserList::GetInstance()->GetLastActive()->profile();
   EXPECT_TRUE(brave::IsTorProfile(tor_profile));
 
-  int expected_provider_id =
-      TemplateURLPrepopulateData::PREPOPULATED_ENGINE_ID_BING;
+  int default_provider_id = brave::IsRegionForQwant(tor_profile) ?
+      TemplateURLPrepopulateData::PREPOPULATED_ENGINE_ID_QWANT :
+      TemplateURLPrepopulateData::PREPOPULATED_ENGINE_ID_DUCKDUCKGO;
   auto* service = TemplateURLServiceFactory::GetForProfile(tor_profile);
   EXPECT_EQ(service->GetDefaultSearchProvider()->data().prepopulate_id,
-            expected_provider_id);
+            default_provider_id);
 }
 #endif
 
