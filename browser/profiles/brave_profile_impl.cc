@@ -17,14 +17,18 @@ BraveProfileImpl::BraveProfileImpl(
       weak_ptr_factory_(this) {
   // In Tor profile, prefs are created from the original profile like how
   // incognito profile works. By the time chromium start to observe prefs
-  // initialization in ProfileImpl constructor, prefs are already initialized
-  // and it's too late for the observer to get the notification, so we manually
-  // trigger the OnPrefsLoaded here.
+  // initialization in ProfileImpl constructor for the async creation case,
+  // prefs are already initialized and it's too late for the observer to get
+  // the notification, so we manually trigger the OnPrefsLoaded here. For the
+  // sync cases, OnPrefsLoaded will always be called at the end of ProfileImpl
+  // constructor, so there is no need to trigger it here.
   //
   // This need to be posted instead of running directly here because we need to
   // finish the construction and register this profile first in ProfileManager
-  // before OnPrefsLoaded is called.
-  if (brave::IsTorProfile(path))
+  // before OnPrefsLoaded is called, otherwise we would hit a DCHECK in
+  // ProfileManager::OnProfileCreated which is called inside OnPrefsLoaded and
+  // is expecting the profile_info is already added then.
+  if (brave::IsTorProfile(path) && create_mode == CREATE_MODE_ASYNCHRONOUS)
     base::PostTaskAndReply(
         FROM_HERE, base::DoNothing(),
         base::BindOnce(&ProfileImpl::OnPrefsLoaded,
