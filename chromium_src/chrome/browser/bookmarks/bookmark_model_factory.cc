@@ -10,6 +10,6 @@
     return brave::GetTorParentProfile(context); \
   }
 
-#include "../../../../../../chrome/browser/bookmarks/bookmark_model_factory.cc"
+#include "../../../../../chrome/browser/bookmarks/bookmark_model_factory.cc"
 
 #undef BRAVE_GET_BROWSER_CONTEXT_TO_USE

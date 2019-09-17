@@ -11,6 +11,6 @@
   }
 // define BRAVE_GET_BROWSER_CONTEXT_TO_USE_
 
-#include "../../../../../../chrome/browser/bookmarks/managed_bookmark_service_factory.cc"
+#include "../../../../../chrome/browser/bookmarks/managed_bookmark_service_factory.cc"
 
 #undef BRAVE_GET_BROWSER_CONTEXT_TO_USE_
