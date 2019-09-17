@@ -337,11 +337,13 @@ IN_PROC_BROWSER_TEST_F(BraveProfileManagerExtensionTest,
       extensions::ExtensionPrefs::Get(parent_profile);
   parent_extension_prefs->SetIsIncognitoEnabled(id, true);
   EXPECT_TRUE(extensions::util::IsIncognitoEnabled(id, tor_profile));
+  extensions::ExtensionRegistry* tor_registry =
+      extensions::ExtensionRegistry::Get(tor_profile);
+  EXPECT_TRUE(tor_registry->GetExtensionById(
+        id, extensions::ExtensionRegistry::ENABLED));
 
   // Uninstall an extension in parent profile should be reflected in Tor.
   UninstallExtension(id);
-  extensions::ExtensionRegistry* tor_registry =
-      extensions::ExtensionRegistry::Get(tor_profile);
   EXPECT_FALSE(tor_registry->GetExtensionById(
         id, extensions::ExtensionRegistry::EVERYTHING));
 }
