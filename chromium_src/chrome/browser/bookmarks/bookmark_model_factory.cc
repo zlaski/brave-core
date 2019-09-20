@@ -5,11 +5,5 @@
 
 #include "brave/browser/profiles/profile_util.h"
 
-#define BRAVE_GET_BROWSER_CONTEXT_TO_USE        \
-  if (brave::IsTorProfile(context)) {           \
-    return brave::GetTorParentProfile(context); \
-  }
-
+#define GetBrowserContextRedirectedInIncognito GetBrowserContextRedirectedInIncognitoOverride
 #include "../../../../../chrome/browser/bookmarks/bookmark_model_factory.cc"
-
-#undef BRAVE_GET_BROWSER_CONTEXT_TO_USE

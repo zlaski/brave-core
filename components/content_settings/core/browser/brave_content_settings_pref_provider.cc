@@ -125,7 +125,9 @@ BravePrefProvider::BravePrefProvider(PrefService* prefs,
   OnCookieSettingsChanged(CONTENT_SETTINGS_TYPE_PLUGINS);
 }
 
-BravePrefProvider::~BravePrefProvider() {}
+BravePrefProvider::~BravePrefProvider() {
+  RemoveObserver(this);
+}
 
 void BravePrefProvider::ShutdownOnUIThread() {
   RemoveObserver(this);

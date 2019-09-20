@@ -6,63 +6,203 @@
 #include "brave/browser/profiles/profile_util.h"
 
 #include "base/files/file_path.h"
+#include "base/memory/ptr_util.h"
+#include "base/no_destructor.h"
 #include "brave/browser/tor/buildflags.h"
 #include "brave/common/tor/tor_constants.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/profiles/profile.h"
-#include "chrome/browser/profiles/profile_impl.h"
+#include "chrome/browser/profiles/profile_key.h"
 #include "chrome/browser/profiles/profile_manager.h"
-#include "components/prefs/pref_service.h"
 
 namespace brave {
 
-bool IsTorProfile(const Profile* profile) {
-  DCHECK(profile);
-  return IsTorProfile(profile->GetPath());
+namespace {
+
+using PathMap = std::map<const base::FilePath, Profile*>;
+
+PathMap* GetPathMap() {
+  static base::NoDestructor<PathMap> provider;
+  return provider.get();
 }
 
-bool IsTorProfile(content::BrowserContext* context) {
+Profile* GetFromPath(const base::FilePath& key) {
+  auto mapping = *GetPathMap();
+  const auto& it = mapping.find(key);
+  if (it == mapping.end()) {
+    DCHECK(false);
+    return nullptr;
+  }
+
+  return it->second;
+}
+
+class ParentProfileData : public base::SupportsUserData::Data {
+ public:
+  ~ParentProfileData() override;
+  static void CreateForProfile(content::BrowserContext* context);
+  static ParentProfileData* FromProfile(
+      content::BrowserContext* context);
+  static const ParentProfileData* FromProfile(
+      const content::BrowserContext* context);
+  static const ParentProfileData* FromPath(
+      const base::FilePath& path);
+
+  Profile* profile() const;
+
+  std::unique_ptr<Data> Clone() override;
+ private:
+  static const void* const kUserDataKey;
+  static const void* UserDataKey();
+
+  ParentProfileData(Profile* profile);
+
+  Profile* profile_;
+
+  DISALLOW_COPY_AND_ASSIGN(ParentProfileData);
+};
+
+const void* const ParentProfileData::kUserDataKey = &kUserDataKey;
+
+// static
+void ParentProfileData::CreateForProfile(content::BrowserContext* context) {
   DCHECK(context);
-  return IsTorProfile(Profile::FromBrowserContext(context));
+  if (!FromProfile(context)) {
+    auto* profile = Profile::FromBrowserContext(context);
+    auto* profile_manager = g_browser_process->profile_manager();
+    DCHECK(profile_manager);
+
+    auto* parent_profile =
+        profile_manager->GetProfileByPath(GetParentProfilePath(profile));
+    DCHECK(parent_profile);
+    DCHECK(parent_profile != profile);
+
+    profile->SetUserData(
+        UserDataKey(),
+        base::WrapUnique(new ParentProfileData(parent_profile)));
+
+    GetPathMap()->insert(
+        std::pair<const base::FilePath, Profile*>(profile->GetPath(), profile));
+  }
 }
 
-bool IsTorProfile(base::FilePath path) {
+// static
+ParentProfileData* ParentProfileData::FromProfile(
+    content::BrowserContext* context) {
+  DCHECK(context);
+  auto* profile = Profile::FromBrowserContext(context);
+  return
+      static_cast<ParentProfileData*>(
+          profile->GetOriginalProfile()->GetUserData(UserDataKey()));
+}
+
+// static
+const ParentProfileData* ParentProfileData::FromProfile(
+    const content::BrowserContext* context) {
+  DCHECK(context);
+  const auto* profile = static_cast<const Profile*>(context);
+  return static_cast<const ParentProfileData*>(
+      profile->GetOriginalProfile()->GetUserData(UserDataKey()));
+}
+
+// static
+const ParentProfileData* ParentProfileData::FromPath(
+      const base::FilePath& path) {
+  auto* profile = GetFromPath(path);
+  DCHECK(profile);
+  return FromProfile(profile);
+}
+
+Profile* ParentProfileData::profile() const {
+  return profile_;
+}
+
+std::unique_ptr<base::SupportsUserData::Data>
+ParentProfileData::Clone() {
+  return base::WrapUnique(new ParentProfileData(profile_));
+}
+
+const void* ParentProfileData::UserDataKey() {
+  return &kUserDataKey;
+}
+
+ParentProfileData::ParentProfileData(Profile* profile)
+      : profile_(profile) {
+}
+
+ParentProfileData::~ParentProfileData() {
+  GetPathMap()->erase(profile_->GetPath());
+}
+
+}  // namespace
+
+Profile* CreateParentProfileData(content::BrowserContext* context) {
+  ParentProfileData::CreateForProfile(context);
+  return ParentProfileData::FromProfile(context)->profile();
+}
+
+base::FilePath GetParentProfilePath(content::BrowserContext* context) {
+  return GetParentProfilePath(context->GetPath());
+}
+
+base::FilePath GetParentProfilePath(const base::FilePath& path) {
+  return path.DirName().DirName();
+}
+
+bool IsSessionProfile(content::BrowserContext* context) {
+  DCHECK(context);
+  return ParentProfileData::FromProfile(context) != nullptr;
+}
+
+bool IsSessionProfilePath(const base::FilePath& path) {
+  return path.DirName().BaseName() ==
+         base::FilePath("session_profiles");
+}
+
+bool IsTorProfilePath(const base::FilePath& path) {
 #if BUILDFLAG(ENABLE_TOR)
-  return path.BaseName() == base::FilePath(tor::kTorProfileDir);
+  return IsSessionProfilePath(path) &&
+         path.BaseName() == base::FilePath(tor::kTorProfileDir);
 #else
   return false;
 #endif
 }
 
-bool IsGuestProfile(Profile* profile) {
-  DCHECK(profile);
-  return profile->GetOriginalProfile()->IsGuestSession();
-}
-
-Profile* GetTorParentProfile(content::BrowserContext* context) {
+bool IsTorProfile(content::BrowserContext* context) {
+#if BUILDFLAG(ENABLE_TOR)
   DCHECK(context);
-  DCHECK(IsTorProfile(context));
-  return Profile::FromBrowserContext(context)->GetOriginalProfile()
-      ->GetParentProfile();
+  return IsTorProfilePath(
+      Profile::FromBrowserContext(context)->GetOriginalProfile()->GetPath());
+#else
+  return false
+#endif
 }
 
-Profile* GetTorParentProfile(base::FilePath path) {
-  DCHECK(IsTorProfile(path));
-
-  ProfileManager* profile_manager = g_browser_process->profile_manager();
-  DCHECK(profile_manager);
-
-  base::FilePath parent_profile_path = path.DirName().DirName();
-  Profile* parent_profile =
-      profile_manager->GetProfileByPath(parent_profile_path);
-  DCHECK(parent_profile);
-
-  return parent_profile;
+Profile* GetParentProfile(content::BrowserContext* context) {
+  DCHECK(context);
+  return ParentProfileData::FromProfile(context)->profile();
 }
 
-ProfileKey* GetTorParentProfileKey(base::FilePath path) {
-  DCHECK(IsTorProfile(path));
-  return GetTorParentProfile(path)->GetProfileKey();
+Profile* GetParentProfile(const base::FilePath& path) {
+  return ParentProfileData::FromPath(path)->profile();
+}
+
+bool IsGuestProfile(content::BrowserContext* context) {
+  DCHECK(context);
+  return Profile::FromBrowserContext(context)->GetOriginalProfile()->IsGuestSession();
 }
 
 }  // namespace brave
+
+namespace chrome {
+
+// Get the correct profile for keyed services that use
+// GetBrowserContextRedirectedInIncognito or equivalent
+content::BrowserContext* GetBrowserContextRedirectedInIncognitoOverride(
+    content::BrowserContext* context) {
+  if (brave::IsSessionProfile(context)) \
+    context = brave::GetParentProfile(context);
+  return chrome::GetBrowserContextRedirectedInIncognito(context);
+}
+
+}  // namespace chrome

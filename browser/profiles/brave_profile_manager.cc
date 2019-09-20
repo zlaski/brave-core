@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "base/metrics/histogram_macros.h"
-#include "brave/browser/brave_browser_process_impl.h"
+#include "brave/browser/profiles/profile_util.h"
 #include "brave/browser/tor/buildflags.h"
 #include "brave/browser/tor/tor_profile_service.h"
 #include "brave/browser/tor/tor_profile_service_factory.h"
@@ -45,17 +45,30 @@
 using content::BrowserThread;
 
 BraveProfileManager::BraveProfileManager(const base::FilePath& user_data_dir)
-  : ProfileManager(user_data_dir) {
+    : ProfileManager(user_data_dir) {
   MigrateProfileNames();
 }
 
+BraveProfileManager::~BraveProfileManager() {
+  std::vector<Profile*> profiles = GetLoadedProfiles();
+  for (Profile* profile : profiles) {
+    if (brave::IsSessionProfile(profile)) {
+      // passing false for `success` removes the profile from the info cache
+      OnProfileCreated(profile, false, false);
+    }
+  }
+}
+
 // static
+// TODO(bridiver) - this should take the last used profile dir as an argument
 base::FilePath BraveProfileManager::GetTorProfilePath() {
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
 
   ProfileManager* profile_manager = g_browser_process->profile_manager();
   base::FilePath parent_path =
       profile_manager->GetLastUsedProfileDir(profile_manager->user_data_dir());
+
+  DCHECK(!brave::IsTorProfilePath(parent_path));
 
   base::FilePath tor_path = parent_path.AppendASCII("session_profiles");
   return tor_path.Append(tor::kTorProfileDir);
@@ -86,22 +99,11 @@ void BraveProfileManager::InitTorProfileUserPrefs(Profile* profile) {
 }
 
 void BraveProfileManager::InitProfileUserPrefs(Profile* profile) {
-  if (profile->GetPath() == GetTorProfilePath()) {
+  if (brave::IsTorProfile(profile)) {
     InitTorProfileUserPrefs(profile);
   } else {
     ProfileManager::InitProfileUserPrefs(profile);
   }
-}
-
-std::string BraveProfileManager::GetLastUsedProfileName() {
-  PrefService* local_state = g_browser_process->local_state();
-  DCHECK(local_state);
-  const std::string last_used_profile_name =
-      local_state->GetString(prefs::kProfileLastUsed);
-  if (last_used_profile_name ==
-          base::FilePath(tor::kTorProfileDir).AsUTF8Unsafe())
-    return chrome::kInitialProfile;
-  return ProfileManager::GetLastUsedProfileName();
 }
 
 void BraveProfileManager::DoFinalInitForServices(Profile* profile,
@@ -118,11 +120,21 @@ void BraveProfileManager::OnProfileCreated(Profile* profile,
                                            bool is_new_profile) {
   ProfileManager::OnProfileCreated(profile, success, is_new_profile);
 
+  if (!success)
+    return;
+
 #if BUILDFLAG(ENABLE_TOR)
+  ProfileAttributesEntry* entry;
+  ProfileAttributesStorage& storage = GetProfileAttributesStorage();
+  if (storage.GetProfileAttributesWithPath(profile->GetPath(), &entry)) {
+    profile->GetPrefs()->SetBoolean(prefs::kForceEphemeralProfiles, true);
+    entry->SetIsEphemeral(true);
+  }
   // we need to wait until OnProfileCreated to
   // ensure that the request context is available
-  if (profile->GetPath() == GetTorProfilePath())
+  if (brave::IsTorProfile(profile)) {
     TorProfileServiceFactory::GetForProfile(profile);
+  }
 #endif
 }
 

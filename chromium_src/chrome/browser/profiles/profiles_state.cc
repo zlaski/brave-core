@@ -4,6 +4,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/browser/profiles/brave_profile_manager.h"
+#include "brave/browser/profiles/profile_util.h"
 #include "ui/gfx/text_elider.h"
 #define GetAvatarButtonTextForProfile GetAvatarButtonTextForProfile_ChromiumImpl
 #define GetAvatarNameForProfile GetAvatarNameForProfile_ChromiumImpl
@@ -15,7 +16,7 @@ namespace profiles {
 
 #if !defined(OS_ANDROID)
 base::string16 GetAvatarNameForProfile(const base::FilePath& profile_path) {
-  if (profile_path == BraveProfileManager::GetTorProfilePath())
+  if (brave::IsTorProfilePath(profile_path))
     return l10n_util::GetStringUTF16(IDS_TOR_PROFILE_NAME);
   return GetAvatarNameForProfile_ChromiumImpl(profile_path);
 }

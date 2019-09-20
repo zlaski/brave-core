@@ -59,6 +59,7 @@ void SwitchToTorProfile(ProfileManager::CreateCallback callback) {
 #endif
 
 void CloseTorProfileWindows() {
+  // TODO(bridiver) - use GetLoadedProfiles and check IsTorProfile
   ProfileManager* profile_manager = g_browser_process->profile_manager();
   Profile* profile = profile_manager->GetProfileByPath(
       BraveProfileManager::GetTorProfilePath());

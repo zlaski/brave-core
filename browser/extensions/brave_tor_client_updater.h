@@ -10,6 +10,8 @@
 #include <string>
 
 #include "base/files/file_path.h"
+#include "base/memory/weak_ptr.h"
+#include "base/observer_list.h"
 #include "base/sequenced_task_runner.h"
 #include "brave/components/brave_component_updater/browser/brave_component.h"
 
@@ -35,6 +37,14 @@ extern const char kTorClientComponentBase64PublicKey[];
 
 class BraveTorClientUpdater : public BraveComponent {
  public:
+  class Observer : public base::CheckedObserver {
+   public:
+    virtual void OnExecutableReady(const base::FilePath& path) = 0;
+
+   protected:
+    ~Observer() override = default;
+  };
+
   explicit BraveTorClientUpdater(BraveComponent::Delegate* delegate);
   ~BraveTorClientUpdater() override;
 
@@ -43,6 +53,9 @@ class BraveTorClientUpdater : public BraveComponent {
   scoped_refptr<base::SequencedTaskRunner> GetTaskRunner() {
     return task_runner_;
   }
+
+  void AddObserver(Observer* observer);
+  void RemoveObserver(Observer* observer);
 
  protected:
   void OnComponentReady(const std::string& component_id,
@@ -57,10 +70,14 @@ class BraveTorClientUpdater : public BraveComponent {
   static void SetComponentIdAndBase64PublicKeyForTest(
       const std::string& component_id,
       const std::string& component_base64_public_key);
-  void InitExecutablePath(const base::FilePath& install_dir);
+  void SetExecutablePath(const base::FilePath& path);
+  // base::FilePath InitExecutablePath(const base::FilePath& install_dir);
   scoped_refptr<base::SequencedTaskRunner> task_runner_;
   bool registered_;
   base::FilePath executable_path_;
+  base::ObserverList<Observer> observers_;
+
+  base::WeakPtrFactory<BraveTorClientUpdater> weak_ptr_factory_;
 
   DISALLOW_COPY_AND_ASSIGN(BraveTorClientUpdater);
 };

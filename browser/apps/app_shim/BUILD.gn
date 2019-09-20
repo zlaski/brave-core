@@ -1,9 +1,0 @@
-source_set("app_shim") {
-  sources = [
-    "brave_extension_app_shim_handler_mac.cc",
-    "brave_extension_app_shim_handler_mac.h",
-  ]
-  deps = [
-    "//content/public/browser",
-  ]
-}
