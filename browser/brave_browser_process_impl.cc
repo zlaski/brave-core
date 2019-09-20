@@ -14,8 +14,8 @@
 #include "brave/browser/brave_stats_updater.h"
 #include "brave/browser/component_updater/brave_component_updater_configurator.h"
 #include "brave/browser/component_updater/brave_component_updater_delegate.h"
-#include "brave/browser/extensions/brave_tor_client_updater.h"
 #include "brave/browser/profiles/brave_profile_manager.h"
+#include "brave/browser/tor/buildflags.h"
 #include "brave/components/brave_component_updater/browser/local_data_files_service.h"
 #include "brave/components/brave_shields/browser/ad_block_custom_filters_service.h"
 #include "brave/components/brave_shields/browser/ad_block_regional_service_manager.h"
@@ -34,10 +34,6 @@
 #include "brave/browser/widevine/brave_widevine_bundle_manager.h"
 #endif
 
-#if BUILDFLAG(ENABLE_BACKGROUND_MODE)
-#include "brave/browser/background/brave_background_mode_manager.h"
-#endif
-
 #if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
 #include "brave/components/brave_referrals/browser/brave_referrals_service.h"
 #endif
@@ -49,6 +45,10 @@
 
 #if BUILDFLAG(ENABLE_GREASELION)
 #include "brave/components/greaselion/browser/greaselion_download_service.h"
+#endif
+
+#if BUILDFLAG(ENABLE_TOR)
+#include "brave/browser/extensions/brave_tor_client_updater.h"
 #endif
 
 #if defined(OS_ANDROID)
@@ -101,18 +101,6 @@ ProfileManager* BraveBrowserProcessImpl::profile_manager() {
   if (!created_profile_manager_)
     CreateProfileManager();
   return profile_manager_.get();
-}
-
-BackgroundModeManager* BraveBrowserProcessImpl::background_mode_manager() {
-  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
-#if BUILDFLAG(ENABLE_BACKGROUND_MODE)
-  if (!background_mode_manager_)
-    CreateBackgroundModeManager();
-  return background_mode_manager_.get();
-#else
-  NOTIMPLEMENTED();
-  return NULL;
-#endif
 }
 
 void BraveBrowserProcessImpl::StartBraveServices() {
@@ -252,15 +240,6 @@ void BraveBrowserProcessImpl::CreateProfileManager() {
   base::FilePath user_data_dir;
   base::PathService::Get(chrome::DIR_USER_DATA, &user_data_dir);
   profile_manager_ = std::make_unique<BraveProfileManager>(user_data_dir);
-}
-
-void BraveBrowserProcessImpl::CreateBackgroundModeManager() {
-#if BUILDFLAG(ENABLE_BACKGROUND_MODE)
-  DCHECK(!background_mode_manager_);
-  background_mode_manager_ = std::make_unique<BraveBackgroundModeManager>(
-      *base::CommandLine::ForCurrentProcess(),
-      &profile_manager()->GetProfileAttributesStorage());
-#endif
 }
 
 #if BUILDFLAG(BUNDLE_WIDEVINE_CDM)

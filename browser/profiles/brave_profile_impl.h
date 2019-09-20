@@ -9,28 +9,33 @@
 #include "chrome/browser/profiles/profile_impl.h"
 
 #include "base/memory/weak_ptr.h"
+#include "content/public/browser/notification_observer.h"
+#include "content/public/browser/notification_registrar.h"
 
 class PrefStore;
 
-class BraveProfileImpl : public ProfileImpl {
+class BraveProfileImpl : public ProfileImpl,
+                         public content::NotificationObserver {
  public:
   BraveProfileImpl(const base::FilePath& path,
                    Delegate* delegate,
                    CreateMode create_mode,
                    scoped_refptr<base::SequencedTaskRunner> io_task_runner);
-
   ~BraveProfileImpl() override;
 
-  bool IsSameProfile(Profile* profile) override;
-
-  // We need to access chromium's Profile::CreateExtensionPrefStore which is a
-  // protected method from pref_service_builder_utils.cc when creating prefs
-  // for Tor profile. Instead of patching profile.h directly, we define this
-  // public method in this derived class to access it.
-  static PrefStore* CreateExtensionPrefStore(Profile* profile,
-                                             bool incognito_pref_store);
+  // content::NotificationObserver override.
+  void Observe(int type,
+               const content::NotificationSource& source,
+               const content::NotificationDetails& details) override;
 
  private:
+  class SessionProfileExtensionRegistryObserver;
+
+  // Listens for parent profile destruction.
+  content::NotificationRegistrar notification_registrar_;
+  // Listens for extension load/unload in the parent
+  std::unique_ptr<SessionProfileExtensionRegistryObserver> observer_;
+
   base::WeakPtrFactory<BraveProfileImpl> weak_ptr_factory_;
 
   DISALLOW_COPY_AND_ASSIGN(BraveProfileImpl);

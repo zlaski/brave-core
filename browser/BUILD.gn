@@ -81,6 +81,13 @@ source_set("browser_process") {
     "update_util.h",
   ]
 
+  if (enable_tor) {
+    sources += [
+      # TODO(bridiver) - change the directory for these
+      "extensions/brave_tor_client_updater.cc",
+      "extensions/brave_tor_client_updater.h",
+    ]
+  }
   if (enable_sparkle) {
     sources += [
       "mac/sparkle_glue.mm",
@@ -185,13 +192,6 @@ source_set("browser_process") {
     ]
   }
 
-  if (enable_background_mode) {
-    sources += [
-      "background/brave_background_mode_manager.cc",
-      "background/brave_background_mode_manager.h",
-    ]
-  }
-
   if (enable_tor) {
     deps += [
       "//brave/components/services/tor/public/cpp:manifest",
@@ -237,12 +237,6 @@ source_set("browser_process") {
 
     deps += [
       "//google_update",
-    ]
-  }
-
-  if (is_mac) {
-    deps += [
-      "//brave/browser/apps/app_shim",
     ]
   }
 }
