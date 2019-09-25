@@ -1,24 +1,16 @@
 diff --git a/chrome/browser/ui/browser_navigator.cc b/chrome/browser/ui/browser_navigator.cc
-index 441d74eb9c66b5aca7b728e30ef42304ecac67d1..d452fa2b508e5acbe4d9f20c3b1e6cd63eab9527 100644
+index 441d74eb9c66b5aca7b728e30ef42304ecac67d1..07e3d16f9fb598cf74e4ed7a2af8d8e60bee937e 100644
 --- a/chrome/browser/ui/browser_navigator.cc
 +++ b/chrome/browser/ui/browser_navigator.cc
-@@ -106,6 +106,7 @@ Browser* GetOrCreateBrowser(Profile* profile, bool user_gesture) {
- // Returns true on success. Otherwise, if changing params leads the browser into
- // an erroneous state, returns false.
- bool AdjustNavigateParamsForURL(NavigateParams* params) {
-+  BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL_1
-   if (params->contents_to_insert || params->switch_to_singleton_tab ||
-       IsURLAllowedInIncognito(params->url, params->initiating_profile) ||
-       params->initiating_profile->IsGuestSession()) {
-@@ -117,6 +118,7 @@ bool AdjustNavigateParamsForURL(NavigateParams* params) {
-   if (profile->IsOffTheRecord() ||
-       params->disposition == WindowOpenDisposition::OFF_THE_RECORD) {
-     profile = profile->GetOriginalProfile();
-+    BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL_2
+@@ -459,6 +459,7 @@ void Navigate(NavigateParams* params) {
+     params->initiating_profile = source_browser->profile();
+   DCHECK(params->initiating_profile);
  
-     // If incognito is forced, we punt.
-     PrefService* prefs = profile->GetPrefs();
-@@ -730,6 +732,7 @@ void Navigate(NavigateParams* params) {
++  BRAVE_ADJUST_NAVIGATE_PARAMS_FOR_URL
+   if (!AdjustNavigateParamsForURL(params))
+     return;
+ 
+@@ -730,6 +731,7 @@ void Navigate(NavigateParams* params) {
  bool IsHostAllowedInIncognito(const GURL& url) {
    std::string scheme = url.scheme();
    base::StringPiece host = url.host_piece();
