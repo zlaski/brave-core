@@ -30,42 +30,45 @@ class BASE_EXPORT Data {
 #if BUILDFLAG(ENABLE_EXTENSIONS)
 class BraveProfileImpl::SessionProfileExtensionRegistryObserver : public extensions::ExtensionRegistryObserver {
  public:
-  SessionProfileExtensionRegistryObserver(content::BrowserContext* browser_context) :
-      browser_context_(browser_context) {
-    auto* registry = extensions::ExtensionRegistry::Get(browser_context);
+  SessionProfileExtensionRegistryObserver(content::BrowserContext* parent_context,
+                                          content::BrowserContext* tor_context) :
+      parent_context_(parent_context),
+      tor_context_(tor_context) {
+    auto* registry = extensions::ExtensionRegistry::Get(parent_context);
     if (registry)
       registry->AddObserver(this);
   }
 
   ~SessionProfileExtensionRegistryObserver() override {
-    auto* registry = extensions::ExtensionRegistry::Get(browser_context_);
+    auto* registry = extensions::ExtensionRegistry::Get(parent_context_);
     if (registry)
       registry->RemoveObserver(this);
   }
 
   void OnExtensionReady(content::BrowserContext* browser_context,
-                                const extensions::Extension* extension) override {
-    if (browser_context == browser_context_) {
+      const extensions::Extension* extension) override {
+    if (browser_context == parent_context_) {
       // TODO(bridiver) - need to deal with extension whitelist both
       // here and for extensions enabled on startup (from prefs)
-      auto* registry = extensions::ExtensionRegistry::Get(browser_context_);
+      auto* registry = extensions::ExtensionRegistry::Get(tor_context_);
       if (registry)
         registry->AddEnabled(extension);
     }
   }
 
   void OnExtensionUnloaded(content::BrowserContext* browser_context,
-                                   const extensions::Extension* extension,
-                                   extensions::UnloadedExtensionReason reason) override {
-    if (browser_context == browser_context_) {
-      auto* registry = extensions::ExtensionRegistry::Get(browser_context_);
+      const extensions::Extension* extension,
+      extensions::UnloadedExtensionReason reason) override {
+    if (browser_context == parent_context_) {
+      auto* registry = extensions::ExtensionRegistry::Get(tor_context_);
       if (registry)
         registry->RemoveEnabled(extension->id());
     }
   }
 
  private:
-  content::BrowserContext* browser_context_;
+  content::BrowserContext* parent_context_;
+  content::BrowserContext* tor_context_;
   DISALLOW_COPY_AND_ASSIGN(SessionProfileExtensionRegistryObserver);
 };
 #endif
@@ -101,7 +104,7 @@ BraveProfileImpl::BraveProfileImpl(
 #if BUILDFLAG(ENABLE_EXTENSIONS)
     if (!IsOffTheRecord()) {
       observer_.reset(
-          new SessionProfileExtensionRegistryObserver(parent_profile));
+          new SessionProfileExtensionRegistryObserver(parent_profile, this));
     }
 #endif
 
