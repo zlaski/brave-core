@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/extensions/api/content_settings/content_settings_service.cc b/chrome/browser/extensions/api/content_settings/content_settings_service.cc
+index 66c59d56e6eff1cf9f260096c0bab6ebe5a79505..695a6caa4830f0ae7405151a37006420cf359e25 100644
+--- a/chrome/browser/extensions/api/content_settings/content_settings_service.cc
++++ b/chrome/browser/extensions/api/content_settings/content_settings_service.cc
+@@ -20,6 +20,7 @@ ContentSettingsService::~ContentSettingsService() {}
+ // static
+ ContentSettingsService* ContentSettingsService::Get(
+     content::BrowserContext* context) {
++  BRAVE_GET
+   return BrowserContextKeyedAPIFactory<ContentSettingsService>::Get(context);
+ }
+ 
