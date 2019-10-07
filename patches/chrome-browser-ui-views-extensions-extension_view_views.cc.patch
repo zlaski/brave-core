@@ -1,0 +1,22 @@
+diff --git a/chrome/browser/ui/views/extensions/extension_view_views.cc b/chrome/browser/ui/views/extensions/extension_view_views.cc
+index 7d2262ffee50968824abe6053f1b6cf3484ddb83..42482b2938cd66bb2592daf5c97b5386e9ebdc33 100644
+--- a/chrome/browser/ui/views/extensions/extension_view_views.cc
++++ b/chrome/browser/ui/views/extensions/extension_view_views.cc
+@@ -20,6 +20,7 @@
+ #include "ui/events/event.h"
+ #include "ui/views/controls/native/native_view_host.h"
+ #include "ui/views/widget/widget.h"
++#include "ui/views/controls/webview/web_contents_set_background_color.h"
+ 
+ #if defined(USE_AURA)
+ #include "ui/base/cursor/cursor.h"
+@@ -32,6 +33,9 @@ ExtensionViewViews::ExtensionViewViews(extensions::ExtensionHost* host,
+       browser_(browser),
+       container_(nullptr) {
+   SetWebContents(host_->web_contents());
++  views::WebContentsSetBackgroundColor::CreateForWebContentsWithColor(
++      host_->web_contents(),
++      SK_ColorTRANSPARENT);
+   if (host->extension_host_type() == extensions::VIEW_TYPE_EXTENSION_POPUP) {
+     EnableSizingFromWebContents(
+         gfx::Size(ExtensionPopup::kMinWidth, ExtensionPopup::kMinHeight),

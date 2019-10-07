@@ -1,0 +1,35 @@
+diff --git a/ui/views/bubble/bubble_dialog_delegate_view.cc b/ui/views/bubble/bubble_dialog_delegate_view.cc
+index 161f0b5fd495770ebd20b379afedc2cee82ab763..758abf87df92fdd7b6ac9e7773ab1f79eec9dc39 100644
+--- a/ui/views/bubble/bubble_dialog_delegate_view.cc
++++ b/ui/views/bubble/bubble_dialog_delegate_view.cc
+@@ -84,20 +84,21 @@ bool CustomShadowsSupported() {
+ // Create a widget to host the bubble.
+ Widget* CreateBubbleWidget(BubbleDialogDelegateView* bubble) {
+   Widget* bubble_widget = new BubbleWidget();
+-  Widget::InitParams bubble_params(Widget::InitParams::TYPE_BUBBLE);
++  Widget::InitParams bubble_params(Widget::InitParams::TYPE_WINDOW_FRAMELESS);
+   bubble_params.delegate = bubble;
+-  bubble_params.opacity = CustomShadowsSupported()
+-                              ? Widget::InitParams::TRANSLUCENT_WINDOW
+-                              : Widget::InitParams::OPAQUE_WINDOW;
++  bubble_params.opacity = Widget::InitParams::TRANSLUCENT_WINDOW;
++    // CustomShadowsSupported()
++                              // ? Widget::InitParams::TRANSLUCENT_WINDOW
++                              // : Widget::InitParams::OPAQUE_WINDOW;
+   bubble_params.accept_events = bubble->accept_events();
+   bubble_params.remove_standard_frame = true;
+   // Use a window default shadow if the bubble doesn't provides its own.
+-  if (bubble->GetShadow() == BubbleBorder::NO_ASSETS)
+-    bubble_params.shadow_type = Widget::InitParams::SHADOW_TYPE_DEFAULT;
+-  else if (CustomShadowsSupported())
++  // if (bubble->GetShadow() == BubbleBorder::NO_ASSETS)
++  //   bubble_params.shadow_type = Widget::InitParams::SHADOW_TYPE_DEFAULT;
++  // else if (CustomShadowsSupported())
+     bubble_params.shadow_type = Widget::InitParams::SHADOW_TYPE_NONE;
+-  else
+-    bubble_params.shadow_type = Widget::InitParams::SHADOW_TYPE_DROP;
++  // else
++    // bubble_params.shadow_type = Widget::InitParams::SHADOW_TYPE_DROP;
+   if (bubble->parent_window())
+     bubble_params.parent = bubble->parent_window();
+   else if (bubble->anchor_widget())

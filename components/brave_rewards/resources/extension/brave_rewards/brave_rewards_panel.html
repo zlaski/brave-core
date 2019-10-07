@@ -1,16 +1,53 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width">
-        <title>Rewards Panel</title>
-        <script src="/out/brave_rewards_panel.bundle.js"></script>
-        <style>
-            #root { height: 100%; }
-            body { margin: 0; }
-        </style>
-    </head>
-    <body>
-        <div id="root"></div>
-    </body>
-</html>
+
+<head>
+  <style>
+  body
+  {
+    background: transparent;
+    margin: 0;
+    padding: 0;
+  }
+  * { box-sizing: border-box; }
+  .window
+  {
+    height: 500px;
+    background: linear-gradient(to bottom, pink, transparent 90%);
+    padding: 25px;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .advert
+  {
+    width: 300px;
+    height: 250px;
+    background: #222;
+    color: white;
+    display: flex;
+    font-family: sans-serif;
+    font-size: 92px;
+    justify-content: center;
+    align-items: center;
+  }
+  .controls
+  {
+    font-size: 100px;
+    color: blue;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  </style>
+  </head>
+  <body>
+      <div class="window">
+          <div class="advert">
+            Advert
+          </div>
+          <div class="controls">
+            <button>+</button>
+            <button>-</button>
+          </div>
+        </div>
+  </body>
