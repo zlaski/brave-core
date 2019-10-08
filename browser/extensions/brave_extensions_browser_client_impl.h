@@ -17,8 +17,19 @@ class BraveExtensionsBrowserClientImpl : public ChromeExtensionsBrowserClient,
   BraveExtensionsBrowserClientImpl();
   ~BraveExtensionsBrowserClientImpl() override = default;
 
-  bool AreExtensionsDisabled(const base::CommandLine& command_line,
-                             content::BrowserContext* context) override;
+  bool AreExtensionsDisabledOverride(
+      const base::CommandLine& command_line,
+      content::BrowserContext* context) override;
+
+  void GetEarlyExtensionPrefsObserversOverride(
+      content::BrowserContext* context,
+      std::vector<EarlyExtensionPrefsObserver*>* observers) const override;
+
+  PrefService* GetPrefServiceForContextOverride(
+      content::BrowserContext* context) override;
+
+  content::BrowserContext* GetOriginalContextOverride(
+      content::BrowserContext* context) override;
 
   DISALLOW_COPY_AND_ASSIGN(BraveExtensionsBrowserClientImpl);
 };

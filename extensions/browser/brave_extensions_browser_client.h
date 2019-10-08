@@ -32,6 +32,20 @@ class BraveExtensionsBrowserClient {
 
   // Sets and initializes the single instance.
   static void Set(BraveExtensionsBrowserClient* client);
+
+  virtual bool AreExtensionsDisabledOverride(
+      const base::CommandLine& command_line,
+      content::BrowserContext* context) = 0;
+
+  virtual void GetEarlyExtensionPrefsObserversOverride(
+      content::BrowserContext* context,
+      std::vector<EarlyExtensionPrefsObserver*>* observers) const = 0;
+
+  virtual PrefService* GetPrefServiceForContextOverride(
+      content::BrowserContext* context) = 0;
+
+  virtual content::BrowserContext* GetOriginalContextOverride(
+      content::BrowserContext* context) = 0;
 };
 
 }  // namespace extensions
