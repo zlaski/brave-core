@@ -21,9 +21,6 @@ BraveExtensionsBrowserClientImpl::BraveExtensionsBrowserClientImpl() {
 bool BraveExtensionsBrowserClientImpl::AreExtensionsDisabledOverride(
     const base::CommandLine& command_line,
     content::BrowserContext* context) {
-  if (brave::IsTorProfile(context))
-    return true;
-
   return ChromeExtensionsBrowserClient::AreExtensionsDisabled(command_line,
                                                               context);
 }
