@@ -29,8 +29,13 @@ class BraveProfileImpl : public ProfileImpl,
                const content::NotificationDetails& details) override;
 
  private:
+  class SessionProfileExtensionRegistryObserver;
+
   // Listens for parent profile destruction.
   content::NotificationRegistrar notification_registrar_;
+
+  // Listens for extension load/unload in the parent
+  std::unique_ptr<SessionProfileExtensionRegistryObserver> observer_;
 
   base::WeakPtrFactory<BraveProfileImpl> weak_ptr_factory_;
 
