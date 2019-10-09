@@ -10,7 +10,7 @@ import * as shieldsPanelTypes from '../../constants/shieldsPanelTypes'
 import * as windowTypes from '../../constants/windowTypes'
 import * as tabTypes from '../../constants/tabTypes'
 import * as webNavigationTypes from '../../constants/webNavigationTypes'
-import { State, PersistentData } from '../../types/state/shieldsPannelState'
+import { State } from '../../types/state/shieldsPannelState'
 import { Actions } from '../../types/actions/index'
 
 // State helpers
@@ -38,15 +38,10 @@ import { getAllowedScriptsOrigins } from '../../helpers/noScriptUtils'
 import { areObjectsEqual } from '../../helpers/objectUtils'
 
 export default function shieldsPanelReducer (
-  state: State = {
-    persistentData: storageAPI.loadPersistentData(),
-    tabs: {},
-    windows: {},
-    currentWindowId: -1
-  },
+  state: State = storageAPI.loadPersistentData(),
   action: Actions
 ) {
-  const initialPersistentData: PersistentData = state.persistentData
+  const initialPersistentData: State = state
 
   switch (action.type) {
     case webNavigationTypes.ON_COMMITTED: {
@@ -330,8 +325,8 @@ export default function shieldsPanelReducer (
     }
   }
 
-  if (!areObjectsEqual(state.persistentData, initialPersistentData)) {
-    storageAPI.savePersistentDataDebounced(state.persistentData)
+  if (!areObjectsEqual(state, initialPersistentData)) {
+    storageAPI.savePersistentDataDebounced(state)
   }
 
   return state

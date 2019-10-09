@@ -15,6 +15,7 @@ const mapStateToProps = (
     settings: chrome.braveShields.BraveShieldsViewPreferences
   }
 ) => {
+  console.log('state loaded', state)
   return ({
     shieldsPanelTabData: shieldsPanelState.getActiveTabData(state.shieldsPanel),
     persistentData: shieldsPanelState.getPersistentData(state.shieldsPanel),

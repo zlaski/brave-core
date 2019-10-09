@@ -88,7 +88,9 @@ export default class Shields extends React.PureComponent<Props, State> {
   render () {
     const { shieldsPanelTabData, persistentData, actions } = this.props
     const { showAdvancedView, showReadOnlyView } = this.state
+    console.log('shields render data', this.props)
     if (!shieldsPanelTabData) {
+      console.error('No panel tab data!')
       return null
     }
     return showAdvancedView

@@ -7,16 +7,22 @@ import * as Shields from '../../types/state/shieldsPannelState'
 
 const keyName = 'shields-persistent-data'
 
-export const defaultPersistentData: Shields.PersistentData = {
-  isFirstAccess: true
+export const defaultPersistentData: Shields.State = {
+  persistentData: { isFirstAccess: true },
+  tabs: { },
+  windows: { },
+  currentWindowId: -1
 }
 
-export const loadPersistentData = (): Shields.PersistentData => {
-  const data = window.localStorage.getItem(keyName)
-  let state: Shields.PersistentData = defaultPersistentData
-  if (data) {
+export const loadPersistentData = (): Shields.State => {
+  const dataRaw = window.localStorage.getItem(keyName)
+  let state: Shields.State = defaultPersistentData
+  if (dataRaw) {
     try {
-      state = JSON.parse(data)
+      const data = JSON.parse(dataRaw)
+      if (data && data.tabs && data.persistentData) {
+        state = data
+      }
     } catch (e) {
       console.error('[Shields] Could not parse local storage data: ', e)
     }
@@ -24,7 +30,7 @@ export const loadPersistentData = (): Shields.PersistentData => {
   return state
 }
 
-export const savePersistentDataDebounced = debounce((data: Shields.PersistentData) => {
+export const savePersistentDataDebounced = debounce((data: Shields.State) => {
   if (data) {
     window.localStorage.setItem(keyName, JSON.stringify(data))
   }

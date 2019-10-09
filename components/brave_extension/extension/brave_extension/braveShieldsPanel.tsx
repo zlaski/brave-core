@@ -13,16 +13,19 @@ import BraveShields from './containers/app'
 import { getViewPreferences } from './background/api/shieldsAPI'
 require('../../../fonts/muli.css')
 require('../../../fonts/poppins.css')
+import RunOrTimeout from '../../../common/runOrTimeout'
+
+console.log('brave shields panel script')
 
 const store: any = new Store({
   portName: 'BRAVE'
 })
 
-Promise.all([
+RunOrTimeout(Promise.all([
   store.ready(),
   new Promise(resolve => chrome.braveTheme.getBraveThemeType(resolve)),
   getViewPreferences()
-])
+]), 2000)
 .then((
   [ , themeType, settings ]:
   [

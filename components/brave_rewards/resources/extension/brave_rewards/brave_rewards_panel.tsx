@@ -19,6 +19,7 @@ import App from './components/app'
 
 // Utils
 import { getUIMessages } from './background/api/locale_api'
+import RunOrTimeout from '../../../../common/runOrTimeout'
 
 const store: Store<RewardsExtension.State> = new Store({
   portName: 'REWARDSPANEL'
@@ -26,16 +27,16 @@ const store: Store<RewardsExtension.State> = new Store({
 
 initLocale(getUIMessages())
 
-store.ready().then(
-  () => {
-    render(
-      <Provider store={store}>
-        <ThemeProvider theme={Theme}>
-          <App />
-        </ThemeProvider>
-      </Provider>,
-      document.getElementById('root'))
-  })
-  .catch(() => {
-    console.error('Problem mounting rewards panel')
-  })
+RunOrTimeout(store.ready(), 2000).then(() => {
+  render(
+    <Provider store={store}>
+      <ThemeProvider theme={Theme}>
+        <App />
+      </ThemeProvider>
+    </Provider>,
+    document.getElementById('root')
+  )
+})
+.catch((e: any) => {
+  console.error('Problem mounting rewards panel', e)
+})
