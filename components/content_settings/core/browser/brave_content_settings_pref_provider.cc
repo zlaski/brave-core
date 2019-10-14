@@ -62,36 +62,15 @@ class BraveShieldsRuleIterator : public RuleIterator {
 };
 
 
-bool IsActive(const Rule& cookie_rule,
-              const std::vector<Rule>& shield_rules) {
+bool IsActive(const Rule& cookie_rule) {
   // don't include default rules in the iterator
   if (cookie_rule.primary_pattern == ContentSettingsPattern::Wildcard() &&
       (cookie_rule.secondary_pattern == ContentSettingsPattern::Wildcard() ||
        cookie_rule.secondary_pattern ==
-          ContentSettingsPattern::FromString("https://firstParty/*"))) {
+          ContentSettingsPattern::FromString("https://firstParty/*")))
     return false;
-  }
 
-  bool default_value = true;
-  for (const auto& shield_rule : shield_rules) {
-    if (shield_rule.primary_pattern.MatchesAllHosts()) {
-      // TODO(bridiver) - move this logic into shields_util for allow/block
-      default_value =
-          ValueToContentSetting(&shield_rule.value) != CONTENT_SETTING_BLOCK;
-    } else {
-      auto primary_compare =
-          shield_rule.primary_pattern.Compare(cookie_rule.primary_pattern);
-      // TODO(bridiver) - verify that SUCCESSOR is correct and not PREDECESSOR
-      if (primary_compare == ContentSettingsPattern::IDENTITY ||
-          primary_compare == ContentSettingsPattern::SUCCESSOR) {
-        // TODO(bridiver) - move this logic into shields_util for allow/block
-        return
-            ValueToContentSetting(&shield_rule.value) != CONTENT_SETTING_BLOCK;
-      }
-    }
-  }
-
-  return default_value;
+  return true;
 }
 
 }  // namespace
@@ -232,10 +211,9 @@ void BravePrefProvider::UpdateCookieRules(ContentSettingsType content_type,
 
   auto old_rules = std::move(brave_cookie_rules_[incognito]);
 
-  // Matching cookie rules against shield rules.
   while (brave_cookies_iterator && brave_cookies_iterator->HasNext()) {
     auto rule = brave_cookies_iterator->Next();
-    if (IsActive(rule, shield_rules)) {
+    if (IsActive(rule)) {
       rules.push_back(CloneRule(rule, true));
       brave_cookie_rules_[incognito].push_back(CloneRule(rule, true));
     }
@@ -243,12 +221,9 @@ void BravePrefProvider::UpdateCookieRules(ContentSettingsType content_type,
 
   // Adding shields down rules (they always override cookie rules).
   for (const auto& shield_rule : shield_rules) {
-    // Skip the default rule.
-    if (shield_rule.primary_pattern.MatchesAllHosts()) {
-      continue;
-    }
     // Shields down.
-    if (ValueToContentSetting(&shield_rule.value) == CONTENT_SETTING_BLOCK) {
+    if (IsActive(shield_rule) &&
+        ValueToContentSetting(&shield_rule.value) == CONTENT_SETTING_BLOCK) {
       rules.push_back(
           Rule(ContentSettingsPattern::Wildcard(),
                shield_rule.primary_pattern,
