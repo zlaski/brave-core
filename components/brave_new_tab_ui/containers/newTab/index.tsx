@@ -34,18 +34,23 @@ interface Props {
 interface State {
   showSettingsMenu: boolean
   backgroundHasLoaded: boolean
+  isNewTabPageHiddenFromUser: boolean
 }
 
 class NewTabPage extends React.Component<Props, State> {
   state = {
     showSettingsMenu: false,
-    backgroundHasLoaded: false
+    backgroundHasLoaded: false,
+    isNewTabPageHiddenFromUser: false
   }
 
   componentDidMount () {
     // if a notification is open at component mounting time, close it
     this.props.actions.onHideSiteRemovalNotification()
     this.trackCachedImage()
+    document.addEventListener('visibilitychange', () => {
+      this.setState({ isNewTabPageHiddenFromUser: document.hidden })
+    })
   }
 
   componentDidUpdate (prevProps: Props) {
@@ -138,7 +143,7 @@ class NewTabPage extends React.Component<Props, State> {
 
   render () {
     const { newTabData, actions } = this.props
-    const { showSettingsMenu } = this.state
+    const { showSettingsMenu, isNewTabPageHiddenFromUser } = this.state
 
     if (!newTabData) {
       return null
@@ -146,34 +151,48 @@ class NewTabPage extends React.Component<Props, State> {
 
     return (
       <App dataIsReady={newTabData.initialDataLoaded}>
-        <PosterBackground
-          hasImage={newTabData.showBackgroundImage}
-          imageHasLoaded={this.state.backgroundHasLoaded}
-        >
-          {newTabData.showBackgroundImage && newTabData.backgroundImage &&
-            <img src={newTabData.backgroundImage.source} />
-          }
-        </PosterBackground>
-        {newTabData.showBackgroundImage &&
-          <Gradient
-            imageHasLoaded={this.state.backgroundHasLoaded}
-          />
+        {
+          !isNewTabPageHiddenFromUser
+          ? (
+            <>
+            <PosterBackground
+              hasImage={newTabData.showBackgroundImage}
+              imageHasLoaded={this.state.backgroundHasLoaded}
+            >
+              {newTabData.showBackgroundImage && newTabData.backgroundImage &&
+                <img src={newTabData.backgroundImage.source} />
+              }
+            </PosterBackground>
+            {newTabData.showBackgroundImage &&
+              <Gradient
+                imageHasLoaded={this.state.backgroundHasLoaded}
+              />
+            }
+            </>
+          ) : null
         }
         <Page>
           <Header>
-            <Stats
-              textDirection={newTabData.textDirection}
-              stats={newTabData.stats}
-              showWidget={newTabData.showStats}
-              hideWidget={this.toggleShowStats}
-              menuPosition={'right'}
-            />
-            <Clock
-              textDirection={newTabData.textDirection}
-              showWidget={newTabData.showClock}
-              hideWidget={this.toggleShowClock}
-              menuPosition={'left'}
-            />
+            {
+              !isNewTabPageHiddenFromUser
+                ? (
+                <>
+                  <Stats
+                    textDirection={newTabData.textDirection}
+                    stats={newTabData.stats}
+                    showWidget={newTabData.showStats}
+                    hideWidget={this.toggleShowStats}
+                    menuPosition={'right'}
+                  />
+                  <Clock
+                    textDirection={newTabData.textDirection}
+                    showWidget={newTabData.showClock}
+                    hideWidget={this.toggleShowClock}
+                    menuPosition={'left'}
+                  />
+                  </>
+                ) : null
+            }
             {this.props.newTabData.gridSites.length ? <List
               blockNumber={this.props.newTabData.gridSites.length}
               textDirection={newTabData.textDirection}
