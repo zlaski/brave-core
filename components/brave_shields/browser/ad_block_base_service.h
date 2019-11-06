@@ -13,6 +13,7 @@
 #include <utility>
 #include <vector>
 
+#include "base/values.h"
 #include "base/files/file_path.h"
 #include "base/memory/weak_ptr.h"
 #include "base/sequence_checker.h"
@@ -46,7 +47,7 @@ class AdBlockBaseService : public BaseBraveShieldsService {
   void EnableTag(const std::string& tag, bool enabled);
   bool TagExists(const std::string& tag);
 
-  adblock::HostnameResources hostnameCosmeticResources(const std::string& hostname);
+  base::Optional<base::Value> hostnameCosmeticResources(const std::string& hostname);
   std::string classIdStylesheet(const std::vector<std::string>& classes, const std::vector<std::string>& ids, const std::vector<std::string>& exceptions);
 
  protected:

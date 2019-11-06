@@ -50,19 +50,15 @@ ExtensionFunction::ResponseAction BraveShieldsHostnameCosmeticResourcesFunction:
       brave_shields::HostnameCosmeticResources::Params::Create(*args_));
   EXTENSION_FUNCTION_VALIDATE(params.get());
 
-  adblock::HostnameResources resources = g_brave_browser_process->ad_block_service()->hostnameCosmeticResources(params->hostname);
+  base::Optional<base::Value> resources = g_brave_browser_process->ad_block_service()->hostnameCosmeticResources(params->hostname);
+
+  if (!resources || !resources->is_list()) {
+      //TODO error
+  }
 
   auto result_list = std::make_unique<base::ListValue>();
 
-  result_list->GetList().push_back(base::Value(resources.stylesheet));
-
-  base::Value exceptions(base::Value::Type::LIST);
-  for(auto i = resources.exceptions.begin(); i != resources.exceptions.end(); i++) {
-    exceptions.GetList().push_back(base::Value(*i));
-  }
-  result_list->GetList().push_back(std::move(exceptions));
-
-  result_list->GetList().push_back(base::Value(resources.injected_script));
+  result_list->GetList().push_back(std::move(*resources));
 
   return RespondNow(ArgumentList(std::move(result_list)));
 }

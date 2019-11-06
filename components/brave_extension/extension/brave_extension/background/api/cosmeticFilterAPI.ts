@@ -23,22 +23,46 @@ export const removeSiteFilter = (origin: string) => {
 }
 
 export const applyAdblockCosmeticFilters = (tabId: number, hostname: string) => {
-  chrome.braveShields.hostnameCosmeticResources(hostname, async (stylesheet, genericExceptions, injectedScript) => {
-    chrome.tabs.insertCSS(tabId, {
-      code: stylesheet,
-      cssOrigin: 'user',
-      runAt: 'document_start'
-    })
+  chrome.braveShields.hostnameCosmeticResources(hostname, async (resources) => {
+    const blockFirstPartyAds = false //TODO add config option
+    if (blockFirstPartyAds) {
+      const stylesheet = generateCosmeticBlockingStylesheet(resources.hide_selectors, resources.style_selectors)
+      chrome.tabs.insertCSS(tabId, {
+        code: stylesheet,
+        cssOrigin: 'user',
+        runAt: 'document_start'
+      })
+    } else {
+      chrome.tabs.sendMessage(tabId, {
+        type: 'filterFirstPartyCosmeticSelectors',
+        selectors: resources.hide_selectors,
+      })
+      const stylesheet = generateCosmeticBlockingStylesheet(resources.hide_selectors, resources.style_selectors)
+      chrome.tabs.insertCSS(tabId, {
+        code: stylesheet,
+        cssOrigin: 'user',
+        runAt: 'document_start'
+      })
+    }
 
     chrome.tabs.sendMessage(tabId, {
       type: 'cosmeticFilterGenericExceptions',
-      exceptions: genericExceptions
+      exceptions: resources.exceptions
     })
 
     chrome.tabs.executeScript(tabId, {
-      code: injectedScript,
+      code: resources.injected_script,
       runAt: 'document_start'
     })
+  })
+}
+
+export const blockThirdPartyCosmeticSelectors = (tabId: number, selectors: string[]) => {
+  const stylesheet = generateCosmeticBlockingStylesheet(selectors, {})
+  chrome.tabs.insertCSS(tabId, {
+    code: stylesheet,
+    cssOrigin: 'user',
+    runAt: 'document_start'
   })
 }
 
@@ -67,4 +91,20 @@ export const applyCSSCosmeticFilters = (tabId: number, hostname: string) => {
 
 export const removeAllFilters = () => {
   chrome.storage.local.set({ 'cosmeticFilterList': {} })
+}
+
+const generateCosmeticBlockingStylesheet = (hide_selectors: string[], style_selectors: any) => {
+  let stylesheet = ""
+  if (hide_selectors.length > 0) {
+    stylesheet += hide_selectors[0]
+    for(const selector of hide_selectors.slice(1)) {
+      stylesheet += ',' + selector + '[first-party-content="false"]'
+    }
+    stylesheet += '{display:none !important;}\n'
+  }
+  for (const selector in style_selectors) {
+    stylesheet += selector + '{' + style_selectors[selector] + '}\n'
+  }
+
+  return stylesheet
 }

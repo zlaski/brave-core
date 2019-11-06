@@ -2,7 +2,8 @@ import { getLocale } from '../api/localeAPI'
 import {
   addSiteCosmeticFilter,
   removeSiteFilter,
-  removeAllFilters
+  removeAllFilters,
+  blockThirdPartyCosmeticSelectors
 } from '../api/cosmeticFilterAPI'
 import shieldsPanelActions from '../actions/shieldsPanelActions'
 import { getHostname } from '../../helpers/urlUtils'
@@ -74,8 +75,25 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       if (url === undefined) {
         break
       }
+      const frameId = sender.frameId
+      if (frameId && frameId !== 0) {
+        break
+      }
       const hostname = getHostname(url)
       shieldsPanelActions.pageContentReadyForInjection(tabId, hostname)
+      break
+    }
+    case 'hideThirdPartyCosmeticSelectors': {
+      const tab = sender.tab
+      if (tab === undefined) {
+        break
+      }
+      const tabId = tab.id
+      if (tabId === undefined) {
+        break
+      }
+      blockThirdPartyCosmeticSelectors(tabId, msg.selectors)
+      break
     }
   }
 })
