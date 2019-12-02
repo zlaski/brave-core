@@ -51,6 +51,7 @@ static const char kRootParentTag[] = "0";
 
 void AddBookmarkSpecifics(sync_pb::EntitySpecifics* specifics,
                           const SyncRecord* record) {
+  LOG(ERROR) << "AddBookmarkSpecifics";
   DCHECK(specifics);
   auto bookmark = record->GetBookmark();
   sync_pb::BookmarkSpecifics* bm_specifics = specifics->mutable_bookmark();
@@ -122,6 +123,7 @@ void MigrateFromLegacySync(sync_pb::SyncEntity* entity) {
 }
 
 void AddRootForType(sync_pb::SyncEntity* entity, ModelType type) {
+  LOG(ERROR) << "AddRootForType";
   DCHECK(entity);
   sync_pb::EntitySpecifics specifics;
   AddDefaultFieldValue(type, &specifics);
@@ -140,6 +142,7 @@ void AddRootForType(sync_pb::SyncEntity* entity, ModelType type) {
 void AddPermanentNode(sync_pb::SyncEntity* entity,
                       const std::string& name,
                       const std::string& tag) {
+  LOG(ERROR) << "AddPermanentNode";
   DCHECK(entity);
   sync_pb::EntitySpecifics specifics;
   AddDefaultFieldValue(BOOKMARKS, &specifics);
@@ -156,6 +159,7 @@ void AddPermanentNode(sync_pb::SyncEntity* entity,
 }
 
 void AddBookmarkNode(sync_pb::SyncEntity* entity, const SyncRecord* record) {
+  LOG(ERROR) << "AddBookmarkNode";
   DCHECK(entity);
   DCHECK(record);
   DCHECK(record->has_bookmark());
@@ -195,6 +199,7 @@ void ConstructUpdateResponse(sync_pb::GetUpdatesResponse* gu_response,
     marker->set_data_type_id(GetSpecificsFieldNumberFromModelType(type));
     marker->set_token("token");
     if (type == BOOKMARKS) {
+      LOG(ERROR) << "type is bookmarks";
       google::protobuf::RepeatedPtrField<sync_pb::SyncEntity> entities;
       AddRootForType(entities.Add(), BOOKMARKS);
       AddPermanentNode(entities.Add(), kBookmarkBarFolderName,
@@ -212,6 +217,7 @@ void ConstructUpdateResponse(sync_pb::GetUpdatesResponse* gu_response,
       std::copy(entities.begin(), entities.end(),
                 RepeatedPtrFieldBackInserter(gu_response->mutable_entries()));
     } else if (type == NIGORI) {
+      LOG(ERROR) << "type is nigori";
       google::protobuf::RepeatedPtrField<sync_pb::SyncEntity> entities;
       sync_pb::EntitySpecifics specifics;
       AddDefaultFieldValue(NIGORI, &specifics);
@@ -246,6 +252,7 @@ void ConstructUpdateResponse(sync_pb::GetUpdatesResponse* gu_response,
 SyncerError ApplyBraveRecords(sync_pb::ClientToServerResponse* update_response,
                               ModelTypeSet* request_types,
                               std::unique_ptr<RecordsList> records) {
+  LOG(ERROR) << "ApplyBraveRecords";
   DCHECK(update_response);
   DCHECK(request_types);
   sync_pb::GetUpdatesResponse* gu_response = new sync_pb::GetUpdatesResponse();

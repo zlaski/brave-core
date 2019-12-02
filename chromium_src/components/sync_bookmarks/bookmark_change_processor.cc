@@ -72,19 +72,23 @@ void BookmarkChangeProcessor::MoveSyncNode(
     return;
 
 #define BRAVE_BOOKMARK_CHANGE_PROCESSOR_UPDATE_SYNC_NODE_PROPERTIES \
+  LOG(ERROR) << "BRAVE_BOOKMARK_CHANGE_PROCESSOR_UPDATE_SYNC_NODE_PROPERTIES"; \
   brave_sync::AddBraveMetaInfo(src, model);
 
 #define BRAVE_BOOKMARK_CHANGE_PROCESSOR_BOOKMARK_NODE_MOVED \
+  LOG(ERROR) << "BRAVE_BOOKMARK_CHANGE_PROCESSOR_BOOKMARK_NODE_MOVED"; \
   ScopedPauseObserver pause(bookmark_model_, this);         \
   brave_sync::AddBraveMetaInfo(child, model);               \
   SetSyncNodeMetaInfo(child, &sync_node);
 
 #define BRAVE_BOOKMARK_CHANGE_PROCESSOR_CHILDREN_REORDERED \
+  LOG(ERROR) << "BRAVE_BOOKMARK_CHANGE_PROCESSOR_CHILDREN_REORDERED"; \
   ScopedPauseObserver pause(bookmark_model_, this);        \
   brave_sync::AddBraveMetaInfo(child, model);              \
   SetSyncNodeMetaInfo(child, &sync_child);
 
 #define BRAVE_BOOKMARK_CHANGE_PROCESSOR_APPLY_CHANGES_FROM_SYNC_MODEL   \
+  LOG(ERROR) << "BRAVE_BOOKMARK_CHANGE_PROCESSOR_APPLY_CHANGES_FROM_SYNC_MODEL"; \
   int new_index =                                                         \
       brave_sync::GetIndexByCompareOrderStartFrom(parent, it->second, 0); \
   if (it->first != new_index) {                                           \

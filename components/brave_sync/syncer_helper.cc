@@ -102,6 +102,7 @@ size_t GetIndexByCompareOrderStartFrom(const bookmarks::BookmarkNode* parent,
 
 void AddBraveMetaInfo(const bookmarks::BookmarkNode* node,
                       bookmarks::BookmarkModel* model) {
+  LOG(ERROR) << "AddBraveMetaInfo";
   std::string parent_order;
   node->parent()->GetMetaInfo("order", &parent_order);
   SetOrder(model, node, parent_order);

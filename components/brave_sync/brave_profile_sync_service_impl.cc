@@ -728,6 +728,7 @@ BraveProfileSyncServiceImpl::BookmarkNodeToSyncBookmark(
 
 void BraveProfileSyncServiceImpl::SaveSyncEntityInfo(
     const jslib::SyncRecord* record) {
+  LOG(ERROR) << "SaveSyncEntityInfo";
   auto* node = FindByObjectId(model_, record->objectId);
   // no need to save for DELETE
   if (node) {
@@ -740,10 +741,12 @@ void BraveProfileSyncServiceImpl::SaveSyncEntityInfo(
         DCHECK(result);
         model_->SetNodeMetaInfo(node, meta_info.key, std::to_string(++version));
       } else {
+        LOG(ERROR) << "setting " << meta_info.key << " to " << meta_info.value;
         model_->SetNodeMetaInfo(node, meta_info.key, meta_info.value);
       }
     }
   }
+  LOG(ERROR) << "SaveSyncEntityInfo done";
 }
 
 void BraveProfileSyncServiceImpl::LoadSyncEntityInfo(

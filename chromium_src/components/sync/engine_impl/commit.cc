@@ -86,6 +86,7 @@ brave_sync::RecordsListPtr ConvertCommitsToBraveRecords(
       std::string originator_client_item_id;
       bool skip_record = false;
       for (int i = 0; i < bm_specifics.meta_info_size(); ++i) {
+        LOG(ERROR) << "key " << bm_specifics.meta_info(i).key() << " = " << bm_specifics.meta_info(i).value();
         if (bm_specifics.meta_info(i).key() == "order") {
           bookmark->order = bm_specifics.meta_info(i).value();
         } else if (bm_specifics.meta_info(i).key() == "object_id") {

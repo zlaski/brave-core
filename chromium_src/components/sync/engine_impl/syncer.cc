@@ -18,10 +18,12 @@ using brave_sync::GetRecordsCallback;
 using brave_sync::RecordsList;
 
 void Syncer::OnGetRecords(std::unique_ptr<RecordsList> records) {
+  LOG(ERROR) << "OnGetRecords";
   brave_records_ = std::move(records);
 }
 
 void Syncer::DownloadBraveRecords(SyncCycle* cycle) {
+  LOG(ERROR) << "DownloadBraveRecords";
   // syncer will be alive as long as sync is enabled
   brave_records_.reset();
   brave_sync::GetRecordsCallback on_get_records =
