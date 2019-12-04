@@ -5,6 +5,7 @@
 import styled from 'brave-ui/theme'
 
 export const StyledStatsItemContainer = styled<{}, 'ul'>('ul')`
+  grid-area: stats;
   -webkit-font-smoothing: antialiased;
   display: grid;
   grid-template-columns: repeat(3, fit-content(100%));

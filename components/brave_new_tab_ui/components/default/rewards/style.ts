@@ -10,6 +10,7 @@ interface StyleProps {
 }
 
 export const WidgetWrapper = styled<{}, 'div'>('div')`
+  grid-area: rewards;
   color: white;
   padding: 10px 15px;
   border-radius: 6px;
