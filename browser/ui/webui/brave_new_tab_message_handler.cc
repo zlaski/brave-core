@@ -18,6 +18,8 @@
 #include "components/prefs/pref_change_registrar.h"
 #include "components/prefs/pref_service.h"
 
+
+
 namespace {
 
 bool IsPrivateNewTab(Profile* profile) {
@@ -46,6 +48,9 @@ base::DictionaryValue GetPreferencesDictionary(PrefService* prefs) {
   pref_data.SetBoolean(
       "showBackgroundImage",
       prefs->GetBoolean(kNewTabPageShowBackgroundImage));
+  pref_data.SetBoolean(
+      "showBrandedBackgroundImage",
+      prefs->GetBoolean(kNewTabPageShowBrandedBackgroundImage));
   pref_data.SetBoolean(
       "showClock",
       prefs->GetBoolean(kNewTabPageShowClock));
@@ -126,6 +131,16 @@ void BraveNewTabMessageHandler::RegisterMessages() {
     base::BindRepeating(
       &BraveNewTabMessageHandler::HandleSaveNewTabPagePref,
       base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+    "registerNewTabPageView",
+    base::BindRepeating(
+      &BraveNewTabMessageHandler::HandleRegisterNewTabPageView,
+      base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+    "getBrandedWallpaperData",
+    base::BindRepeating(
+      &BraveNewTabMessageHandler::HandleGetBrandedWallpaperData,
+      base::Unretained(this)));
 }
 
 void BraveNewTabMessageHandler::OnJavascriptAllowed() {
@@ -160,6 +175,9 @@ void BraveNewTabMessageHandler::OnJavascriptAllowed() {
   }
   // New Tab Page preferences
   pref_change_registrar_.Add(kNewTabPageShowBackgroundImage,
+    base::Bind(&BraveNewTabMessageHandler::OnPreferencesChanged,
+    base::Unretained(this)));
+  pref_change_registrar_.Add(kNewTabPageShowBrandedBackgroundImage,
     base::Bind(&BraveNewTabMessageHandler::OnPreferencesChanged,
     base::Unretained(this)));
   pref_change_registrar_.Add(kNewTabPageShowClock,
@@ -229,6 +247,8 @@ void BraveNewTabMessageHandler::HandleSaveNewTabPagePref(
   std::string settingsKey;
   if (settingsKeyInput == "showBackgroundImage") {
     settingsKey = kNewTabPageShowBackgroundImage;
+  } else if (settingsKeyInput == "showBrandedBackgroundImage") {
+    settingsKey = kNewTabPageShowBrandedBackgroundImage;
   } else if (settingsKeyInput == "showClock") {
     settingsKey = kNewTabPageShowClock;
   } else if (settingsKeyInput == "showTopSites") {
@@ -242,6 +262,26 @@ void BraveNewTabMessageHandler::HandleSaveNewTabPagePref(
     return;
   }
   prefs->SetBoolean(settingsKey, settingsValueBool);
+}
+
+void BraveNewTabMessageHandler::HandleRegisterNewTabPageView() {
+  AllowJavascript();
+  // Decrement original value only if there's actual branded content
+}
+
+void BraveNewTabMessageHandler::HandleGetBrandedWallpaperData() {
+  AllowJavascript();
+  // TODO: return if 'demo' flag is set (or if there is data from the remote source)
+  // *and* if view-count is 0
+  // return Promise.resolve({
+  //   wallpaperImageUrl,
+  //   logo: {
+  //     image: brandingImageUrl,
+  //     alt: 'Technikke: For music lovers.',
+  //     destinationUrl: 'https://brave.com'
+  //   }
+  // })
+
 }
 
 void BraveNewTabMessageHandler::OnPrivatePropertiesChanged() {

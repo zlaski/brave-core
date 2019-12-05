@@ -35,6 +35,8 @@ class BraveNewTabMessageHandler : public content::WebUIMessageHandler {
   void HandleSaveNewTabPagePref(const base::ListValue* args);
   void HandleToggleAlternativeSearchEngineProvider(
       const base::ListValue* args);
+  void HandleRegisterNewTabPageView();
+  void HandleGetBrandedWallpaperData();
 
   void OnStatsChanged();
   void OnPreferencesChanged();

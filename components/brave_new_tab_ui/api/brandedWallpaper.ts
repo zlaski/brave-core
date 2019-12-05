@@ -5,45 +5,23 @@
 
 import wallpaperImageUrl from '../data/dummy-branded-wallpaper/background.jpg'
 import brandingImageUrl from '../data/dummy-branded-wallpaper/logo.png'
+import newTab from '../containers/newTab'
 
 export function getHasBrandedWallpaper () {
   return Promise.resolve(true)
 }
 
 export function getBrandedWallpaper (): Promise<NewTab.BrandedWallpaper> {
-  return Promise.resolve({
-    wallpaperImageUrl,
-    logo: {
-      image: brandingImageUrl,
-      alt: 'Technikke: For music lovers.',
-      destinationUrl: 'https://brave.com'
-    }
-  })
+  return window.cr.sendWithPromise<NewTab.BrandedWallpaper>('getBrandedWallpaperData')
 }
 
 const viewsTillShouldShowStorageKey = 'NTP.BrandedWallpaper.ViewsTillShouldShow'
 const maxViewCountUntilBranded = 4
 
-export function getShouldShow (): boolean {
-  const valueRaw = localStorage.getItem(viewsTillShouldShowStorageKey)
-  const value = valueRaw ? parseInt(valueRaw) : NaN
-  if (Number.isInteger(value)) {
-    return value === 1
-  }
-  return false
+export async function getShouldShow (): boolean {
+  return !!(await getBrandedWallpaper())
 }
 
-export function registerViewCount (): void {
-  // TODO: keep this value as singleton in C++ since we want it to show on the
-  // 2nd view (after wallpapers and branded wallpapers are enabled) and then
-  // every 4 views
-  const valueRaw = localStorage.getItem(viewsTillShouldShowStorageKey)
-  const value = valueRaw ? parseInt(valueRaw) : NaN
-  let newValue = maxViewCountUntilBranded
-  if (Number.isInteger(value)) {
-    if (value > 1 && value <= maxViewCountUntilBranded) {
-      newValue = value - 1
-    }
-  }
-  localStorage.setItem(viewsTillShouldShowStorageKey, newValue.toString())
+export function registerViewCount (): Promise<void> {
+  return window.cr.sendWithPromise<void>('registerNewTabPageView')
 }
