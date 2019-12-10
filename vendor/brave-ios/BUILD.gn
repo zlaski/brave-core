@@ -4,6 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import("//build/config/ios/rules.gni")
+import("components/bookmarks/headers.gni")
 
 config("internal_config") {
   visibility = [
@@ -53,9 +54,13 @@ ios_framework_bundle("brave_rewards_ios_framework") {
 
   configs += [ ":internal_config" ]
   configs += [ "//build/config/compiler:enable_arc" ]
-  configs -= [ "//build/config/gcc:symbol_visibility_hidden" ]
+
+  if (is_official_build) {
+    configs -= [ "//build/config/gcc:symbol_visibility_hidden" ]
+  }
 
   deps = [
+    "components/bookmarks",
     "//brave/vendor/bat-native-ledger",
     "//brave/vendor/bat-native-ads",
     "//url",
@@ -154,6 +159,8 @@ ios_framework_bundle("brave_rewards_ios_framework") {
     "Shared/RewardsLogger.h",
     "$target_gen_dir/ledger.mojom.objc.h",
   ]
+
+  public_headers += bookmarks_public_headers
 
   libs = [
     "Foundation.framework",
