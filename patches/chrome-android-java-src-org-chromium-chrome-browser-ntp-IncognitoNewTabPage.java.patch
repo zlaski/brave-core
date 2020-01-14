@@ -1,0 +1,13 @@
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ntp/IncognitoNewTabPage.java b/chrome/android/java/src/org/chromium/chrome/browser/ntp/IncognitoNewTabPage.java
+index 8d68eec16bcca16ac7faefae3fc32a1d72cea5e5..07b6ca358b7841d4e5b0c018dacec8fadda0c582 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/ntp/IncognitoNewTabPage.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/ntp/IncognitoNewTabPage.java
+@@ -98,7 +98,7 @@ public class IncognitoNewTabPage
+ 
+         TextView newTabIncognitoHeader =
+                 (TextView) mIncognitoNewTabPageView.findViewById(R.id.new_tab_incognito_title);
+-        newTabIncognitoHeader.setText(R.string.new_tab_otr_title);
++        newTabIncognitoHeader.setText(R.string.brave_new_tab_private_message);
+     }
+ 
+     /**

@@ -794,6 +794,15 @@ until they verify, or until 90 days have passed.
       <message name="IDS_SYNC_DEVICE_FAILURE" desc="The message for the dialog where the user notified about sync setup failure.">
         Sync could not be setup
       </message>
+      <message name="IDS_BRAVE_NEW_PRIVATE_TAB" desc="Text for 'New private tab'">
+        New private tab
+      </message>
+      <message name="IDS_BRAVE_NEW_TAB_PRIVATE_HEADER" desc="Header shown when a user opens a private tab explaining private mode">
+        This is a Private Tab
+      </message>
+      <message name="IDS_BRAVE_NEW_TAB_PRIVATE_MESSAGE" desc="Message shown when a user opens a private tab explaining private mode">
+        Even though sites you visit in private tabs are not saved locally, they do not make you anonymous or invisible to your ISP, your employer, or to the sites you are visiting.
+      </message>
     </messages>
   </release>
 </grit>

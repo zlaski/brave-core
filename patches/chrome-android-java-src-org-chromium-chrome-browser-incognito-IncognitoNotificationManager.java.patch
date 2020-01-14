@@ -1,0 +1,13 @@
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/incognito/IncognitoNotificationManager.java b/chrome/android/java/src/org/chromium/chrome/browser/incognito/IncognitoNotificationManager.java
+index 8beecd1613a3918925e0e6db15f69b8d531fea65..9fa96a3867c4b4e575d22dd917da388938618696 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/incognito/IncognitoNotificationManager.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/incognito/IncognitoNotificationManager.java
+@@ -58,7 +58,7 @@ public class IncognitoNotificationManager {
+                         .setContentText(actionMessage)
+                         .setOngoing(true)
+                         .setVisibility(Notification.VISIBILITY_SECRET)
+-                        .setSmallIcon(R.drawable.incognito_simple)
++                        .setSmallIcon(R.drawable.sunglasses_small)
+                         .setShowWhen(false)
+                         .setLocalOnly(true)
+                         .setGroup(NotificationConstants.GROUP_INCOGNITO);
