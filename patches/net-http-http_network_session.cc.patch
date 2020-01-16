@@ -1,0 +1,54 @@
+diff --git a/net/http/http_network_session.cc b/net/http/http_network_session.cc
+index 6fca8117d5a27b0c5710b0432565949d3525cf88..772cdc18652306207acad1ba3b5b86b51b2da2a7 100644
+--- a/net/http/http_network_session.cc
++++ b/net/http/http_network_session.cc
+@@ -204,6 +204,9 @@ HttpNetworkSession::HttpNetworkSession(const Params& params,
+ 
+   next_protos_.push_back(kProtoHTTP11);
+ 
++  // H1-H2
++  protocol_usage_map_["duckduckgo.com"] = 1;
++
+   http_server_properties_->SetMaxServerConfigsStoredInProperties(
+       params.quic_params.max_server_configs_stored_in_properties);
+ 
+@@ -360,6 +363,7 @@ void HttpNetworkSession::GetAlpnProtos(NextProtoVector* alpn_protos) const {
+   *alpn_protos = next_protos_;
+ }
+ 
++/*
+ void HttpNetworkSession::GetSSLConfig(SSLConfig* server_config,
+                                       SSLConfig* proxy_config) const {
+   GetAlpnProtos(&server_config->alpn_protos);
+@@ -367,6 +371,31 @@ void HttpNetworkSession::GetSSLConfig(SSLConfig* server_config,
+   *proxy_config = *server_config;
+   server_config->early_data_enabled = params_.enable_early_data;
+ }
++*/
++
++//H1H2
++void HttpNetworkSession::GetSSLConfig(SSLConfig* server_config,
++            SSLConfig* proxy_config,
++            std::string url) const {
++        /* GetAlpnProtos(&server_config->alpn_protos); */
++        std::map<std::string, int> temp_map = protocol_usage_map_;
++        int x = temp_map[url];
++        std::cout << "url: " + url + " map_val:" + std::to_string(x) << std::endl;
++        NextProtoVector temp;
++        if (x == 0){
++            temp.push_back(kProtoHTTP11);
++            temp.push_back(kProtoHTTP2);
++        }else if (x == 1){
++            temp.push_back(kProtoHTTP11);
++        }else if (x == 2){
++            temp.push_back(kProtoHTTP2);
++        }
++        server_config->alpn_protos = temp;
++        server_config->ignore_certificate_errors = params_.ignore_certificate_errors;
++        *proxy_config = *server_config;
++        server_config->early_data_enabled = params_.enable_early_data;
++}
++
+ 
+ void HttpNetworkSession::DumpMemoryStats(
+     base::trace_event::ProcessMemoryDump* pmd,
