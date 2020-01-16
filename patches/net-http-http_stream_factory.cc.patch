@@ -1,0 +1,15 @@
+diff --git a/net/http/http_stream_factory.cc b/net/http/http_stream_factory.cc
+index 13f4b2a546b919d079e2fcf20dfe3a5f4fc8d4b3..d030b8ea299e522df78ec569542496d096ca00e7 100644
+--- a/net/http/http_stream_factory.cc
++++ b/net/http/http_stream_factory.cc
+@@ -169,7 +169,9 @@ void HttpStreamFactory::PreconnectStreams(int num_streams,
+ 
+   SSLConfig server_ssl_config;
+   SSLConfig proxy_ssl_config;
+-  session_->GetSSLConfig(&server_ssl_config, &proxy_ssl_config);
++  //session_->GetSSLConfig(&server_ssl_config, &proxy_ssl_config);
++  //H1H2
++  session_->GetSSLConfig(&server_ssl_config, &proxy_ssl_config, request_info.url.host());
+ 
+   auto job_controller = std::make_unique<JobController>(
+       this, nullptr, session_, job_factory_.get(), request_info,

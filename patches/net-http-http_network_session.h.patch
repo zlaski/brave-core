@@ -1,0 +1,26 @@
+diff --git a/net/http/http_network_session.h b/net/http/http_network_session.h
+index f6a0a95b0134a3d8d2cfc9c61ac4eca456e62ad7..1e55a36706a11cf4a4d2e085dbe105d4a7e81cc3 100644
+--- a/net/http/http_network_session.h
++++ b/net/http/http_network_session.h
+@@ -88,6 +88,10 @@ const uint32_t kSpdyMaxConcurrentPushedStreams = 1000;
+ // This class holds session objects used by HttpNetworkTransaction objects.
+ class NET_EXPORT HttpNetworkSession {
+  public:
++
++  // H1H2 
++  std::map<std::string, int> protocol_usage_map_;
++
+   // Self-contained structure with all the simple configuration options
+   // supported by the HttpNetworkSession.
+   struct NET_EXPORT Params {
+@@ -264,7 +268,9 @@ class NET_EXPORT HttpNetworkSession {
+   void GetAlpnProtos(NextProtoVector* alpn_protos) const;
+ 
+   // Populates |server_config| and |proxy_config| based on this session.
+-  void GetSSLConfig(SSLConfig* server_config, SSLConfig* proxy_config) const;
++  /* void GetSSLConfig(SSLConfig* server_config, SSLConfig* proxy_config) const; */
++  // H1H2
++  void GetSSLConfig(SSLConfig* server_config, SSLConfig* proxy_config, std::string url = "") const;
+ 
+   // Dumps memory allocation stats. |parent_dump_absolute_name| is the name
+   // used by the parent MemoryAllocatorDump in the memory dump hierarchy.
