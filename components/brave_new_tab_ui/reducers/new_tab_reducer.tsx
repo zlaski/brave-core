@@ -475,6 +475,50 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
       }
       break
 
+    case types.ON_BINANCE_USER_TLD:
+      state = { ...state }
+      state = {
+        ...state,
+        binanceState: {
+          ...state.binanceState,
+          userTLD: payload.userTLD
+        }
+      }
+      break
+
+    case types.SET_INITIAL_AMOUNT:
+      state = { ...state }
+      state = {
+        ...state,
+        binanceState: {
+          ...state.binanceState,
+          initialAmount: payload.initialAmount
+        }
+      }
+      break
+
+    case types.SET_INITIAL_FIAT:
+      state = { ...state }
+      state = {
+        ...state,
+        binanceState: {
+          ...state.binanceState,
+          initialFiat: payload.initialFiat
+        }
+      }
+      break
+
+    case types.SET_INITIAL_ASSET:
+      state = { ...state }
+      state = {
+        ...state,
+        binanceState: {
+          ...state.binanceState,
+          initialAsset: payload.initialAsset
+        }
+      }
+      break
+
     default:
       break
   }
