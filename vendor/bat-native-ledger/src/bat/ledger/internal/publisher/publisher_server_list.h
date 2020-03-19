@@ -13,9 +13,13 @@
 #include <string>
 #include <vector>
 
+#include "base/gtest_prod_util.h"
 #include "base/values.h"
 #include "bat/ledger/ledger.h"
 #include "bat/ledger/internal/publisher/publisher.h"
+
+FORWARD_DECLARE_TEST(PublisherServerListPerfTest, ParseTest);
+class PublisherServerListPerfTest;
 
 namespace bat_ledger {
 class LedgerImpl;
@@ -36,6 +40,8 @@ class PublisherServerList {
   void SetTimer(bool retry_after_error);
 
  private:
+  FRIEND_TEST_ALL_PREFIXES(::PublisherServerListPerfTest, ParseTest);
+  friend class ::PublisherServerListPerfTest;
   void OnDownload(
       int response_status_code,
       const std::string& response,
@@ -56,9 +62,9 @@ class PublisherServerList {
       const std::string& data,
       ParsePublisherListCallback callback);
 
-  ledger::PublisherBanner ParsePublisherBanner(
+  base::Optional<ledger::PublisherBanner> ParsePublisherBanner(
       const std::string& publisher_key,
-      base::DictionaryValue* dictionary);
+      base::Value* dictionary);
 
   void SaveParsedData(
       const ledger::Result result,

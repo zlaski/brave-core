@@ -28,6 +28,7 @@ if (is_mac) {
       deps = [
         ":" + target_name + "_unit_tests",
         ":" + target_name + "_browser_tests",
+        ":" + target_name + "_perf_tests",
       ]
     }
     fix_testing_install_name_impl(target_name + "_unit_tests") {
@@ -43,6 +44,13 @@ if (is_mac) {
       # input is the same as the output so just fake it
       outputs = [ "$root_build_dir/alwaysrunbrowsertests/$target_name" ]
       deps = [ "//brave/test:brave_browser_tests" ]
+    }
+    fix_testing_install_name_impl(target_name + "_perf_tests") {
+      forward_variables_from(invoker, "*")
+      executable_path = "$root_build_dir/brave_perf_tests"
+      # input is the same as the output so just fake it
+      outputs = [ "$root_build_dir/alwaysrunperftests/$target_name" ]
+      deps = [ "//brave/test:brave_perf_tests" ]
     }
   }
 }

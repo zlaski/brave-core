@@ -697,6 +697,15 @@ test("brave_browser_tests") {
     ]
   }
 
+  if (brave_rewards_enabled) {
+    sources += [
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_client_mock.cc",
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_client_mock.h",
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_impl_mock.cc",
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_impl_mock.h",
+    ]
+  }
+
   if (is_win || is_linux) {
     sources += [
       "//brave/browser/renderer_context_menu/brave_spelling_options_submenu_observer_browsertest.cc",
@@ -746,3 +755,44 @@ test("brave_browser_tests") {
   }
 }
 } # if (!is_android) {
+
+if (!is_android) {
+test("brave_perf_tests") {
+  testonly = true
+  sources = [
+  ]
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+  deps = [
+    "//content/test:test_support",
+    ":brave_browser_tests_deps",
+    ":browser_tests_runner",
+    "//testing/gmock",
+    "//testing/gtest",
+    "//testing/perf",
+  ]
+
+  data_deps = [
+    # Needed for isolate script to execute.
+    "//testing:run_perf_test",
+  ]
+
+  if (brave_rewards_enabled) {
+    sources += [
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/publisher/publisher_server_list_perftest.cc",
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_client_mock.cc",
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_client_mock.h",
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_impl_mock.cc",
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_impl_mock.h",
+    ]
+
+    deps += [
+      "//brave/vendor/bat-native-confirmations",
+      "//brave/vendor/bat-native-ledger",
+    ]
+
+    configs += [ "//brave/vendor/bat-native-ledger:internal_config" ]
+    configs += [ "//brave/vendor/bat-native-confirmations:internal_config" ]
+  }
+}
+} # if (!is_android)
