@@ -66,6 +66,27 @@
             ]
           }
         ]
+      },
+      {
+        "name": "setCodeChallenge",
+        "type": "function",
+        "description": "Sets the code challenge.",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "challenge"
+          },
+          {
+            "type": "function",
+            "name": "callback",
+            "parameters": [
+              {
+                "name": "success",
+                "type": "boolean"
+              }
+            ]
+          }
+        ]
       }
     ],
     "types": [

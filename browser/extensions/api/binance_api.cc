@@ -93,5 +93,29 @@ void BinanceGetAccessTokenFunction::OnCodeResult(bool success) {
   Respond(OneArgument(std::make_unique<base::Value>(success)));
 }
 
+ExtensionFunction::ResponseAction
+BinanceSetCodeChallengeFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  if (brave::IsTorProfile(profile)) {
+    return RespondNow(Error("Not available in Tor profile"));
+  }
+
+  std::unique_ptr<binance::SetCodeChallenge::Params> params(
+      binance::SetCodeChallenge::Params::Create(*args_));
+  EXTENSION_FUNCTION_VALIDATE(params.get());
+
+  auto* controller = GetBinanceController(browser_context());
+  controller->SetCodeChallenge(
+      params->challenge,
+      base::BindOnce(
+          &BinanceSetCodeChallengeFunction::OnChallengeResult, this));
+
+  return RespondLater();
+}
+
+void BinanceSetCodeChallengeFunction::OnChallengeResult(bool success) {
+  Respond(OneArgument(std::make_unique<base::Value>(success)));
+}
+
 }  // namespace api
 }  // namespace extensions

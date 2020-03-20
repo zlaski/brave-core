@@ -156,6 +156,7 @@ declare namespace chrome.binance {
   const getUserTLD: (callback: (userTLD: string) => void) => {}
   const getClientUrl: (callback: (clientUrl: string) => void) => {}
   const getAccessToken: (code: string, callback: (success: boolean) => void) => {}
+  const setCodeChallenge: (challenge: string, callback: (success: boolean) => void) => {}
 }
 
 declare namespace chrome.rewardsNotifications {
