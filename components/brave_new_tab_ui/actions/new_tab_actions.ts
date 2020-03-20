@@ -139,10 +139,6 @@ export const onBinanceUserTLD = (userTLD: NewTab.BinanceTLD) => action(types.ON_
   userTLD
 })
 
-export const onBinanceBalances = (balances: Record<string, string>) => action(types.ON_BINANCE_BALANCES, {
-  balances
-})
-
 export const onBinanceClientUrl = (clientUrl: string) => action(types.ON_BINANCE_CLIENT_URL, {
   clientUrl
 })
@@ -156,3 +152,7 @@ export const setHideBalance = (hide: boolean) => action(types.SET_HIDE_BALANCE, 
 export const connectToBinance = () => action(types.CONNECT_TO_BINANCE)
 
 export const disconnectBinance = () => action(types.DISCONNECT_BINANCE)
+
+export const onBinanceAccountBalances = (balances: Record<string, string>) => action(types.ON_BINANCE_ACCOUNT_BALANCES, {
+  balances
+})

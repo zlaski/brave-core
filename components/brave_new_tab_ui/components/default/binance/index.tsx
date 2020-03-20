@@ -128,7 +128,7 @@ interface Props {
   onBuyCrypto: (coin: string, amount: string, fiat: string) => void
   onBinanceUserTLD: (userTLD: NewTab.BinanceTLD) => void
   onSetHideBalance: (hide: boolean) => void
-  onBinanceBalances: (balances: Record<string, string>) => void
+  onBinanceAccountBalances: (balances: Record<string, string>) => void
   onBinanceClientUrl: (clientUrl: string) => void
   onDisconnectBinance: () => void
   onConnectBinance: () => void
@@ -222,7 +222,11 @@ export default class Binance extends React.PureComponent<Props, State> {
   }
 
   fetchBalance = () => {
-    // To Do
+    chrome.binance.getAccountBalances((balances: Record<string, string>, success: boolean) => {
+      if (success) {
+        this.props.onBinanceAccountBalances(balances)
+      }
+    })
   }
 
   disconnectBinance = () => {
