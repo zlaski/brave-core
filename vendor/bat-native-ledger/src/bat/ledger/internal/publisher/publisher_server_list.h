@@ -11,10 +11,10 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include "base/gtest_prod_util.h"
 #include "base/values.h"
+#include "base/containers/span.h"
 #include "bat/ledger/ledger.h"
 #include "bat/ledger/internal/publisher/publisher.h"
 
@@ -68,18 +68,18 @@ class PublisherServerList {
 
   void SaveParsedData(
       const ledger::Result result,
-      const std::vector<ledger::ServerPublisherPartial>& list_publisher,
-      const std::vector<ledger::PublisherBanner>& list_banner,
+      base::span<ledger::ServerPublisherPartial const> list_publisher,
+      base::span<ledger::PublisherBanner const> list_banner,
       ParsePublisherListCallback callback);
 
   void SavePublishers(
-      const std::vector<ledger::ServerPublisherPartial>& list_publisher,
-      const std::vector<ledger::PublisherBanner>& list_banner,
+      base::span<ledger::ServerPublisherPartial const> list_publisher,
+      base::span<ledger::PublisherBanner const> list_banner,
       ParsePublisherListCallback callback);
 
   void SaveBanners(
-      const std::vector<ledger::ServerPublisherPartial>& list_publisher,
-      const std::vector<ledger::PublisherBanner>& list_banner,
+      base::span<ledger::ServerPublisherPartial const> list_publisher,
+      base::span<ledger::PublisherBanner const> list_banner,
       ParsePublisherListCallback callback);
 
   bat_ledger::LedgerImpl* ledger_;  // NOT OWNED

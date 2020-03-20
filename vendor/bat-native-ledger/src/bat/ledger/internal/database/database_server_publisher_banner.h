@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "base/containers/span.h"
 #include "bat/ledger/internal/database/database_server_publisher_amounts.h"
 #include "bat/ledger/internal/database/database_server_publisher_links.h"
 #include "bat/ledger/internal/database/database_table.h"
@@ -25,7 +26,7 @@ class DatabaseServerPublisherBanner: public DatabaseTable {
   bool Migrate(ledger::DBTransaction* transaction, const int target) override;
 
   void InsertOrUpdateList(
-      const std::vector<ledger::PublisherBanner>& list,
+      base::span<ledger::PublisherBanner const> list,
       ledger::ResultCallback callback);
 
   void GetRecord(

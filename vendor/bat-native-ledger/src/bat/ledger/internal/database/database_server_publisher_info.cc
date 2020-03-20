@@ -122,7 +122,7 @@ void DatabaseServerPublisherInfo::DeleteAll(ledger::ResultCallback callback) {
 }
 
 void DatabaseServerPublisherInfo::InsertOrUpdatePartialList(
-    const std::vector<ledger::ServerPublisherPartial>& list,
+    base::span<ledger::ServerPublisherPartial const> list,
     ledger::ResultCallback callback) {
   if (list.empty()) {
     callback(ledger::Result::LEDGER_OK);
@@ -157,7 +157,7 @@ void DatabaseServerPublisherInfo::InsertOrUpdatePartialList(
 }
 
 void DatabaseServerPublisherInfo::InsertOrUpdateBannerList(
-    const std::vector<ledger::PublisherBanner>& list,
+    base::span<ledger::PublisherBanner const> list,
     ledger::ResultCallback callback) {
   banner_->InsertOrUpdateList(list, callback);
 }

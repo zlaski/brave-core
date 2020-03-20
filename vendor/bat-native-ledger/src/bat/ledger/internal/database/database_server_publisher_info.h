@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "base/containers/span.h"
 #include "bat/ledger/internal/database/database_server_publisher_banner.h"
 #include "bat/ledger/internal/database/database_table.h"
 
@@ -25,11 +26,11 @@ class DatabaseServerPublisherInfo: public DatabaseTable {
   void DeleteAll(ledger::ResultCallback callback);
 
   void InsertOrUpdatePartialList(
-      const std::vector<ledger::ServerPublisherPartial>& list,
+      base::span<ledger::ServerPublisherPartial const> list,
       ledger::ResultCallback callback);
 
   void InsertOrUpdateBannerList(
-      const std::vector<ledger::PublisherBanner>& list,
+      base::span<ledger::PublisherBanner const> list,
       ledger::ResultCallback callback);
 
   void GetRecord(

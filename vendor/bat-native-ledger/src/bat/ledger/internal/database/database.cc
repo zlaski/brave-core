@@ -370,13 +370,13 @@ void Database::ClearServerPublisherList(ledger::ResultCallback callback) {
 }
 
 void Database::InsertServerPublisherList(
-    const std::vector<ledger::ServerPublisherPartial>& list,
+    base::span<ledger::ServerPublisherPartial const> list,
     ledger::ResultCallback callback) {
   server_publisher_info_->InsertOrUpdatePartialList(list, callback);
 }
 
 void Database::InsertPublisherBannerList(
-    const std::vector<ledger::PublisherBanner>& list,
+    base::span<ledger::PublisherBanner const> list,
     ledger::ResultCallback callback) {
   server_publisher_info_->InsertOrUpdateBannerList(list, callback);
 }

@@ -194,7 +194,7 @@ bool DatabaseServerPublisherBanner::MigrateToV15(
 }
 
 void DatabaseServerPublisherBanner::InsertOrUpdateList(
-    const std::vector<ledger::PublisherBanner>& list,
+    base::span<ledger::PublisherBanner const> list,
     ledger::ResultCallback callback) {
   if (list.empty()) {
     callback(ledger::Result::LEDGER_OK);

@@ -1405,13 +1405,13 @@ void LedgerImpl::ClearServerPublisherList(ledger::ResultCallback callback) {
 }
 
 void LedgerImpl::InsertServerPublisherList(
-    const std::vector<ledger::ServerPublisherPartial>& list,
+    base::span<ledger::ServerPublisherPartial const> list,
     ledger::ResultCallback callback) {
   bat_database_->InsertServerPublisherList(list, callback);
 }
 
 void LedgerImpl::InsertPublisherBannerList(
-    const std::vector<ledger::PublisherBanner>& list,
+    base::span<ledger::PublisherBanner const> list,
     ledger::ResultCallback callback) {
   bat_database_->InsertPublisherBannerList(list, callback);
 }
