@@ -28,6 +28,44 @@
             ]
           }
         ]
+      },
+      {
+        "name": "getClientUrl",
+        "type": "function",
+        "description": "Fetches the Oauth Url for Binance",
+        "parameters": [
+          {
+            "type": "function",
+            "name": "callback",
+            "parameters": [
+              {
+                "name": "clientUrl",
+                "type": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "getAccessToken",
+        "type": "function",
+        "description": "Fetches the Oauth Url for Binance",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "code"
+          },
+          {
+            "type": "function",
+            "name": "callback",
+            "parameters": [
+              {
+                "name": "success",
+                "type": "boolean"
+              }
+            ]
+          }
+        ]
       }
     ],
     "types": [

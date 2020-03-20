@@ -185,17 +185,14 @@ export default class Binance extends React.PureComponent<Props, State> {
     if (this.props.authInProgress) {
       this.checkForOauthCode()
     }
-    /*
-    if (chrome.hasOwnProperty('binance')) {
-      chrome.binance.getUserTLD((userTLD: NewTab.BinanceTLD) => {
-        this.props.onBinanceUserTLD(userTLD)
-      })
-  
-      chrome.binance.getClientUrl((clientUrl: string) => {
-        this.props.onBinanceClientUrl(clientUrl)
-      })
-    }
-    */
+
+    chrome.binance.getUserTLD((userTLD: NewTab.BinanceTLD) => {
+      this.props.onBinanceUserTLD(userTLD)
+    })
+
+    chrome.binance.getClientUrl((clientUrl: string) => {
+      this.props.onBinanceClientUrl(clientUrl)
+    })
   }
 
   componentDidUpdate (prevProps: Props) {
@@ -210,13 +207,11 @@ export default class Binance extends React.PureComponent<Props, State> {
     const authCode = urlParams.get('code')
 
     if (authCode) {
-      /*
       chrome.binance.getAccessToken(authCode, (success: boolean) => {
         if (success) {
           this.props.onValidAuthCode()
         }
       })
-      */
     }
   }
 

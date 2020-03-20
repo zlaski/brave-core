@@ -1,0 +1,19 @@
+source_set("browser") {
+  sources = [
+    "binance_json_parser.cc",
+    "binance_json_parser.h",
+    "binance_controller.cc",
+    "binance_controller.h",
+    "binance_service.cc",
+    "binance_service.h",
+  ]
+
+  deps = [
+    "//base",
+    "//components/keyed_service/content",
+    "//components/keyed_service/core",
+    "//content/public/browser",
+    "//services/network/public/cpp",
+    "//url",
+  ]
+}
