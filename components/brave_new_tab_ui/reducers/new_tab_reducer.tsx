@@ -477,12 +477,42 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
 
     case types.ON_BINANCE_USER_TLD:
       state = { ...state }
+      
       state = {
         ...state,
         binanceState: {
+          ...state.binanceState,
           userTLD: payload.userTLD
         }
       }
+      break
+
+    case types.SET_HIDE_BALANCE:
+      state = { ...state }
+      state.binanceState.hideBalance = payload.hide
+      break
+
+    case types.ON_BINANCE_BALANCES:
+      state = { ...state }
+      state.binanceState.accountBalances = payload.balances
+      break
+
+    case types.ON_VALID_AUTH_CODE:
+      state = { ...state }
+      state.binanceState.userAuthed = true
+      state.binanceState.authInProgress = false
+      break
+
+    case types.DISCONNECT_BINANCE:
+      state = { ...state }
+      state.binanceState = {
+        ...storage.defaultState.binanceState
+      }
+      break
+
+    case types.CONNECT_TO_BINANCE:
+      state = { ...state }
+      state.binanceState.authInProgress = true
       break
 
     default:
