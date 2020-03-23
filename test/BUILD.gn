@@ -780,6 +780,7 @@ test("brave_perf_tests") {
   if (brave_rewards_enabled) {
     sources += [
       "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/publisher/publisher_server_list_perftest.cc",
+      "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/publisher/publisher_server_list_browser_perftest.cc",
       "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_client_mock.cc",
       "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_client_mock.h",
       "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/ledger_impl_mock.cc",
