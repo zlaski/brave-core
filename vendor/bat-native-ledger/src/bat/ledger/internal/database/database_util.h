@@ -95,6 +95,10 @@ std::string GetStringColumn(ledger::DBRecord* record, const int index);
 
 std::string GenerateStringInCase(const std::vector<std::string>& items);
 
+size_t EstimateDBCommandSize(const ledger::DBCommand* command);
+
+size_t EstimateDBTransactionSize(const ledger::DBTransaction* transaction);
+
 }  // namespace braveledger_database
 
 #endif  // BRAVELEDGER_DATABASE_DATABASE_UTIL_H_

@@ -14,7 +14,6 @@
 #include <fstream>
 #include <vector>
 
-#include "base/containers/span.h"
 #include "base/memory/scoped_refptr.h"
 #include "bat/confirmations/confirmations_client.h"
 #include "bat/ledger/internal/contribution/contribution.h"
@@ -534,11 +533,11 @@ class LedgerImpl : public ledger::Ledger,
   void ClearServerPublisherList(ledger::ResultCallback callback);
 
   void InsertServerPublisherList(
-      base::span<ledger::ServerPublisherPartial const> list,
+      const std::vector<ledger::ServerPublisherPartial>& list,
       ledger::ResultCallback callback);
 
   void InsertPublisherBannerList(
-      base::span<ledger::PublisherBanner const> list,
+      const std::vector<ledger::PublisherBanner>& list,
       ledger::ResultCallback callback);
 
   void GetServerPublisherInfo(

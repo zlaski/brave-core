@@ -68,18 +68,18 @@ class PublisherServerList {
 
   void SaveParsedData(
       const ledger::Result result,
-      base::span<ledger::ServerPublisherPartial const> list_publisher,
-      base::span<ledger::PublisherBanner const> list_banner,
+      const std::vector<ledger::ServerPublisherPartial>& list_publisher,
+      const std::vector<ledger::PublisherBanner>& list_banner,
       ParsePublisherListCallback callback);
 
   void SavePublishers(
-      base::span<ledger::ServerPublisherPartial const> list_publisher,
-      base::span<ledger::PublisherBanner const> list_banner,
+      const std::vector<ledger::ServerPublisherPartial>& list_publisher,
+      const std::vector<ledger::PublisherBanner>& list_banner,
       ParsePublisherListCallback callback);
 
   void SaveBanners(
-      base::span<ledger::ServerPublisherPartial const> list_publisher,
-      base::span<ledger::PublisherBanner const> list_banner,
+      const std::vector<ledger::ServerPublisherPartial>& list_publisher,
+      const std::vector<ledger::PublisherBanner>& list_banner,
       ParsePublisherListCallback callback);
 
   bat_ledger::LedgerImpl* ledger_;  // NOT OWNED

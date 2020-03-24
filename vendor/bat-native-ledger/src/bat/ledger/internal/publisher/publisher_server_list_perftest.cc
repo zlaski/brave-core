@@ -1,50 +1,27 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+/* Copyright (c) 2019 The Brave Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "base/path_service.h"
 #include "base/files/file_path.h"
 #include "base/files/file_util.h"
 #include "base/json/json_reader.h"
 #include "base/memory/ptr_util.h"
-#include "base/memory/weak_ptr.h"
-#include "base/strings/string_number_conversions.h"
 #include "base/strings/stringprintf.h"
 #include "base/test/bind_test_util.h"
-#include "base/threading/thread_restrictions.h"
 #include "base/time/time.h"
 #include "base/trace_event/memory_usage_estimator.h"
 #include "base/values.h"
 #include "bat/ledger/internal/ledger_client_mock.h"
 #include "bat/ledger/internal/ledger_impl_mock.h"
-#include "bat/ledger/internal/request/request_util.h"
-#include "bat/ledger/internal/static_values.h"
-#include "bat/ledger/internal/publisher/publisher.h"
 #include "bat/ledger/internal/publisher/publisher_server_list.h"
-#include "bat/ledger/mojom_structs.h"
-#include "brave/common/brave_paths.h"
-#include "brave/components/brave_rewards/browser/rewards_service.h"
-#include "brave/components/brave_rewards/browser/rewards_service_impl.h"
-#include "brave/components/brave_rewards/browser/rewards_service_factory.h"
-#include "brave/components/brave_rewards/common/pref_names.h"
-#include "chrome/browser/profiles/profile.h"
-#include "chrome/browser/ui/browser.h"
-#include "chrome/test/base/in_process_browser_test.h"
-#include "components/prefs/pref_service.h"
-#include "components/user_prefs/user_prefs.h"
-#include "content/public/test/browser_test_utils.h"
+#include "bat/ledger/internal/publisher/publisher.h"
 #include "testing/gtest/include/gtest/gtest.h"
 #include "testing/perf/perf_test.h"
-#include "net/dns/mock_host_resolver.h"
-#include "net/test/embedded_test_server/http_request.h"
-#include "net/test/embedded_test_server/http_response.h"
-#include "components/network_session_configurator/common/network_switches.h"
-
-using braveledger_request_util::ServerTypes;
 
 namespace {
 
-constexpr int kTestIterations = 1;
+constexpr int kTestIterations = 3;
 static const char kTestResultString[] = "PublishServerList";
 
 void OnParsePublisherList(const ledger::Result result) {
@@ -112,7 +89,6 @@ class PublisherServerListPerfTest : public testing::Test {
   }
 
   void TestParse(const std::string& data, const std::string& test) {
-    base::ScopedAllowBlockingForTesting allow_blocking;
     std::vector<double> times;
     for (int i = 0; i < kTestIterations; i++) {
       base::TimeTicks start_read = base::TimeTicks::Now();

@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "base/containers/span.h"
 #include "bat/ledger/ledger.h"
 
 namespace bat_ledger {
@@ -258,11 +257,11 @@ class Database {
   void ClearServerPublisherList(ledger::ResultCallback callback);
 
   void InsertServerPublisherList(
-      base::span<ledger::ServerPublisherPartial const> list,
+      const std::vector<ledger::ServerPublisherPartial>& list,
       ledger::ResultCallback callback);
 
   void InsertPublisherBannerList(
-      base::span<ledger::PublisherBanner const> list,
+      const std::vector<ledger::PublisherBanner>& list,
       ledger::ResultCallback callback);
 
   void GetServerPublisherInfo(

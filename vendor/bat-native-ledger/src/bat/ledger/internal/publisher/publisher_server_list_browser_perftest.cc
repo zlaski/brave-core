@@ -8,28 +8,29 @@
 #include <string>
 #include <vector>
 
+#include "base/memory/weak_ptr.h"
 #include "base/path_service.h"
 #include "base/run_loop.h"
 #include "base/strings/string_split.h"
 #include "base/strings/stringprintf.h"
-#include "base/memory/weak_ptr.h"
 #include "base/test/bind_test_util.h"
+#include "base/time/time.h"
 #include "bat/ledger/internal/bat_helper.h"
-#include "bat/ledger/internal/uphold/uphold_util.h"
 #include "bat/ledger/internal/request/request_util.h"
 #include "bat/ledger/internal/static_values.h"
+#include "bat/ledger/internal/uphold/uphold_util.h"
 #include "bat/ledger/ledger.h"
 #include "brave/browser/extensions/api/brave_action_api.h"
+#include "brave/browser/ui/views/brave_actions/brave_actions_container.h"
+#include "brave/browser/ui/views/location_bar/brave_location_bar_view.h"
 #include "brave/common/brave_paths.h"
 #include "brave/common/extensions/extension_constants.h"
+#include "brave/components/brave_rewards/browser/rewards_notification_service_impl.h"  // NOLINT
+#include "brave/components/brave_rewards/browser/rewards_notification_service_observer.h"  // NOLINT
 #include "brave/components/brave_rewards/browser/rewards_service_factory.h"
 #include "brave/components/brave_rewards/browser/rewards_service_impl.h"
 #include "brave/components/brave_rewards/browser/rewards_service_observer.h"
-#include "brave/components/brave_rewards/browser/rewards_notification_service_impl.h"  // NOLINT
-#include "brave/components/brave_rewards/browser/rewards_notification_service_observer.h"  // NOLINT
 #include "brave/components/brave_rewards/common/pref_names.h"
-#include "brave/browser/ui/views/brave_actions/brave_actions_container.h"
-#include "brave/browser/ui/views/location_bar/brave_location_bar_view.h"
 #include "chrome/browser/ui/browser.h"
 #include "chrome/browser/ui/views/frame/browser_view.h"
 #include "chrome/common/chrome_paths.h"
@@ -62,13 +63,13 @@ std::unique_ptr<net::test_server::HttpResponse> HandleRequest(
   http_response->set_code(net::HTTP_OK);
   http_response->set_content_type("text/html");
 
-    http_response->set_content(
-        "<html>"
-        "  <head></head>"
-        "  <body>"
-        "    <div>Hello, world!</div>"
-        "  </body>"
-        "</html>");
+  http_response->set_content(
+      "<html>"
+      "  <head></head>"
+      "  <body>"
+      "    <div>Hello, world!</div>"
+      "  </body>"
+      "</html>");
 
   return std::move(http_response);
 }
@@ -82,10 +83,8 @@ bool URLMatches(const std::string& url,
   return (url.find(target_url) == 0);
 }
 
-namespace {
-
-// constexpr int kTestIterations = 1;
-// static const char kTestResultString[] = "PublishServerList";
+constexpr int kTestIterations = 3;
+static const char kTestResultString[] = "PublishServerList";
 
 std::string LoadFile() {
   auto path = base::FilePath(FILE_PATH_LITERAL("brave"))
@@ -101,55 +100,53 @@ std::string LoadFile() {
   return value;
 }
 
-// void CalculateMeanAndMax(const std::vector<double>& inputs,
-//                          double* mean,
-//                          double* std_dev,
-//                          double* max) {
-//   double sum = 0.0;
-//   double sqr_sum = 0.0;
-//   double max_so_far = 0.0;
-//   size_t count = inputs.size();
-//   for (const auto& input : inputs) {
-//     sum += input;
-//     sqr_sum += input * input;
-//     max_so_far = std::max(input, max_so_far);
-//   }
-//   *max = max_so_far;
-//   *mean = sum / count;
-//   *std_dev = sqrt(std::max(0.0, count * sqr_sum - sum * sum)) / count;
-// }
+void CalculateMeanAndMax(const std::vector<double>& inputs,
+                         double* mean,
+                         double* std_dev,
+                         double* max) {
+  double sum = 0.0;
+  double sqr_sum = 0.0;
+  double max_so_far = 0.0;
+  size_t count = inputs.size();
+  for (const auto& input : inputs) {
+    sum += input;
+    sqr_sum += input * input;
+    max_so_far = std::max(input, max_so_far);
+  }
+  *max = max_so_far;
+  *mean = sum / count;
+  *std_dev = sqrt(std::max(0.0, count * sqr_sum - sum * sum)) / count;
+}
 
-// void PrintMeanAndMax(const std::string& var_name,
-//                      const std::string& name_modifier,
-//                      const std::string& unit,
-//                      const std::vector<double>& vars) {
-//   double mean = 0.0;
-//   double std_dev = 0.0;
-//   double max = 0.0;
-//   CalculateMeanAndMax(vars, &mean, &std_dev, &max);
-//   perf_test::PrintResultMeanAndError(
-//       kTestResultString, name_modifier, var_name + " Mean",
-//       base::StringPrintf("%.0lf,%.0lf", mean, std_dev), unit, true);
-//   perf_test::PrintResult(kTestResultString, name_modifier, var_name + " Max",
-//                          base::StringPrintf("%.0lf", max), unit, true);
-// }
-
-}  //namespace
+void PrintMeanAndMax(const std::string& var_name,
+                     const std::string& name_modifier,
+                     const std::string& unit,
+                     const std::vector<double>& vars) {
+  double mean = 0.0;
+  double std_dev = 0.0;
+  double max = 0.0;
+  CalculateMeanAndMax(vars, &mean, &std_dev, &max);
+  perf_test::PrintResultMeanAndError(
+      kTestResultString, name_modifier, var_name + " Mean",
+      base::StringPrintf("%.0lf,%.0lf", mean, std_dev), unit, true);
+  perf_test::PrintResult(kTestResultString, name_modifier, var_name + " Max",
+                         base::StringPrintf("%.0lf", max), unit, true);
+}
 
 }  // namespace
 
 namespace brave_test_resp {
-  std::string registrarVK_;
-  std::string verification_;
-  std::string promotions_;
-  std::string promotion_claim_;
-  std::string promotion_tokens_;
-  std::string captcha_;
-  std::string wallet_properties_;
-  std::string wallet_properties_defaults_;
-  std::string uphold_auth_resp_;
-  std::string uphold_transactions_resp_;
-  std::string uphold_commit_resp_;
+std::string registrarVK_;
+std::string verification_;
+std::string promotions_;
+std::string promotion_claim_;
+std::string promotion_tokens_;
+std::string captcha_;
+std::string wallet_properties_;
+std::string wallet_properties_defaults_;
+std::string uphold_auth_resp_;
+std::string uphold_transactions_resp_;
+std::string uphold_commit_resp_;
 }  // namespace brave_test_resp
 
 class PublisherServerListBrowserPerfTest
@@ -187,9 +184,9 @@ class PublisherServerListBrowserPerfTest
 
     rewards_service_ = static_cast<brave_rewards::RewardsServiceImpl*>(
         brave_rewards::RewardsServiceFactory::GetForProfile(browser_profile));
-    rewards_service_->ForTestingSetTestResponseCallback(
-        base::BindRepeating(&PublisherServerListBrowserPerfTest::GetTestResponse,
-                            base::Unretained(this)));
+    rewards_service_->ForTestingSetTestResponseCallback(base::BindRepeating(
+        &PublisherServerListBrowserPerfTest::GetTestResponse,
+        base::Unretained(this)));
     rewards_service_->AddObserver(this);
     if (!rewards_service_->IsWalletInitialized()) {
       WaitForWalletInitialization();
@@ -210,9 +207,7 @@ class PublisherServerListBrowserPerfTest
     command_line->AppendSwitch(switches::kIgnoreCertificateErrors);
   }
 
-  PrefService* GetPrefs() const {
-    return browser()->profile()->GetPrefs();
-  }
+  PrefService* GetPrefs() const { return browser()->profile()->GetPrefs(); }
 
   bool IsRewardsEnabled() const {
     return GetPrefs()->GetBoolean(brave_rewards::prefs::kBraveRewardsEnabled);
@@ -224,10 +219,8 @@ class PublisherServerListBrowserPerfTest
                        std::string* response,
                        std::map<std::string, std::string>* headers) {
     request_made_ = true;
-    std::vector<std::string> tmp = base::SplitString(url,
-                                                     "/",
-                                                     base::TRIM_WHITESPACE,
-                                                     base::SPLIT_WANT_ALL);
+    std::vector<std::string> tmp = base::SplitString(
+        url, "/", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
     const std::string persona_url =
         braveledger_request_util::BuildUrl(REGISTER_PERSONA, PREFIX_V2);
     if (url.find(persona_url) == 0 && tmp.size() == 6) {
@@ -258,26 +251,34 @@ class PublisherServerListBrowserPerfTest
       *response = brave_test_resp::captcha_;
     } else if (URLMatches(url, GET_PUBLISHERS_LIST, "",
                           ServerTypes::PUBLISHER_DISTRO)) {
+      if (minimal_publisher_list_) {
+        *response =
+            "["
+            "[\"bumpsmack.com\",\"publisher_verified\",false,\"address1\",{}],"
+            "[\"duckduckgo.com\",\"wallet_connected\",false,\"address2\",{}],"
+            "[\"3zsistemi.si\",\"wallet_connected\",false,\"address3\",{}],"
+            "[\"site1.com\",\"wallet_connected\",false,\"address4\",{}],"
+            "[\"site2.com\",\"wallet_connected\",false,\"address5\",{}],"
+            "[\"site3.com\",\"wallet_connected\",false,\"address6\",{}],"
+            "[\"laurenwags.github.io\",\"wallet_connected\",false,\"address2\","
+            "{\"donationAmounts\": [5,10,20]}]"
+            "]";
+      } else {
         *response = LoadFile();
-    } else if (base::StartsWith(
-        url,
-        braveledger_uphold::GetAPIUrl("/oauth2/token"),
-        base::CompareCase::INSENSITIVE_ASCII)) {
+      }
+    } else if (base::StartsWith(url,
+                                braveledger_uphold::GetAPIUrl("/oauth2/token"),
+                                base::CompareCase::INSENSITIVE_ASCII)) {
       *response = brave_test_resp::uphold_auth_resp_;
-    } else if (base::StartsWith(
-        url,
-        braveledger_uphold::GetAPIUrl("/v0/me/cards"),
-        base::CompareCase::INSENSITIVE_ASCII)) {
-      if (base::EndsWith(
-          url,
-          "transactions",
-          base::CompareCase::INSENSITIVE_ASCII)) {
+    } else if (base::StartsWith(url,
+                                braveledger_uphold::GetAPIUrl("/v0/me/cards"),
+                                base::CompareCase::INSENSITIVE_ASCII)) {
+      if (base::EndsWith(url, "transactions",
+                         base::CompareCase::INSENSITIVE_ASCII)) {
         *response = brave_test_resp::uphold_transactions_resp_;
         *response_status_code = net::HTTP_ACCEPTED;
-      } else if (base::EndsWith(
-          url,
-          "commit",
-          base::CompareCase::INSENSITIVE_ASCII)) {
+      } else if (base::EndsWith(url, "commit",
+                                base::CompareCase::INSENSITIVE_ASCII)) {
         *response = brave_test_resp::uphold_commit_resp_;
       }
     }
@@ -300,13 +301,13 @@ class PublisherServerListBrowserPerfTest
   void GetEnvironment() {
     rewards_service()->GetEnvironment(
         base::Bind(&PublisherServerListBrowserPerfTest::OnGetEnvironment,
-          base::Unretained(this)));
+                   base::Unretained(this)));
   }
 
   void GetDebug() {
     rewards_service()->GetDebug(
         base::Bind(&PublisherServerListBrowserPerfTest::OnGetDebug,
-          base::Unretained(this)));
+                   base::Unretained(this)));
   }
 
   void GetTestDataDir(base::FilePath* test_data_dir) {
@@ -344,15 +345,19 @@ class PublisherServerListBrowserPerfTest
     ASSERT_TRUE(base::ReadFileToString(
         path.AppendASCII("wallet_properties_resp_defaults.json"),
         &brave_test_resp::wallet_properties_defaults_));
-    ASSERT_TRUE(base::ReadFileToString(
-        path.AppendASCII("uphold_auth_resp.json"),
-        &brave_test_resp::uphold_auth_resp_));
+    ASSERT_TRUE(
+        base::ReadFileToString(path.AppendASCII("uphold_auth_resp.json"),
+                               &brave_test_resp::uphold_auth_resp_));
     ASSERT_TRUE(base::ReadFileToString(
         path.AppendASCII("uphold_transactions_resp.json"),
         &brave_test_resp::uphold_transactions_resp_));
-    ASSERT_TRUE(base::ReadFileToString(
-        path.AppendASCII("uphold_commit_resp.json"),
-        &brave_test_resp::uphold_commit_resp_));
+    ASSERT_TRUE(
+        base::ReadFileToString(path.AppendASCII("uphold_commit_resp.json"),
+                               &brave_test_resp::uphold_commit_resp_));
+  }
+
+  void EnableFullPublisherList() {
+    minimal_publisher_list_ = false;
   }
 
   void EnableRewardsViaCode() {
@@ -395,6 +400,15 @@ class PublisherServerListBrowserPerfTest
       wait_for_publisher_list_normalized_loop_->Quit();
   }
 
+  void RefreshPublishers() {
+    std::string publisher_key = "";
+    publisher_list_parsed_callback_was_called_ = false;
+    rewards_service_->RefreshPublisher(
+        publisher_key,
+        base::BindOnce(&PublisherServerListBrowserPerfTest::OnRefreshPublisher,
+                       AsWeakPtr()));
+  }
+
   void OnRefreshPublisher(uint32_t status, const std::string& publisher_key) {
     LOG(ERROR) << "Publisher refreshed";
     EXPECT_EQ(status, 0UL);
@@ -406,6 +420,7 @@ class PublisherServerListBrowserPerfTest
   void WaitForPublisherListCallback() {
     if (publisher_list_parsed_callback_was_called_)
       return;
+
     wait_for_publisher_list_parsed_loop_.reset(new base::RunLoop);
     wait_for_publisher_list_parsed_loop_->Run();
   }
@@ -428,26 +443,24 @@ class PublisherServerListBrowserPerfTest
   std::unique_ptr<base::RunLoop> wait_for_publisher_list_parsed_loop_;
   bool publisher_list_parsed_callback_was_called_ = false;
 
-  bool alter_publisher_list_ = false;
+  bool minimal_publisher_list_ = true;
   bool show_defaults_in_properties_ = false;
   bool request_made_ = false;
 };
 
-
 IN_PROC_BROWSER_TEST_F(PublisherServerListBrowserPerfTest, RefreshPublisher) {
   base::ScopedAllowBlockingForTesting allow_blocking;
-  std::string publisher_key = "";
   EnableRewardsViaCode();
-  // WaitForPublisherListNormalized();
-  rewards_service_->RefreshPublisher(
-      publisher_key,
-      base::BindOnce(&PublisherServerListBrowserPerfTest::OnRefreshPublisher,
-                     AsWeakPtr()));
+  RefreshPublishers();
   WaitForPublisherListCallback();
-}
-
-IN_PROC_BROWSER_TEST_F(PublisherServerListBrowserPerfTest,
-                       PanelShowsCorrectPublisherData) {
-  // Enable Rewards
-  EnableRewardsViaCode();
+  EnableFullPublisherList();
+  std::vector<double> times;
+  for (int i = 0; i < kTestIterations; i++) {
+    base::TimeTicks start_read = base::TimeTicks::Now();
+    RefreshPublishers();
+    WaitForPublisherListCallback();
+    base::TimeTicks end_read = base::TimeTicks::Now();
+    times.push_back((end_read - start_read).InMillisecondsF());
+  }
+  PrintMeanAndMax("Publisher Refresh Time", "RefreshPublisher", "ms", times);
 }

@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-#include "base/containers/span.h"
 #include "bat/ledger/internal/database/database_server_publisher_amounts.h"
 #include "bat/ledger/internal/database/database_server_publisher_links.h"
 #include "bat/ledger/internal/database/database_table.h"
@@ -26,7 +25,7 @@ class DatabaseServerPublisherBanner: public DatabaseTable {
   bool Migrate(ledger::DBTransaction* transaction, const int target) override;
 
   void InsertOrUpdateList(
-      base::span<ledger::PublisherBanner const> list,
+      const std::vector<ledger::PublisherBanner>& list,
       ledger::ResultCallback callback);
 
   void GetRecord(
@@ -60,6 +59,12 @@ class DatabaseServerPublisherBanner: public DatabaseTable {
       const std::vector<double>& amounts,
       const ledger::PublisherBanner& banner,
       ledger::PublisherBannerCallback callback);
+
+  void InsertOrUpdateListOffset(
+      const ledger::Result result,
+      const std::vector<ledger::PublisherBanner>& list,
+      unsigned int offset,
+      ledger::ResultCallback callback);
 
   std::unique_ptr<DatabaseServerPublisherLinks> links_;
   std::unique_ptr<DatabaseServerPublisherAmounts> amounts_;

@@ -9,6 +9,7 @@
 #include "bat/ledger/internal/database/database_server_publisher_info.h"
 #include "bat/ledger/internal/database/database_util.h"
 #include "bat/ledger/internal/ledger_impl.h"
+#include "ipc/ipc_channel.h"
 
 using std::placeholders::_1;
 
@@ -122,12 +123,29 @@ void DatabaseServerPublisherInfo::DeleteAll(ledger::ResultCallback callback) {
 }
 
 void DatabaseServerPublisherInfo::InsertOrUpdatePartialList(
-    base::span<ledger::ServerPublisherPartial const> list,
+    const std::vector<ledger::ServerPublisherPartial>& list,
     ledger::ResultCallback callback) {
-  if (list.empty()) {
+
+  InsertOrUpdatePartialListOffset(ledger::Result::LEDGER_OK, list, 0, callback);
+}
+
+void DatabaseServerPublisherInfo::InsertOrUpdatePartialListOffset(
+  const ledger::Result result,
+  const std::vector<ledger::ServerPublisherPartial>& list,
+  unsigned int offset,
+  ledger::ResultCallback callback) {
+
+  if (list.empty() || offset >= list.size()) {
     callback(ledger::Result::LEDGER_OK);
     return;
   }
+  if (result != ledger::Result::LEDGER_OK) {
+    callback(result);
+    return;
+  }
+
+  auto save_list = base::span<ledger::ServerPublisherPartial const>(list)
+      .subspan(offset);
 
   const std::string query = base::StringPrintf(
       "INSERT OR REPLACE INTO %s "
@@ -136,7 +154,8 @@ void DatabaseServerPublisherInfo::InsertOrUpdatePartialList(
       table_name_);
 
   auto transaction = ledger::DBTransaction::New();
-  for (const auto& info : list) {
+  size_t transaction_size = 0;
+  for (const auto& info : save_list) {
     auto command = ledger::DBCommand::New();
     command->type = ledger::DBCommand::Type::RUN;
     command->command = query;
@@ -146,18 +165,32 @@ void DatabaseServerPublisherInfo::InsertOrUpdatePartialList(
     BindBool(command.get(), 2, info.excluded);
     BindString(command.get(), 3, info.address);
 
-    transaction->commands.push_back(std::move(command));
+    size_t command_size = EstimateDBCommandSize(command.get());
+
+    if (transaction_size + command_size < IPC::Channel::kMaximumMessageSize) {
+      transaction_size += command_size;
+      transaction->commands.push_back(std::move(command));
+      offset++;
+    } else {
+      break;
+    }
   }
 
+  ledger::ResultCallback continuation = std::bind(
+      &DatabaseServerPublisherInfo::InsertOrUpdatePartialListOffset,
+       this,
+       _1,
+       list,
+       offset,
+       callback);
   auto transaction_callback = std::bind(&OnResultCallback,
       _1,
-      callback);
-
+      continuation);
   ledger_->RunDBTransaction(std::move(transaction), transaction_callback);
 }
 
 void DatabaseServerPublisherInfo::InsertOrUpdateBannerList(
-    base::span<ledger::PublisherBanner const> list,
+    const std::vector<ledger::PublisherBanner>& list,
     ledger::ResultCallback callback) {
   banner_->InsertOrUpdateList(list, callback);
 }

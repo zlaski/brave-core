@@ -337,4 +337,24 @@ std::string GenerateStringInCase(const std::vector<std::string>& items) {
   return base::StringPrintf("\"%s\"", items_join.c_str());
 }
 
+size_t EstimateDBCommandSize(const ledger::DBCommand* command) {
+  size_t estimate = sizeof(ledger::DBCommand) + command->command.size();
+  for (const auto& binding : command->bindings) {
+    estimate += sizeof(ledger::DBCommandBinding);
+    estimate += sizeof(ledger::DBValue);
+    if (binding->value->is_string_value()) {
+      estimate += binding->value->get_string_value().size();
+    }
+  }
+  return estimate;
+}
+
+size_t EstimateDBTransactionSize(const ledger::DBTransaction* transaction) {
+  size_t estimate = 0;
+  for (auto& command : transaction->commands) {
+      estimate += EstimateDBCommandSize(command.get());
+  }
+  return estimate;
+}
+
 }  // namespace braveledger_database

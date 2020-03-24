@@ -9,6 +9,7 @@
 #include "bat/ledger/internal/database/database_server_publisher_banner.h"
 #include "bat/ledger/internal/database/database_util.h"
 #include "bat/ledger/internal/ledger_impl.h"
+#include "ipc/ipc_channel.h"
 
 using std::placeholders::_1;
 
@@ -194,12 +195,28 @@ bool DatabaseServerPublisherBanner::MigrateToV15(
 }
 
 void DatabaseServerPublisherBanner::InsertOrUpdateList(
-    base::span<ledger::PublisherBanner const> list,
+    const std::vector<ledger::PublisherBanner>& list,
     ledger::ResultCallback callback) {
-  if (list.empty()) {
+  InsertOrUpdateListOffset(ledger::Result::LEDGER_OK, list, 0, callback);
+}
+
+void DatabaseServerPublisherBanner::InsertOrUpdateListOffset(
+  const ledger::Result result,
+  const std::vector<ledger::PublisherBanner>& list,
+  unsigned int offset,
+  ledger::ResultCallback callback) {
+
+  if (list.empty() || offset >= list.size()) {
     callback(ledger::Result::LEDGER_OK);
     return;
   }
+  if (result != ledger::Result::LEDGER_OK) {
+    callback(result);
+    return;
+  }
+
+  auto save_list = base::span<ledger::PublisherBanner const>(list)
+      .subspan(offset);
 
   auto transaction = ledger::DBTransaction::New();
   const std::string query = base::StringPrintf(
@@ -208,7 +225,8 @@ void DatabaseServerPublisherBanner::InsertOrUpdateList(
       "VALUES (?, ?, ?, ?, ?)",
       table_name_);
 
-  for (const auto& info : list) {
+  size_t transaction_size = 0;
+  for (const auto& info : save_list) {
     auto command = ledger::DBCommand::New();
     command->type = ledger::DBCommand::Type::RUN;
     command->command = query;
@@ -219,15 +237,36 @@ void DatabaseServerPublisherBanner::InsertOrUpdateList(
     BindString(command.get(), 3, info.background);
     BindString(command.get(), 4, info.logo);
 
-    transaction->commands.push_back(std::move(command));
+    auto tentative_transaction = ledger::DBTransaction::New();
+    tentative_transaction->commands.push_back(std::move(command));
+    links_->InsertOrUpdate(tentative_transaction.get(), info);
+    amounts_->InsertOrUpdate(tentative_transaction.get(), info);
 
-    links_->InsertOrUpdate(transaction.get(), info);
-    amounts_->InsertOrUpdate(transaction.get(), info);
+    size_t tent_transaction_size =
+        EstimateDBTransactionSize(tentative_transaction.get());
+    if (transaction_size + tent_transaction_size <=
+        IPC::Channel::kMaximumMessageSize) {
+      transaction_size += tent_transaction_size;
+      transaction->commands.insert(
+          transaction->commands.end(),
+          std::make_move_iterator(tentative_transaction->commands.begin()),
+          std::make_move_iterator(tentative_transaction->commands.end()));
+      offset++;
+    } else {
+      break;
+    }
   }
 
+  ledger::ResultCallback continuation = std::bind(
+      &DatabaseServerPublisherBanner::InsertOrUpdateListOffset,
+       this,
+       _1,
+       list,
+       offset,
+       callback);
   auto transaction_callback = std::bind(&OnResultCallback,
       _1,
-      callback);
+      continuation);
 
   ledger_->RunDBTransaction(std::move(transaction), transaction_callback);
 }
