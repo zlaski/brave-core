@@ -307,6 +307,10 @@ class NewTabPage extends React.Component<Props, State> {
     this.props.actions.setInitialAsset(asset)
   }
 
+  setUserTLDAutoSet = () => {
+    this.props.actions.setUserTLDAutoSet()
+  }
+
   getCryptoContent () {
     const { currentStackWidget } = this.props.newTabData
 
@@ -400,6 +404,7 @@ class NewTabPage extends React.Component<Props, State> {
         onSetInitialAmount={this.setInitialAmount}
         onSetInitialAsset={this.setInitialAsset}
         onSetInitialFiat={this.setInitialFiat}
+        onSetUserTLDAutoSet={this.setUserTLDAutoSet}
       />
     )
   }

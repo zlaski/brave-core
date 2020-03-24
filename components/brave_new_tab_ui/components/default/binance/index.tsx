@@ -40,6 +40,7 @@ interface Props {
   initialFiat: string
   initialAsset: string
   showContent: boolean
+  userTLDAutoSet: boolean
   userTLD: NewTab.BinanceTLD
   onShowContent: () => void
   onBuyCrypto: (coin: string, amount: string, fiat: string) => void
@@ -47,6 +48,7 @@ interface Props {
   onSetInitialFiat: (initialFiat: string) => void
   onSetInitialAmount: (initialAmount: string) => void
   onSetInitialAsset: (initialAsset: string) => void
+  onSetUserTLDAutoSet: () => void
 }
 
 export default class Binance extends React.PureComponent<Props, State> {
@@ -66,11 +68,13 @@ export default class Binance extends React.PureComponent<Props, State> {
   }
 
   componentDidMount () {
+    const { userTLDAutoSet } = this.props
     // To Do: This avoids errors in the storybook, there should
     // be a polyfill at a later date.
-    if (chrome.hasOwnProperty('binance')) {
+    if (chrome.hasOwnProperty('binance') && !userTLDAutoSet) {
       chrome.binance.getUserTLD((userTLD: NewTab.BinanceTLD) => {
         this.props.onBinanceUserTLD(userTLD)
+        this.props.onSetUserTLDAutoSet()
       })
     }
   }
@@ -124,6 +128,11 @@ export default class Binance extends React.PureComponent<Props, State> {
     if (newTLD === 'us') {
       this.props.onSetInitialFiat('USD')
     }
+
+    this.setState({
+      fiatShowing: false,
+      currenciesShowing: false
+    })
   }
 
   renderTitle () {

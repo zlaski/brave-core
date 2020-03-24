@@ -150,3 +150,5 @@ export const setInitialAmount = (initialAmount: string) => action(types.SET_INIT
 export const setInitialAsset = (initialAsset: string) => action(types.SET_INITIAL_ASSET, {
   initialAsset
 })
+
+export const setUserTLDAutoSet = () => action(types.SET_USER_TLD_AUTO_SET)

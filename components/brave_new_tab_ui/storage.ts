@@ -59,7 +59,8 @@ const defaultState: NewTab.State = {
     userTLD: 'com',
     initialFiat: 'USD',
     initialAmount: '',
-    initialAsset: 'BTC'
+    initialAsset: 'BTC',
+    userTLDAutoSet: false
   }
 }
 

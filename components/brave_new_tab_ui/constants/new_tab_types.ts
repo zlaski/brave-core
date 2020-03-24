@@ -41,7 +41,8 @@ export const enum types {
   ON_BINANCE_USER_TLD = '@@newtab/ON_BINANCE_USER_TLD',
   SET_INITIAL_ASSET = '@@newtab/SET_INITIAL_ASSET',
   SET_INITIAL_FIAT = '@@newtab/SET_INITIAL_FIAT',
-  SET_INITIAL_AMOUNT = '@@newtab/SET_INITIAL_AMOUNT'
+  SET_INITIAL_AMOUNT = '@@newtab/SET_INITIAL_AMOUNT',
+  SET_USER_TLD_AUTO_SET = '@@newtab/SET_USER_TLD_AUTO_SET'
 }
 
 export type DismissBrandedWallpaperNotificationPayload = {

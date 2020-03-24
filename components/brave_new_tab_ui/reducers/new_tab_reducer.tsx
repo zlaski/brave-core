@@ -519,6 +519,17 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
       }
       break
 
+    case types.SET_USER_TLD_AUTO_SET:
+      state = { ...state }
+      state = {
+        ...state,
+        binanceState: {
+          ...state.binanceState,
+          userTLDAutoSet: true
+        }
+      }
+      break
+
     default:
       break
   }

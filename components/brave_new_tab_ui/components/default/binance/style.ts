@@ -122,7 +122,6 @@ export const AssetItems = styled<StyleProps, 'div'>('div')`
   z-index: 1;
   background: #000;
   color: #fff;
-  height: 100px;
   overflow-y: scroll;
   position: absolute;
   min-width: 254px;
@@ -130,6 +129,7 @@ export const AssetItems = styled<StyleProps, 'div'>('div')`
   max-height: 75px;
   border: 1px solid rgb(70, 70, 70);
   border-top: none;
+  height: ${p => p.isFiat ? 100 : 55}px;
   left: ${p => p.isFiat ? '15px' : 'auto'};
 `
 
