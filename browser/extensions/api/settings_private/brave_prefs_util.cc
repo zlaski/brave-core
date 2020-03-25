@@ -7,6 +7,7 @@
 
 #include "brave/common/pref_names.h"
 #include "brave/components/brave_wayback_machine/buildflags.h"
+#include "brave/components/ntp_background_images/common/pref_names.h"
 #include "chrome/browser/extensions/api/settings_private/prefs_util.h"
 #include "chrome/common/extensions/api/settings_private.h"
 #include "components/browsing_data/core/pref_names.h"
@@ -15,6 +16,8 @@
 #if BUILDFLAG(ENABLE_BRAVE_WAYBACK_MACHINE)
 #include "brave/components/brave_wayback_machine/pref_names.h"
 #endif
+
+using ntp_background_images::prefs::kNewTabPageSuperReferralThemesOption;
 
 namespace extensions {
 
@@ -62,6 +65,8 @@ const PrefsUtil::TypedPrefMap& BravePrefsUtil::GetWhitelistedKeys() {
       settings_api::PrefType::PREF_TYPE_BOOLEAN;
   (*s_brave_whitelist)[kAskWidevineInstall] =
       settings_api::PrefType::PREF_TYPE_BOOLEAN;
+  (*s_brave_whitelist)[kNewTabPageSuperReferralThemesOption] =
+      settings_api::PrefType::PREF_TYPE_NUMBER;
   // Clear browsing data on exit prefs.
   (*s_brave_whitelist)[browsing_data::prefs::kDeleteBrowsingHistoryOnExit] =
     settings_api::PrefType::PREF_TYPE_BOOLEAN;
