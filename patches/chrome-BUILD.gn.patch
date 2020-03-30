@@ -104,7 +104,6 @@ index fe09f99a91e3b1d2abfb335ec2771d1ed8592d87..a486a9238b6a1b7d935faefab2345922
      ]
      output = "$target_gen_dir/chrome_exe_version.rc"
    }
- 
 @@ -1403,6 +1417,7 @@ group("resources") {
      "//chrome/browser:resources",
      "//chrome/common:resources",
