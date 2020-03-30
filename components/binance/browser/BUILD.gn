@@ -5,9 +5,8 @@ assert(binance_enabled)
 
 source_set("browser") {
   public_deps = [
-      "buildflags"
+    "buildflags"
   ]
-
   sources = [
     "binance_json_parser.cc",
     "binance_json_parser.h",
