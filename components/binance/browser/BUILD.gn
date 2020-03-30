@@ -11,6 +11,8 @@ source_set("browser") {
   sources = [
     "binance_json_parser.cc",
     "binance_json_parser.h",
+    "binance_protocol_handler.cc",
+    "binance_protocol_handler.h",
     "binance_service.cc",
     "binance_service.h",
   ]
