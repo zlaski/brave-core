@@ -74,6 +74,10 @@
         "parameters": [
           {
             "type": "string",
+            "name": "verifier"
+          },
+          {
+            "type": "string",
             "name": "challenge"
           },
           {

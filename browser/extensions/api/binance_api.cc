@@ -104,6 +104,7 @@ BinanceSetCodeChallengeFunction::Run() {
 
   auto* service = GetBinanceService(browser_context());
   service->SetCodeChallenge(
+      params->verifier,
       params->challenge,
       base::BindOnce(
           &BinanceSetCodeChallengeFunction::OnChallengeResult, this));
