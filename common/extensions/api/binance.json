@@ -68,31 +68,6 @@
         ]
       },
       {
-        "name": "setCodeChallenge",
-        "type": "function",
-        "description": "Sets the code challenge.",
-        "parameters": [
-          {
-            "type": "string",
-            "name": "verifier"
-          },
-          {
-            "type": "string",
-            "name": "challenge"
-          },
-          {
-            "type": "function",
-            "name": "callback",
-            "parameters": [
-              {
-                "name": "success",
-                "type": "boolean"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "name": "getAccountBalances",
         "type": "function",
         "description": "Retrieves user asset balances",
