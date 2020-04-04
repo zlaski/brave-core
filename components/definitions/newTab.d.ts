@@ -198,7 +198,7 @@ declare namespace NewTab {
     wallets: Record<string, number>
   }
 
-  export interface DefaultTopSite {
+  export interface DefaultSuperReferralTopSite {
     pinnedIndex: number
     url: string
     title: string
