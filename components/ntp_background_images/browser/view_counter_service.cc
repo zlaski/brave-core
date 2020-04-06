@@ -112,12 +112,6 @@ std::vector<TopSite> ViewCounterService::GetTopSitesVectorData() const {
   return {};
 }
 
-std::string ViewCounterService::GetURLPrefix() const {
-  if (GetCurrentBrandedWallpaperData())
-    return GetCurrentBrandedWallpaperData()->GetURLPrefix();
-  return "";
-}
-
 void ViewCounterService::Shutdown() {
   service_->RemoveObserver(this);
 }
