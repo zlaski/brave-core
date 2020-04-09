@@ -56,6 +56,7 @@ import org.chromium.chrome.browser.ntp_background_images.SponsoredTab;
 import org.chromium.chrome.browser.tab.TabAttributes;
 import org.chromium.chrome.browser.ntp_background_images.NTPBackgroundImagesBridge;
 import org.chromium.chrome.browser.ntp_background_images.SuperReferralShareDialogFragment;
+import org.chromium.chrome.browser.night_mode.GlobalNightModeStateProviderHolder;
 import org.chromium.chrome.browser.util.ConfigurationUtils;
 import org.chromium.chrome.browser.ntp.BraveNewTabPageLayout;
 import org.chromium.chrome.browser.ChromeTabbedActivity;
@@ -281,6 +282,10 @@ public class BraveNewTabPageView extends NewTabPageView {
                 Log.e("NTP", "Theme name : "+ mNTPBackgroundImagesBridge.getSuperReferralThemeName());
                 Log.e("NTP", "Is Super Referral : "+ mNTPBackgroundImagesBridge.isSuperReferral());
                 FloatingActionButton mSuperReferralLogo = (FloatingActionButton) mNewTabPageLayout.findViewById(R.id.super_referral_logo);
+                int floatingButtonIcon = GlobalNightModeStateProviderHolder.getInstance().isInNightMode()
+                        ? R.drawable.qrcode_dark
+                        : R.drawable.qrcode_light;
+                mSuperReferralLogo.setImageResource(floatingButtonIcon);
                 mSuperReferralLogo.setVisibility(View.VISIBLE);
                 mSuperReferralLogo.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -451,8 +456,7 @@ public class BraveNewTabPageView extends NewTabPageView {
             });
 
             int paddingTop = getResources().getDimensionPixelSize(R.dimen.tile_grid_layout_no_logo_padding_top);
-            view.setPadding(
-                0, paddingTop, 0, view.getPaddingBottom());
+            view.setPadding(0, paddingTop, 0, view.getPaddingBottom());
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
             layoutParams.weight = 0.25f;
