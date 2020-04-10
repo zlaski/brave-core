@@ -47,7 +47,7 @@ def DownloadUrl(url, output_file):
         except urllib.error.URLError as e:
             sys.stdout.write('\n')
             print e
-            if num_retries == 0 or isinstance(e, urllib.HTTPError) and e.code == 404:
+            if num_retries == 0 or isinstance(e, urllib.error.HTTPError) and e.code == 404:
                 raise e
             num_retries -= 1
             print 'Retrying in %d s ...' % retry_wait_s
