@@ -10,8 +10,12 @@ import os
 import re
 import subprocess
 import sys
-import urllib
 import pipes
+
+try:
+  import urllib2 as urllib
+except ImportError:  # For Py3 compatibility
+  import urllib.request as urllib
 
 import deps
 from rust_deps_config import RUST_DEPS_PACKAGES_URL, RUST_DEPS_PACKAGE_VERSION
@@ -56,7 +60,7 @@ def download_and_unpack_rust_deps(platform):
 
     try:
         deps.DownloadAndUnpack(url, RUSTUP_PATH)
-    except urllib.error.URLError:
+    except urllib.URLError:
         print('Failed to download Rust deps: %s' % url)
         print('Exiting.')
         sys.exit(1)

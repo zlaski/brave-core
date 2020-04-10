@@ -11,9 +11,12 @@ import sys
 import tarfile
 import tempfile
 import time
-import urllib
 import zipfile
 
+try:
+  import urllib2 as urllib
+except ImportError:  # For Py3 compatibility
+  import urllib.request as urllib
 
 def DownloadUrl(url, output_file):
     """Download url into output_file."""
@@ -44,10 +47,10 @@ def DownloadUrl(url, output_file):
                 raise urllib.error.URLError("only got %d of %d bytes" % (bytes_done, total_size))
             print ' Done.'
             return
-        except urllib.error.URLError as e:
+        except urllib.URLError as e:
             sys.stdout.write('\n')
             print e
-            if num_retries == 0 or isinstance(e, urllib.error.HTTPError) and e.code == 404:
+            if num_retries == 0 or isinstance(e, urllib.HTTPError) and e.code == 404:
                 raise e
             num_retries -= 1
             print 'Retrying in %d s ...' % retry_wait_s
