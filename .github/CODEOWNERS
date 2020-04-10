@@ -1,4 +1,5 @@
 patches/ @bridiver
+CODEOWNERS @bridiver @bbondy
 script/build-bisect.py @bsclifton
 script/uplift.py @bsclifton
 vendor/brave-ios/ @kylehickinson
