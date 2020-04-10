@@ -30,34 +30,34 @@ hooks = [
   {
     'name': 'bootstrap',
     'pattern': '.',
-    'action': ['vpython', 'src/brave/script/bootstrap.py'],
+    'action': ['python', 'src/brave/script/bootstrap.py'],
   },
   {
     # Download rust deps if necessary for Android
     'name': 'download_rust_deps',
     'pattern': '.',
     'condition': 'checkout_android',
-    'action': ['vpython', 'src/brave/script/download_rust_deps.py', '--platform', 'android'],
+    'action': ['python', 'src/brave/script/download_rust_deps.py', '--platform', 'android'],
   },
   {
     # Download rust deps if necessary for macOS, Windows and Linux
     'name': 'download_rust_deps',
     'pattern': '.',
     'condition': 'not checkout_android',
-    'action': ['vpython', 'src/brave/script/download_rust_deps.py'],
+    'action': ['python', 'src/brave/script/download_rust_deps.py'],
   },
   {
     # Build brave-sync
     'name': 'build_brave_sync',
     'pattern': '.',
-    'action': ['vpython', 'src/brave/script/build-simple-js-bundle.py', '--repo_dir_path', 'src/brave/components/brave_sync/extension/brave-sync'],
+    'action': ['python', 'src/brave/script/build-simple-js-bundle.py', '--repo_dir_path', 'src/brave/components/brave_sync/extension/brave-sync'],
     'condition': 'not checkout_android',
   },
   {
     # Build brave-sync android
     'name': 'build_brave_sync',
     'pattern': '.',
-    'action': ['vpython', 'src/brave/script/build-simple-js-bundle.py', '--repo_dir_path', 'src/brave/components/brave_sync/extension/brave-sync-android'],
+    'action': ['python', 'src/brave/script/build-simple-js-bundle.py', '--repo_dir_path', 'src/brave/components/brave_sync/extension/brave-sync-android'],
     'condition': 'checkout_android',
   }
 ]
