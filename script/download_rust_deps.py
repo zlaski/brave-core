@@ -13,9 +13,9 @@ import sys
 import pipes
 
 try:
-  import urllib2 as urllib
-except ImportError:  # For Py3 compatibility
   import urllib.request as urllib
+except ImportError:
+  import urllib2 as urllib
 
 import deps
 from rust_deps_config import RUST_DEPS_PACKAGES_URL, RUST_DEPS_PACKAGE_VERSION
