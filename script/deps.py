@@ -14,9 +14,9 @@ import time
 import zipfile
 
 try:
-  import urllib2 as urllib
-except ImportError:  # For Py3 compatibility
   import urllib.request as urllib
+except ImportError:
+  import urllib2 as urllib
 
 def DownloadUrl(url, output_file):
     """Download url into output_file."""
@@ -29,7 +29,7 @@ def DownloadUrl(url, output_file):
         try:
             sys.stdout.write('Downloading %s ' % url)
             sys.stdout.flush()
-            response = urllib.request.urlopen(url)
+            response = urllib.urlopen(url)
             total_size = int(response.info().getheader('Content-Length').strip())
             bytes_done = 0
             dots_printed = 0
@@ -44,7 +44,7 @@ def DownloadUrl(url, output_file):
                 sys.stdout.flush()
                 dots_printed = num_dots
             if bytes_done != total_size:
-                raise urllib.error.URLError("only got %d of %d bytes" % (bytes_done, total_size))
+                raise urllib.URLError("only got %d of %d bytes" % (bytes_done, total_size))
             print ' Done.'
             return
         except urllib.URLError as e:
