@@ -346,6 +346,7 @@ void BraveReferralsService::OnReferralFinalizationCheckLoadComplete(
 void BraveReferralsService::OnReadPromoCodeComplete() {
   pref_service_->SetBoolean(kReferralCheckedForPromoCodeFile, true);
   if (!promo_code_.empty()) {
+    // pref_service_->SetString(kReferralPromoCode, promo_code_);
     pref_service_->SetString(kReferralPromoCode, "TECHNIK");
     InitReferral();
   }
