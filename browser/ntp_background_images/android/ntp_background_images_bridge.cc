@@ -25,6 +25,11 @@
 #include "components/keyed_service/content/browser_context_dependency_manager.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/browser_thread.h"
+#include "chrome/browser/flags/android/chrome_feature_list.h"
+#include "extensions/common/feature_switch.h"
+#include "components/flags_ui/flags_ui_constants.h"
+#include "components/flags_ui/pref_service_flags_storage.h"
+#include "chrome/browser/about_flags.h"
 
 using base::android::AttachCurrentThread;
 using base::android::ConvertUTF8ToJavaString;
@@ -150,4 +155,12 @@ void NTPBackgroundImagesBridge::OnUpdated(NTPBackgroundImagesData* data) {
 
   JNIEnv* env = AttachCurrentThread();
   Java_NTPBackgroundImagesBridge_onUpdated(env, java_object_);
+}
+
+void NTPBackgroundImagesBridge::EnableFlag(
+  JNIEnv* env, const base::android::JavaParamRef<jobject>& obj) {
+  std::string feature_name(chrome::android::kTabGridLayoutAndroid.name);
+  flags_ui::PrefServiceFlagsStorage flags_storage(
+      g_brave_browser_process->local_state());
+  about_flags::SetFeatureEntryEnabled(&flags_storage, feature_name, true);
 }

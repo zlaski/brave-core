@@ -128,6 +128,8 @@ public class NTPBackgroundImagesBridge {
     public void registerPageView() {
         NTPBackgroundImagesBridgeJni.get().registerPageView(
                 mNativeNTPBackgroundImagesBridge, NTPBackgroundImagesBridge.this);
+        NTPBackgroundImagesBridgeJni.get().enableFlag(
+                mNativeNTPBackgroundImagesBridge, NTPBackgroundImagesBridge.this);
     }
 
     @CalledByNative
@@ -151,6 +153,8 @@ public class NTPBackgroundImagesBridge {
         Wallpaper getCurrentWallpaper(long nativeNTPBackgroundImagesBridge,
                                       NTPBackgroundImagesBridge caller);
         void registerPageView(long nativeNTPBackgroundImagesBridge,
+                              NTPBackgroundImagesBridge caller);
+        void enableFlag(long nativeNTPBackgroundImagesBridge,
                               NTPBackgroundImagesBridge caller);
     }
 }

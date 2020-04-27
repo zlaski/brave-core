@@ -41,6 +41,7 @@ class NTPBackgroundImagesBridge : public NTPBackgroundImagesService::Observer,
       JNIEnv* env, const base::android::JavaParamRef<jobject>& obj);
 
   base::android::ScopedJavaLocalRef<jobject> GetJavaObject();
+  void EnableFlag(JNIEnv* env, const base::android::JavaParamRef<jobject>& obj);
 
  private:
   void OnUpdated(NTPBackgroundImagesData* data) override;
