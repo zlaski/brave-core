@@ -22,6 +22,7 @@
 #include "base/token.h"
 #include "brave/common/pref_names.h"
 #include "brave/components/binance/browser/binance_json_parser.h"
+#include "brave/components/l10n/browser/locale_helper.h"
 #include "components/country_codes/country_codes.h"
 #include "components/os_crypt/os_crypt.h"
 #include "components/prefs/pref_service.h"
@@ -42,7 +43,6 @@ const char gateway_host[] = "www.binance.com";
 const char oauth_callback[] = "com.brave.binance://authorization";
 const char oauth_scope[] =
     "user:email,user:address,asset:balance,asset:ocbs";
-const GURL oauth_url("https://accounts.binance.com/en/oauth/authorize");
 const unsigned int kRetriesCountOnNetworkChange = 1;
 
 net::NetworkTrafficAnnotationTag GetNetworkTrafficAnnotationTag() {
@@ -129,7 +129,8 @@ std::string BinanceService::GetOAuthClientUrl() {
   code_verifier_ = GetHexEncodedCryptoRandomSeed();
   code_challenge_ = GetCodeChallenge(code_verifier_);
 
-  GURL url(oauth_url);
+  const GURL url(std::string("https://accounts.binance.com/") +
+    LocaleHelper::GetInstance()->GetLocale() + "/oauth/authorize");
   url = net::AppendQueryParameter(url, "response_type", "code");
   url = net::AppendQueryParameter(url, "client_id", client_id_);
   url = net::AppendQueryParameter(url, "redirect_uri", oauth_callback);
