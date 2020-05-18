@@ -210,12 +210,9 @@ void SKUTransaction::SendExternalTransaction(
 }
 
 void SKUTransaction::OnSendExternalTransaction(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     ledger::ResultCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code != net::HTTP_CREATED) {
     BLOG(0, "External transaction not sent");

@@ -62,13 +62,10 @@ void SKUOrder::Create(
 }
 
 void SKUOrder::OnCreate(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const std::vector<ledger::SKUOrderItem>& order_items,
     ledger::SKUOrderCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code != net::HTTP_CREATED) {
     callback(ledger::Result::LEDGER_ERROR, "");

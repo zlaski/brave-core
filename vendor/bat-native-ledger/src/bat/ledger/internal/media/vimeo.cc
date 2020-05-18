@@ -377,13 +377,10 @@ void Vimeo::ProcessActivityFromUrl(uint64_t window_id,
 void Vimeo::OnEmbedResponse(
     const ledger::VisitData& visit_data,
     const uint64_t window_id,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+    const ledger::URLResponse& response) {
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     auto callback = std::bind(&Vimeo::OnUnknownPage,
                               this,
                               visit_data,
@@ -461,13 +458,11 @@ void Vimeo::OnPublisherPage(
     const std::string& publisher_name,
     const ledger::VisitData& visit_data,
     const uint64_t window_id,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
+    const ledger::URLResponse& response) {
   BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
       "<HTML>", headers));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     OnMediaActivityError(window_id);
     return;
   }
@@ -486,13 +481,11 @@ void Vimeo::OnPublisherPage(
 void Vimeo::OnUnknownPage(
     const ledger::VisitData& visit_data,
     const uint64_t window_id,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
+    const ledger::URLResponse& response) {
   BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
       "<HTML>", headers));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     OnMediaActivityError(window_id);
     return;
   }
@@ -625,13 +618,11 @@ void Vimeo::OnMediaPublisherInfo(
 void Vimeo::OnPublisherVideoPage(
     const std::string& media_key,
     ledger::MediaEventInfo event_info,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
+    const ledger::URLResponse& response) {
   BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
       "<HTML>", headers));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     OnMediaActivityError();
     return;
   }

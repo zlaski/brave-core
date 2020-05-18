@@ -358,10 +358,8 @@ void GitHub::OnUserPage(
     const uint64_t duration,
     uint64_t window_id,
     const ledger::VisitData& visit_data,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
-  if (response_status_code != net::HTTP_OK) {
+    const ledger::URLResponse& response) {
+  if (response.code  != net::HTTP_OK) {
     OnMediaActivityError(window_id);
     return;
   }
@@ -460,10 +458,8 @@ void GitHub::OnMediaPublisherInfo(
 
 void GitHub::OnMetaDataGet(
       ledger::PublisherInfoCallback callback,
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers) {
-  if (response_status_code != net::HTTP_OK) {
+      const ledger::URLResponse& response) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::TIP_ERROR, nullptr);
     return;
   }

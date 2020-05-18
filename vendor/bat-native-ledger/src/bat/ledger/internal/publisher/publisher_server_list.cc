@@ -87,12 +87,9 @@ void PublisherServerList::Download(ledger::ResultCallback callback) {
 }
 
 void PublisherServerList::OnDownload(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     ledger::ResultCallback callback) {
-  BLOG(7, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(7, ledger::UrlResponseToString(__func__, response));
 
   // we iterated through all pages
   if (response_status_code == net::HTTP_NO_CONTENT) {

@@ -462,13 +462,10 @@ void YouTube::OnEmbedResponse(
     const std::string& media_url,
     const ledger::VisitData& visit_data,
     const uint64_t window_id,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+    const ledger::URLResponse& response) {
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     // embedding disabled, need to scrape
     if (response_status_code == net::HTTP_UNAUTHORIZED) {
       FetchDataFromUrl(visit_data.url,
@@ -516,10 +513,8 @@ void YouTube::OnPublisherPage(
     std::string publisher_name,
     const ledger::VisitData& visit_data,
     const uint64_t window_id,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
-  if (response_status_code != net::HTTP_OK && publisher_name.empty()) {
+    const ledger::URLResponse& response) {
+  if (response.code  != net::HTTP_OK && publisher_name.empty()) {
     OnMediaActivityError(visit_data, window_id);
     return;
   }
@@ -708,10 +703,8 @@ void YouTube::GetChannelHeadlineVideo(
     uint64_t window_id,
     const ledger::VisitData& visit_data,
     bool is_custom_path,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
-  if (response_status_code != net::HTTP_OK) {
+    const ledger::URLResponse& response) {
+  if (response.code  != net::HTTP_OK) {
     OnMediaActivityError(visit_data, window_id);
     return;
   }
@@ -815,9 +808,7 @@ void YouTube::OnChannelIdForUser(
     uint64_t window_id,
     const ledger::VisitData& visit_data,
     const std::string& media_key,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
+    const ledger::URLResponse& response) {
   std::string channelId = GetChannelId(response);
   if (!channelId.empty()) {
     std::string path = "/channel/" + channelId;

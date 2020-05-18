@@ -108,14 +108,11 @@ ledger::WalletPropertiesPtr Wallet::WalletPropertiesToWalletInfo(
 }
 
 void Wallet::WalletPropertiesCallback(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     ledger::OnWalletPropertiesCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
   ledger::WalletProperties properties;
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR,
              WalletPropertiesToWalletInfo(properties));
     return;
@@ -260,12 +257,9 @@ void Wallet::DisconnectWallet(
 }
 
 void Wallet::OnTransferAnonToExternalWallet(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     ledger::ResultCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_OK) {
     callback(ledger::Result::LEDGER_OK);

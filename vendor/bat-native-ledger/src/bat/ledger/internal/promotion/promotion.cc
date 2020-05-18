@@ -143,12 +143,9 @@ void Promotion::Fetch(ledger::FetchPromotionCallback callback) {
 }
 
 void Promotion::OnFetch(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     ledger::FetchPromotionCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   ledger::PromotionList list;
 
@@ -160,7 +157,7 @@ void Promotion::OnFetch(
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     ProcessFetchedPromotions(
         ledger::Result::LEDGER_ERROR,
         std::move(list),
@@ -688,14 +685,11 @@ void Promotion::CorruptedPromotions(
 }
 
 void Promotion::OnCheckForCorrupted(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const std::vector<std::string>& promotion_id_list) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     return;
   }
 

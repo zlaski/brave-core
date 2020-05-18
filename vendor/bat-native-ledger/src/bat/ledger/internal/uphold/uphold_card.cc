@@ -60,13 +60,10 @@ void UpholdCard::CreateIfNecessary(
 }
 
 void UpholdCard::OnCreateIfNecessary(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const ledger::ExternalWallet& wallet,
     CreateCardCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_UNAUTHORIZED) {
     callback(ledger::Result::EXPIRED_TOKEN, "");
@@ -74,7 +71,7 @@ void UpholdCard::OnCreateIfNecessary(
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR, "");
     return;
   }
@@ -141,13 +138,10 @@ void UpholdCard::Create(
 }
 
 void UpholdCard::OnCreate(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const ledger::ExternalWallet& wallet,
     CreateCardCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_UNAUTHORIZED) {
     callback(ledger::Result::EXPIRED_TOKEN, "");
@@ -155,7 +149,7 @@ void UpholdCard::OnCreate(
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR, "");
     return;
   }
@@ -249,12 +243,9 @@ void UpholdCard::Update(
 }
 
 void UpholdCard::OnUpdate(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     UpdateCardCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_UNAUTHORIZED) {
     callback(ledger::Result::EXPIRED_TOKEN);
@@ -262,7 +253,7 @@ void UpholdCard::OnUpdate(
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR);
     return;
   }
@@ -347,12 +338,9 @@ std::map<std::string, std::string> UpholdCard::ParseGetCardAddressResponse(
 }
 
 void UpholdCard::OnGetCardAddresses(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     GetCardAddressesCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_UNAUTHORIZED) {
     callback(ledger::Result::EXPIRED_TOKEN,  {});
@@ -360,7 +348,7 @@ void UpholdCard::OnGetCardAddresses(
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR,  {});
     return;
   }
@@ -431,12 +419,9 @@ void UpholdCard::CreateAnonAddress(
 }
 
 void UpholdCard::OnCreateAnonAddress(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     CreateAnonAddressCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_UNAUTHORIZED) {
     callback(ledger::Result::EXPIRED_TOKEN,  "");
@@ -444,7 +429,7 @@ void UpholdCard::OnCreateAnonAddress(
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR,  "");
     return;
   }

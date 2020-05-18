@@ -114,14 +114,11 @@ void AttestationIOS::Start(
 }
 
 void AttestationIOS::OnStart(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     StartCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR, "");
     return;
   }
@@ -169,14 +166,11 @@ void AttestationIOS::Confirm(
 }
 
 void AttestationIOS::OnConfirm(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     ConfirmCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR);
     return;
   }

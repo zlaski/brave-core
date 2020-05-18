@@ -89,9 +89,7 @@ class YouTube {
       const std::string& media_url,
       const ledger::VisitData& visit_data,
       const uint64_t window_id,
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers);
+      const ledger::URLResponse& response);
 
   void OnPublisherPage(
       const uint64_t duration,
@@ -100,9 +98,7 @@ class YouTube {
       std::string publisher_name,
       const ledger::VisitData& visit_data,
       const uint64_t window_id,
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers);
+      const ledger::URLResponse& response);
 
   void SavePublisherInfo(const uint64_t duration,
                          const std::string& media_key,
@@ -142,9 +138,7 @@ class YouTube {
       uint64_t window_id,
       const ledger::VisitData& visit_data,
       bool is_custom_path,
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers);
+      const ledger::URLResponse& response);
 
   void ChannelPath(uint64_t window_id,
                    const ledger::VisitData& visit_data);
@@ -162,9 +156,7 @@ class YouTube {
       uint64_t window_id,
       const ledger::VisitData& visit_data,
       const std::string& media_key,
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers);
+      const ledger::URLResponse& response);
 
   bat_ledger::LedgerImpl* ledger_;  // NOT OWNED
 

@@ -57,14 +57,11 @@ void Balance::Fetch(ledger::FetchBalanceCallback callback) {
 }
 
 void Balance::OnWalletProperties(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     ledger::FetchBalanceCallback callback) {
   ledger::BalancePtr balance = ledger::Balance::New();
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
-  if (response_status_code != net::HTTP_OK) {
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR, std::move(balance));
     return;
   }

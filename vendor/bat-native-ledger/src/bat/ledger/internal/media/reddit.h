@@ -61,9 +61,7 @@ class Reddit {
   void OnUserPage(
       uint64_t window_id,
       const ledger::VisitData& visit_data,
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers);
+      const ledger::URLResponse& response);
 
   void OnPublisherPanelInfo(
       uint64_t window_id,
@@ -103,9 +101,7 @@ class Reddit {
   void OnPageDataFetched(
       const std::string& user_name,
       ledger::PublisherInfoCallback callback,
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers);
+      const ledger::URLResponse& response);
 
   bat_ledger::LedgerImpl* ledger_;  // NOT OWNED
 

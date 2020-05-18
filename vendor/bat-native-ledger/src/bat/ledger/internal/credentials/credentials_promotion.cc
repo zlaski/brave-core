@@ -175,15 +175,12 @@ void CredentialsPromotion::Claim(
 }
 
 void CredentialsPromotion::OnClaim(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const CredentialsTrigger& trigger,
     ledger::ResultCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR);
     return;
   }
@@ -277,20 +274,17 @@ void CredentialsPromotion::FetchSignedCreds(
 }
 
 void CredentialsPromotion::OnFetchSignedCreds(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const CredentialsTrigger& trigger,
     ledger::ResultCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_ACCEPTED) {
     callback(ledger::Result::RETRY);
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR);
     return;
   }
@@ -480,16 +474,13 @@ void CredentialsPromotion::RedeemTokens(
 }
 
 void CredentialsPromotion::OnRedeemTokens(
-    const int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const std::vector<std::string>& token_id_list,
     const CredentialsRedeem& redeem,
     ledger::ResultCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR);
     return;
   }

@@ -106,14 +106,11 @@ std::string Create::StringifyRequestCredentials(
 }
 
 void Create::RequestCredentialsCallback(
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers,
+      const ledger::URLResponse& response,
       ledger::ResultCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::BAD_REGISTRATION_RESPONSE);
     return;
   }
@@ -211,14 +208,11 @@ void Create::RequestCredentialsCallback(
 }
 
 void Create::RegisterPersonaCallback(
-      int response_status_code,
-      const std::string& response,
-      const std::map<std::string, std::string>& headers,
+      const ledger::URLResponse& response,
       ledger::ResultCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::BAD_REGISTRATION_RESPONSE);
     return;
   }

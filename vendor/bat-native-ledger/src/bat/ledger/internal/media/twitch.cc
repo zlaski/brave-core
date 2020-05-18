@@ -490,13 +490,10 @@ void Twitch::OnEmbedResponse(
     const ledger::VisitData& visit_data,
     const uint64_t window_id,
     const std::string& user_id,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+    const ledger::URLResponse& response) {
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     // TODO(anyone): add error handler
     return;
   }

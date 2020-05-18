@@ -533,10 +533,8 @@ void Twitter::OnPublisherPanelInfo(
 void Twitter::OnUserPage(
     uint64_t window_id,
     const ledger::VisitData& visit_data,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
-  if (response_status_code != net::HTTP_OK) {
+    const ledger::URLResponse& response) {
+  if (response.code  != net::HTTP_OK) {
     OnMediaActivityError(visit_data, window_id);
     return;
   }

@@ -156,11 +156,8 @@ void Uphold::FetchBalance(
 
 void Uphold::OnFetchBalance(
     FetchBalanceCallback callback,
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+    const ledger::URLResponse& response) {
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_UNAUTHORIZED ||
       response_status_code == net::HTTP_NOT_FOUND ||
@@ -170,7 +167,7 @@ void Uphold::OnFetchBalance(
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR, 0.0);
     return;
   }

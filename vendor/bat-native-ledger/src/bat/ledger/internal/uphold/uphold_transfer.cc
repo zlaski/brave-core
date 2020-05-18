@@ -75,13 +75,10 @@ void UpholdTransfer::CreateTransaction(
 }
 
 void UpholdTransfer::OnCreateTransaction(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const ledger::ExternalWallet& wallet,
     ledger::TransactionCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_UNAUTHORIZED) {
     callback(ledger::Result::EXPIRED_TOKEN, "");
@@ -143,13 +140,10 @@ void UpholdTransfer::CommitTransaction(const std::string& transaction_id,
 }
 
 void UpholdTransfer::OnCommitTransaction(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const std::string& transaction_id,
     ledger::TransactionCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
 
   if (response_status_code == net::HTTP_UNAUTHORIZED) {
     callback(ledger::Result::EXPIRED_TOKEN, "");
@@ -157,7 +151,7 @@ void UpholdTransfer::OnCommitTransaction(
     return;
   }
 
-  if (response_status_code != net::HTTP_OK) {
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR, "");
     return;
   }

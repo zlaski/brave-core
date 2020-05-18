@@ -136,14 +136,11 @@ void Recover::ContinueRecover(
 }
 
 void Recover::RecoverWalletPublicKeyCallback(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const std::vector<uint8_t>& new_seed,
     ledger::RecoverWalletCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
-  if (response_status_code != net::HTTP_OK) {
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR, 0);
     return;
   }
@@ -164,15 +161,12 @@ void Recover::RecoverWalletPublicKeyCallback(
 }
 
 void Recover::RecoverWalletCallback(
-    int response_status_code,
-    const std::string& response,
-    const std::map<std::string, std::string>& headers,
+    const ledger::URLResponse& response,
     const std::string& recoveryId,
     const std::vector<uint8_t>& new_seed,
     ledger::RecoverWalletCallback callback) {
-  BLOG(6, ledger::UrlResponseToString(__func__, response_status_code,
-      response, headers));
-  if (response_status_code != net::HTTP_OK) {
+  BLOG(6, ledger::UrlResponseToString(__func__, response));
+  if (response.code  != net::HTTP_OK) {
     callback(ledger::Result::LEDGER_ERROR, 0);
     return;
   }
