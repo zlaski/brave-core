@@ -1,0 +1,9 @@
+diff --git a/.gitignore b/.gitignore
+index a8746775b3c10e3fbc75731099a01f0fd59fce83..14c92f136ebdb3069f3d50f30fbe97bd89090ca4 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -318,3 +318,4 @@ vs-chromium-project.txt
+ 
+ # Ignore the default results output directory for tools/run-swarmed.py
+ /results
++/brave
