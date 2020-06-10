@@ -216,6 +216,13 @@ BraveWalletGetProjectIDFunction::Run() {
 }
 
 ExtensionFunction::ResponseAction
+BraveWalletGetBraveKeyFunction::Run() {
+  std::string project_id = extensions::GetBraveKey();
+  return RespondNow(OneArgument(
+      std::make_unique<base::Value>(project_id)));
+}
+
+ExtensionFunction::ResponseAction
 BraveWalletResetWalletFunction::Run() {
   auto* service = GetBraveWalletService(browser_context());
   service->ResetCryptoWallets();
