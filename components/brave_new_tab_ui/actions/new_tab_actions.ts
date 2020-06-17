@@ -38,3 +38,7 @@ export const removeStackWidget = (widget: NewTab.StackWidget) => action(types.RE
 export const setForegroundStackWidget = (widget: NewTab.StackWidget) => action(types.SET_FOREGROUND_STACK_WIDGET, {
   widget
 })
+
+export const dismissNewWidgetNotification = (widget: NewTab.StackWidget) => action(types.DISMISS_NEW_WIDGET_NOTIFICATION, {
+  widget
+})

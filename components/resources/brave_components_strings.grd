@@ -782,6 +782,7 @@
       >
         Hide sponsored images
       </message>
+      <message name="IDS_ADD_CARD_WIDGET_TITLE" desc="">Add Card</message>
       <message name="IDS_TOGETHER_WIDGET_TITLE" desc="">Brave Together</message>
       <message name="IDS_TOGETHER_WIDGET_WELCOME_TITLE" desc="">Start a private video call with your friends and colleagues.</message>
       <message name="IDS_TOGETHER_WIDGET_START_BUTTON" desc="">Start video call</message>

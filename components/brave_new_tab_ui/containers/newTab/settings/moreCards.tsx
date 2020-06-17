@@ -6,10 +6,23 @@
 import * as React from 'react'
 
 import {
-  SettingsRow,
-  SettingsText
+  FeaturedSettingsWidget,
+  StyledBannerImage,
+  StyledSettingsInfo,
+  StyledSettingsTitle,
+  StyledSettingsCopy,
+  StyledWidgetToggle,
+  SettingsWidget,
+  StyledButtonIcon,
+  StyledFullMessage
 } from '../../../components/default'
-import { Toggle } from '../../../components/toggle'
+import togetherBanner from './assets/bravetogether.png'
+import binanceBanner from './assets/binance.png'
+import rewardsBanner from './assets/braverewards.png'
+import {
+  ShowIcon,
+  HideIcon
+} from '../../../components/default/binance/assets/icons'
 
 import { getLocale } from '../../../../common/locale'
 
@@ -19,10 +32,41 @@ interface Props {
   binanceSupported: boolean
   toggleShowTogether: () => void
   showTogether: boolean
+  toggleShowRewards: () => void
+  showRewards: boolean
   togetherSupported: boolean
+  widgetSlotsFull: boolean
 }
 
 class MoreCardsSettings extends React.PureComponent<Props, {}> {
+
+  renderFullMessage = () => {
+    return (
+      <StyledFullMessage>
+        <span style={{ fontSize: '14px' }}><strong>Hide a card to free up space.</strong></span> <span>3/3 card slots used</span>
+      </StyledFullMessage>
+    )
+  }
+
+  renderActionButton = (on: boolean, toggleFunc: any, float: boolean = true) => {
+    return (
+      <StyledWidgetToggle onClick={toggleFunc} isAdd={!on} float={float}>
+        <StyledButtonIcon>
+          {
+            on
+            ? <HideIcon />
+            : <ShowIcon />
+          }
+        </StyledButtonIcon>
+        {
+          on
+          ? 'Hide'
+          : 'Add'
+        }
+      </StyledWidgetToggle>
+    )
+  }
+
   render () {
     const {
       binanceSupported,
@@ -30,32 +74,61 @@ class MoreCardsSettings extends React.PureComponent<Props, {}> {
       showBinance,
       toggleShowTogether,
       showTogether,
-      togetherSupported
+      toggleShowRewards,
+      showRewards,
+      togetherSupported,
+      widgetSlotsFull
     } = this.props
     return (
       <div>
         {
-          binanceSupported
-          ? <SettingsRow>
-              <SettingsText>{getLocale('showBinance')}</SettingsText>
-              <Toggle
-                onChange={toggleShowBinance}
-                checked={showBinance}
-                size='large'
-              />
-            </SettingsRow>
+          togetherSupported
+          ? <FeaturedSettingsWidget>
+              <StyledBannerImage src={togetherBanner} />
+              <StyledSettingsInfo>
+                <StyledSettingsTitle>
+                  {getLocale('togetherWidgetTitle')}
+                </StyledSettingsTitle>
+                <StyledSettingsCopy>
+                  {getLocale('togetherWidgetWelcomeTitle')}
+                </StyledSettingsCopy>
+              </StyledSettingsInfo>
+              {this.renderActionButton(showTogether, toggleShowTogether)}
+            </FeaturedSettingsWidget>
           : null
         }
         {
-          togetherSupported
-          ? <SettingsRow>
-              <SettingsText>{getLocale('showTogether')}</SettingsText>
-              <Toggle
-                onChange={toggleShowTogether}
-                checked={showTogether}
-                size='large'
-              />
-            </SettingsRow>
+          binanceSupported
+          ? <SettingsWidget>
+              <StyledBannerImage src={binanceBanner} />
+              <StyledSettingsInfo>
+                <StyledSettingsTitle>
+                  {'Binance'}
+                </StyledSettingsTitle>
+                <StyledSettingsCopy>
+                  {'Trade Crypto directly in your browser.'}
+                </StyledSettingsCopy>
+              </StyledSettingsInfo>
+              {this.renderActionButton(showBinance, toggleShowBinance, false)}
+            </SettingsWidget>
+          : null
+        }
+        <SettingsWidget>
+          <StyledBannerImage src={rewardsBanner} />
+          <StyledSettingsInfo>
+            <StyledSettingsTitle>
+              {'Brave Rewards'}
+            </StyledSettingsTitle>
+            <StyledSettingsCopy>
+              {'Earn tokens for watching privacy-respecting ads.'}
+            </StyledSettingsCopy>
+          </StyledSettingsInfo>
+          {this.renderActionButton(showRewards, toggleShowRewards, false)}
+        </SettingsWidget>
+        <div style={{ height: '50px', clear: 'both' }}></div>
+        {
+          widgetSlotsFull
+          ? this.renderFullMessage()
           : null
         }
       </div>

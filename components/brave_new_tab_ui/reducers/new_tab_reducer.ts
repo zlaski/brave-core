@@ -31,14 +31,15 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
   switch (action.type) {
     case types.NEW_TAB_SET_INITIAL_DATA:
       const initialDataPayload = payload as InitialData
+      const { togetherSupported } = initialDataPayload
+
       state = {
         ...state,
         initialDataLoaded: true,
         ...initialDataPayload.preferences,
         stats: initialDataPayload.stats,
         brandedWallpaperData: initialDataPayload.brandedWallpaperData,
-        ...initialDataPayload.privateTabData,
-        togetherSupported: initialDataPayload.togetherSupported
+        ...initialDataPayload.privateTabData
       }
       if (state.brandedWallpaperData && !state.brandedWallpaperData.isSponsored) {
         // Update feature flag if this is super referral wallpaper.
@@ -69,7 +70,14 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
       if (state.currentStackWidget) {
         state = storage.migrateStackWidgetSettings(state)
       }
+
       state = storage.addNewStackWidget(state)
+
+      if (!state.togetherSupported && togetherSupported) {
+        state = storage.migrateTogether(state)
+      }
+
+      state.togetherSupported = togetherSupported
 
       break
 
@@ -169,6 +177,24 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
         ...state,
         widgetStackOrder: newWidgetStackOrder
       }
+      break
+
+    case types.DISMISS_NEW_WIDGET_NOTIFICATION:
+      const widgetId: NewTab.StackWidget = payload.widget
+      let updatedNotifications = state.newWidgetNotifications
+      let updatedRemovedNotifications = state.removedNewWidgetNotifications
+
+      updatedNotifications = updatedNotifications.filter((widget) => {
+        return widget !== widgetId
+      })
+      updatedRemovedNotifications.push(widgetId)
+      
+      state = {
+        ...state,
+        newWidgetNotifications: updatedNotifications,
+        removedNewWidgetNotifications: updatedRemovedNotifications
+      }
+
       break
 
     default:

@@ -10,11 +10,13 @@ import Stats from './stats'
 import TopSitesGrid from './gridSites'
 import FooterInfo from './footerInfo'
 import SiteRemovalNotification from './notification'
+import WidgetNotification from '../../components/default/widgetNotification'
 import {
   ClockWidget as Clock,
   RewardsWidget as Rewards,
   TogetherWidget as Together,
-  BinanceWidget as Binance
+  BinanceWidget as Binance,
+  AddCardWidget as AddCard
 } from '../../components/default'
 import * as Page from '../../components/default/page'
 import BrandedWallpaperLogo from '../../components/default/brandedWallpaper/logo'
@@ -55,6 +57,7 @@ interface State {
   onlyAnonWallet: boolean
   showSettingsMenu: boolean
   backgroundHasLoaded: boolean
+  focusMoreCards: boolean
 }
 
 function GetBackgroundImageSrc (props: Props) {
@@ -89,7 +92,8 @@ class NewTabPage extends React.Component<Props, State> {
   state = {
     onlyAnonWallet: false,
     showSettingsMenu: false,
-    backgroundHasLoaded: false
+    backgroundHasLoaded: false,
+    focusMoreCards: false
   }
   imageSource?: string = undefined
   timerIdForBrandedWallpaperNotification?: number = undefined
@@ -341,7 +345,19 @@ class NewTabPage extends React.Component<Props, State> {
   }
 
   toggleSettings = () => {
-    this.setState({ showSettingsMenu: !this.state.showSettingsMenu })
+    if (this.state.showSettingsMenu) {
+      this.setState({ focusMoreCards: false })
+    }
+    this.setState({
+      showSettingsMenu: !this.state.showSettingsMenu
+    })
+  }
+
+  toggleSettingsAddCard = () => {
+    this.setState({
+      showSettingsMenu: true,
+      focusMoreCards: true
+    })
   }
 
   setForegroundStackWidget = (widget: NewTab.StackWidget) => {
@@ -459,8 +475,38 @@ class NewTabPage extends React.Component<Props, State> {
     this.props.actions.setAuthInvalid(false)
   }
 
+  addWidgetViaNotification = (id: string) => {
+    const addLookup = {
+      'together': this.toggleShowTogether
+    }
+
+    addLookup[id]()
+  
+    this.dismissWidgetNotification(id as NewTab.StackWidget)
+  }
+
+  dismissWidgetNotification = (id: NewTab.StackWidget) => {
+    this.props.actions.dismissNewWidgetNotification(id)
+  }
+
+  renderNotifications = () => {
+    const { newWidgetNotifications } = this.props.newTabData
+    const [currentNotification] = newWidgetNotifications
+
+    if (!currentNotification) {
+      return null
+    }
+
+    return (
+      <WidgetNotification
+        id={currentNotification}
+        onAddWidget={this.addWidgetViaNotification.bind(this, currentNotification)}
+        onDismissWidget={this.dismissWidgetNotification.bind(this, currentNotification)} />
+    )
+  }
+
   getCryptoContent () {
-    const { widgetStackOrder, binanceState, togetherSupported, showRewards } = this.props.newTabData
+    const { widgetStackOrder, binanceState, togetherSupported, showRewards, newWidgetNotifications } = this.props.newTabData
     const lookup = {
       'rewards': {
         supported: showRewards,
@@ -471,7 +517,7 @@ class NewTabPage extends React.Component<Props, State> {
         render: this.renderBinanceWidget.bind(this)
       },
       'together': {
-        supported: togetherSupported,
+        supported: togetherSupported && !newWidgetNotifications.includes('together'),
         render: this.renderTogetherWidget.bind(this)
       }
     }
@@ -493,7 +539,9 @@ class NewTabPage extends React.Component<Props, State> {
 
   renderCryptoContent () {
     const { newTabData } = this.props
-    const { widgetStackOrder } = newTabData
+    const { widgetStackOrder, addCardShowing, availableWidgets, textDirection, newWidgetNotifications } = newTabData
+    const shouldShowMenu = addCardShowing && widgetStackOrder.length === availableWidgets.length
+    const shouldShowAddCard = addCardShowing && (newWidgetNotifications.length || widgetStackOrder.length < availableWidgets.length)
 
     if (!widgetStackOrder.length) {
       return null
@@ -501,6 +549,29 @@ class NewTabPage extends React.Component<Props, State> {
 
     return (
       <Page.GridItemWidgetStack>
+        {
+          newWidgetNotifications.length
+          ? <div style={{ position: 'relative', marginLeft: '-26px', marginBottom: '-36px', width: 0, height: 0, borderTop: '15px solid transparent', borderBottom: '15px solid transparent', borderLeft: '15px solid white'  }}></div>
+          : null
+        }
+        {
+          shouldShowAddCard
+          ? this.renderNotifications()
+          : null
+        }
+        {
+          shouldShowAddCard
+          ? <AddCard
+              isCrypto={true}
+              menuPosition={'left'}
+              widgetTitle={getLocale('addCardWidgetTitle')}
+              textDirection={textDirection}
+              hideMenu={!shouldShowMenu}
+              hideWidget={this.toggleShowTogether}
+              onAddCard={this.toggleSettingsAddCard}
+            />
+          : null
+        }
         {this.getCryptoContent()}
       </Page.GridItemWidgetStack>
     )
@@ -618,8 +689,8 @@ class NewTabPage extends React.Component<Props, State> {
 
   render () {
     const { newTabData, gridSitesData, actions } = this.props
-    const { showSettingsMenu } = this.state
-    const { binanceState } = newTabData
+    const { showSettingsMenu, focusMoreCards } = this.state
+    const { binanceState, widgetStackOrder, availableWidgets } = newTabData
 
     if (!newTabData) {
       return null
@@ -629,6 +700,7 @@ class NewTabPage extends React.Component<Props, State> {
     const isShowingBrandedWallpaper = newTabData.brandedWallpaperData ? true : false
     const showTopSites = !!this.props.gridSitesData.gridSites.length && newTabData.showTopSites
     const cryptoContent = this.renderCryptoContent()
+    const widgetSlotsFull = widgetStackOrder.length === availableWidgets.length
 
     return (
       <Page.App dataIsReady={newTabData.initialDataLoaded}>
@@ -742,6 +814,8 @@ class NewTabPage extends React.Component<Props, State> {
           togetherSupported={newTabData.togetherSupported}
           toggleShowTogether={this.toggleShowTogether}
           showTogether={newTabData.showTogether}
+          focusMoreCards={focusMoreCards}
+          widgetSlotsFull={widgetSlotsFull}
         />
       </Page.App>
     )

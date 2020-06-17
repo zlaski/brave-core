@@ -7,6 +7,9 @@
 import { debounce } from '../../common/debounce'
 
 export const keyName = 'new-tab-data'
+const stackWidgetList: NewTab.StackWidget[] = [
+  'together', 'binance', 'rewards'
+]
 
 export const defaultState: NewTab.State = {
   initialDataLoaded: false,
@@ -57,8 +60,12 @@ export const defaultState: NewTab.State = {
   },
   currentStackWidget: '',
   removedStackWidgets: [],
+  availableWidgets: stackWidgetList,
   // Order is ascending, with last entry being in the foreground
-  widgetStackOrder: ['together', 'binance', 'rewards'],
+  widgetStackOrder: stackWidgetList,
+  newWidgetNotifications: [],
+  removedNewWidgetNotifications: [],
+  addCardShowing: true,
   binanceState: {
     userTLD: 'com',
     initialFiat: 'USD',
@@ -160,6 +167,16 @@ export const addNewStackWidget = (state: NewTab.State) => {
   return state
 }
 
+// Migrates the together widget to be displayed
+// as a new widget when it becomes available.
+export const migrateTogether = (state: NewTab.State) => {
+  state.newWidgetNotifications.push('together')
+  state.widgetStackOrder = state.widgetStackOrder.filter((widget) => {
+    return widget !== 'together'
+  })
+  return state
+}
+
 const cleanData = (state: NewTab.State) => {
   // We need to disable linter as we defined in d.ts that this values are number,
   // but we need this check to covert from old version to a new one
@@ -207,7 +224,11 @@ export const debouncedSave = debounce<NewTab.State>((data: NewTab.State) => {
       rewardsState: data.rewardsState,
       binanceState: data.binanceState,
       removedStackWidgets: data.removedStackWidgets,
-      widgetStackOrder: data.widgetStackOrder
+      availableWidgets: data.availableWidgets,
+      widgetStackOrder: data.widgetStackOrder,
+      newWidgetNotifications: data.newWidgetNotifications,
+      removedNewWidgetNotifications: data.removedNewWidgetNotifications,
+      addCardShowing: data.addCardShowing
     }
     window.localStorage.setItem(keyName, JSON.stringify(dataToSave))
   }

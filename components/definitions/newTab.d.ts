@@ -99,7 +99,11 @@ declare namespace NewTab {
     rewardsState: RewardsWidgetState
     currentStackWidget: StackWidget
     removedStackWidgets: StackWidget[]
+    availableWidgets: StackWidget[]
     widgetStackOrder: StackWidget[]
+    newWidgetNotifications: StackWidget[]
+    removedNewWidgetNotifications: StackWidget[]
+    addCardShowing: boolean
     binanceState: BinanceWidgetState
   }
 
