@@ -670,6 +670,8 @@ class Gemini extends React.PureComponent<Props, State> {
         showTradePreview: true
       })
 
+      clearInterval(this.tradeTimer)
+
       this.tradeTimer = setInterval(() => {
         const { currentTradeExpiryTime } = this.state
 
