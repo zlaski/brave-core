@@ -1,0 +1,14 @@
+diff --git a/content/public/browser/site_instance.h b/content/public/browser/site_instance.h
+index 0a5aec6455a9337f806a9376d83935b60891109b..bf47f9a5e2cc1c5947320ed785934820bb86947c 100644
+--- a/content/public/browser/site_instance.h
++++ b/content/public/browser/site_instance.h
+@@ -212,6 +212,9 @@ class CONTENT_EXPORT SiteInstance : public base::RefCounted<SiteInstance> {
+   // function may want to avoid persistence by passing in a new flag.
+   static void StartIsolatingSite(BrowserContext* context, const GURL& url);
+ 
++// use paritition_id
++  GURL GetMainFrameSite() const { return main_frame_site_; }
++  GURL main_frame_site_;
+  protected:
+   friend class base::RefCounted<SiteInstance>;
+ 

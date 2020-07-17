@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
+index 6993ff15f556daa6811bc6a137cebc5be0277d77..7528e48462a4b69d39a854d33df9e30b3037997b 100644
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -4728,6 +4728,7 @@ bool ChromeContentBrowserClient::WillCreateRestrictedCookieManager(
+     int process_id,
+     int routing_id,
+     mojo::PendingReceiver<network::mojom::RestrictedCookieManager>* receiver) {
++  LOG(ERROR) << "WillCreateRestrictedCookieManager " << origin.GetURL().spec() << " in " << top_frame_origin.GetURL().spec();
+   DCHECK_CURRENTLY_ON(BrowserThread::UI);
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
+   if (origin.scheme() == extensions::kExtensionScheme) {

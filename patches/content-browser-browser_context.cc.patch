@@ -1,0 +1,19 @@
+diff --git a/content/browser/browser_context.cc b/content/browser/browser_context.cc
+index 85251cbcd6b5b4731ffbe191bb9ecba2cc6ca9bf..6d70defb62993762772e0346beb99d5e9abecdee 100644
+--- a/content/browser/browser_context.cc
++++ b/content/browser/browser_context.cc
+@@ -262,6 +262,14 @@ StoragePartition* BrowserContext::GetStoragePartition(
+     GetContentClient()->browser()->GetStoragePartitionConfigForSite(
+         browser_context, site_instance->GetSiteURL(), true, &partition_domain,
+         &partition_name, &in_memory);
++
++    LOG(ERROR) << "GetStoragePartitionForSite " << site_instance->GetSiteURL().spec();
++    LOG(ERROR) << "main frame site " << site_instance->GetMainFrameSite();
++    LOG(ERROR) << "partition_name " << partition_name;
++    if (partition_name.empty() && !site_instance->GetMainFrameSite().is_empty()) {
++      LOG(ERROR) << "set partition domain";
++      partition_domain = site_instance->GetMainFrameSite().spec() + ":" + site_instance->GetSiteURL().spec();
++    }
+   }
+ 
+   return GetStoragePartitionFromConfig(browser_context, partition_domain,

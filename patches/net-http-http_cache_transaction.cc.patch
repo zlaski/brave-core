@@ -1,0 +1,19 @@
+diff --git a/net/http/http_cache_transaction.cc b/net/http/http_cache_transaction.cc
+index ad6e626898d1f51fe51d4bc38ad660ce8d8022e1..8ca01f19e8cf25d27f68f0e0882a99668a2df310 100644
+--- a/net/http/http_cache_transaction.cc
++++ b/net/http/http_cache_transaction.cc
+@@ -2834,6 +2834,14 @@ bool HttpCache::Transaction::ConditionalizeRequest() {
+     } else {
+       custom_request_->extra_headers.SetHeader(
+           HttpRequestHeaders::kIfNoneMatch, etag_value);
++      if (entry_->disk_entry) {
++        auto cache_size =
++            entry_->disk_entry->GetDataSize(kResponseContentIndex);
++        if (cache_size <= 1000) {
++          custom_request_->extra_headers.RemoveHeader(
++              HttpRequestHeaders::kIfNoneMatch);
++        }
++      }
+     }
+     // For byte-range requests, make sure that we use only one way to validate
+     // the request.

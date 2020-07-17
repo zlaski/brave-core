@@ -1,0 +1,22 @@
+diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
+index a37c3125a34318b51a085073b30b3e830ec7a05d..74919f7d01de864081800bab24c260f7b2f29e50 100644
+--- a/content/browser/renderer_host/render_process_host_impl.cc
++++ b/content/browser/renderer_host/render_process_host_impl.cc
+@@ -4191,6 +4191,9 @@ bool RenderProcessHost::ShouldTryToUseExistingProcessHost(
+ // static
+ RenderProcessHost* RenderProcessHostImpl::GetExistingProcessHost(
+     SiteInstanceImpl* site_instance) {
++  if (!site_instance->main_frame_site_.is_empty())
++    return nullptr;
++
+   // First figure out which existing renderers we can use.
+   std::vector<RenderProcessHost*> suitable_renderers;
+   suitable_renderers.reserve(GetAllHosts().size());
+@@ -4459,6 +4462,7 @@ RenderProcessHost* RenderProcessHostImpl::GetProcessHostForSiteInstance(
+ 
+   // Make sure the chosen process is in the correct StoragePartition for the
+   // SiteInstance.
++  // LOG(ERROR) << blah
+   CHECK(render_process_host->InSameStoragePartition(
+       BrowserContext::GetStoragePartition(browser_context, site_instance,
+                                           false /* can_create */)));

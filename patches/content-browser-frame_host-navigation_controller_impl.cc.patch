@@ -1,8 +1,20 @@
 diff --git a/content/browser/frame_host/navigation_controller_impl.cc b/content/browser/frame_host/navigation_controller_impl.cc
-index 005d9dcf49acc1d649430f7dedde84053c0a55f9..6abbeb55ffa1c311b916ba1ce444e5b20dbbf5e6 100644
+index 005d9dcf49acc1d649430f7dedde84053c0a55f9..01c765d71f8076702638d335f3a298b26a38a4ab 100644
 --- a/content/browser/frame_host/navigation_controller_impl.cc
 +++ b/content/browser/frame_host/navigation_controller_impl.cc
-@@ -2906,16 +2906,17 @@ void NavigationControllerImpl::NavigateWithoutEntry(
+@@ -2423,6 +2423,11 @@ SessionStorageNamespace* NavigationControllerImpl::GetSessionStorageNamespace(
+         browser_context_, instance->GetSiteURL());
+   }
+ 
++  if (instance && !instance->GetMainFrameSite().is_empty()) {
++    partition_id = instance->GetMainFrameSite().spec() + ":" + instance->GetSiteURL().spec();;
++    LOG(ERROR) << "setting partition id for " << partition_id;
++  }
++
+   // TODO(ajwong): Should this use the |partition_id| directly rather than
+   // re-lookup via |instance|?  http://crbug.com/142685
+   StoragePartition* partition =
+@@ -2906,16 +2911,17 @@ void NavigationControllerImpl::NavigateWithoutEntry(
    // Note: we intentionally leave the pending entry in place for renderer debug
    // URLs, unlike the cases below where we clear it if the navigation doesn't
    // proceed.
