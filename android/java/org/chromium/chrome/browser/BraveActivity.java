@@ -68,11 +68,8 @@ import org.chromium.ui.widget.Toast;
 import org.chromium.chrome.browser.util.PackageUtils;
 import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.onboarding.OnboardingActivity;
-<<<<<<< HEAD
 import org.chromium.chrome.browser.CrossPromotionalModalDialogFragment;
-=======
 import org.chromium.chrome.browser.onboarding.v2.HighlightDialogFragment;
->>>>>>> Update UI with highlight view
 
 import java.util.Calendar;
 import java.util.Date;
@@ -262,11 +259,11 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
 
         if (PackageUtils.isFirstInstall(ContextUtils.getApplicationContext())
                 && !OnboardingPrefManager.getInstance().isNewOnboardingShown()) {
-            showOnboarding(OnboardingPrefManager.ONBOARDING_INVALID_OPTION, -1);
+            showOnboarding();
         }
     }
 
-    public void showOnboarding(int onboradingType, int index) {
+    public void showOnboarding() {
         OnboardingPrefManager.getInstance().setNewOnboardingShown(true);
         FragmentManager fm = getSupportFragmentManager();
         HighlightDialogFragment fragment = (HighlightDialogFragment) fm
