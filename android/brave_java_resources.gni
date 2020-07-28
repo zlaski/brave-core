@@ -646,7 +646,6 @@ brave_java_resources = [
   "java/res/layout/brave_shields_3rd_party_cookies_blocked_switcher.xml",
   "java/res/layout/brave_set_default_browser_dialog.xml",
   "java/res/layout/brave_rewards_spinnner_item.xml",
-  "java/res/layout/fragment_brave_shields_onboarding.xml",
   "java/res/layout/brave_ads_existing_user_dialog_layout.xml",
   "java/res/layout/brave_rewards_panel.xml",
   "java/res/layout/brave_rewards_site_banner.xml",
