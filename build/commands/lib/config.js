@@ -4,9 +4,10 @@ const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
 const { spawnSync } = require('child_process')
-const rootDir = require('./root')
 
+const rootDir = require('./root')
 const srcDir = path.join(rootDir, 'src')
+const braveCoreDir = path.join(srcDir, 'brave')
 
 let npmCommand = 'npm'
 if (process.platform === 'win32') {
@@ -25,14 +26,15 @@ const run = (cmd, args = []) => {
 }
 
 // this is a huge hack because the npm config doesn't get passed through from brave-browser .npmrc/package.json
-var packageConfig = function(key){
+var packageConfig = function(key) {
   let packages = { config: {}}
-  if (fs.existsSync(path.join(rootDir, 'package.json'))) {
-    packages = require(path.relative(__dirname, path.join(rootDir, 'package.json')))
+
+  if (fs.existsSync(path.join(braveCoreDir, 'package.json'))) {
+    packages = Object.assign(packages, require(path.relative(__dirname, path.join(braveCoreDir, 'package.json'))))
   }
 
-  if (fs.existsSync(path.join(srcDir, 'package.json'))) {
-    packages = Object.assign(packages, require(path.relative(__dirname, path.join(srcDir, 'package.json'))))
+  if (fs.existsSync(path.join(rootDir, 'package.json'))) {
+    packages.config.projects['brave-core'] = require(path.relative(__dirname, path.join(rootDir, 'package.json'))).config.projects['brave-core']
   }
 
   let obj = Object.assign({}, packages.config)
@@ -74,10 +76,10 @@ const Config = function () {
   this.buildTarget = 'brave'
   this.rootDir = rootDir
   this.srcDir = srcDir
+  this.braveCoreDir = braveCoreDir
   this.scriptDir = path.join(this.rootDir, 'scripts')
   this.chromeVersion = getNPMConfig(['projects', 'chrome', 'tag'])
   this.chromiumRepo = getNPMConfig(['projects', 'chrome', 'repository', 'url'])
-  this.braveCoreDir = path.join(this.srcDir, 'brave')
   this.braveCoreRepo = getNPMConfig(['projects', 'brave-core', 'repository', 'url'])
   this.buildToolsDir = path.join(this.srcDir, 'build')
   this.resourcesDir = path.join(this.rootDir, 'resources')
