@@ -85,11 +85,7 @@ async function RunCommand () {
     util.buildGClientConfig()
   }
 
-  let braveCoreRef = program.args[0]
-  if (!braveCoreRef) {
-    braveCoreRef = program.init ? config.getProjectVersion('brave-core') : null
-  }
-
+  const braveCoreRef = program.args[0]
   if (braveCoreRef || program.init || program.force) {
     // we're doing a reset of brave-core so try to stash any changes
     Log.progress('Stashing any local changes')

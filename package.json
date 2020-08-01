@@ -35,6 +35,20 @@
     "test-unit": "jest -t",
     "test-python-scripts": "npm run pep8 && PYTHONPATH=./script python -m unittest discover -s ./script/test"
   },
+  "config": {
+    "projects": {
+      "chrome": {
+        "dir": "src",
+        "tag": "84.0.4147.105",
+        "repository": {
+          "url": "https://github.com/chromium/chromium"
+        }
+      }
+    },
+    "widevine": {
+      "version": "4.10.1582.2"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brave/brave-core.git"

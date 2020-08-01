@@ -6,6 +6,8 @@ const assert = require('assert')
 const { spawnSync } = require('child_process')
 const rootDir = require('./root')
 
+const srcDir = path.join(rootDir, 'src')
+
 let npmCommand = 'npm'
 if (process.platform === 'win32') {
   npmCommand += '.cmd'
@@ -27,6 +29,10 @@ var packageConfig = function(key){
   let packages = { config: {}}
   if (fs.existsSync(path.join(rootDir, 'package.json'))) {
     packages = require(path.relative(__dirname, path.join(rootDir, 'package.json')))
+  }
+
+  if (fs.existsSync(path.join(srcDir, 'package.json'))) {
+    packages = Object.assign(packages, require(path.relative(__dirname, path.join(srcDir, 'package.json'))))
   }
 
   let obj = Object.assign({}, packages.config)
@@ -67,9 +73,9 @@ const Config = function () {
   this.signTarget = 'sign_app'
   this.buildTarget = 'brave'
   this.rootDir = rootDir
+  this.srcDir = srcDir
   this.scriptDir = path.join(this.rootDir, 'scripts')
-  this.srcDir = path.join(this.rootDir, 'src')
-  this.chromeVersion = this.getProjectVersion('chrome')
+  this.chromeVersion = getNPMConfig(['projects', 'chrome', 'tag'])
   this.chromiumRepo = getNPMConfig(['projects', 'chrome', 'repository', 'url'])
   this.braveCoreDir = path.join(this.srcDir, 'brave')
   this.braveCoreRepo = getNPMConfig(['projects', 'brave-core', 'repository', 'url'])
@@ -412,10 +418,6 @@ Config.prototype.addPathToEnv = function (env, addPath, prepend = false) {
 Config.prototype.addPythonPathToEnv = function (env, addPath) {
   env.PYTHONPATH = this.appendPath(env.PYTHONPATH || '', addPath)
   return env
-}
-
-Config.prototype.getProjectVersion = function (projectName) {
-  return getNPMConfig(['projects', projectName, 'tag']) || getNPMConfig(['projects', projectName, 'branch'])
 }
 
 Config.prototype.getProjectRef = function (projectName) {
