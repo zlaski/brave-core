@@ -162,6 +162,8 @@ def main():
                 upload_script, bucket + channel, gpg_full_key_id)
         if channel in ['release'] and item in ['upload_to_aptly']:
             upload_cmd = upload_cmd + " " + gpg_passphrase
+        else:
+            upload_cmd = upload_cmd + " NULL"
         logging.info("Running command: \"{}\"".format(upload_cmd))
         try:
             subprocess.check_output(upload_cmd, shell=True)
