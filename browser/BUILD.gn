@@ -25,6 +25,7 @@ import("//tools/grit/grit_rule.gni")
 
 declare_args() {
   brave_stats_api_key = ""
+  brave_pref_hash_seed = ""
 }
 
 source_set("browser_process") {
@@ -495,6 +496,16 @@ source_set("browser") {
   }
 }
 
+if (is_official_build) {
+  generated_file("brave_pref_hash_seed") {
+    assert(brave_pref_hash_seed != "")
+    contents = brave_pref_hash_seed
+    outputs = [
+      "$root_gen_dir/brave/browser/resources/pref_hash_seed.bin"
+    ]
+  }
+}
+
 grit("resources") {
   source = "brave_browser_resources.grd"
 
@@ -509,6 +520,7 @@ grit("resources") {
   resource_ids = "//brave/browser/resources/resource_ids"
 
   output_dir = "$root_gen_dir/brave"
+
   outputs = [
     "grit/brave_browser_resources.h",
     "brave_browser_resources.pak",
@@ -518,4 +530,8 @@ grit("resources") {
     "-E",
     "root_gen_dir=" + rebase_path(root_gen_dir, root_build_dir),
   ]
+
+  if (is_official_build) {
+    deps = [ ":brave_pref_hash_seed" ]
+  }
 }

@@ -127,6 +127,7 @@ const Config = function () {
   this.braveAndroidKeystoreName = getNPMConfig(['brave_android_keystore_name'])
   this.braveAndroidKeystorePassword = getNPMConfig(['brave_android_keystore_password'])
   this.braveAndroidKeyPassword = getNPMConfig(['brave_android_key_password'])
+  this.bravePrefHashSeed = getNPMConfig(['brave_pref_hash_seed']) || ''
 }
 
 Config.prototype.isOfficialBuild = function () {
@@ -210,6 +211,7 @@ Config.prototype.buildArgs = function () {
     enable_cdm_host_verification: this.enableCDMHostVerification(),
     skip_signing: !this.shouldSign(),
     chrome_pgo_phase: this.chromePgoPhase,
+    brave_pref_hash_seed: this.bravePrefHashSeed,
     // When enabled (see third_party/blink/renderer/config.gni), we end up with
     // multiple files giving compilation error similar to:
     // gen/third_party/blink/renderer/bindings/modules/v8/v8_shared_worker_global_scope.cc:4614:34:

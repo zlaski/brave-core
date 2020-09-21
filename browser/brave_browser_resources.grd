@@ -9,7 +9,7 @@
   <release seq="1">
     <includes>
       <if expr="is_official_build">
-        <include name="IDR_PREF_HASH_SEED_BIN" file="resources\settings_internal\pref_hash_seed.bin" type="BINDATA" />
+        <include name="IDR_PREF_HASH_SEED_BIN" file="${root_gen_dir}/brave/browser/resources/pref_hash_seed.bin" type="BINDATA" use_base_dir="false" />
       </if>
     </includes>
   </release>
