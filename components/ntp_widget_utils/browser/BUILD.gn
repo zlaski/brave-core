@@ -6,6 +6,8 @@ source_set("browser") {
     "ntp_widget_utils_oauth.h",
     "ntp_widget_utils_region.cc",
     "ntp_widget_utils_region.h",
+    "ntp_widget_utils_network.cc",
+    "ntp_widget_utils_network.h",
   ]
 
   deps = [
@@ -13,5 +15,8 @@ source_set("browser") {
     "//components/country_codes",
     "//components/prefs",
     "//crypto",
+    "//net",
+    "//services/network/public/cpp",
+    "//url",
   ]
 }
