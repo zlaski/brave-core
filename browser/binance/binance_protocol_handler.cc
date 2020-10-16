@@ -34,18 +34,24 @@ void LoadNewTabURL(
   if (!web_contents) {
     return;
   }
-
   const auto ref_url = web_contents->GetURL();
-  if (!ref_url.is_valid()) {
+  if (!ref_url.is_valid() || !initiating_origin.has_value()) {
     return;
   }
 
   // We should only allow binance scheme to be used from
-  // https://accounts.binance.com
-  GURL allowed_origin("https://accounts.binance.com");
-  if (web_contents->GetLastCommittedURL().GetOrigin() != allowed_origin ||
-      !initiating_origin.has_value() ||
-      initiating_origin.value().GetURL() != allowed_origin) {
+  // https://accounts.binance.com or chrome://newtab
+  GURL allowed_origin_one("chrome://newtab");
+  GURL allowed_origin_two("https://accounts.binance.com");
+
+  const bool committed_url_match =
+      web_contents->GetLastCommittedURL().GetOrigin() == allowed_origin_one ||
+      web_contents->GetLastCommittedURL().GetOrigin() == allowed_origin_two;
+  const bool url_value_match =
+      initiating_origin.value().GetURL() == allowed_origin_one ||
+      initiating_origin.value().GetURL() == allowed_origin_two;
+
+  if (!committed_url_match || !url_value_match) {
     return;
   }
 
