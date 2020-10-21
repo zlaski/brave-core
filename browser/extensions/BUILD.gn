@@ -65,6 +65,7 @@ source_set("extensions") {
     "//brave/components/brave_shields/browser",
     "//brave/components/brave_shields/common",
     "//brave/components/brave_wayback_machine:buildflags",
+    "//brave/components/qr/browser",
     "//brave/components/ipfs/buildflags",
     "//chrome/browser/extensions",
     "//chrome/common",

@@ -1,0 +1,15 @@
+import("//brave/build/config.gni")
+
+source_set("browser") {
+  sources = [
+    "qr_util.cc",
+    "qr_util.h",
+  ]
+
+  deps = [
+    "//base",
+    "//brave/vendor/bip39wally-core-native:bip39wally-core",
+    "//chrome/services/qrcode_generator",
+    "//ui/base",
+  ]
+}
