@@ -25,6 +25,7 @@ export const defaultState: NewTab.State = {
   showGemini: false,
   showBitcoinDotCom: false,
   showCryptoDotCom: false,
+  showFTX: false,
   brandedWallpaperOptIn: false,
   isBrandedWallpaperNotificationDismissed: true,
   isBraveTodayIntroDismissed: false,
@@ -34,6 +35,7 @@ export const defaultState: NewTab.State = {
   binanceSupported: false,
   bitcoinDotComSupported: false,
   cryptoDotComSupported: false,
+  ftxSupported: false,
   isIncognito: chrome.extension.inIncognitoContext,
   useAlternativePrivateSearchEngine: false,
   torCircuitEstablished: false,
@@ -116,6 +118,9 @@ export const defaultState: NewTab.State = {
     losersGainers: {},
     supportedPairs: {},
     charts: []
+  },
+  ftxState: {
+    optInMarkets: false
   }
 }
 
@@ -273,6 +278,7 @@ export const debouncedSave = debounce<NewTab.State>((data: NewTab.State) => {
       binanceState: data.binanceState,
       geminiState: data.geminiState,
       cryptoDotComState: data.cryptoDotComState,
+      ftxState: data.ftxState,
       removedStackWidgets: data.removedStackWidgets,
       widgetStackOrder: data.widgetStackOrder,
       savedWidgetStackOrder: data.savedWidgetStackOrder
