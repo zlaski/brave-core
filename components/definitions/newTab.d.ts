@@ -197,7 +197,7 @@ declare namespace NewTab {
   }
 
   export interface FTXWidgetState {
-    optInMarkets: boolean
+    optedIntoMarkets: boolean
   }
 
   export type BinanceTLD = 'us' | 'com'

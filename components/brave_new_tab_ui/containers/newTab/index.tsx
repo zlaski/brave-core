@@ -571,6 +571,14 @@ class NewTabPage extends React.Component<Props, State> {
     })
   }
 
+  onFTXOptInMarkets = (show: boolean) => {
+    this.props.actions.onFTXOptInMarkets(show)
+  }
+
+  onFTXInteraction = () => {
+    this.props.actions.onFTXInteraction()
+  }
+
   getCurrencyList = () => {
     const { accountBalances, userTLD } = this.props.newTabData.binanceState
     const { usCurrencies, comCurrencies } = currencyData
@@ -1008,6 +1016,8 @@ class NewTabPage extends React.Component<Props, State> {
         hideWidget={this.toggleShowFTX}
         showContent={showContent}
         onShowContent={this.setForegroundStackWidget.bind(this, 'ftx')}
+        onInteraction={this.onFTXInteraction}
+        onOptInMarkets={this.onFTXOptInMarkets}
       />
     )
   }
