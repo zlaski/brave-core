@@ -130,7 +130,7 @@ export const defaultState: NewTab.State = {
     charts: []
   },
   ftxState: {
-    optInMarkets: false
+    optedIntoMarkets: false
   }
 }
 
