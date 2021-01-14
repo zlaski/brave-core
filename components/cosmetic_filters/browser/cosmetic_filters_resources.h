@@ -13,6 +13,8 @@
 #include "base/values.h"
 #include "brave/components/cosmetic_filters/common/cosmetic_filters.mojom.h"
 
+class HostContentSettingsMap;
+
 namespace brave_shields {
 class AdBlockService;
 }
@@ -25,25 +27,28 @@ class CosmeticFiltersResources final
   CosmeticFiltersResources(const CosmeticFiltersResources&) = delete;
   CosmeticFiltersResources& operator=(const CosmeticFiltersResources&) = delete;
   explicit CosmeticFiltersResources(
+      HostContentSettingsMap* settings_map,
       brave_shields::AdBlockService* ad_block_service);
   ~CosmeticFiltersResources() override;
 
   // cosmetic_filters::mojom::CosmeticFiltersCommunication
-  void HiddenClassIdSelectors(
-      const std::string& input,
-      HiddenClassIdSelectorsCallback callback) override;
+  void ShouldDoCosmeticFiltering(
+      const std::string& url,
+      ShouldDoCosmeticFilteringCallback callback) override;
+  void HiddenClassIdSelectors(const std::string& input,
+                              HiddenClassIdSelectorsCallback callback) override;
   void UrlCosmeticResources(const std::string& url,
                             UrlCosmeticResourcesCallback callback) override;
 
  private:
-  void HiddenClassIdSelectorsOnUI(
-      HiddenClassIdSelectorsCallback callback,
-      base::Optional<base::Value> resources);
+  void HiddenClassIdSelectorsOnUI(HiddenClassIdSelectorsCallback callback,
+                                  base::Optional<base::Value> resources);
 
   void UrlCosmeticResourcesOnUI(UrlCosmeticResourcesCallback callback,
-                                   base::Optional<base::Value> resources);
+                                base::Optional<base::Value> resources);
 
-  brave_shields::AdBlockService* ad_block_service_;
+  HostContentSettingsMap* settings_map_;             // Not owned
+  brave_shields::AdBlockService* ad_block_service_;  // Not owned
 };
 
 }  // namespace cosmetic_filters
