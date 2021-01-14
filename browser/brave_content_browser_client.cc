@@ -28,6 +28,7 @@
 #include "brave/components/brave_shields/common/brave_shield_constants.h"
 #include "brave/components/brave_wallet/buildflags/buildflags.h"
 #include "brave/components/brave_webtorrent/browser/buildflags/buildflags.h"
+#include "brave/components/cosmetic_filters/browser/cosmetic_filters_resources.h"
 #include "brave/components/ipfs/buildflags/buildflags.h"
 #include "brave/components/speedreader/buildflags.h"
 #include "brave/components/tor/buildflags/buildflags.h"
@@ -170,6 +171,23 @@ BraveContentBrowserClient::AllowWebBluetooth(
     const url::Origin& requesting_origin,
     const url::Origin& embedding_origin) {
   return ContentBrowserClient::AllowWebBluetoothResult::BLOCK_GLOBALLY_DISABLED;
+}
+
+void BraveContentBrowserClient::ExposeInterfacesToRenderer(
+    service_manager::BinderRegistry* registry,
+    blink::AssociatedInterfaceRegistry* associated_registry,
+    content::RenderProcessHost* render_process_host) {
+  auto create_cosmetic_filters_resources =
+      [](mojo::PendingReceiver<
+          cosmetic_filters::mojom::CosmeticFiltersResources> receiver) {
+        mojo::MakeSelfOwnedReceiver(
+            std::make_unique<cosmetic_filters::CosmeticFiltersResources>(
+                g_brave_browser_process->ad_block_service()),
+            std::move(receiver));
+      };
+
+  registry->AddInterface(base::BindRepeating(create_cosmetic_filters_resources),
+                         content::GetUIThreadTaskRunner({}));
 }
 
 bool BraveContentBrowserClient::HandleExternalProtocol(

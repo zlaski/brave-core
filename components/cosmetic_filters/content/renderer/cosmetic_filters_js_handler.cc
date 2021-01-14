@@ -26,10 +26,15 @@ CosmeticFiltersJSHandler::~CosmeticFiltersJSHandler() = default;
 
 void CosmeticFiltersJSHandler::HiddenClassIdSelectors(
     const std::string& input) {
-  if (cs_communicator_) {
-    cs_communicator_->HiddenClassIdSelectors(input);
+  if (cosmetic_filters_resources_) {
+    cosmetic_filters_resources_->HiddenClassIdSelectors(
+        input,
+        base::BindOnce(&CosmeticFiltersJSHandler::OnHiddenClassIdSelectors,
+                       base::Unretained(this)));
   }
 }
+
+void CosmeticFiltersJSHandler::OnHiddenClassIdSelectors(base::Value result) {}
 
 void CosmeticFiltersJSHandler::AddJavaScriptObjectToFrame(
     v8::Local<v8::Context> context) {
@@ -67,9 +72,9 @@ void CosmeticFiltersJSHandler::BindFunctionToObject(
 }
 
 void CosmeticFiltersJSHandler::EnsureConnected() {
-  if (!cs_communicator_) {
+  if (!cosmetic_filters_resources_) {
     render_frame_->GetBrowserInterfaceBroker()->GetInterface(
-        cs_communicator_.BindNewPipeAndPassReceiver());
+        cosmetic_filters_resources_.BindNewPipeAndPassReceiver());
   }
 }
 

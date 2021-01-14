@@ -8,9 +8,8 @@
 
 #include <string>
 
-#include "brave/content/browser/mojom/cosmetic_filters_communication.mojom.h"
+#include "brave/components/cosmetic_filters/common/cosmetic_filters.mojom.h"
 #include "content/public/renderer/render_frame.h"
-#include "content/public/renderer/render_frame_observer.h"
 #include "mojo/public/cpp/bindings/remote.h"
 #include "v8/include/v8.h"
 
@@ -36,9 +35,11 @@ class CosmeticFiltersJSHandler {
 
   // A function to be called from JS
   void HiddenClassIdSelectors(const std::string& input);
+  void OnHiddenClassIdSelectors(base::Value result);
 
   content::RenderFrame* render_frame_;
-  mojo::Remote<cf_comm::mojom::CosmeticFiltersCommunication> cs_communicator_;
+  mojo::Remote<cosmetic_filters::mojom::CosmeticFiltersResources>
+      cosmetic_filters_resources_;
 };
 
 // static
