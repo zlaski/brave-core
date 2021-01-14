@@ -86,13 +86,13 @@ void CosmeticFiltersResources::HiddenClassIdSelectors(
 void CosmeticFiltersResources::HiddenClassIdSelectorsOnUI(
     HiddenClassIdSelectorsCallback callback,
     base::Optional<base::Value> resources) {
-  std::move(callback).Run(resources ? resources->Clone() : base::Value());
+  std::move(callback).Run(std::move(resources));
 }
 
 void CosmeticFiltersResources::UrlCosmeticResourcesOnUI(
     UrlCosmeticResourcesCallback callback,
     base::Optional<base::Value> resources) {
-  std::move(callback).Run(resources ? resources->Clone() : base::Value());
+  std::move(callback).Run(std::move(resources));
 }
 
 void CosmeticFiltersResources::ShouldDoCosmeticFiltering(

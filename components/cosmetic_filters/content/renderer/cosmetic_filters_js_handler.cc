@@ -34,7 +34,7 @@ void CosmeticFiltersJSHandler::HiddenClassIdSelectors(
   }
 }
 
-void CosmeticFiltersJSHandler::OnHiddenClassIdSelectors(base::Value result) {}
+void CosmeticFiltersJSHandler::OnHiddenClassIdSelectors(base::Optional<base::Value> result) {}
 
 void CosmeticFiltersJSHandler::AddJavaScriptObjectToFrame(
     v8::Local<v8::Context> context) {
