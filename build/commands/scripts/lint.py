@@ -23,7 +23,10 @@ def HasFormatErrors():
   # For more options, see vendor/depot_tools/git_cl.py
   cmd = ['cl', 'format', '--diff']
   diff = git_cl.RunGit(cmd)
-  print(diff)
+  try:
+    print(diff)
+  except:
+    print('Error printing cl-format diff.')
   return bool(diff)
 
 def RunFormatCheck(upstream_branch):
