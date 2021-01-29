@@ -50,8 +50,8 @@ public class BraveBookmarkUtils extends BookmarkUtils {
             return bookmarkId;
         }
 
-        BookmarkId bookmarkId =
-                addBookmarkInternal(activity, bookmarkModel, tab.getTitle(), tab.getOriginalUrl());
+        BookmarkId bookmarkId = addBookmarkInternal(
+                activity, bookmarkModel, tab.getTitle(), tab.getOriginalUrl().getSpec());
 
         Snackbar snackbar = null;
         if (bookmarkId == null) {
