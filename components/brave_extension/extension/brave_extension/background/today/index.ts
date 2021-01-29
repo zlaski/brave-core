@@ -4,6 +4,7 @@
 // you can obtain one at http://mozilla.org/MPL/2.0/.
 
 import * as Background from '../../../../../common/Background'
+import blobToDataUrl from './blobToDataUrl'
 import * as Feed from './feed'
 import * as Publishers from './publishers'
 import * as PublisherUserPrefs from './publisher-user-prefs'
@@ -137,6 +138,13 @@ Background.setListener<Messages.GetImageDataResponse, Messages.GetImageDataPaylo
   async function (req, sender, sendResponse) {
     // TODO: handle error
     const blob = await fetchResource(req.url).then(r => r.blob())
+    if (!req.isPadded) {
+      const dataUrl = await blobToDataUrl(blob)
+      sendResponse({
+        dataUrl
+      })
+      return
+    }
     // @ts-ignore (Blob.arrayBuffer does exist)
     const buffer = await blob.arrayBuffer()
     const dataUrl = await getUnpaddedAsDataUrl(buffer, 'image/jpg')

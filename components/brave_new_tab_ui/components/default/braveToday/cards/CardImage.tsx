@@ -9,12 +9,13 @@ import * as Background from '../../../../../common/Background'
 
 type Props = {
   imageUrl: string
+  isPadded?: boolean
   list?: boolean
   isPromoted?: boolean
   onLoaded?: () => any
 }
 
-function useGetUnpaddedImage (paddedUrl: string, onLoaded?: () => any) {
+function useGetUnpaddedImage (url: string, isPadded: boolean, onLoaded?: () => any) {
   const [unpaddedUrl, setUnpaddedUrl] = React.useState('')
   const onReceiveUnpaddedUrl = (result: string) => {
     setUnpaddedUrl(result)
@@ -25,6 +26,9 @@ function useGetUnpaddedImage (paddedUrl: string, onLoaded?: () => any) {
     })
   }
   React.useEffect(() => {
+    if (!url) {
+      return
+    }
     // Storybook method
     // @ts-ignore
     if (window.braveStorybookUnpadUrl) {
@@ -36,33 +40,33 @@ function useGetUnpaddedImage (paddedUrl: string, onLoaded?: () => any) {
     Background.send<BraveToday.Messages.GetImageDataResponse,
         BraveToday.Messages.GetImageDataPayload>(
       Background.MessageTypes.Today.getImageData,
-      { url: paddedUrl }
+      { url, isPadded }
     )
     .then(result => onReceiveUnpaddedUrl(result.dataUrl))
     .catch(err => {
-      console.error(`Error getting image for ${paddedUrl}.`, err)
+      console.error(`Error getting image for ${url}.`, err)
     })
 
-  }, [paddedUrl])
+  }, [url, isPadded])
   return unpaddedUrl
 }
 
 export default function CardImage (props: Props) {
-  const unpaddedUrl = useGetUnpaddedImage(props.imageUrl, props.onLoaded)
+  const url = useGetUnpaddedImage(props.imageUrl, !!props.isPadded, props.onLoaded)
   const [isImageLoaded, setIsImageLoaded] = React.useState(false)
   React.useEffect(() => {
-    if (unpaddedUrl) {
+    if (url) {
       const img = new Image()
       img.addEventListener('load', () => {
         setIsImageLoaded(true)
       })
-      img.src = unpaddedUrl
+      img.src = url
     }
-  }, [unpaddedUrl])
+  }, [url])
   const Frame = props.list ? Card.ListImageFrame : Card.ImageFrame
   return (
     <Frame isImageLoaded={isImageLoaded}>
-      <Card.Image isPromoted={props.isPromoted} src={unpaddedUrl} />
+      <Card.Image isPromoted={props.isPromoted} src={url} />
     </Frame>
   )
 }

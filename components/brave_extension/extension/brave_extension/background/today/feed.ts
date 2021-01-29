@@ -7,6 +7,7 @@ import { isPublisherContentAllowed } from '../../../../../common/braveToday'
 import { getOrFetchData as getOrFetchPublishers, addPublishersChangedListener } from './publishers'
 import feedToData from './feedToData'
 import { fetchResource } from './privateCDN'
+import * as CustomFeeds from './customFeeds'
 import { getFeedUrl } from './urls'
 
 type RemoteData = BraveToday.FeedItem[]
@@ -99,19 +100,24 @@ function performUpdateFeed () {
   // Only run this once at a time, otherwise wait for the update
   readLock = new Promise(async function (resolve, reject) {
     try {
-      const [feedResponse, publishers] = await Promise.all([
+      const [feedResponse, publishers, customFeeds] = await Promise.all([
         // We don't use If-None-Match header because
         // often have to fetch same data and compute feed
         // with different publisher preferences.
         fetchResource(await getFeedUrl()),
-        getOrFetchPublishers()
+        getOrFetchPublishers(),
+        CustomFeeds.getAllFeeds()
       ])
       if (feedResponse.ok) {
         // Save the Etag so we can check for updates periodically.
         const feedEtag = feedResponse.headers.get('Etag')
         setStorageEtag(feedEtag)
         setLastUpdateCheckTime(Date.now())
-        const feedContents: RemoteData = await feedResponse.json()
+        // const feedContents: RemoteData = await feedResponse.json()
+        const feedContents: RemoteData = []
+        for (const feed of customFeeds) {
+          feedContents.push(...feed.items)
+        }
         console.debug(`Successfully got new remote feed with etag ${feedEtag}.`, feedResponse.headers)
         if (!publishers) {
           throw new Error('no publishers to filter feed')

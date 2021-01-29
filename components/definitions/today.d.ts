@@ -17,7 +17,8 @@ declare namespace BraveToday {
     }
     // getImageData
     export type GetImageDataPayload = {
-      url: string
+      url: string,
+      isPadded: boolean
     }
     export type GetImageDataResponse = {
       dataUrl: string
@@ -71,15 +72,15 @@ declare namespace BraveToday {
   }
 
   type BaseFeedItem = {
+    padded_img?: string
+    img?: string | null
     content_type: 'article' | 'product' | 'brave_partner'
     category: string // 'Tech', 'Business', 'Top News', 'Crypto', 'Cars', 'Culture', 'Fashion', 'Sports', 'Entertainment'
     publish_time: string // UTC "2020-04-17 19:21:10"
     title: string // "14 Truly Incredible Catfish Makeup Transformations From TikTok"
-    description: string // "# Makeup skill level: Expert.↵↵![](https://img.buzzfeed.com/buzzfeed-↵static/static/2020-04/6/20/enhanced/a3cd932e6db6/original-567-1586204318-9.jpg?crop=1244:829;0,0)↵↵* * *↵↵[View Entire Post ›](https://www.buzzfeed.com/kristatorres/13-truly-↵incredible-catfish-makeup-transformations)↵↵"
+    description?: string // "# Makeup skill level: Expert.↵↵![](https://img.buzzfeed.com/buzzfeed-↵static/static/2020-04/6/20/enhanced/a3cd932e6db6/original-567-1586204318-9.jpg?crop=1244:829;0,0)↵↵* * *↵↵[View Entire Post ›](https://www.buzzfeed.com/kristatorres/13-truly-↵incredible-catfish-makeup-transformations)↵↵"
     url: string // "https://www.buzzfeed.com/kristatorres/13-truly-incredible-catfish-makeup-transformations"
     url_hash: string // '0e57ac...'
-    padded_img: string
-    img: string // '',
     publisher_id: string // 'afd9...'
     publisher_name: string
     score: number

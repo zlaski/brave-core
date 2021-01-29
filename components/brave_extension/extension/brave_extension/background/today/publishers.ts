@@ -6,6 +6,7 @@
 import { debounce } from '../../../../../common/debounce'
 import Events from '../../../../../common/events'
 import { fetchResource } from './privateCDN'
+import * as CustomFeeds from './customFeeds'
 import { getPrefs as getPublisherPrefs, addPrefsChangedListener } from './publisher-user-prefs'
 import { getSourcesUrl } from './urls'
 
@@ -73,8 +74,9 @@ function performUpdate (notify: boolean = true) {
       const feedResponse = await fetchResource(await getSourcesUrl())
       if (feedResponse.ok) {
         const feedContents: BraveToday.Publisher[] = await feedResponse.json()
-        console.debug('fetched today publishers', feedContents)
-        memoryData = await convertToObject(feedContents)
+        const rssPublishers = await CustomFeeds.getAllPublishers()
+        console.debug('fetched today publishers', feedContents, rssPublishers)
+        memoryData = await convertToObject(feedContents.concat(rssPublishers))
         resolve()
         // Notify
         setPublishersCache(memoryData)

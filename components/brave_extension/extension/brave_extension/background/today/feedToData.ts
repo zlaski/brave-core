@@ -28,7 +28,6 @@ function convertFeedItem (item: BraveToday.FeedItem): BraveToday.FeedItem {
   const publishTime = item.publish_time + ' UTC'
   return {
     ...item,
-    img: item.padded_img,
     publish_time: publishTime,
     relative_time: generateRelativeTimeFormat(publishTime)
   }
@@ -46,7 +45,7 @@ export default async function getBraveTodayData (
   // Filter to only with image and enabled
   // publishers (or publishers we yet know about).
   feedContent = feedContent
-    .filter(f => isItemWithImage(f) && !!enabledPublishers[f.publisher_id])
+    .filter(f => !!enabledPublishers[f.publisher_id])
 
   // Get hash at this point since we have a flat list, and our history
   // isn't changing it, but changes in publisher prefs will
@@ -134,9 +133,9 @@ export default async function getBraveTodayData (
   }
 }
 
-function isItemWithImage (item: BraveToday.FeedItem) {
-  return !!item.padded_img
-}
+// function isItemWithImage (item: BraveToday.FeedItem) {
+//   return !!item.padded_img || !!item.img
+// }
 
 function isArticleTopNews (article: BraveToday.Article) {
   return article.category === 'Top News'

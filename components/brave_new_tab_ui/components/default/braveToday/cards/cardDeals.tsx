@@ -31,7 +31,7 @@ function ListItem (props: ListItemProps) {
   })
   return (
     <Card.DealItem innerRef={cardRef} onClick={onClick} href={props.item.url}>
-      <CardImage imageUrl={props.item.padded_img} />
+      <CardImage imageUrl={props.item.padded_img || ''} isPadded={true} />
       <Card.Text>{props.item.title}</Card.Text>
       <Card.DealDescription>{props.item.description}</Card.DealDescription>
     </Card.DealItem>

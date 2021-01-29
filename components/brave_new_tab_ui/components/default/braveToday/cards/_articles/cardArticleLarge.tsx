@@ -82,13 +82,20 @@ const LargeArticle = React.forwardRef<HTMLElement, ArticleProps>(function (props
     }
   }, [innerRef.current, props.onItemViewed])
 
+  let isImagePadded = true
+  let imageUrl = item.padded_img
+  if (!imageUrl) {
+    isImagePadded = false
+    imageUrl = item.img || ''
+  }
   // TODO(petemill): Avoid nested links
   // `ref as any` due to https://github.com/DefinitelyTyped/DefinitelyTyped/issues/28884
   return (
     <Card.Large innerRef={innerRef}>
       <a onClick={onClick} href={item.url} ref={cardRef}>
         <CardImage
-          imageUrl={item.img}
+          imageUrl={imageUrl}
+          isPadded={isImagePadded}
           isPromoted={props.isPromoted}
         />
         <Card.Content>

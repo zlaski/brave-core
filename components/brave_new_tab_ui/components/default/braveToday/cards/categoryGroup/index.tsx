@@ -30,6 +30,12 @@ function ListItem (props: ListItemProps) {
   const onClick = useReadArticleClickHandler(props.onReadFeedItem, {
     item: props.item
   })
+  let isImagePadded = true
+  let imageUrl = props.item.padded_img
+  if (!imageUrl) {
+    isImagePadded = false
+    imageUrl = props.item.img || ''
+  }
   return (
     <Card.ListItem>
       <a onClick={onClick} href={props.item.url} ref={cardRef}>
@@ -39,7 +45,11 @@ function ListItem (props: ListItemProps) {
           <Card.Time>{props.item.relative_time}</Card.Time>
         </Card.Content>
         <Card.ListItemImageFrame>
-          <CardImage list={true} imageUrl={props.item.img} />
+          <CardImage
+            list={true}
+            imageUrl={imageUrl}
+            isPadded={isImagePadded}
+          />
         </Card.ListItemImageFrame>
       </a>
     </Card.ListItem>

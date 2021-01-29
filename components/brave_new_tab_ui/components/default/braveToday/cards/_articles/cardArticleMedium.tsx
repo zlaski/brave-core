@@ -34,11 +34,18 @@ function MediumArticle (props: ArticleProps) {
   const onClick = useReadArticleClickHandler(props.onReadFeedItem, {
     item
   })
+  let isImagePadded = true
+  let imageUrl = item.padded_img
+  if (!imageUrl) {
+    isImagePadded = false
+    imageUrl = item.img || ''
+  }
   return (
     <Card.Small>
       <a onClick={onClick} href={item.url} ref={cardRef}>
         <CardImage
-          imageUrl={item.img}
+          imageUrl={imageUrl}
+          isPadded={isImagePadded}
         />
         <Card.Content>
           <Card.Text>

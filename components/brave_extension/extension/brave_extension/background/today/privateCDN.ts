@@ -2,6 +2,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // you can obtain one at http://mozilla.org/MPL/2.0/.
+import blobToDataUrl from './blobToDataUrl'
 
 export async function fetchResource (url: string) {
   const response = await fetch(url, {
@@ -24,10 +25,5 @@ export async function getUnpaddedAsDataUrl (buffer: ArrayBuffer, mimeType = 'ima
   )
   const unpaddedData = buffer.slice(4, contentLength + 4)
   const unpaddedBlob = new Blob([unpaddedData], { type: mimeType })
-  const dataUrl = await new Promise<string>(resolve => {
-    let reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.readAsDataURL(unpaddedBlob)
-  })
-  return dataUrl
+  return await blobToDataUrl(unpaddedBlob)
 }
