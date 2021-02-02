@@ -318,7 +318,7 @@ class PageWallet extends React.Component<Props, State> {
     this.actions.removeAllPendingContribution()
   }
 
-  handleUpholdLink = () => {
+  handleExternalWalletLink = () => {
     const { ui, externalWallet, balance } = this.props.rewardsData
 
     if (!externalWallet) {
@@ -350,7 +350,7 @@ class PageWallet extends React.Component<Props, State> {
       this.actions.onVerifyOnboardingDisplayed()
     }
 
-    this.handleUpholdLink()
+    this.handleExternalWalletLink()
   }
 
   getWalletStatus = (): WalletState | undefined => {
@@ -406,12 +406,12 @@ class PageWallet extends React.Component<Props, State> {
     }
 
     if (externalWallet.verifyUrl) {
-      this.handleUpholdLink()
+      this.handleExternalWalletLink()
       return
     }
   }
 
-  goToUphold = () => {
+  goToExternalWallet = () => {
     const { externalWallet } = this.props.rewardsData
 
     if (!externalWallet || !externalWallet.accountUrl) {
@@ -598,6 +598,7 @@ class PageWallet extends React.Component<Props, State> {
       case 3: { // Rewards.Processor.BRAVE_USER_FUNDS
         text = getLocale('processorBraveUserFunds')
         break
+      // TODO(zenparsing): Add bitflyer (4)
       }
     }
 
@@ -795,7 +796,7 @@ class PageWallet extends React.Component<Props, State> {
           walletState={this.getWalletStatus()}
           onVerifyClick={onVerifyClick}
           onDisconnectClick={this.onDisconnectClick}
-          goToUphold={this.goToUphold}
+          goToExternalWallet={this.goToExternalWallet}
           greetings={this.getGreetings()}
           onlyAnonWallet={onlyAnonWallet}
           showLoginMessage={this.showLoginMessage()}
