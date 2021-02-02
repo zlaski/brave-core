@@ -10,6 +10,7 @@
 #include "base/test/bind.h"
 #include "base/time/time.h"
 #include "base/time/time_override.h"
+#include "bat/ledger/global_constants.h"
 #include "bat/ledger/internal/uphold/uphold_util.h"
 #include "brave/browser/brave_rewards/rewards_service_factory.h"
 #include "brave/browser/extensions/api/brave_action_api.h"
