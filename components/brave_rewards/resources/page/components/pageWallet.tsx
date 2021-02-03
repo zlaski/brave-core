@@ -780,6 +780,7 @@ class PageWallet extends React.Component<Props, State> {
 
     const pendingTotal = parseFloat((pendingContributionTotal || 0).toFixed(3))
     const walletType = externalWallet ? externalWallet.type : undefined
+    const walletProvider = utils.getWalletProviderName(externalWallet)
 
     let onVerifyClick = undefined
     let showCopy = false
@@ -800,6 +801,7 @@ class PageWallet extends React.Component<Props, State> {
           alert={this.walletAlerts()}
           walletType={walletType}
           walletState={this.getWalletStatus()}
+          walletProvider={walletProvider}
           onVerifyClick={onVerifyClick}
           onDisconnectClick={this.onDisconnectClick}
           goToExternalWallet={this.goToExternalWallet}
@@ -825,6 +827,7 @@ class PageWallet extends React.Component<Props, State> {
               activeTabId={this.state.activeTabId}
               backupKey={recoveryKey}
               showBackupNotice={this.showBackupNotice()}
+              walletProvider={walletProvider}
               onTabChange={this.onModalBackupTabChange}
               onClose={this.onModalBackupClose}
               onCopy={this.onModalBackupOnCopy}
@@ -854,6 +857,7 @@ class PageWallet extends React.Component<Props, State> {
               onVerifyClick={this.onVerifyClick.bind(this, true)}
               onClose={this.toggleVerifyModal}
               walletType={walletType}
+              walletProvider={walletProvider}
             />
             : null
         }
