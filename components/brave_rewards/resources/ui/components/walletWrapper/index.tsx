@@ -183,7 +183,7 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
       return
     }
 
-    if (!this.props.showLoginMessage) {
+    if (!this.props.showLoginMessage || this.props.walletType !== 'uphold') {
       action()
       return
     }
@@ -610,7 +610,7 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
     const connectedVerified = walletState === 'verified'
     const batFormatString = onlyAnonWallet ? getLocale('batPoints') : getLocale('bat')
 
-    const loginText = getLocale('loginMessageText').split(/\$\d/g)
+    const upholdLoginText = getLocale('loginMessageText').split('$1')
     const rewardsText1 = getLocale('rewardsPanelText1').split(/\$\d/g)
 
     // TODO(zenparsing): Contains "Uphold", bold. May not make sense at all.
@@ -685,13 +685,9 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
                   <LoginMessageText>
                     <b>{getLocale('loginMessageTitle')}</b>
                     <p>
-                      {loginText[0]}
-                      {walletProvider}
-                      {loginText[1]}
+                      {upholdLoginText[0]}
                       <br />
-                      {loginText[2]}
-                      {walletProvider}
-                      {loginText[3]}
+                      {upholdLoginText[1]}
                     </p>
                     <br/>
                     {getLocale('walletVerificationNote3').replace('$1', walletProvider)}
