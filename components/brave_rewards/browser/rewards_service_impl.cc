@@ -3020,7 +3020,7 @@ void RewardsServiceImpl::ShowNotification(
     callback(ledger::type::Result::LEDGER_OK);
 }
 
-bool RewardsServiceImpl::OnlyAnonWallet() {
+bool RewardsServiceImpl::OnlyAnonWallet() const {
   // TODO(zenparsing): Remove this function and modify all call sites.
   return false;
 }
