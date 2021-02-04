@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "base/test/task_environment.h"
-#include "bat/ledger/internal/endpoint/bitflyer/get_balance/bitflyer_get_balance.h"
+#include "bat/ledger/internal/endpoint/bitflyer/get_balance/get_balance_bitflyer.h"
 #include "bat/ledger/internal/ledger_client_mock.h"
 #include "bat/ledger/internal/ledger_impl_mock.h"
 #include "bat/ledger/ledger.h"

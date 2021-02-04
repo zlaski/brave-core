@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVELEDGER_ENDPOINT_BITFLYER_GET_BALANCE_GET_BALANCE_H_
-#define BRAVELEDGER_ENDPOINT_BITFLYER_GET_BALANCE_GET_BALANCE_H_
+#ifndef BRAVELEDGER_ENDPOINT_BITFLYER_GET_BALANCE_GET_BALANCE_BITFLYER_H_
+#define BRAVELEDGER_ENDPOINT_BITFLYER_GET_BALANCE_GET_BALANCE_BITFLYER_H_
 
 #include <string>
 
@@ -80,4 +80,4 @@ class GetBalance {
 }  // namespace endpoint
 }  // namespace ledger
 
-#endif  // BRAVELEDGER_ENDPOINT_BITFLYER_GET_BALANCE_GET_BALANCE_H_
+#endif  // BRAVELEDGER_ENDPOINT_BITFLYER_GET_BALANCE_GET_BALANCE_BITFLYER_H_

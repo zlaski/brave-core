@@ -304,20 +304,28 @@ const rewardsReducer: Reducer<Rewards.State | undefined> = (state: Rewards.State
 
       chrome.send('brave_rewards.getExternalWallet')
 
+      // NOT_FOUND
+      if (data.result === 9) {
+        ui.modalRedirect = 'batLimit'
+        break
+      }
+
       // EXPIRED_TOKEN
       if (data.result === 24) {
         ui.modalRedirect = 'error'
         break
       }
 
+      // BAT_NOT_ALLOWED
       if (data.result === 25) {
         ui.modalRedirect = 'notAllowed'
         break
       }
 
-      // NOT_FOUND
-      if (data.result === 9) {
-        ui.modalRedirect = 'batLimit'
+      // ALREADY_EXISTS
+      if (data.result === 26) {
+        // User has reached device linking limit; no need to show modal, as we
+        // posted a notification for this
         break
       }
 

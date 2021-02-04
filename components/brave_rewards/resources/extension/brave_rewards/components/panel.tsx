@@ -196,6 +196,13 @@ export class Panel extends React.Component<Props, State> {
     this.actions.deleteNotification(id)
   }
 
+  onDeviceLimitReached = (id: string) => {
+    chrome.tabs.create({
+      url: 'https://support.brave.com/hc/en-us/articles/360056508071'
+    })
+    this.actions.deleteNotification(id)
+  }
+
   onPromotionHide = (promotionId: string) => {
     this.actions.resetPromotion(promotionId)
   }
@@ -338,6 +345,9 @@ export class Panel extends React.Component<Props, State> {
       case 'insufficientFunds':
         clickEvent = this.onAddFunds.bind(this, id)
         break
+      case 'deviceLimitReached':
+        clickEvent = this.onDeviceLimitReached.bind(this, id)
+        break
       default:
         clickEvent = undefined
         break
@@ -470,6 +480,10 @@ export class Panel extends React.Component<Props, State> {
 
         break
       }
+      case RewardsNotificationType.REWARDS_NOTIFICATION_DEVICE_LIMIT_REACHED:
+        type = 'deviceLimitReached'
+        text = getMessage('deviceLimitReachedNotification')
+        break
       default:
         type = ''
         break

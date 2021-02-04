@@ -95,11 +95,12 @@ export type NotificationType =
   'ads' |
   'backupWallet' |
   'contribute' |
+  'deviceLimitReached' |
+  'error' |
   'grant' |
   'insufficientFunds' |
-  'tipsProcessed' |
-  'error' |
   'pendingContribution' |
+  'tipsProcessed' |
   'verifyWallet' |
   ''
 
@@ -286,6 +287,10 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
         buttonText = getLocale('whyHow').toUpperCase()
         buttonAction = this.onNotificationClick
         break
+      case 'deviceLimitReached':
+        buttonText = getLocale('deviceLimitReachedLearnMore')
+        buttonAction = this.onNotificationClick
+        break
       default:
         buttonText = getLocale('ok').toUpperCase()
         break
@@ -462,6 +467,7 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
     switch (notification.type) {
       case 'ads':
       case 'backupWallet':
+      case 'deviceLimitReached':
       case 'insufficientFunds':
       case 'verifyWallet':
         icon = megaphoneIconUrl
@@ -500,6 +506,9 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
         break
       case 'contribute':
         typeText = getLocale('braveContributeTitle')
+        break
+      case 'deviceLimitReached':
+        typeText = getLocale('deviceLimitReachedTitle')
         break
       case 'grant':
         typeText = this.props.onlyAnonWallet

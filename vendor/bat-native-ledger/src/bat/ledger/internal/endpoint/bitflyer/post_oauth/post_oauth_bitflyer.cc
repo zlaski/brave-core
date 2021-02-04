@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "bat/ledger/internal/endpoint/bitflyer/post_oauth/bitflyer_post_oauth.h"
+#include "bat/ledger/internal/endpoint/bitflyer/post_oauth/post_oauth_bitflyer.h"
 
 #include <utility>
 
@@ -69,8 +69,11 @@ type::Result PostOauth::CheckStatusCode(const int status_code) {
 type::Result PostOauth::ParseBody(
     const std::string& body,
     std::string* token,
-    std::string* address) {
+    std::string* address,
+    std::string* linking_info) {
   DCHECK(token);
+  DCHECK(address);
+  DCHECK(linking_info);
 
   base::Optional<base::Value> value = base::JSONReader::Read(body);
   if (!value || !value->is_dict()) {
@@ -96,8 +99,15 @@ type::Result PostOauth::ParseBody(
     return type::Result::LEDGER_ERROR;
   }
 
+  const auto* linking_information = dictionary->FindStringKey("linking_info");
+  if (!linking_information) {
+    BLOG(0, "Missing linking info");
+    return type::Result::LEDGER_ERROR;
+  }
+
   *token = *access_token;
   *address = *deposit_id;
+  *linking_info = *linking_information;
 
   return type::Result::LEDGER_OK;
 }
@@ -127,14 +137,15 @@ void PostOauth::OnRequest(
   type::Result result = CheckStatusCode(response.status_code);
 
   if (result != type::Result::LEDGER_OK) {
-    callback(result, "", "");
+    callback(result, "", "", "");
     return;
   }
 
   std::string token;
   std::string address;
-  result = ParseBody(response.body, &token, &address);
-  callback(result, token, address);
+  std::string linking_info;
+  result = ParseBody(response.body, &token, &address, &linking_info);
+  callback(result, token, address, linking_info);
 }
 
 }  // namespace bitflyer

@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVELEDGER_ENDPOINT_BITFLYER_POST_OAUTH_BITFLYER_POST_OAUTH_H_
-#define BRAVELEDGER_ENDPOINT_BITFLYER_POST_OAUTH_BITFLYER_POST_OAUTH_H_
+#ifndef BRAVELEDGER_ENDPOINT_BITFLYER_POST_OAUTH_POST_OAUTH_BITFLYER_H_
+#define BRAVELEDGER_ENDPOINT_BITFLYER_POST_OAUTH_POST_OAUTH_BITFLYER_H_
 
 #include <string>
 
@@ -51,7 +51,8 @@ namespace bitflyer {
 using PostOauthCallback = std::function<void(
     const type::Result result,
     const std::string& token,
-    const std::string& address)>;
+    const std::string& address,
+    const std::string& linking_info)>;
 
 class PostOauth {
  public:
@@ -72,7 +73,8 @@ class PostOauth {
   type::Result ParseBody(
       const std::string& body,
       std::string* token,
-      std::string* address);
+      std::string* address,
+      std::string* linking_info);
 
   void OnRequest(
       const type::UrlResponse& response,

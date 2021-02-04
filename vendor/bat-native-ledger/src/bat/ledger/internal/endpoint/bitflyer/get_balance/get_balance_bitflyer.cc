@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "bat/ledger/internal/endpoint/bitflyer/get_balance/bitflyer_get_balance.h"
+#include "bat/ledger/internal/endpoint/bitflyer/get_balance/get_balance_bitflyer.h"
 
 #include <utility>
 

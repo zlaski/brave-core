@@ -15,6 +15,7 @@
 using std::placeholders::_1;
 using std::placeholders::_2;
 using std::placeholders::_3;
+using std::placeholders::_4;
 
 namespace ledger {
 namespace bitflyer {
@@ -102,6 +103,7 @@ void BitflyerAuthorization::Authorize(
       _1,
       _2,
       _3,
+      _4,
       callback);
 
   bitflyer_server_->post_oauth()->Request(code, url_callback);
@@ -111,6 +113,7 @@ void BitflyerAuthorization::OnAuthorize(
     const type::Result result,
     const std::string& token,
     const std::string& address,
+    const std::string& linking_info,
     ledger::ExternalWalletAuthorizationCallback callback) {
   if (result == type::Result::EXPIRED_TOKEN) {
     BLOG(0, "Expired token");
@@ -137,10 +140,38 @@ void BitflyerAuthorization::OnAuthorize(
     return;
   }
 
+  if (linking_info.empty()) {
+    BLOG(0, "Linking info is empty");
+    callback(type::Result::LEDGER_ERROR, {});
+    return;
+  }
+
   auto wallet_ptr = GetWallet(ledger_);
 
   wallet_ptr->token = token;
   wallet_ptr->address = address;
+  wallet_ptr->linking_info = linking_info;
+
+  ledger_->bitflyer()->SetWallet(wallet_ptr->Clone());
+
+  auto url_callback = std::bind(&BitflyerAuthorization::OnClaimWallet,
+      this,
+      _1,
+      callback);
+
+  bitflyer_server_->post_claim()->Request(linking_info, url_callback);
+}
+
+void BitflyerAuthorization::OnClaimWallet(
+    const type::Result result,
+    ledger::ExternalWalletAuthorizationCallback callback) {
+  if (result != type::Result::LEDGER_OK) {
+    BLOG(0, "Couldn't claim wallet");
+    callback(result, {});
+    return;
+  }
+
+  auto wallet_ptr = GetWallet(ledger_);
 
   switch (wallet_ptr->status) {
     case type::WalletStatus::NOT_CONNECTED:

@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "base/test/task_environment.h"
-#include "bat/ledger/internal/endpoint/bitflyer/post_oauth/bitflyer_post_oauth.h"
+#include "bat/ledger/internal/endpoint/bitflyer/post_oauth/post_oauth_bitflyer.h"
 #include "bat/ledger/internal/ledger_client_mock.h"
 #include "bat/ledger/internal/ledger_impl_mock.h"
 #include "bat/ledger/ledger.h"
@@ -63,7 +63,8 @@ TEST_F(BitflyerPostOauthTest, ServerOK) {
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result,
          const std::string& token,
-         const std::string& address) {
+         const std::string& address,
+         const std::string& linking_info) {
         EXPECT_EQ(result, type::Result::LEDGER_OK);
         EXPECT_EQ(token, "edc8b465fe2e2a26ce553d937ccc6c7195e9f909");
       });
@@ -86,7 +87,8 @@ TEST_F(BitflyerPostOauthTest, ServerError401) {
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result,
          const std::string& token,
-         const std::string& address) {
+         const std::string& address,
+         const std::string& linking_info) {
         EXPECT_EQ(result, type::Result::EXPIRED_TOKEN);
         EXPECT_EQ(token, "");
       });
@@ -109,7 +111,8 @@ TEST_F(BitflyerPostOauthTest, ServerErrorRandom) {
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result,
          const std::string& token,
-         const std::string& address) {
+         const std::string& address,
+         const std::string& linking_info) {
         EXPECT_EQ(result, type::Result::LEDGER_ERROR);
         EXPECT_EQ(token, "");
       });
