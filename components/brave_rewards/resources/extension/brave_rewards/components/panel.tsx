@@ -614,7 +614,17 @@ export class Panel extends React.Component<Props, State> {
       nonUserFunds += wallets['blinded']
     }
 
-    return connected && nonUserFunds === 0
+    const walletType = externalWallet ? externalWallet.type : ''
+    switch (publisher ? publisher.status : 0) {
+      case 1: // CONNECTED
+        return nonUserFunds === 0
+      case 2: // UPHOLD_VERIFIED
+        return walletType !== 'uphold'
+      case 3: // BITFLYER_VERIFIED
+        return walletType !== 'bitflyer'
+      default:
+        return false
+    }
   }
 
   getActions = () => {

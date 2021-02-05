@@ -471,7 +471,7 @@ IN_PROC_BROWSER_TEST_F(
   contribution_->TipViaCode(
       "duckduckgo.com",
       amount,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       1);
   contribution_->VerifyTip(amount, true, false, true);
 }
@@ -492,14 +492,14 @@ IN_PROC_BROWSER_TEST_F(
   contribution_->TipViaCode(
       "duckduckgo.com",
       amount,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       1);
   total_amount += amount;
 
   contribution_->TipViaCode(
       "laurenwags.github.io",
       amount,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       1);
   total_amount += amount;
 
@@ -663,7 +663,7 @@ IN_PROC_BROWSER_TEST_F(
   contribution_->TipViaCode(
       "duckduckgo.com",
       25.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
 
@@ -702,28 +702,28 @@ IN_PROC_BROWSER_TEST_F(
   contribution_->TipViaCode(
       "duckduckgo.com",
       5.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
 
   contribution_->TipViaCode(
       "site1.com",
       10.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
 
   contribution_->TipViaCode(
       "site2.com",
       10.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
 
   contribution_->TipViaCode(
       "site3.com",
       10.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
   contribution_->AddBalance(promotion_->ClaimPromotionViaCode());
@@ -949,7 +949,7 @@ IN_PROC_BROWSER_TEST_F(
   contribution_->TipViaCode(
       "3zsistemi.si",
       10.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
 
@@ -977,7 +977,7 @@ IN_PROC_BROWSER_TEST_F(
   contribution_->TipViaCode(
       "3zsistemi.si",
       10.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
 

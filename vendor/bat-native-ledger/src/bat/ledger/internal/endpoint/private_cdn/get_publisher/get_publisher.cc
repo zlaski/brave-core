@@ -64,10 +64,12 @@ ledger::type::PublisherStatus GetPublisherStatusFromMessage(
     const publishers_pb::ChannelResponse& response) {
   auto status = ledger::type::PublisherStatus::CONNECTED;
   for (const auto& wallet : response.wallets()) {
+    // TODO(zenparsing): Add test for bitflyer wallet when protobuf format
+    // has been updated.
     if (wallet.has_uphold_wallet()) {
       switch (wallet.uphold_wallet().wallet_state()) {
         case publishers_pb::UPHOLD_ACCOUNT_KYC:
-          return ledger::type::PublisherStatus::VERIFIED;
+          return ledger::type::PublisherStatus::UPHOLD_VERIFIED;
         default: {}
       }
     }

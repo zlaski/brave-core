@@ -132,7 +132,26 @@ void ContributionExternalWallet::OnServerPublisherInfo(
     return;
   }
 
-  if (info->status != type::PublisherStatus::VERIFIED) {
+  bool publisher_verified = false;
+  switch (info->status) {
+    case type::PublisherStatus::UPHOLD_VERIFIED:
+      publisher_verified = processor == type::ContributionProcessor::UPHOLD;
+      break;
+    case type::PublisherStatus::BITFLYER_VERIFIED:
+      publisher_verified = processor == type::ContributionProcessor::BITFLYER;
+      break;
+    default:
+      break;
+  }
+
+  if (!publisher_verified) {
+    // NOTE: At this point we assume that the user has a connected wallet for
+    // the specified |provider| and that the wallet balance is non-zero. We also
+    // assume that the user cannot have two connected wallets at the same time.
+    // We can then infer that no other external wallet will be able to service
+    // this contribution item, and we can safely put the contribution into the
+    // pending list.
+
     BLOG(1, "Publisher not verified");
 
     auto save_callback =

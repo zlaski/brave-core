@@ -70,7 +70,7 @@ export const isPublisherVerified = (status?: RewardsExtension.PublisherStatus) =
     return false
   }
 
-  return status === 2
+  return status > 1
 }
 
 export const isPublisherConnected = (status?: RewardsExtension.PublisherStatus) => {
@@ -82,11 +82,9 @@ export const isPublisherConnected = (status?: RewardsExtension.PublisherStatus) 
 }
 
 export const isPublisherConnectedOrVerified = (status?: RewardsExtension.PublisherStatus) => {
-  if (status === undefined) {
-    return false
-  }
-
-  return status === 2 || status === 1
+  // Any non-zero publisher status indicates that they are either connected or
+  // verified
+  return Boolean(status)
 }
 
 export const isPublisherNotVerified = (status?: RewardsExtension.PublisherStatus) => {

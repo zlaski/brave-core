@@ -26,7 +26,7 @@ class ContributionMonthlyUtilTest : public testing::Test {
     for (uint32_t ix = 0; ix < iterations; ix++) {
       const auto status =
           ix < variation
-          ? type::PublisherStatus::VERIFIED
+          ? type::PublisherStatus::UPHOLD_VERIFIED
           : type::PublisherStatus::NOT_VERIFIED;
       type::PublisherInfoPtr publisher_info = type::PublisherInfo::New();
       publisher_info->id = "recurringexample" + std::to_string(ix) + ".com";

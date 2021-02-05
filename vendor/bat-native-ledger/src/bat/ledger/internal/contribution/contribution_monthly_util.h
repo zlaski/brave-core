@@ -14,6 +14,8 @@ class LedgerImpl;
 
 namespace contribution {
 
+// NOTE: This function is used by ledger->HasSufficientBalanceToReconcile(),
+// which seems to be used only on iOS.
 double GetTotalFromVerifiedTips(
     const type::PublisherInfoList& publisher_list);
 

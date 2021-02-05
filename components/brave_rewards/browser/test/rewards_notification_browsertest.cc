@@ -373,7 +373,7 @@ IN_PROC_BROWSER_TEST_F(
   contribution_->TipViaCode(
       "duckduckgo.com",
       20.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
 
@@ -410,7 +410,7 @@ IN_PROC_BROWSER_TEST_F(
   contribution_->TipViaCode(
       "duckduckgo.com",
       50.0,
-      ledger::type::PublisherStatus::VERIFIED,
+      ledger::type::PublisherStatus::UPHOLD_VERIFIED,
       0,
       true);
 
