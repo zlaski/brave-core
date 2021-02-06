@@ -198,7 +198,7 @@ void SKUTransaction::SendExternalTransaction(
           url_callback);
       return;
     }
-    // TODO(zenparsing): Add a case for bitFlyer
+    // TODO(zenparsing): Add a case for bitFlyer in order to support AC
   }
 }
 

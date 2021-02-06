@@ -48,18 +48,18 @@ void ContributionExternalWallet::ContributionInfo(
     return;
   }
 
-  // TODO(zenparsing): Support BitFlyer
-  if (contribution->processor != type::ContributionProcessor::UPHOLD) {
-    BLOG(0, "Only Uphold wallets are currently supported");
-    callback(type::Result::LEDGER_ERROR);
-    return;
+  type::ExternalWalletPtr wallet;
+  switch (contribution->processor) {
+    case type::ContributionProcessor::UPHOLD:
+      wallet = ledger_->uphold()->GetWallet();
+      break;
+    case type::ContributionProcessor::BITFLYER:
+      wallet = ledger_->bitflyer()->GetWallet();
+      break;
+    default:
+      break;
   }
 
-  // In this phase we only support one wallet
-  // so we will just always pick uphold.
-  // In the future we will allow user to pick which wallet to use via UI
-  // and then we will extend this function
-  const auto wallet = ledger_->uphold()->GetWallet();
   if (!wallet) {
     BLOG(0, "Wallet is null");
     callback(type::Result::LEDGER_ERROR);
@@ -77,7 +77,7 @@ void ContributionExternalWallet::ContributionInfo(
   if (contribution->type == type::RewardsType::AUTO_CONTRIBUTE) {
     ledger_->contribution()->SKUAutoContribution(
         contribution->contribution_id,
-        constant::kWalletUphold,
+        wallet->type,
         callback);
     return;
   }
@@ -174,24 +174,32 @@ void ContributionExternalWallet::OnServerPublisherInfo(
     return;
   }
 
-  // TODO(zenparsing): Support BitFlyer
-  if (processor != type::ContributionProcessor::UPHOLD) {
-    BLOG(0, "Only Uphold wallets are currently supported");
-    callback(type::Result::LEDGER_ERROR);
-    return;
-  }
-
-  auto uphold_callback = std::bind(&ContributionExternalWallet::Completed,
+  auto start_callback = std::bind(&ContributionExternalWallet::Completed,
       this,
       _1,
       single_publisher,
       callback);
 
-  ledger_->uphold()->StartContribution(
-      contribution_id,
-      std::move(info),
-      amount,
-      uphold_callback);
+  switch (processor) {
+    case type::ContributionProcessor::UPHOLD:
+      ledger_->uphold()->StartContribution(
+          contribution_id,
+          std::move(info),
+          amount,
+          start_callback);
+      break;
+    case type::ContributionProcessor::BITFLYER:
+      ledger_->bitflyer()->StartContribution(
+          contribution_id,
+          std::move(info),
+          amount,
+          start_callback);
+      break;
+    default:
+      NOTREACHED();
+      BLOG(0, "Contribution processor not supported");
+      break;
+  }
 }
 
 void ContributionExternalWallet::Completed(

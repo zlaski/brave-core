@@ -75,6 +75,7 @@ Contribution::~Contribution() = default;
 
 void Contribution::Initialize() {
   ledger_->uphold()->Initialize();
+  ledger_->bitflyer()->Initialize();
 
   CheckContributionQueue();
   CheckNotCompletedContributions();
@@ -335,6 +336,16 @@ void Contribution::CreateNewEntry(
     return;
   }
 
+  if (wallet_type == constant::kWalletBitflyer &&
+      queue->type == type::RewardsType::AUTO_CONTRIBUTE) {
+    BLOG(1, "AC is not supported for bitFlyer wallets");
+    CreateNewEntry(
+        GetNextProcessor(wallet_type),
+        std::move(balance),
+        std::move(queue));
+    return;
+  }
+
   const std::string contribution_id = base::GenerateGUID();
 
   auto contribution = type::ContributionInfo::New();
@@ -520,6 +531,14 @@ void Contribution::TransferFunds(
     client::TransactionCallback callback) {
   if (wallet_type == constant::kWalletUphold) {
     ledger_->uphold()->TransferFunds(
+        transaction.amount,
+        destination,
+        callback);
+    return;
+  }
+
+  if (wallet_type == constant::kWalletBitflyer) {
+    ledger_->bitflyer()->TransferFunds(
         transaction.amount,
         destination,
         callback);
