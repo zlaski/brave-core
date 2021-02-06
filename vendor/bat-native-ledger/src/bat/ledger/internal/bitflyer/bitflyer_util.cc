@@ -43,7 +43,7 @@ std::string GetACAddress() {
       : kACAddressStaging;
 }
 
-std::string GetAuthorizeUrl(const std::string& state, const bool kyc_flow) {
+std::string GetAuthorizeUrl(const std::string& state) {
   const std::string id = GetClientId();
   const std::string url = GetUrl();
 
@@ -69,10 +69,7 @@ std::string GetAddUrl(const std::string& address) {
     return "";
   }
 
-  return base::StringPrintf(
-      "%s/dashboard/cards/%s/add",
-      url.c_str(),
-      address.c_str());
+  return "";
 }
 
 std::string GetWithdrawUrl(const std::string& address) {
@@ -82,10 +79,7 @@ std::string GetWithdrawUrl(const std::string& address) {
     return "";
   }
 
-  return base::StringPrintf(
-      "%s/dashboard/cards/%s/use",
-      url.c_str(),
-      address.c_str());
+  return "";
 }
 
 type::ExternalWalletPtr GetWallet(LedgerImpl* ledger) {
@@ -275,7 +269,7 @@ type::ExternalWalletPtr GenerateLinks(type::ExternalWalletPtr wallet) {
 
   wallet->verify_url = GenerateVerifyLink(wallet->Clone());
   wallet->account_url = GetAccountUrl();
-  wallet->login_url = GetAuthorizeUrl(wallet->one_time_string, false);
+  wallet->login_url = GetAuthorizeUrl(wallet->one_time_string);
 
   return wallet;
 }
@@ -295,7 +289,7 @@ std::string GenerateVerifyLink(type::ExternalWalletPtr wallet) {
     case type::WalletStatus::NOT_CONNECTED:
     case type::WalletStatus::DISCONNECTED_VERIFIED:
     case type::WalletStatus::DISCONNECTED_NOT_VERIFIED: {
-      url = GetAuthorizeUrl(wallet->one_time_string, true);
+      url = GetAuthorizeUrl(wallet->one_time_string);
       break;
     }
   }

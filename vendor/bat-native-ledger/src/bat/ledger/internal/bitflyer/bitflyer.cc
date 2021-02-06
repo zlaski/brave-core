@@ -134,7 +134,6 @@ void Bitflyer::FetchBalance(FetchBalanceCallback callback) {
       callback);
 
   bitflyer_server_->get_balance()->Request(
-      wallet->address,
       wallet->token,
       url_callback);
 }

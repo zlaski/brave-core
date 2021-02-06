@@ -20,13 +20,13 @@ class BitflyerUtilsTest : public testing::Test {
 TEST(BitflyerUtilsTest, GetServerUrlDevelopment) {
   ledger::_environment = type::Environment::DEVELOPMENT;
   const std::string url = GetServerUrl("/test");
-  ASSERT_EQ(url, "https://bitflyer.jp/test");
+  ASSERT_EQ(url, "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/test");
 }
 
 TEST(BitflyerUtilsTest, GetServerUrlStaging) {
   ledger::_environment = type::Environment::STAGING;
   const std::string url = GetServerUrl("/test");
-  ASSERT_EQ(url, "https://bitflyer.jp/test");
+  ASSERT_EQ(url, "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/test");
 }
 
 TEST(BitflyerUtilsTest, GetServerUrlProduction) {

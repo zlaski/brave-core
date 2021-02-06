@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 The Brave Authors. All rights reserved.
+/* Copyright (c) 2021 The Brave Authors. All rights reserved.
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -15,7 +15,7 @@
 #include "net/http/http_status_code.h"
 #include "testing/gtest/include/gtest/gtest.h"
 
-// npm run test -- brave_unit_tests --filter=PostOauthTest.*
+// npm run test -- brave_unit_tests --filter=BitflyerPostOauthTest.*
 
 using ::testing::_;
 using ::testing::Invoke;
@@ -51,22 +51,28 @@ TEST_F(BitflyerPostOauthTest, ServerOK) {
             response.status_code = 200;
             response.url = request->url;
             response.body = R"({
-             "access_token": "edc8b465fe2e2a26ce553d937ccc6c7195e9f909",
-             "token_type": "bearer",
-             "expires_in": 7775999,
-             "scope": "accounts:read accounts:write cards:read cards:write"
+             "access_token": "mock_access_token",
+             "refresh_token": "mock_refresh_token",
+             "expires_in": 259002,
+             "scope": "assets create_deposit_id withdraw_to_deposit_id",
+             "account_hash": "ad0fd9160be16790893ff021b2f9ccf7f14b5a9f",
+             "token_type": "Bearer",
+             "linking_info": "mock_linking_info",
+             "deposit_id": "339dc5ff-1167-4d69-8dd8-aa77ccb12d74"
             })";
             callback(response);
           }));
 
   oauth_->Request(
-      "4c2b665ca060d912fec5c735c734859a06118cc8",
+      "",
       [](const type::Result result,
          const std::string& token,
          const std::string& address,
          const std::string& linking_info) {
         EXPECT_EQ(result, type::Result::LEDGER_OK);
-        EXPECT_EQ(token, "edc8b465fe2e2a26ce553d937ccc6c7195e9f909");
+        EXPECT_EQ(token, "mock_access_token");
+        EXPECT_EQ(address, "339dc5ff-1167-4d69-8dd8-aa77ccb12d74");
+        EXPECT_EQ(linking_info, "mock_linking_info");
       });
 }
 

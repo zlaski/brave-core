@@ -34,7 +34,7 @@ std::string GetFeeAddress();
 
 std::string GetACAddress();
 
-std::string GetAuthorizeUrl(const std::string& state, const bool kyc_flow);
+std::string GetAuthorizeUrl(const std::string& state);
 
 std::string GetAddUrl(const std::string& address);
 

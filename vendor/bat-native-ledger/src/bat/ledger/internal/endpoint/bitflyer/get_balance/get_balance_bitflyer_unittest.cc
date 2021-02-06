@@ -51,60 +51,79 @@ TEST_F(GetBalanceTest, ServerOK) {
             response.status_code = 200;
             response.url = request->url;
             response.body = R"({
-              "CreatedByApplicationId": "193a77cf-02e8-4e10-8127-8a1b5a8bfece",
-              "address": {
-               "wire": "XXXXXXXXXX"
-              },
-              "available": "4.00",
-              "balance": "4.00",
-              "currency": "BAT",
-              "id": "bd91a720-f3f9-42f8-b2f5-19548004f6a7",
-              "label": "Brave Browser",
-              "lastTransactionAt": null,
-              "settings": {
-               "position": 1,
-               "protected": false,
-               "starred": true
-              },
-              "createdByApplicationClientId": "4c2b665ca060d912fec5c735c734859a06118cc8",
-              "normalized": [
-               {
-                 "available": "0.00",
-                 "balance": "0.00",
-                 "currency": "USD"
-               }
-              ],
-              "wire": [
-               {
-                 "accountName": "Uphold Europe Limited",
-                 "address": {
-                   "line1": "Tartu mnt 2",
-                   "line2": "10145 Tallinn, Estonia"
-                 },
-                 "bic": "LHVBEE22",
-                 "currency": "EUR",
-                 "iban": "EE76 7700 7710 0159 0178",
-                 "name": "AS LHV Pank"
-               },
-               {
-                 "accountName": "Uphold HQ, Inc.",
-                 "accountNumber": "XXXXXXXXXX",
-                 "address": {
-                   "line1": "1359 Broadway",
-                   "line2": "New York, NY 10018"
-                 },
-                 "bic": "MCBEUS33",
-                 "currency": "USD",
-                 "name": "Metropolitan Bank",
-                 "routingNumber": "XXXXXXXXX"
-               }
+              "account_hash": "ad0fd9160be16790893ff021b2f9ccf7f14b5a9f",
+              "inventory": [
+                {
+                  "currency_code": "JPY",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "BTC",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "BCH",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "ETH",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "ETC",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "LTC",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "MONA",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "LSK",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "XRP",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "BAT",
+                  "amount": 4.0,
+                  "available": 4.0
+                },
+                {
+                  "currency_code": "XLM",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "XEM",
+                  "amount": 0.0,
+                  "available": 0.0
+                },
+                {
+                  "currency_code": "XTZ",
+                  "amount": 0.0,
+                  "available": 0.0
+                }
               ]
             })";
             callback(response);
           }));
 
   balance_->Request(
-      "193a77cf-02e8-4e10-8127-8a1b5a8bfece",
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result, const double available) {
         EXPECT_EQ(result, type::Result::LEDGER_OK);
@@ -126,7 +145,6 @@ TEST_F(GetBalanceTest, ServerError401) {
           }));
 
   balance_->Request(
-      "193a77cf-02e8-4e10-8127-8a1b5a8bfece",
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result, const double available) {
         EXPECT_EQ(result, type::Result::EXPIRED_TOKEN);
@@ -148,7 +166,6 @@ TEST_F(GetBalanceTest, ServerErrorRandom) {
           }));
 
   balance_->Request(
-      "193a77cf-02e8-4e10-8127-8a1b5a8bfece",
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result, const double available) {
         EXPECT_EQ(result, type::Result::LEDGER_ERROR);

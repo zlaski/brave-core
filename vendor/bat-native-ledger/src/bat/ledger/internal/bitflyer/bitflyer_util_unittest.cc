@@ -68,47 +68,26 @@ TEST_F(BitflyerUtilTest, GetAuthorizeUrl) {
   // production
   ledger::_environment = type::Environment::PRODUCTION;
   std::string result =
-      bitflyer::GetAuthorizeUrl("rdfdsfsdfsdf", true);
+      bitflyer::GetAuthorizeUrl("rdfdsfsdfsdf");
   ASSERT_EQ(result,
-      "https://uphold.com/authorize/"
-      "6d8d9473ed20be627f71ed46e207f40c004c5b1a?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=kyc&state=rdfdsfsdfsdf");
+      "https://bitflyer.jp/ex/OAuth/authorize"
+      "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=rdfdsfsdfsdf"
+      "&response_type=code");
 
   // staging
   ledger::_environment = type::Environment::STAGING;
-  result = bitflyer::GetAuthorizeUrl("rdfdsfsdfsdf", true);
+  result = bitflyer::GetAuthorizeUrl("rdfdsfsdfsdf");
   ASSERT_EQ(result,
-      "https://sandbox.uphold.com/authorize/"
-      "4c2b665ca060d912fec5c735c734859a06118cc8?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=kyc&state=rdfdsfsdfsdf");
-  // production
-  ledger::_environment = type::Environment::PRODUCTION;
-  result =
-      bitflyer::GetAuthorizeUrl("rdfdsfsdfsdf", false);
-  ASSERT_EQ(result,
-      "https://uphold.com/authorize/"
-      "6d8d9473ed20be627f71ed46e207f40c004c5b1a?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=login&state=rdfdsfsdfsdf");
-
-  // staging
-  ledger::_environment = type::Environment::STAGING;
-  result = bitflyer::GetAuthorizeUrl("rdfdsfsdfsdf", false);
-  ASSERT_EQ(result,
-      "https://sandbox.uphold.com/authorize/"
-      "4c2b665ca060d912fec5c735c734859a06118cc8?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=login&state=rdfdsfsdfsdf");
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/"
+      "ex/OAuth/authorize"
+      "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=rdfdsfsdfsdf"
+      "&response_type=code");
 }
 
 TEST_F(BitflyerUtilTest, GetAddUrl) {
@@ -119,13 +98,12 @@ TEST_F(BitflyerUtilTest, GetAddUrl) {
   // production
   ledger::_environment = type::Environment::PRODUCTION;
   result = bitflyer::GetAddUrl("9324i5i32459i");
-  ASSERT_EQ(result, "https://uphold.com/dashboard/cards/9324i5i32459i/add");
+  ASSERT_EQ(result, "");
 
   // staging
   ledger::_environment = type::Environment::STAGING;
   result = bitflyer::GetAddUrl("9324i5i32459i");
-  ASSERT_EQ(result,
-      "https://sandbox.uphold.com/dashboard/cards/9324i5i32459i/add");
+  ASSERT_EQ(result, "");
 }
 
 TEST_F(BitflyerUtilTest, GetWithdrawUrl) {
@@ -136,13 +114,12 @@ TEST_F(BitflyerUtilTest, GetWithdrawUrl) {
   // production
   ledger::_environment = type::Environment::PRODUCTION;
   result = bitflyer::GetWithdrawUrl("9324i5i32459i");
-  ASSERT_EQ(result, "https://uphold.com/dashboard/cards/9324i5i32459i/use");
+  ASSERT_EQ(result, "");
 
   // staging
   ledger::_environment = type::Environment::STAGING;
   result = bitflyer::GetWithdrawUrl("9324i5i32459i");
-  ASSERT_EQ(result,
-      "https://sandbox.uphold.com/dashboard/cards/9324i5i32459i/use");
+  ASSERT_EQ(result, "");
 }
 
 TEST_F(BitflyerUtilTest, GetWallet) {
@@ -153,17 +130,17 @@ TEST_F(BitflyerUtilTest, GetWallet) {
   ASSERT_TRUE(!result);
 
   const std::string wallet =R"({
-    "account_url":"https://sandbox.uphold.com/dashboard",
-    "add_url":"https://sandbox.uphold.com/dashboard/cards/asadasdasd/add",
-    "address":"2323dff2ba-d0d1-4dfw-8e56-a2605bcaf4af",
-    "fees":{},
-    "login_url":"https://sandbox.uphold.com/authorize/4c2b665ca060d",
-    "one_time_string":"1F747AE0A708E47ED7E650BF1856B5A4EF7E36833BDB1158A108F8",
-    "status":2,
-    "token":"4c80232r219c30cdf112208890a32c7e00",
-    "user_name":"test",
-    "verify_url":"",
-    "withdraw_url":"https://sandbox.uphold.com/dashboard/cards/asadasdasd/use"
+    "account_url": "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home",
+    "add_url": "",
+    "address": "2323dff2ba-d0d1-4dfw-8e56-a2605bcaf4af",
+    "fees": {},
+    "login_url": "https://sandbox.uphold.com/authorize/4c2b665ca060d",
+    "one_time_string": "1F747AE0A708E47ED7E650BF1856B5A4EF7E36833BDB1158A108F8",
+    "status": 2,
+    "token": "4c80232r219c30cdf112208890a32c7e00",
+    "user_name": "test",
+    "verify_url": "",
+    "withdraw_url": ""
   })";
 
   ON_CALL(*mock_ledger_client_, GetEncryptedStringState(state::kWalletBitflyer))
@@ -201,36 +178,32 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url,
-      "https://sandbox.uphold.com/authorize/4c2b665ca060d912fec5c735c734859a06"
-      "118cc8?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=kyc&state=");
-  ASSERT_EQ(result->account_url, "https://sandbox.uphold.com/dashboard");
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/"
+      "ex/OAuth/authorize"
+      "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=&response_type=code");
+  ASSERT_EQ(result->account_url,
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
 
   // Connected
   wallet->status = type::WalletStatus::CONNECTED;
   result = bitflyer::GenerateLinks(wallet->Clone());
-  ASSERT_EQ(result->add_url,
-      "https://sandbox.uphold.com/dashboard/cards/123123123124234234234/add");
-  ASSERT_EQ(result->withdraw_url,
-      "https://sandbox.uphold.com/signup/step2?application_id="
-      "4c2b665ca060d912fec5c735c734859a06118cc8&intention=kyc");
-  ASSERT_EQ(result->verify_url,
-      "https://sandbox.uphold.com/signup/step2?application_id="
-      "4c2b665ca060d912fec5c735c734859a06118cc8&intention=kyc");
-  ASSERT_EQ(result->account_url, "https://sandbox.uphold.com/dashboard");
+  ASSERT_EQ(result->add_url, "");
+  ASSERT_EQ(result->withdraw_url, "");
+  ASSERT_EQ(result->verify_url, "");
+  ASSERT_EQ(result->account_url,
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
 
   // Verified
   wallet->status = type::WalletStatus::VERIFIED;
   result = bitflyer::GenerateLinks(wallet->Clone());
-  ASSERT_EQ(result->add_url,
-      "https://sandbox.uphold.com/dashboard/cards/123123123124234234234/add");
-  ASSERT_EQ(result->withdraw_url,
-      "https://sandbox.uphold.com/dashboard/cards/123123123124234234234/use");
+  ASSERT_EQ(result->add_url, "");
+  ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url, "");
-  ASSERT_EQ(result->account_url, "https://sandbox.uphold.com/dashboard");
+  ASSERT_EQ(result->account_url,
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
 
   // Disconnected Non-Verified
   wallet->status = type::WalletStatus::DISCONNECTED_NOT_VERIFIED;
@@ -238,13 +211,14 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url,
-      "https://sandbox.uphold.com/authorize/4c2b665ca060d912fec5c735c734859a0"
-      "6118cc8?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=kyc&state=");
-  ASSERT_EQ(result->account_url, "https://sandbox.uphold.com/dashboard");
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/"
+      "ex/OAuth/authorize"
+      "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=&response_type=code");
+  ASSERT_EQ(result->account_url,
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
 
   // Disconnected Verified
   wallet->status = type::WalletStatus::DISCONNECTED_VERIFIED;
@@ -252,30 +226,23 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url,
-      "https://sandbox.uphold.com/authorize/4c2b665ca060d912fec5c735c734859a0"
-      "6118cc8?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=kyc&state=");
-  ASSERT_EQ(result->account_url, "https://sandbox.uphold.com/dashboard");
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/"
+      "ex/OAuth/authorize"
+      "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=&response_type=code");
+  ASSERT_EQ(result->account_url,
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
 
   // Pending
   wallet->status = type::WalletStatus::PENDING;
   result = bitflyer::GenerateLinks(wallet->Clone());
-  ASSERT_EQ(result->add_url,
-          "https://sandbox.uphold.com/signup/step2?"
-          "application_id=4c2b665ca060d912fec5c735c734859a06118cc8&"
-          "intention=kyc");
-  ASSERT_EQ(result->withdraw_url,
-          "https://sandbox.uphold.com/signup/step2?"
-          "application_id=4c2b665ca060d912fec5c735c734859a06118cc8&"
-          "intention=kyc");
-  ASSERT_EQ(result->verify_url,
-          "https://sandbox.uphold.com/signup/step2?"
-          "application_id=4c2b665ca060d912fec5c735c734859a06118cc8&"
-          "intention=kyc");
-  ASSERT_EQ(result->account_url, "https://sandbox.uphold.com/dashboard");
+  ASSERT_EQ(result->add_url, "");
+  ASSERT_EQ(result->withdraw_url, "");
+  ASSERT_EQ(result->verify_url, "");
+  ASSERT_EQ(result->account_url,
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
 }
 
 TEST_F(BitflyerUtilTest, GenerateVerifyLink) {
@@ -288,19 +255,17 @@ TEST_F(BitflyerUtilTest, GenerateVerifyLink) {
   wallet->status = type::WalletStatus::NOT_CONNECTED;
   auto result = bitflyer::GenerateVerifyLink(wallet->Clone());
   ASSERT_EQ(result,
-      "https://sandbox.uphold.com/authorize/4c2b665ca060d912fec5c735c734859a06"
-      "118cc8?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=kyc&state=123123123124234234234");
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/OAuth/"
+      "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=123123123124234234234"
+      "&response_type=code");
 
   // Connected
   wallet->status = type::WalletStatus::CONNECTED;
   result = bitflyer::GenerateVerifyLink(wallet->Clone());
-  ASSERT_EQ(result,
-      "https://sandbox.uphold.com/signup/step2?application_id="
-      "4c2b665ca060d912fec5c735c734859a06118cc8&intention=kyc");
+  ASSERT_EQ(result, "");
 
   // Verified
   wallet->status = type::WalletStatus::VERIFIED;
@@ -311,31 +276,28 @@ TEST_F(BitflyerUtilTest, GenerateVerifyLink) {
   wallet->status = type::WalletStatus::DISCONNECTED_NOT_VERIFIED;
   result = bitflyer::GenerateVerifyLink(wallet->Clone());
   ASSERT_EQ(result,
-      "https://sandbox.uphold.com/authorize/4c2b665ca060d912fec5c735c734859a06"
-      "118cc8?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=kyc&state=123123123124234234234");
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/OAuth/"
+      "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=123123123124234234234"
+      "&response_type=code");
 
   // Disconnected Verified
   wallet->status = type::WalletStatus::DISCONNECTED_VERIFIED;
   result = bitflyer::GenerateVerifyLink(wallet->Clone());
   ASSERT_EQ(result,
-      "https://sandbox.uphold.com/authorize/4c2b665ca060d912fec5c735c734859a06"
-      "118cc8?scope=accounts:read "
-      "accounts:write cards:read cards:write user:read "
-      "transactions:deposit transactions:read "
-      "transactions:transfer:application transactions:transfer:others"
-      "&intention=kyc&state=123123123124234234234");
+      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/OAuth/"
+      "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=123123123124234234234"
+      "&response_type=code");
 
   // Pending
   wallet->status = type::WalletStatus::PENDING;
   result = bitflyer::GenerateVerifyLink(wallet->Clone());
-  ASSERT_EQ(result,
-          "https://sandbox.uphold.com/signup/step2?"
-          "application_id=4c2b665ca060d912fec5c735c734859a06118cc8&"
-          "intention=kyc");
+  ASSERT_EQ(result, "");
 }
 
 }  // namespace bitflyer

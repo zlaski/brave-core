@@ -48,7 +48,7 @@ class PostClaimBitflyerTest : public testing::Test {
       "recovery_seed":"AN6DLuI2iZzzDxpzywf+IKmK1nzFRarNswbaIDI3pQg="
     })";
     ON_CALL(*mock_ledger_client_,
-            GetEncryptedStringState(state::kWalletBitflyer))
+            GetEncryptedStringState(state::kWalletBrave))
         .WillByDefault(testing::Return(wallet));
   }
 };

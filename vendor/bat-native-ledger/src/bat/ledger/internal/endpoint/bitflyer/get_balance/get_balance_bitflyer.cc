@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 The Brave Authors. All rights reserved.
+/* Copyright (c) 2021 The Brave Authors. All rights reserved.
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -27,7 +27,7 @@ GetBalance::GetBalance(LedgerImpl* ledger):
 
 GetBalance::~GetBalance() = default;
 
-std::string GetBalance::GetUrl(const std::string& address) {
+std::string GetBalance::GetUrl() {
   return GetServerUrl("/api/link/v1/account/inventory");
 }
 
@@ -48,7 +48,6 @@ type::Result GetBalance::CheckStatusCode(const int status_code) {
 type::Result GetBalance::ParseBody(
     const std::string& body,
     double* available) {
-  BLOG(0, "EMERICK: GetBalance::ParseBody");
   DCHECK(available);
 
   base::Optional<base::Value> value = base::JSONReader::Read(body);
@@ -91,16 +90,14 @@ type::Result GetBalance::ParseBody(
 }
 
 void GetBalance::Request(
-    const std::string& address,
     const std::string& token,
     GetBalanceCallback callback) {
-  BLOG(0, "EMERICK: GetBalance::Request");
   auto url_callback = std::bind(&GetBalance::OnRequest,
       this,
       _1,
       callback);
   auto request = type::UrlRequest::New();
-  request->url = GetUrl(address);
+  request->url = GetUrl();
   request->headers = RequestAuthorization(token);
   ledger_->LoadURL(std::move(request), url_callback);
 }
