@@ -9,6 +9,8 @@ import androidx.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+// TODO(zenparsing): Update PublisherStatus values to reflect bitFlyer
+// changes
 class BraveRewardsPublisher {
     //PublisherStatus @
     //vendor/bat-native-ledger/include/bat/ledger/public/interfaces/ledger.mojom
