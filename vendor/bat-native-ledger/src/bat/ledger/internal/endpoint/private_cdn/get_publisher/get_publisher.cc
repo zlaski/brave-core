@@ -64,12 +64,17 @@ ledger::type::PublisherStatus GetPublisherStatusFromMessage(
     const publishers_pb::ChannelResponse& response) {
   auto status = ledger::type::PublisherStatus::CONNECTED;
   for (const auto& wallet : response.wallets()) {
-    // TODO(zenparsing): Add test for bitflyer wallet when protobuf format
-    // has been updated.
     if (wallet.has_uphold_wallet()) {
       switch (wallet.uphold_wallet().wallet_state()) {
         case publishers_pb::UPHOLD_ACCOUNT_KYC:
           return ledger::type::PublisherStatus::UPHOLD_VERIFIED;
+        default: {}
+      }
+    }
+    if (wallet.has_bitflyer_wallet()) {
+      switch (wallet.bitflyer_wallet().wallet_state()) {
+        case publishers_pb::BITFLYER_ACCOUNT_KYC:
+          return ledger::type::PublisherStatus::BITFLYER_VERIFIED;
         default: {}
       }
     }
@@ -82,6 +87,9 @@ std::string GetPublisherAddressFromMessage(
   for (const auto& wallet : response.wallets()) {
     if (wallet.has_uphold_wallet()) {
       return wallet.uphold_wallet().address();
+    }
+    if (wallet.has_bitflyer_wallet()) {
+      return wallet.bitflyer_wallet().address();
     }
   }
   return "";
