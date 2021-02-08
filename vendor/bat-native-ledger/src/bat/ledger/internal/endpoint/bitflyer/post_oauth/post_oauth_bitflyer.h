@@ -14,14 +14,14 @@
 //
 // Request body:
 // {
-//   "client_id": "abcdedg"
-//   "client_secret": "xxxxxxxxxxxxxxxxxx"
-//   "code": "xxxxxxxxxxxxxxxxxxxxxxxxxx"
-//   "grant_type": "code"
-//   "code_verifier": "xxxxxxx"
-//   "expires_in": 3600
-//   "external_account_id": "xxxxxxxxxx"
-//   "request_id": "xxxxxxxx"
+//   "client_id": "abcdedg",
+//   "client_secret": "xxxxxxxxxxxxxxxxxx",
+//   "code": "xxxxxxxxxxxxxxxxxxxxxxxxxx",
+//   "grant_type": "code",
+//   "code_verifier": "xxxxxxx",
+//   "expires_in": 3600,
+//   "external_account_id": "xxxxxxxxxx",
+//   "request_id": "xxxxxxxx",
 //   "request_deposit_id": true
 // }
 //
@@ -33,12 +33,12 @@
 //
 // Response body:
 // {
-//   "access_token": "xxxxbbbbccccddddeeeeqqqq"
-//   "refresh_token": "yyyyyyyyyyyyyyyyyyyyyyyyyy"
-//   "expires_in": 302010
-//   "account_hash": "xxxxxxxxxxxxxxxxxx"
-//   "token_type": "Bearer"
-//   "deposit_id": "xxxxxxxxx"
+//   "access_token": "xxxxbbbbccccddddeeeeqqqq",
+//   "refresh_token": "yyyyyyyyyyyyyyyyyyyyyyyyyy",
+//   "expires_in": 302010,
+//   "account_hash": "xxxxxxxxxxxxxxxxxx",
+//   "token_type": "Bearer",
+//   "deposit_id": "xxxxxxxxx",
 //   "linking_info": "xxxxx"
 // }
 

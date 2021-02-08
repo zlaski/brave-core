@@ -31,13 +31,11 @@ struct Transaction {
   std::string message;
 };
 
-// class BitflyerTransfer;
+class BitflyerTransfer;
 class BitflyerAuthorization;
 class BitflyerWallet;
 
 using FetchBalanceCallback = std::function<void(type::Result, double)>;
-using CreateCardCallback =
-    std::function<void(type::Result, const std::string&)>;
 
 class Bitflyer {
  public:
@@ -65,8 +63,6 @@ class Bitflyer {
       ledger::ExternalWalletAuthorizationCallback callback);
 
   void GenerateWallet(ledger::ResultCallback callback);
-
-  void CreateCard(CreateCardCallback callback);
 
   void DisconnectWallet(const bool manual = false);
 
@@ -103,7 +99,7 @@ class Bitflyer {
 
   void RemoveTransferFee(const std::string& contribution_id);
 
-//  std::unique_ptr<BitflyerTransfer> transfer_;
+  std::unique_ptr<BitflyerTransfer> transfer_;
   std::unique_ptr<BitflyerAuthorization> authorization_;
   std::unique_ptr<BitflyerWallet> wallet_;
   std::unique_ptr<endpoint::BitflyerServer> bitflyer_server_;

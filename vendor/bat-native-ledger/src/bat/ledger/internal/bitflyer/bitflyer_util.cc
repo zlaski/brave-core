@@ -158,7 +158,6 @@ type::ExternalWalletPtr GetWallet(LedgerImpl* ledger) {
     wallet->login_url = *login_url;
   }
 
-#if 0
   auto* fees = dictionary->FindDictKey("fees");
   if (fees) {
     base::DictionaryValue* fees_dictionary;
@@ -174,7 +173,6 @@ type::ExternalWalletPtr GetWallet(LedgerImpl* ledger) {
       }
     }
   }
-#endif
 
   return wallet;
 }
@@ -185,12 +183,10 @@ bool SetWallet(LedgerImpl* ledger, type::ExternalWalletPtr wallet) {
     return false;
   }
 
-#if 0
   base::Value fees(base::Value::Type::DICTIONARY);
   for (const auto& fee : wallet->fees) {
     fees.SetDoubleKey(fee.first, fee.second);
   }
-#endif
 
   base::Value new_wallet(base::Value::Type::DICTIONARY);
   new_wallet.SetStringKey("token", wallet->token);
@@ -203,7 +199,7 @@ bool SetWallet(LedgerImpl* ledger, type::ExternalWalletPtr wallet) {
 //  new_wallet.SetStringKey("withdraw_url", wallet->withdraw_url);
   new_wallet.SetStringKey("account_url", wallet->account_url);
   new_wallet.SetStringKey("login_url", wallet->login_url);
-//  new_wallet.SetKey("fees", std::move(fees));
+  new_wallet.SetKey("fees", std::move(fees));
 
   std::string json;
   base::JSONWriter::Write(new_wallet, &json);

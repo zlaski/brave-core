@@ -11,7 +11,7 @@
 #include "bat/ledger/global_constants.h"
 #include "bat/ledger/internal/bitflyer/bitflyer.h"
 #include "bat/ledger/internal/bitflyer/bitflyer_authorization.h"
-// #include "bat/ledger/internal/bitflyer/bitflyer_transfer.h"
+#include "bat/ledger/internal/bitflyer/bitflyer_transfer.h"
 #include "bat/ledger/internal/bitflyer/bitflyer_util.h"
 #include "bat/ledger/internal/bitflyer/bitflyer_wallet.h"
 #include "bat/ledger/internal/common/time_util.h"
@@ -33,7 +33,7 @@ namespace ledger {
 namespace bitflyer {
 
 Bitflyer::Bitflyer(LedgerImpl* ledger) :
-//    transfer_(std::make_unique<BitflyerTransfer>(ledger)),
+    transfer_(std::make_unique<BitflyerTransfer>(ledger)),
     authorization_(std::make_unique<BitflyerAuthorization>(ledger)),
     wallet_(std::make_unique<BitflyerWallet>(ledger)),
     bitflyer_server_(std::make_unique<endpoint::BitflyerServer>(ledger)),
@@ -48,9 +48,9 @@ void Bitflyer::Initialize() {
     return;
   }
 
-//  for (auto const& value : wallet->fees) {
-//    StartTransferFeeTimer(value.first);
-//  }
+  for (auto const& value : wallet->fees) {
+    StartTransferFeeTimer(value.first);
+  }
 }
 
 void Bitflyer::StartContribution(
@@ -86,7 +86,7 @@ void Bitflyer::StartContribution(
   transaction.address = info->address;
   transaction.amount = reconcile_amount;
 
-//  transfer_->Start(transaction, contribution_callback);
+  transfer_->Start(transaction, contribution_callback);
 }
 
 void Bitflyer::ContributionCompleted(
@@ -165,7 +165,7 @@ void Bitflyer::TransferFunds(
   Transaction transaction;
   transaction.address = address;
   transaction.amount = amount;
-//  transfer_->Start(transaction, callback);
+  transfer_->Start(transaction, callback);
 }
 
 void Bitflyer::WalletAuthorization(
@@ -176,10 +176,6 @@ void Bitflyer::WalletAuthorization(
 
 void Bitflyer::GenerateWallet(ledger::ResultCallback callback) {
   wallet_->Generate(callback);
-}
-
-void Bitflyer::CreateCard(CreateCardCallback callback) {
-//  card_->CreateIfNecessary(callback);
 }
 
 void Bitflyer::DisconnectWallet(const bool manual) {
@@ -225,7 +221,7 @@ void Bitflyer::SaveTransferFee(
     return;
   }
 
-//  wallet->fees.insert(std::make_pair(contribution_id, fee));
+  wallet->fees.insert(std::make_pair(contribution_id, fee));
   SetWallet(std::move(wallet));
 }
 
@@ -270,7 +266,7 @@ void Bitflyer::TransferFee(
   transaction.amount = amount;
   transaction.message = kFeeMessage;
 
-//  transfer_->Start(transaction, transfer_callback);
+  transfer_->Start(transaction, transfer_callback);
 }
 
 void Bitflyer::OnTransferFeeTimerElapsed(const std::string& id) {
@@ -282,14 +278,12 @@ void Bitflyer::OnTransferFeeTimerElapsed(const std::string& id) {
     return;
   }
 
-#if 0
   for (auto const& value : wallet->fees) {
     if (value.first == id) {
       TransferFee(value.first, value.second);
       return;
     }
   }
-#endif
 }
 
 type::ExternalWalletPtr Bitflyer::GetWallet() {
@@ -307,7 +301,7 @@ void Bitflyer::RemoveTransferFee(const std::string& contribution_id) {
     return;
   }
 
-//  wallet->fees.erase(contribution_id);
+  wallet->fees.erase(contribution_id);
   SetWallet(std::move(wallet));
 }
 
