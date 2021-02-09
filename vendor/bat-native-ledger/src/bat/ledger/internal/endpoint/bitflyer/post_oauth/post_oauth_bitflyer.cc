@@ -33,7 +33,9 @@ std::string PostOauth::GetUrl() {
   return GetServerUrl("/api/link/v1/token");
 }
 
-std::string PostOauth::GeneratePayload(const std::string& code) {
+std::string PostOauth::GeneratePayload(
+    const std::string& external_account_id,
+    const std::string& code) {
   const std::string client_id = ledger::bitflyer::GetClientId();
   const std::string client_secret = GetClientSecret();
   const std::string request_id = base::GenerateGUID();
@@ -44,7 +46,7 @@ std::string PostOauth::GeneratePayload(const std::string& code) {
   dict.SetStringKey("client_id", client_id);
   dict.SetStringKey("client_secret", client_secret);
   dict.SetIntKey("expires_in", 259002);
-  dict.SetStringKey("external_account_id", "mybraveIDx23453");
+  dict.SetStringKey("external_account_id", external_account_id);
   dict.SetStringKey("request_id", request_id);
   dict.SetStringKey("redirect_uri", "rewards://bitflyer/authorization");
   dict.SetBoolKey("request_deposit_id", true);
@@ -113,6 +115,7 @@ type::Result PostOauth::ParseBody(
 }
 
 void PostOauth::Request(
+    const std::string& external_account_id,
     const std::string& code,
     PostOauthCallback callback) {
   auto url_callback = std::bind(&PostOauth::OnRequest,
@@ -122,7 +125,7 @@ void PostOauth::Request(
 
   auto request = type::UrlRequest::New();
   request->url = GetUrl();
-  request->content = GeneratePayload(code);
+  request->content = GeneratePayload(external_account_id, code);
   request->headers = RequestAuthorization();
   request->content_type = "application/json";
   request->method = type::UrlMethod::POST;

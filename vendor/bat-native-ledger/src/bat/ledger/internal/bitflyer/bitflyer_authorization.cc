@@ -7,10 +7,12 @@
 
 #include <utility>
 
+#include "base/strings/string_number_conversions.h"
 #include "bat/ledger/global_constants.h"
 #include "bat/ledger/internal/bitflyer/bitflyer_util.h"
 #include "bat/ledger/internal/ledger_impl.h"
 #include "bat/ledger/internal/logging/event_log_keys.h"
+#include "crypto/sha2.h"
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -30,19 +32,25 @@ BitflyerAuthorization::~BitflyerAuthorization() = default;
 void BitflyerAuthorization::Authorize(
     const base::flat_map<std::string, std::string>& args,
     ledger::ExternalWalletAuthorizationCallback callback) {
-  auto wallet = GetWallet(ledger_);
-
+  const auto wallet = ledger_->wallet()->GetWallet();
   if (!wallet) {
     BLOG(0, "Wallet is null");
     callback(type::Result::LEDGER_ERROR, {});
     return;
   }
 
-  const auto current_one_time = wallet->one_time_string;
+  auto bitflyer_wallet = GetWallet(ledger_);
+  if (!bitflyer_wallet) {
+    BLOG(0, "Wallet is null");
+    callback(type::Result::LEDGER_ERROR, {});
+    return;
+  }
+
+  const auto current_one_time = bitflyer_wallet->one_time_string;
 
   // we need to generate new string as soon as authorization is triggered
-  wallet->one_time_string = GenerateRandomString(ledger::is_testing);
-  const bool success = ledger_->bitflyer()->SetWallet(wallet->Clone());
+  bitflyer_wallet->one_time_string = GenerateRandomString(ledger::is_testing);
+  const bool success = ledger_->bitflyer()->SetWallet(bitflyer_wallet->Clone());
 
   if (!success) {
     callback(type::Result::LEDGER_ERROR, {});
@@ -98,6 +106,11 @@ void BitflyerAuthorization::Authorize(
     return;
   }
 
+  const std::string hashed_payment_id =
+      crypto::SHA256HashString(wallet->payment_id);
+  const std::string external_account_id =
+      base::HexEncode(hashed_payment_id.data(), hashed_payment_id.size());
+
   auto url_callback = std::bind(&BitflyerAuthorization::OnAuthorize,
       this,
       _1,
@@ -106,7 +119,10 @@ void BitflyerAuthorization::Authorize(
       _4,
       callback);
 
-  bitflyer_server_->post_oauth()->Request(code, url_callback);
+  bitflyer_server_->post_oauth()->Request(
+      external_account_id,
+      code,
+      url_callback);
 }
 
 void BitflyerAuthorization::OnAuthorize(
