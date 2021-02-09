@@ -140,7 +140,7 @@ export const handleExternalWalletLink = (balance: RewardsExtension.Balance, exte
     link = 'brave://rewards/#verify'
   }
 
-  if (balance.total < 25) {
+  if (balance.total < 25 && externalWallet && externalWallet.type === 'uphold') {
     link = externalWallet.loginUrl
   }
 

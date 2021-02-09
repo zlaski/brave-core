@@ -682,8 +682,14 @@ export class Panel extends React.Component<Props, State> {
   showLoginMessage = () => {
     const { balance, externalWallet } = this.props.rewardsPanelData
     const walletStatus = utils.getWalletStatus(externalWallet)
+    const walletType = externalWallet ? externalWallet.type : ''
 
-    return (!walletStatus || walletStatus === 'unverified') && balance && balance.total < 25
+    return (
+      (!walletStatus || walletStatus === 'unverified') &&
+      walletType === 'uphold' &&
+      balance &&
+      balance.total < 25
+    )
   }
 
   showOnboarding () {

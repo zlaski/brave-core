@@ -55,11 +55,11 @@ export const constructBackupString = (backupKey: string) => {
 }
 
 export const isPublisherVerified = (status: Rewards.PublisherStatus) => {
-  return status > 1;
+  return status > 1
 }
 
 export const isPublisherConnectedOrVerified = (status: Rewards.PublisherStatus) => {
-  return status > 0;
+  return status > 0
 }
 
 export const isPublisherNotVerified = (status: Rewards.PublisherStatus) => {

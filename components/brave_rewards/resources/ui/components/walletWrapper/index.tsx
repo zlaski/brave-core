@@ -184,7 +184,7 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
       return
     }
 
-    if (!this.props.showLoginMessage || this.props.walletType !== 'uphold') {
+    if (!this.props.showLoginMessage) {
       action()
       return
     }
@@ -622,8 +622,11 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
     const upholdLoginText = getLocale('loginMessageText').split('$1')
     const rewardsText1 = getLocale('rewardsPanelText1').split(/\$\d/g)
 
-    // TODO(zenparsing): Contains "Uphold", bold. May not make sense at all.
-    // "Your Brave wallet is powered by Uphold" (not anymore?)
+    // TODO(zenparsing): [BF POST-MVP] The following message in en-US is
+    // "Your Brave wallet is powered by Uphold", for which there is no
+    // appropriate version for bitFlyer. It may not make sense for Uphold
+    // anymore either.
+
     // const rewardsText2 = getLocaleWithTag('rewardsPanelText2')
 
     return (
