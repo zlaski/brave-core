@@ -136,18 +136,6 @@ type::ExternalWalletPtr GetWallet(LedgerImpl* ledger) {
     wallet->verify_url = *verify_url;
   }
 
-#if 0
-  auto* add_url = dictionary->FindStringKey("add_url");
-  if (add_url) {
-    wallet->add_url = *add_url;
-  }
-
-  auto* withdraw_url = dictionary->FindStringKey("withdraw_url");
-  if (withdraw_url) {
-    wallet->withdraw_url = *withdraw_url;
-  }
-#endif
-
   auto* account_url = dictionary->FindStringKey("account_url");
   if (account_url) {
     wallet->account_url = *account_url;
@@ -195,8 +183,6 @@ bool SetWallet(LedgerImpl* ledger, type::ExternalWalletPtr wallet) {
   new_wallet.SetStringKey("one_time_string", wallet->one_time_string);
   new_wallet.SetStringKey("user_name", wallet->user_name);
   new_wallet.SetStringKey("verify_url", wallet->verify_url);
-//  new_wallet.SetStringKey("add_url", wallet->add_url);
-//  new_wallet.SetStringKey("withdraw_url", wallet->withdraw_url);
   new_wallet.SetStringKey("account_url", wallet->account_url);
   new_wallet.SetStringKey("login_url", wallet->login_url);
   new_wallet.SetKey("fees", std::move(fees));
@@ -235,33 +221,6 @@ type::ExternalWalletPtr GenerateLinks(type::ExternalWalletPtr wallet) {
   if (!wallet) {
     return nullptr;
   }
-
-#if 0
-  switch (wallet->status) {
-    case type::WalletStatus::PENDING: {
-      wallet->add_url = GetSecondStepVerify();
-      wallet->withdraw_url = GetSecondStepVerify();
-      break;
-    }
-    case type::WalletStatus::CONNECTED: {
-      wallet->add_url = GetAddUrl(wallet->address);
-      wallet->withdraw_url = GetSecondStepVerify();
-      break;
-    }
-    case type::WalletStatus::VERIFIED: {
-      wallet->add_url = GetAddUrl(wallet->address);
-      wallet->withdraw_url = GetWithdrawUrl(wallet->address);
-      break;
-    }
-    case type::WalletStatus::NOT_CONNECTED:
-    case type::WalletStatus::DISCONNECTED_VERIFIED:
-    case type::WalletStatus::DISCONNECTED_NOT_VERIFIED: {
-      wallet->add_url = "";
-      wallet->withdraw_url = "";
-      break;
-    }
-  }
-#endif
 
   wallet->verify_url = GenerateVerifyLink(wallet->Clone());
   wallet->account_url = GetAccountUrl();
