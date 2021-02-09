@@ -64,7 +64,8 @@ TEST_F(BitflyerPostOauthTest, ServerOK) {
           }));
 
   oauth_->Request(
-      "",
+      "46553A9E3D57D70F960EA26D95183D8CBB026283D92CBC7C54665408DA7DF398",
+      "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result,
          const std::string& token,
          const std::string& address,
@@ -90,6 +91,7 @@ TEST_F(BitflyerPostOauthTest, ServerError401) {
           }));
 
   oauth_->Request(
+      "46553A9E3D57D70F960EA26D95183D8CBB026283D92CBC7C54665408DA7DF398",
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result,
          const std::string& token,
@@ -114,6 +116,7 @@ TEST_F(BitflyerPostOauthTest, ServerErrorRandom) {
           }));
 
   oauth_->Request(
+      "46553A9E3D57D70F960EA26D95183D8CBB026283D92CBC7C54665408DA7DF398",
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       [](const type::Result result,
          const std::string& token,
