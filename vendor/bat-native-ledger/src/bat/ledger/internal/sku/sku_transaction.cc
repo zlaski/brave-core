@@ -33,7 +33,8 @@ ledger::type::SKUTransactionType GetTransactionTypeFromWalletType(
     return ledger::type::SKUTransactionType::TOKENS;
   }
 
-  // TODO(zenparsing): Add bitFlyer
+  // TODO(zenparsing): [BF POST-MVP] Add an SKUTransactionType value for
+  // for bitFlyer in order to support AC with bitFlyer external wallets.
 
   NOTREACHED();
   return ledger::type::SKUTransactionType::ANONYMOUS_CARD;
@@ -198,7 +199,8 @@ void SKUTransaction::SendExternalTransaction(
           url_callback);
       return;
     }
-    // TODO(zenparsing): Add a case for bitFlyer in order to support AC
+    // TODO(zenparsing): [BF POST-MVP] Add a case for bitFlyer in order to
+    // support AC with bitFlyer external wallets.
   }
 }
 

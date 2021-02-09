@@ -3028,7 +3028,8 @@ void RewardsServiceImpl::ShowNotification(
 }
 
 bool RewardsServiceImpl::OnlyAnonWallet() const {
-  // TODO(zenparsing): Remove this function and modify all call sites.
+  // TODO(zenparsing): [BF POST-MVP] Remove this function and modify all call
+  // sites.
   return false;
 }
 
@@ -3522,8 +3523,8 @@ std::string RewardsServiceImpl::GetExternalWalletType() const {
   const int32_t current_country =
       country_codes::GetCountryIDFromPrefs(profile_->GetPrefs());
 
-  // TODO(zenparsing): Rename |kOnlyAnonWalletCountries| to reflect current
-  // usage
+  // TODO(zenparsing): [BF POST-MVP] Rename |kOnlyAnonWalletCountries| to
+  // reflect current usage
   for (const auto& country : kOnlyAnonWalletCountries) {
     if (country.length() == 2) {
       const int id = country_codes::CountryCharsToCountryID(
