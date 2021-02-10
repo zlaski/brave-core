@@ -1,12 +1,12 @@
 diff --git a/third_party/blink/renderer/core/html/canvas/canvas_async_blob_creator.cc b/third_party/blink/renderer/core/html/canvas/canvas_async_blob_creator.cc
-index 3e078d4269238d95085e199df0c0ed6dea78775f..34b982a2d95c555f625f39f3c06d27dd29849bd3 100644
+index 3e078d4269238d95085e199df0c0ed6dea78775f..b9446f1ad4d0173c6164d45f39838628620d4bb7 100644
 --- a/third_party/blink/renderer/core/html/canvas/canvas_async_blob_creator.cc
 +++ b/third_party/blink/renderer/core/html/canvas/canvas_async_blob_creator.cc
-@@ -191,6 +191,7 @@ CanvasAsyncBlobCreator::CanvasAsyncBlobCreator(
-   // We use pixmap to access the image pixels. Make the image unaccelerated if
-   // necessary.
-   image_ = image_->MakeUnaccelerated();
-+  BRAVE_CANVAS_ASYNC_BLOB_CREATOR
+@@ -262,6 +262,7 @@ CanvasAsyncBlobCreator::CanvasAsyncBlobCreator(
+   }
  
-   sk_sp<SkImage> skia_image =
-       image_->PaintImageForCurrentFrame().GetSwSkImage();
+   if (static_bitmap_image_loaded_) {
++    BRAVE_CANVAS_ASYNC_BLOB_CREATOR
+     // Ensure that the size of the to-be-encoded-image does not pass the maximum
+     // size supported by the encoders.
+     int max_dimension = ImageEncoder::MaxDimension(mime_type_);

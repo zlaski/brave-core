@@ -5,6 +5,9 @@
 
 #include "third_party/blink/renderer/core/execution_context/execution_context.h"
 
+#include <limits.h>
+
+#include "base/check.h"
 #include "base/command_line.h"
 #include "base/strings/string_number_conversions.h"
 #include "brave/third_party/blink/renderer/brave_farbling_constants.h"
@@ -180,6 +183,7 @@ BraveSessionCache::PerturbPixelsInternal(
     return nullptr;
   if (image_bitmap->IsNull())
     return image_bitmap;
+
   // convert to an ImageDataBuffer to normalize the pixel data to RGBA, 4 bytes
   // per pixel
   std::unique_ptr<blink::ImageDataBuffer> data_buffer =
@@ -193,6 +197,7 @@ BraveSessionCache::PerturbPixelsInternal(
   // dimensions are less than SIZE_T_MAX. (Width and height are each
   // limited to 32,767 pixels.)
   const size_t pixel_count = data_buffer->Width() * data_buffer->Height();
+  DCHECK(pixel_count < SIZE_MAX);
   // calculate initial seed to find first pixel to perturb, based on session
   // key, domain key, and canvas contents
   crypto::HMAC h(crypto::HMAC::SHA256);
@@ -202,7 +207,8 @@ BraveSessionCache::PerturbPixelsInternal(
                sizeof session_plus_domain_key));
   uint8_t canvas_key[32];
   CHECK(h.Sign(
-      base::StringPiece(reinterpret_cast<const char*>(pixels), pixel_count * 4),
+      base::StringPiece(reinterpret_cast<const char*>(pixels),
+          data_buffer->ComputeByteSize()),
       canvas_key, sizeof canvas_key));
   uint64_t v = *reinterpret_cast<uint64_t*>(canvas_key);
   uint64_t pixel_index;
@@ -221,11 +227,7 @@ BraveSessionCache::PerturbPixelsInternal(
       v = lfsr_next(v);
     }
   }
-  // convert back to a StaticBitmapImage to return to the caller
-  scoped_refptr<blink::StaticBitmapImage> perturbed_bitmap =
-      blink::UnacceleratedStaticBitmapImage::Create(
-          data_buffer->RetainedImage());
-  return perturbed_bitmap;
+  return image_bitmap;
 }
 
 WTF::String BraveSessionCache::GenerateRandomString(std::string seed,
