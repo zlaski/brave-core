@@ -215,6 +215,7 @@ class ContributeBox extends React.Component<Props, State> {
       reconcileStamp,
       autoContributeList,
       excludedList,
+      externalWallet,
       ui
     } = this.props.rewardsData
     const monthlyList: MonthlyChoice[] = utils.generateContributionMonthly(parameters)
@@ -226,6 +227,12 @@ class ContributeBox extends React.Component<Props, State> {
     const allSites = !(excludedRows.length > 0 || numRows > 5)
     const showDisabled = firstLoad !== false || !enabledContribute
     const { onlyAnonWallet } = ui
+
+    // TODO(zenparsing) [BF POST-MVP] Hide AC options from bitFlyer wallet
+    // regions.
+    if (externalWallet && externalWallet.type === 'bitflyer') {
+      return null
+    }
 
     return (
       <Box

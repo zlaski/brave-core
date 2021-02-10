@@ -696,9 +696,19 @@ export class Panel extends React.Component<Props, State> {
     const {
       showOnboarding,
       parameters,
+      externalWallet,
       adsPerHour,
       autoContributeAmount
     } = this.props.rewardsPanelData
+
+    // TODO(zenparsing) [BF POST-MVP] Hide AC options in rewards onboarding
+    // for bitFlyer-associated regions. If we want to disable AC for certain
+    // regions we will likely want to create a new method on RewardsService
+    // such as "IsAutoContributionSupported".
+    let { autoContributeChoices } = parameters
+    if (externalWallet && externalWallet.type === 'bitflyer') {
+      autoContributeChoices = []
+    }
 
     if (this.state.showRewardsTour) {
       const onDone = () => {
@@ -727,7 +737,7 @@ export class Panel extends React.Component<Props, State> {
             onlyAnonWallet={this.props.onlyAnonWallet}
             adsPerHour={adsPerHour}
             autoContributeAmount={autoContributeAmount}
-            autoContributeAmountOptions={parameters.autoContributeChoices}
+            autoContributeAmountOptions={autoContributeChoices}
             onAdsPerHourChanged={onAdsPerHourChanged}
             onAutoContributeAmountChanged={onAcAmountChanged}
             onDone={onDone}

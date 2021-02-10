@@ -1645,6 +1645,13 @@ void RewardsServiceImpl::SetAutoContributeEnabled(bool enabled) {
     return;
   }
 
+  // TODO(zenparsing): [BF POST-MVP] For now, we are blocking AC for bitFlyer
+  // wallet regions. If this is what we want, then we should design a more
+  // general mechanism for disabling AC based on region.
+  if (enabled && GetExternalWalletType() == ledger::constant::kWalletBitflyer) {
+    enabled = false;
+  }
+
   bat_ledger_->SetAutoContributeEnabled(enabled);
 
   if (!enabled) {
