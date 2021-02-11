@@ -66,7 +66,6 @@ TEST_F(BitflyerPostTransactionTest, ServerOK) {
   transaction.address = "6654ecb0-6079-4f6c-ba58-791cc890a561";
 
   transaction_->Request(
-      "bd91a720-f3f9-42f8-b2f5-19548004f6a7",
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       transaction,
       [](const type::Result result, const std::string& id) {
@@ -93,7 +92,6 @@ TEST_F(BitflyerPostTransactionTest, ServerError401) {
   transaction.address = "6654ecb0-6079-4f6c-ba58-791cc890a561";
 
   transaction_->Request(
-      "bd91a720-f3f9-42f8-b2f5-19548004f6a7",
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       transaction,
       [](const type::Result result, const std::string& id) {
@@ -120,7 +118,6 @@ TEST_F(BitflyerPostTransactionTest, ServerErrorRandom) {
   transaction.address = "6654ecb0-6079-4f6c-ba58-791cc890a561";
 
   transaction_->Request(
-      "bd91a720-f3f9-42f8-b2f5-19548004f6a7",
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       transaction,
       [](const type::Result result, const std::string& id) {

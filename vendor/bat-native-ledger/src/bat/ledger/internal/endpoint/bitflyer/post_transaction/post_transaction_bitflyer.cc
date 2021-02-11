@@ -33,7 +33,6 @@ std::string PostTransaction::GetUrl() {
 }
 
 std::string PostTransaction::GeneratePayload(
-    const std::string& address,
     const ::ledger::bitflyer::Transaction& transaction) {
 //  base::Value dry_run_option(base::Value::Type::DICTIONARY);
 //  dry_run_option.SetStringKey("request_api_transfer_status", "SUCCESS");
@@ -44,7 +43,7 @@ std::string PostTransaction::GeneratePayload(
   payload.SetStringKey("currency_code", "BAT");
   payload.SetStringKey("amount", base::StringPrintf("%f", transaction.amount));
   payload.SetBoolKey("dry_run", false);
-  payload.SetStringKey("deposit_id", address);
+  payload.SetStringKey("deposit_id", transaction.address);
   payload.SetStringKey("transfer_id", base::GenerateGUID());
 //  payload.SetKey("dry_run_option", std::move(dry_run_option));
 
@@ -95,7 +94,6 @@ type::Result PostTransaction::ParseBody(
 
 void PostTransaction::Request(
     const std::string& token,
-    const std::string& address,
     const ::ledger::bitflyer::Transaction& transaction,
     PostTransactionCallback callback) {
   auto url_callback = std::bind(&PostTransaction::OnRequest,
@@ -105,7 +103,7 @@ void PostTransaction::Request(
 
   auto request = type::UrlRequest::New();
   request->url = GetUrl();
-  request->content = GeneratePayload(address, transaction);
+  request->content = GeneratePayload(transaction);
   request->headers = RequestAuthorization(token);
   request->content_type = "application/json; charset=utf-8";
   request->method = type::UrlMethod::POST;

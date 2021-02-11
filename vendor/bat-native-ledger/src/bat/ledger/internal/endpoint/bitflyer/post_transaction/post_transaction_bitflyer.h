@@ -60,7 +60,6 @@ class PostTransaction {
 
   void Request(
       const std::string& token,
-      const std::string& address,
       const ::ledger::bitflyer::Transaction& transaction,
       PostTransactionCallback callback);
 
@@ -68,7 +67,6 @@ class PostTransaction {
   std::string GetUrl();
 
   std::string GeneratePayload(
-      const std::string& address,
       const ::ledger::bitflyer::Transaction& transaction);
 
   type::Result CheckStatusCode(const int status_code);

@@ -43,7 +43,6 @@ void BitflyerTransfer::Start(
       callback);
   bitflyer_server_->post_transaction()->Request(
       wallet->token,
-      wallet->address,
       transaction,
       url_callback);
 }
