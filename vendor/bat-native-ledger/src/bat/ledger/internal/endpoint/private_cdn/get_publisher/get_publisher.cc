@@ -60,39 +60,31 @@ ledger::type::PublisherBannerPtr GetPublisherBannerFromMessage(
   return banner;
 }
 
-ledger::type::PublisherStatus GetPublisherStatusFromMessage(
-    const publishers_pb::ChannelResponse& response) {
-  auto status = ledger::type::PublisherStatus::CONNECTED;
+void GetPublisherStatusFromMessage(
+    const publishers_pb::ChannelResponse& response,
+    ledger::type::ServerPublisherInfo* info) {
+  DCHECK(info);
+  info->status = ledger::type::PublisherStatus::CONNECTED;
   for (const auto& wallet : response.wallets()) {
     if (wallet.has_uphold_wallet()) {
       switch (wallet.uphold_wallet().wallet_state()) {
         case publishers_pb::UPHOLD_ACCOUNT_KYC:
-          return ledger::type::PublisherStatus::UPHOLD_VERIFIED;
+          info->status = ledger::type::PublisherStatus::UPHOLD_VERIFIED;
+          info->address = wallet.uphold_wallet().address();
+          return;
         default: {}
       }
     }
     if (wallet.has_bitflyer_wallet()) {
       switch (wallet.bitflyer_wallet().wallet_state()) {
         case publishers_pb::BITFLYER_ACCOUNT_KYC:
-          return ledger::type::PublisherStatus::BITFLYER_VERIFIED;
+          info->status = ledger::type::PublisherStatus::BITFLYER_VERIFIED;
+          info->address = wallet.bitflyer_wallet().address();
+          return;
         default: {}
       }
     }
   }
-  return status;
-}
-
-std::string GetPublisherAddressFromMessage(
-    const publishers_pb::ChannelResponse& response) {
-  for (const auto& wallet : response.wallets()) {
-    if (wallet.has_uphold_wallet()) {
-      return wallet.uphold_wallet().address();
-    }
-    if (wallet.has_bitflyer_wallet()) {
-      return wallet.bitflyer_wallet().address();
-    }
-  }
-  return "";
 }
 
 void GetServerInfoForEmptyResponse(
@@ -120,9 +112,8 @@ ledger::type::Result ServerPublisherInfoFromMessage(
     }
 
     info->publisher_key = entry.channel_identifier();
-    info->status = GetPublisherStatusFromMessage(entry);
-    info->address = GetPublisherAddressFromMessage(entry);
     info->updated_at = ledger::util::GetCurrentTimeStamp();
+    GetPublisherStatusFromMessage(entry, info);
 
     if (entry.has_site_banner_details()) {
       info->banner =
