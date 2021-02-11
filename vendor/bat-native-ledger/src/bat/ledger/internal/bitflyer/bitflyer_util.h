@@ -21,10 +21,10 @@ const char kUrlStaging[] = "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net"
 const char kUrlProduction[] = "https://bitflyer.jp";
 const char kClientIdStaging[] = "6cd6f1a070afcd467e198c8039b2c97b";
 const char kClientIdProduction[] = "6cd6f1a070afcd467e198c8039b2c97b";
-const char kFeeAddressStaging[] = "1b2b466f-5c15-49bf-995e-c91777d3da93";
-const char kFeeAddressProduction[] = "b01e8c55-5004-4761-9e4b-01ec13e25c92";
-const char kACAddressStaging[] = "1b2b466f-5c15-49bf-995e-c91777d3da93";
-const char kACAddressProduction[] = "b01e8c55-5004-4761-9e4b-01ec13e25c92";
+const char kFeeAddressStaging[] = "039292b0-ee61-4c53-bbe7-eca4e75473b9";
+const char kFeeAddressProduction[] = "";  // FIXME: Need official deposit_id
+const char kACAddressStaging[] = "039292b0-ee61-4c53-bbe7-eca4e75473b9";
+const char kACAddressProduction[] = "";   // FIXME: Need official deposit_id
 
 std::string GetClientId();
 
