@@ -12,7 +12,6 @@
 #include "bat/ledger/internal/endpoint/bitflyer/post_claim/post_claim_bitflyer.h"
 #include "bat/ledger/internal/endpoint/bitflyer/post_oauth/post_oauth_bitflyer.h"
 #include "bat/ledger/internal/endpoint/bitflyer/post_transaction/post_transaction_bitflyer.h"
-// #include "bat/ledger/internal/endpoint/bitflyer/post_transaction_commit/post_transaction_commit.h"
 #include "bat/ledger/ledger.h"
 
 namespace ledger {
@@ -38,7 +37,6 @@ class BitflyerServer {
   std::unique_ptr<bitflyer::PostClaimBitflyer> post_claim_;
   std::unique_ptr<bitflyer::PostOauth> post_oauth_;
   std::unique_ptr<bitflyer::PostTransaction> post_transaction_;
-//  std::unique_ptr<bitflyer::PostTransactionCommit> post_transaction_commit_;
 };
 
 }  // namespace endpoint
