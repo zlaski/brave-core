@@ -68,6 +68,7 @@ TEST_F(BitflyerPostTransactionTest, ServerOK) {
   transaction_->Request(
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       transaction,
+      false,
       [](const type::Result result, const std::string& id) {
         EXPECT_EQ(result, type::Result::LEDGER_OK);
         EXPECT_EQ(id, "d382d3ae-8462-4b2c-9b60-b669539f41b2");
@@ -94,6 +95,7 @@ TEST_F(BitflyerPostTransactionTest, ServerError401) {
   transaction_->Request(
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       transaction,
+      false,
       [](const type::Result result, const std::string& id) {
         EXPECT_EQ(result, type::Result::EXPIRED_TOKEN);
         EXPECT_EQ(id, "");
@@ -120,6 +122,7 @@ TEST_F(BitflyerPostTransactionTest, ServerErrorRandom) {
   transaction_->Request(
       "4c2b665ca060d912fec5c735c734859a06118cc8",
       transaction,
+      false,
       [](const type::Result result, const std::string& id) {
         EXPECT_EQ(result, type::Result::LEDGER_ERROR);
         EXPECT_EQ(id, "");

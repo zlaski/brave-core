@@ -33,19 +33,21 @@ std::string PostTransaction::GetUrl() {
 }
 
 std::string PostTransaction::GeneratePayload(
-    const ::ledger::bitflyer::Transaction& transaction) {
-//  base::Value dry_run_option(base::Value::Type::DICTIONARY);
-//  dry_run_option.SetStringKey("request_api_transfer_status", "SUCCESS");
-//  dry_run_option.SetIntKey("process_time_sec", 5);
-//  dry_run_option.SetStringKey("status_api_transfer_status", "SUCCESS");
-
+    const ::ledger::bitflyer::Transaction& transaction,
+    const bool dry_run) {
   base::Value payload(base::Value::Type::DICTIONARY);
   payload.SetStringKey("currency_code", "BAT");
   payload.SetStringKey("amount", base::StringPrintf("%f", transaction.amount));
   payload.SetBoolKey("dry_run", false);
   payload.SetStringKey("deposit_id", transaction.address);
   payload.SetStringKey("transfer_id", base::GenerateGUID());
-//  payload.SetKey("dry_run_option", std::move(dry_run_option));
+  if (dry_run) {
+    base::Value dry_run_option(base::Value::Type::DICTIONARY);
+    dry_run_option.SetStringKey("request_api_transfer_status", "SUCCESS");
+    dry_run_option.SetIntKey("process_time_sec", 5);
+    dry_run_option.SetStringKey("status_api_transfer_status", "SUCCESS");
+    payload.SetKey("dry_run_option", std::move(dry_run_option));
+  }
 
   std::string json;
   base::JSONWriter::Write(payload, &json);
@@ -110,6 +112,7 @@ type::Result PostTransaction::ParseBody(
 void PostTransaction::Request(
     const std::string& token,
     const ::ledger::bitflyer::Transaction& transaction,
+    const bool dry_run,
     PostTransactionCallback callback) {
   auto url_callback = std::bind(&PostTransaction::OnRequest,
       this,
@@ -118,7 +121,7 @@ void PostTransaction::Request(
 
   auto request = type::UrlRequest::New();
   request->url = GetUrl();
-  request->content = GeneratePayload(transaction);
+  request->content = GeneratePayload(transaction, dry_run);
   request->headers = RequestAuthorization(token);
   request->content_type = "application/json; charset=utf-8";
   request->method = type::UrlMethod::POST;
