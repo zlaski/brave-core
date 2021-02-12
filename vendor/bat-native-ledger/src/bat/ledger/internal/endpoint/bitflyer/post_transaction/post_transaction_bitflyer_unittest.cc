@@ -56,7 +56,7 @@ TEST_F(BitflyerPostTransactionTest, ServerOK) {
              "dry_run": true,
              "message": null,
              "transfer_id": "d382d3ae-8462-4b2c-9b60-b669539f41b2",
-             "status": "SUCCESS"
+             "transfer_status": "SUCCESS"
             })";
             callback(response);
           }));

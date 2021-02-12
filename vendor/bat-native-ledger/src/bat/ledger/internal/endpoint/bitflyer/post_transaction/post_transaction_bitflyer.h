@@ -40,7 +40,7 @@
 //   "dry_run": true,
 //   "message": null,
 //   "transfer_id": "base58idgoeshere",
-//   "status": "SUCCESS"
+//   "transfer_status": "SUCCESS"
 // }
 
 namespace ledger {
@@ -73,7 +73,9 @@ class PostTransaction {
 
   type::Result ParseBody(
       const std::string& body,
-      std::string* transfer_id);
+      std::string* transfer_id,
+      std::string* transfer_status,
+      std::string* message);
 
   void OnRequest(
       const type::UrlResponse& response,

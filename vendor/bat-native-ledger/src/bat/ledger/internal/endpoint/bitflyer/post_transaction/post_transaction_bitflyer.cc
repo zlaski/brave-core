@@ -66,8 +66,12 @@ type::Result PostTransaction::CheckStatusCode(const int status_code) {
 
 type::Result PostTransaction::ParseBody(
     const std::string& body,
-    std::string* transfer_id) {
+    std::string* transfer_id,
+    std::string* transfer_status,
+    std::string* message) {
   DCHECK(transfer_id);
+  DCHECK(transfer_status);
+  DCHECK(message);
 
   base::Optional<base::Value> value = base::JSONReader::Read(body);
   if (!value || !value->is_dict()) {
@@ -87,7 +91,18 @@ type::Result PostTransaction::ParseBody(
     return type::Result::LEDGER_ERROR;
   }
 
+  const auto* transfer_status_str =
+      dictionary->FindStringKey("transfer_status");
+  if (!transfer_status_str) {
+    BLOG(0, "Missing transfer status");
+    return type::Result::LEDGER_ERROR;
+  }
+
+  const auto* message_str = dictionary->FindStringKey("message");
+
   *transfer_id = *transfer_id_str;
+  *transfer_status = *transfer_status_str;
+  *message = message_str ? *message_str : "";
 
   return type::Result::LEDGER_OK;
 }
@@ -123,7 +138,16 @@ void PostTransaction::OnRequest(
   }
 
   std::string id;
-  result = ParseBody(response.body, &id);
+  std::string transfer_status;
+  std::string message;
+  result = ParseBody(response.body, &id, &transfer_status, &message);
+  if (result == type::Result::LEDGER_OK && transfer_status != "SUCCESS") {
+    BLOG(0, "Transfer failed (status: " << transfer_status << ")");
+    BLOG_IF(0, !message.empty(), message);
+    callback(type::Result::LEDGER_ERROR, "");
+    return;
+  }
+
   callback(result, id);
 }
 
