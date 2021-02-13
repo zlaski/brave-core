@@ -408,7 +408,7 @@
     "description": "Terms of service panel opt-in text"
   },
   "bat": {
-    "message": "BAP",
+    "message": "BAT",
     "description": "BAT text for displaying converted tip amount."
   },
   "bap": {

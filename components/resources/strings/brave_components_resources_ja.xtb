@@ -157,8 +157,8 @@
 <translation id="4176463684765177261">無効</translation>
 <translation id="4434663852465709809">BATを送金するiOSリワードユーザーのためのQRコード</translation>
 <translation id="2175927920773552910">QR コード</translation>
-<translation id="8845154268466251503">BAP</translation>
-<translation id="6160106411363856968">BAP</translation>
+<translation id="8845154268466251503">BAT</translation>
+<translation id="6160106411363856968">BAT</translation>
 <translation id="1081826981536899387">BATポイント</translation>
 <translation id="2563462925929938015">はBrave Rewardsにおいて、あなたの気に入ったコンテンツの制作者に寄付するために利用できます。BATポイントはBATに交換できません。</translation>
 <translation id="3390542282753297856">デバイスがオフラインです。後でもう一度やり直してください。</translation>
@@ -222,7 +222,7 @@
 <translation id="6805660603861526473">表示済み</translation>
 <translation id="2359865110462963929">お住まいの地域で、現在BATはサポートされていません。最新の情報につきましては、<ph name="BEGIN_LINK"/>こちら<ph name="END_LINK"/>をご参照ください。</translation>
 <translation id="6876377564500155963">{{title}}をオンにすることで、<ph name="BEGIN_LINK1"/>利用規約<ph name="END_LINK1"/> および <ph name="BEGIN_LINK2"/>プライバシーポリシー<ph name="END_LINK2"/>に同意したこととなります。</translation>
-<translation id="2564425876266960486">BraveブラウザBAPカードの作成エラー</translation>
+<translation id="2564425876266960486">BraveブラウザBATカードの作成エラー</translation>
 <translation id="6473583070570450185">ログインするには、認証済みのウォレットが必要です</translation>
 <translation id="2106271389438168634">Upholdウォレットを作成するには、最低25 BATが必要です。Upholdでウォレットを認証した後、もう一度試してください。</translation>
 <translation id="7422678632904904341">金額：</translation>
@@ -300,7 +300,7 @@
 <translation id="922103963921062336">切断（認証されていません）</translation>
 <translation id="6521149675246672063">切断（認証済み）</translation>
 <translation id="3248185426436836442">保留中</translation>
-<translation id="8441289448876571409">BAPファンド</translation>
+<translation id="8441289448876571409">BATファンド</translation>
 <translation id="5906820630265272615">BATファンド</translation>
 <translation id="5814098892838785557">このクリエイターのサポートをやめてもよろしいですか？</translation>
 <translation id="3922777918343537463">毎月の寄付をキャンセルする</translation>
@@ -399,7 +399,7 @@
 <translation id="1767561995429774671">支援</translation>
 <translation id="2030909064203578811">自動支援の配分</translation>
 <translation id="6896758677409633944">コピー</translation>
-<translation id="7071388534095161437">現在、毎月このサイトへ{{currentDonation}} BAPを送っています。</translation>
+<translation id="7071388534095161437">現在、毎月このサイトへ{{currentDonation}} BATを送っています。</translation>
 <translation id="4932733599132424254">日付</translation>
 <translation id="1366855498335432549">残金</translation>
 <translation id="3552003743293281224">デポジット</translation>
@@ -543,7 +543,7 @@
 <translation id="1792148354504719133">サイト</translation>
 <translation id="5944430251223015324">サイト</translation>
 <translation id="6432779622695508363">「いいね」でチップを送る</translation>
-<translation id="8424370624815730676">BATポイント(BAP)</translation>
+<translation id="8424370624815730676">BATポイント(BAT)</translation>
 <translation id="4588241643143931775">ビットコイン (BTC)</translation>
 <translation id="4837149400263828922">イーサリアム (ETH)</translation>
 <translation id="8746837129291133068">ライトコイン (LTC)</translation>
@@ -611,9 +611,9 @@
 <translation id="46988480989545156">ウォレットを確認</translation>
 <translation id="5796169459825124737">当ウォレットサービスは、<ph name="PROVIDER"/>によって提供されています。</translation>
 <translation id="6771734945114850124">政府発行の身分証明書をご用意ください。</translation>
-<translation id="8697510149346635496">プライバシーを尊重する広告表示で獲得したBAPを引き出す</translation>
-<translation id="1481480653609649134">クレジットカードやその他の資金源で追加のBAPを購入する</translation>
-<translation id="9096003370755878766">過去に追加したBrave Rewardsウォレットに追加した可能性のあるBAPを引き出す</translation>
+<translation id="8697510149346635496">プライバシーを尊重する広告表示で獲得したBATを引き出す</translation>
+<translation id="1481480653609649134">クレジットカードやその他の資金源で追加のBATを購入する</translation>
+<translation id="9096003370755878766">過去に追加したBrave Rewardsウォレットに追加した可能性のあるBATを引き出す</translation>
 <translation id="8558636200953226885">しかし、確認を行うと、次のことが可能です...</translation>
 <translation id="3354315693758743702">ウォレットの確認はオプションです。</translation>
 <translation id="4872388810065331182"><ph name="PROVIDER"/>はリクエストされたサービスに基づき、あなたの身元の確認を行う必要性がある場合があります。</translation>
