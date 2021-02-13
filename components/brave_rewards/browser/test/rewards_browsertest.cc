@@ -461,7 +461,7 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_UpholdLimitNoBAT) {
   }
 }
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffNonJP) {
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_BAPCutoffNonJP) {
   rewards_browsertest_util::StartProcess(rewards_service_);
   rewards_browsertest_util::CreateWallet(rewards_service_);
   rewards_service_->FetchPromotions();
@@ -475,7 +475,7 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffNonJP) {
   }
 }
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffBefore) {
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_BAPCutoffBefore) {
   rewards_browsertest_util::StartProcess(rewards_service_);
   rewards_browsertest_util::CreateWallet(rewards_service_);
   rewards_service_->FetchPromotions();
@@ -492,7 +492,7 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffBefore) {
   }
 }
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffAfter) {
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_BAPCutoffAfter) {
   rewards_browsertest_util::StartProcess(rewards_service_);
   rewards_browsertest_util::CreateWallet(rewards_service_);
   rewards_service_->FetchPromotions();
@@ -509,7 +509,7 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffAfter) {
   }
 }
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPPopup) {
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_BAPPopup) {
   // Open the rewards popup.
   content::WebContents* popup_contents = context_helper_->OpenRewardsPopup();
   ASSERT_TRUE(popup_contents);
