@@ -3547,9 +3547,7 @@ std::string RewardsServiceImpl::GetExternalWalletType() const {
     }
   }
 
-  // TODO(zenparsing): For development, we just want to use bitflyer everywhere
-  return ledger::constant::kWalletBitflyer;
-  // return ledger::constant::kWalletUphold;
+  return ledger::constant::kWalletUphold;
 }
 
 }  // namespace brave_rewards
