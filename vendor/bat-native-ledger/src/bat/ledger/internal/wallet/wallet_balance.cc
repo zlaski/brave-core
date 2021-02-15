@@ -121,7 +121,7 @@ void WalletBalance::OnGetUnblindedTokens(
 void WalletBalance::ExternalWallets(
     type::BalancePtr balance,
     ledger::FetchBalanceCallback callback) {
-  FetchBalanceBitflyer(std::move(balance), callback);
+  FetchBalanceUphold(std::move(balance), callback);
 }
 
 void WalletBalance::FetchBalanceUphold(
@@ -135,7 +135,7 @@ void WalletBalance::FetchBalanceUphold(
 
   auto wallet = ledger_->uphold()->GetWallet();
   if (!wallet) {
-    callback(type::Result::LEDGER_OK, std::move(balance));
+    FetchBalanceBitflyer(std::move(balance), callback);
     return;
   }
 
@@ -158,13 +158,13 @@ void WalletBalance::OnFetchBalanceUphold(
 
   if (result == type::Result::LEDGER_ERROR) {
     BLOG(0, "Can't get uphold balance");
-    callback(type::Result::LEDGER_ERROR, std::move(info_ptr));
+    FetchBalanceBitflyer(std::move(info_ptr), callback);
     return;
   }
 
   info_ptr->wallets.insert(std::make_pair(constant::kWalletUphold, balance));
   info_ptr->total += balance;
-  callback(result, std::move(info_ptr));
+  FetchBalanceBitflyer(std::move(info_ptr), callback);
 }
 
 void WalletBalance::FetchBalanceBitflyer(
