@@ -50,8 +50,6 @@ std::string GetAccountUrl();
 
 type::ExternalWalletPtr GenerateLinks(type::ExternalWalletPtr wallet);
 
-std::string GenerateVerifyLink(type::ExternalWalletPtr wallet);
-
 type::ExternalWalletPtr ResetWallet(type::ExternalWalletPtr wallet);
 
 }  // namespace bitflyer

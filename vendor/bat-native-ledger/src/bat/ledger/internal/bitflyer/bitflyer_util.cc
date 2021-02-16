@@ -222,34 +222,11 @@ type::ExternalWalletPtr GenerateLinks(type::ExternalWalletPtr wallet) {
     return nullptr;
   }
 
-  wallet->verify_url = GenerateVerifyLink(wallet->Clone());
+  wallet->verify_url = GetAuthorizeUrl(wallet->one_time_string);
   wallet->account_url = GetAccountUrl();
   wallet->login_url = GetAuthorizeUrl(wallet->one_time_string);
 
   return wallet;
-}
-
-std::string GenerateVerifyLink(type::ExternalWalletPtr wallet) {
-  std::string url;
-  if (!wallet) {
-    return url;
-  }
-
-  switch (wallet->status) {
-    case type::WalletStatus::PENDING:
-    case type::WalletStatus::CONNECTED:
-    case type::WalletStatus::VERIFIED: {
-      break;
-    }
-    case type::WalletStatus::NOT_CONNECTED:
-    case type::WalletStatus::DISCONNECTED_VERIFIED:
-    case type::WalletStatus::DISCONNECTED_NOT_VERIFIED: {
-      url = GetAuthorizeUrl(wallet->one_time_string);
-      break;
-    }
-  }
-
-  return url;
 }
 
 type::ExternalWalletPtr ResetWallet(type::ExternalWalletPtr wallet) {

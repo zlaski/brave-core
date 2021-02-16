@@ -134,12 +134,12 @@ TEST_F(BitflyerUtilTest, GetWallet) {
     "add_url": "",
     "address": "2323dff2ba-d0d1-4dfw-8e56-a2605bcaf4af",
     "fees": {},
-    "login_url": "https://sandbox.uphold.com/authorize/4c2b665ca060d",
+    "login_url": "https://sandbox.bitflyer.jp/authorize/4c2b665ca060d",
     "one_time_string": "1F747AE0A708E47ED7E650BF1856B5A4EF7E36833BDB1158A108F8",
     "status": 2,
     "token": "4c80232r219c30cdf112208890a32c7e00",
     "user_name": "test",
-    "verify_url": "",
+    "verify_url": "https://sandbox.bitflyer.jp/authorize/4c2b665ca060d",
     "withdraw_url": ""
   })";
 
@@ -191,7 +191,13 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   result = bitflyer::GenerateLinks(wallet->Clone());
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
-  ASSERT_EQ(result->verify_url, "");
+  ASSERT_EQ(result->verify_url,
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/authorize"
+      "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=&response_type=code");
   ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
 
   // Verified
@@ -199,7 +205,13 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   result = bitflyer::GenerateLinks(wallet->Clone());
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
-  ASSERT_EQ(result->verify_url, "");
+  ASSERT_EQ(result->verify_url,
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/authorize"
+      "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=&response_type=code");
   ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
 
   // Disconnected Non-Verified
@@ -235,66 +247,14 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   result = bitflyer::GenerateLinks(wallet->Clone());
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
-  ASSERT_EQ(result->verify_url, "");
+  ASSERT_EQ(result->verify_url,
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/authorize"
+      "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
+      "&scope=assets create_deposit_id withdraw_to_deposit_id"
+      "&redirect_uri=rewards://bitflyer/authorization"
+      "&state=&response_type=code");
   ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
-}
-
-TEST_F(BitflyerUtilTest, GenerateVerifyLink) {
-  ledger::_environment = type::Environment::STAGING;
-
-  auto wallet = type::ExternalWallet::New();
-  wallet->one_time_string = "123123123124234234234";
-
-  // Not connected
-  wallet->status = type::WalletStatus::NOT_CONNECTED;
-  auto result = bitflyer::GenerateVerifyLink(wallet->Clone());
-  ASSERT_EQ(result,
-      BITFLYER_STAGING_URL
-      "/ex/OAuth/"
-      "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
-      "&scope=assets create_deposit_id withdraw_to_deposit_id"
-      "&redirect_uri=rewards://bitflyer/authorization"
-      "&state=123123123124234234234"
-      "&response_type=code");
-
-  // Connected
-  wallet->status = type::WalletStatus::CONNECTED;
-  result = bitflyer::GenerateVerifyLink(wallet->Clone());
-  ASSERT_EQ(result, "");
-
-  // Verified
-  wallet->status = type::WalletStatus::VERIFIED;
-  result = bitflyer::GenerateVerifyLink(wallet->Clone());
-  ASSERT_EQ(result, "");
-
-  // Disconnected Non-Verified
-  wallet->status = type::WalletStatus::DISCONNECTED_NOT_VERIFIED;
-  result = bitflyer::GenerateVerifyLink(wallet->Clone());
-  ASSERT_EQ(result,
-      BITFLYER_STAGING_URL
-      "/ex/OAuth/"
-      "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
-      "&scope=assets create_deposit_id withdraw_to_deposit_id"
-      "&redirect_uri=rewards://bitflyer/authorization"
-      "&state=123123123124234234234"
-      "&response_type=code");
-
-  // Disconnected Verified
-  wallet->status = type::WalletStatus::DISCONNECTED_VERIFIED;
-  result = bitflyer::GenerateVerifyLink(wallet->Clone());
-  ASSERT_EQ(result,
-      BITFLYER_STAGING_URL
-      "/ex/OAuth/"
-      "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
-      "&scope=assets create_deposit_id withdraw_to_deposit_id"
-      "&redirect_uri=rewards://bitflyer/authorization"
-      "&state=123123123124234234234"
-      "&response_type=code");
-
-  // Pending
-  wallet->status = type::WalletStatus::PENDING;
-  result = bitflyer::GenerateVerifyLink(wallet->Clone());
-  ASSERT_EQ(result, "");
 }
 
 }  // namespace bitflyer
