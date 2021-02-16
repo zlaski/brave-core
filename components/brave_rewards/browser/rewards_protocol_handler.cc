@@ -60,9 +60,9 @@ void LoadRewardsURL(
 
   // Only accept rewards schema from allowed domains
   const char* kAllowedDomains[] = {
-      "bitflyer.jp",                                   // bitFlyer production
-      "demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net",  // bitFlyer staging
-      "uphold.com",                                    // Uphold staging/prod
+      "bitflyer.jp",        // bitFlyer production
+      "azurewebsites.net",  // bitFlyer staging
+      "uphold.com",         // Uphold staging/prod
   };
   bool allowed_domain = false;
   for (const auto* domain : kAllowedDomains) {

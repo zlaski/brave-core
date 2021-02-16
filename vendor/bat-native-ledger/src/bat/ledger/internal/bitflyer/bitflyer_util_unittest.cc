@@ -81,8 +81,8 @@ TEST_F(BitflyerUtilTest, GetAuthorizeUrl) {
   ledger::_environment = type::Environment::STAGING;
   result = bitflyer::GetAuthorizeUrl("rdfdsfsdfsdf");
   ASSERT_EQ(result,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/"
-      "ex/OAuth/authorize"
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/authorize"
       "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
       "&scope=assets create_deposit_id withdraw_to_deposit_id"
       "&redirect_uri=rewards://bitflyer/authorization"
@@ -130,7 +130,7 @@ TEST_F(BitflyerUtilTest, GetWallet) {
   ASSERT_TRUE(!result);
 
   const std::string wallet =R"({
-    "account_url": "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home",
+    "account_url": "https://bitflyer.jp/ex/Home",
     "add_url": "",
     "address": "2323dff2ba-d0d1-4dfw-8e56-a2605bcaf4af",
     "fees": {},
@@ -178,14 +178,13 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/"
-      "ex/OAuth/authorize"
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/authorize"
       "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
       "&scope=assets create_deposit_id withdraw_to_deposit_id"
       "&redirect_uri=rewards://bitflyer/authorization"
       "&state=&response_type=code");
-  ASSERT_EQ(result->account_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
+  ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
 
   // Connected
   wallet->status = type::WalletStatus::CONNECTED;
@@ -193,8 +192,7 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url, "");
-  ASSERT_EQ(result->account_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
+  ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
 
   // Verified
   wallet->status = type::WalletStatus::VERIFIED;
@@ -202,8 +200,7 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url, "");
-  ASSERT_EQ(result->account_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
+  ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
 
   // Disconnected Non-Verified
   wallet->status = type::WalletStatus::DISCONNECTED_NOT_VERIFIED;
@@ -211,14 +208,13 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/"
-      "ex/OAuth/authorize"
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/authorize"
       "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
       "&scope=assets create_deposit_id withdraw_to_deposit_id"
       "&redirect_uri=rewards://bitflyer/authorization"
       "&state=&response_type=code");
-  ASSERT_EQ(result->account_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
+  ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
 
   // Disconnected Verified
   wallet->status = type::WalletStatus::DISCONNECTED_VERIFIED;
@@ -226,14 +222,13 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/"
-      "ex/OAuth/authorize"
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/authorize"
       "?client_id=6cd6f1a070afcd467e198c8039b2c97b"
       "&scope=assets create_deposit_id withdraw_to_deposit_id"
       "&redirect_uri=rewards://bitflyer/authorization"
       "&state=&response_type=code");
-  ASSERT_EQ(result->account_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
+  ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
 
   // Pending
   wallet->status = type::WalletStatus::PENDING;
@@ -241,8 +236,7 @@ TEST_F(BitflyerUtilTest, GenerateLinks) {
   ASSERT_EQ(result->add_url, "");
   ASSERT_EQ(result->withdraw_url, "");
   ASSERT_EQ(result->verify_url, "");
-  ASSERT_EQ(result->account_url,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/Home");
+  ASSERT_EQ(result->account_url, BITFLYER_STAGING_URL "/ex/Home");
 }
 
 TEST_F(BitflyerUtilTest, GenerateVerifyLink) {
@@ -255,7 +249,8 @@ TEST_F(BitflyerUtilTest, GenerateVerifyLink) {
   wallet->status = type::WalletStatus::NOT_CONNECTED;
   auto result = bitflyer::GenerateVerifyLink(wallet->Clone());
   ASSERT_EQ(result,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/OAuth/"
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/"
       "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
       "&scope=assets create_deposit_id withdraw_to_deposit_id"
       "&redirect_uri=rewards://bitflyer/authorization"
@@ -276,7 +271,8 @@ TEST_F(BitflyerUtilTest, GenerateVerifyLink) {
   wallet->status = type::WalletStatus::DISCONNECTED_NOT_VERIFIED;
   result = bitflyer::GenerateVerifyLink(wallet->Clone());
   ASSERT_EQ(result,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/OAuth/"
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/"
       "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
       "&scope=assets create_deposit_id withdraw_to_deposit_id"
       "&redirect_uri=rewards://bitflyer/authorization"
@@ -287,7 +283,8 @@ TEST_F(BitflyerUtilTest, GenerateVerifyLink) {
   wallet->status = type::WalletStatus::DISCONNECTED_VERIFIED;
   result = bitflyer::GenerateVerifyLink(wallet->Clone());
   ASSERT_EQ(result,
-      "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net/ex/OAuth/"
+      BITFLYER_STAGING_URL
+      "/ex/OAuth/"
       "authorize?client_id=6cd6f1a070afcd467e198c8039b2c97b"
       "&scope=assets create_deposit_id withdraw_to_deposit_id"
       "&redirect_uri=rewards://bitflyer/authorization"

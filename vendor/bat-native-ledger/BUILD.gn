@@ -5,6 +5,11 @@
 
 import("//third_party/protobuf/proto_library.gni")
 
+declare_args() {
+  bitflyer_client_secret = ""
+  bitflyer_staging_url = ""
+}
+
 if (is_android) {
   import("//build/config/android/rules.gni")
 }
@@ -25,6 +30,10 @@ config("internal_config") {
     "//brave/components/brave_rewards/test:*",
     "//brave/test:*",
     "//brave/vendor/bat-native-ledger/test:*",
+  ]
+  defines = [
+    "BITFLYER_CLIENT_SECRET=\"$bitflyer_client_secret\"",
+    "BITFLYER_STAGING_URL=\"$bitflyer_staging_url\""
   ]
   include_dirs = [
     "src",

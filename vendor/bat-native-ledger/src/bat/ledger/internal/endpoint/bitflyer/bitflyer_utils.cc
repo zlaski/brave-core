@@ -14,17 +14,11 @@ namespace ledger {
 namespace endpoint {
 namespace bitflyer {
 
-const char kStaging[] = "http://demo22oy5z2d2lu6pyoum26m7k.azurewebsites.net";
-const char kProduction[] = "https://bitflyer.jp";
-const char kClientSecretStaging[] =
-    "8862095b1d7ead05ccd7044ad70d43bfe4b1964b297db4536acf46b26259aa42";
-const char kClientSecretProduction[] =
-    "8862095b1d7ead05ccd7044ad70d43bfe4b1964b297db4536acf46b26259aa42";
+const char kUrlStaging[] = BITFLYER_STAGING_URL;
+const char kUrlProduction[] = "https://bitflyer.jp";
 
 std::string GetClientSecret() {
-  return ledger::_environment == type::Environment::PRODUCTION
-      ? kClientSecretProduction
-      : kClientSecretStaging;
+  return BITFLYER_CLIENT_SECRET;
 }
 
 std::vector<std::string> RequestAuthorization(const std::string& token) {
@@ -56,9 +50,9 @@ std::string GetServerUrl(const std::string& path) {
 
   std::string url;
   if (ledger::_environment == type::Environment::PRODUCTION) {
-    url = kProduction;
+    url = kUrlProduction;
   } else {
-    url = kStaging;
+    url = kUrlStaging;
   }
 
   return url + path;
