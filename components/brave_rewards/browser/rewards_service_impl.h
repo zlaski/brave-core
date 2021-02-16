@@ -805,6 +805,7 @@ class RewardsServiceImpl : public RewardsService,
   PrefChangeRegistrar profile_pref_change_registrar_;
 
   uint32_t next_timer_id_;
+  int32_t country_id_ = 0;
   bool reset_states_;
   bool is_ledger_initialized_ = false;
   bool ledger_for_testing_ = false;

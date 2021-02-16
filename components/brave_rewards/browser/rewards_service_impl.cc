@@ -2514,6 +2514,13 @@ void RewardsServiceImpl::HandleFlags(const std::string& options) {
         should_persist_logs_ = false;
       }
     }
+
+    if (name == "countryid") {
+      int country_id;
+      if (base::StringToInt(value, &country_id)) {
+        country_id_ = country_id;
+      }
+    }
   }
 }
 
@@ -3532,8 +3539,12 @@ void RewardsServiceImpl::OnWalletCreatedForSetAdsEnabled(
 }
 
 std::string RewardsServiceImpl::GetExternalWalletType() const {
-  const int32_t current_country =
-      country_codes::GetCountryIDFromPrefs(profile_->GetPrefs());
+  int32_t current_country = country_id_;
+
+  if (!current_country) {
+    current_country = country_codes::GetCountryIDFromPrefs(
+        profile_->GetPrefs());
+  }
 
   // TODO(zenparsing): [BF POST-MVP] Rename |kOnlyAnonWalletCountries| to
   // reflect current usage
