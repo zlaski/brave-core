@@ -146,7 +146,6 @@ template("cargo_build") {
   }
 }
 
-# Runs a script to generate C bindings for rust library
 template("cargo_cbindgen") {
   action(target_name) {
     script = "//brave/script/cargo_cbindgen.py"
@@ -172,6 +171,41 @@ template("cargo_cbindgen") {
       "--config=" + rebase_path(config, root_build_dir),
       "--path=" + rebase_path(get_path_info(config, "dir"), root_build_dir),
       "--output=" + rebase_path(output, root_build_dir),
+    ]
+  }
+}
+
+
+# Runs a script to generate C bindings for rust library
+template("rust_cpp_binding") {
+  action(target_name) {
+    script = "//brave/script/cxxbridge.py"
+
+    forward_variables_from(invoker,
+                           [
+                             "input",
+                             "inputs",
+                             "output_dir",
+                             "visibility",
+                           ])
+
+    if (!defined(inputs)) {
+      inputs = [ input ]
+    }
+    inputs += [
+      script,
+    ]
+
+    header_path = "$output_dir/cxxbridge.h"
+
+    outputs = [
+      header_path,
+    ]
+
+    args = [
+      "--rustup_path=" + rustup_path,
+      "--output=" + rebase_path(header_path, root_build_dir),
+      "--input=" + rebase_path(input, root_build_dir),
     ]
   }
 }

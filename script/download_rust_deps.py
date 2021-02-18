@@ -178,6 +178,10 @@ def main():
             "version": "0.14.2",
         },
         {
+            "name": "cxxbridge-cmd",
+            "version": "1.0.32",
+        },
+        {
             "name": "cargo-audit",
             "features": "vendored-openssl",
         }
