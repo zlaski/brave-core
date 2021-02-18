@@ -15,7 +15,7 @@
 #include "bat/ads/internal/tokens/refill_unblinded_tokens/refill_unblinded_tokens_delegate.h"
 #include "bat/ads/mojom.h"
 #include "bat/ads/result.h"
-#include "wrapper.hpp"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 namespace ads {
 

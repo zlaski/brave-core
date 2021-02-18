@@ -18,7 +18,7 @@
 #include "bat/ads/internal/logging.h"
 #include "bat/ads/internal/privacy/challenge_bypass_ristretto_util.h"
 #include "bat/ads/internal/privacy/unblinded_tokens/unblinded_tokens.h"
-#include "wrapper.hpp"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 namespace ads {
 

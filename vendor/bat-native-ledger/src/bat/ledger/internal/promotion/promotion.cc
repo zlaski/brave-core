@@ -21,8 +21,7 @@
 #include "bat/ledger/internal/promotion/promotion_transfer.h"
 #include "bat/ledger/internal/promotion/promotion_util.h"
 #include "bat/ledger/option_keys.h"
-
-#include "wrapper.hpp"  // NOLINT
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 using std::placeholders::_1;
 using std::placeholders::_2;

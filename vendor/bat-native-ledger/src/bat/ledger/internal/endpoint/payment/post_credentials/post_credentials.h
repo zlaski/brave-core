@@ -9,7 +9,6 @@
 #include <memory>
 #include <string>
 
-#include "base/values.h"
 #include "bat/ledger/ledger.h"
 
 // POST /v1/orders/{order_id}/credentials
@@ -54,7 +53,7 @@ class PostCredentials {
       const std::string& order_id,
       const std::string& item_id,
       const std::string& type,
-      std::unique_ptr<base::ListValue> blinded_creds,
+      const std::vector<std::string>& blinded_creds,
       PostCredentialsCallback callback);
 
  private:
@@ -63,7 +62,7 @@ class PostCredentials {
   std::string GeneratePayload(
       const std::string& item_id,
       const std::string& type,
-      std::unique_ptr<base::ListValue> blinded_creds);
+      const std::vector<std::string>& blinded_creds);
 
   type::Result CheckStatusCode(const int status_code);
 

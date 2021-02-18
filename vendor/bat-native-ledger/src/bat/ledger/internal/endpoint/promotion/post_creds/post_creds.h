@@ -8,8 +8,8 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
-#include "base/values.h"
 #include "bat/ledger/ledger.h"
 
 // POST /v1/promotions/{promotion_id}
@@ -55,13 +55,13 @@ class PostCreds {
 
   void Request(
     const std::string& promotion_id,
-    std::unique_ptr<base::ListValue> blinded_creds,
+    const std::vector<std::string>& blinded_creds,
     PostCredsCallback callback);
 
  private:
   std::string GetUrl(const std::string& promotion_id);
 
-  std::string GeneratePayload(std::unique_ptr<base::ListValue> blinded_creds);
+  std::string GeneratePayload(const std::vector<std::string>& blinded_creds);
 
   type::Result CheckStatusCode(const int status_code);
 

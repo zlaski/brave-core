@@ -23,8 +23,8 @@
 #include "bat/ads/internal/tokens/redeem_unblinded_token/create_confirmation_url_request_builder.h"
 #include "bat/ads/internal/tokens/redeem_unblinded_token/create_confirmation_util.h"
 #include "bat/ads/internal/tokens/redeem_unblinded_token/fetch_payment_token_url_request_builder.h"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 #include "net/http/http_status_code.h"
-#include "wrapper.hpp"
 
 namespace ads {
 

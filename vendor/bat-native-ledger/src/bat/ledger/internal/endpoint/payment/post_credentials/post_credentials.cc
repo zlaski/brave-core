@@ -37,11 +37,16 @@ std::string PostCredentials::GetUrl(const std::string& order_id) {
 std::string PostCredentials::GeneratePayload(
     const std::string& item_id,
     const std::string& type,
-    std::unique_ptr<base::ListValue> blinded_creds) {
+    const std::vector<std::string>& blinded_creds) {
   base::Value body(base::Value::Type::DICTIONARY);
   body.SetStringKey("itemId", item_id);
   body.SetStringKey("type", type);
-  body.SetKey("blindedCreds", base::Value(std::move(*blinded_creds)));
+
+  auto blinded_creds_list = base::ListValue();
+  for (const auto& blinded_cred : blinded_creds) {
+    blinded_creds_list.Append(blinded_cred);
+  }
+  body.SetKey("blindedCreds", blinded_creds_list.Clone());
 
   std::string json;
   base::JSONWriter::Write(body, &json);
@@ -76,7 +81,7 @@ void PostCredentials::Request(
     const std::string& order_id,
     const std::string& item_id,
     const std::string& type,
-    std::unique_ptr<base::ListValue> blinded_creds,
+    const std::vector<std::string>& blinded_creds,
     PostCredentialsCallback callback) {
   auto url_callback = std::bind(&PostCredentials::OnRequest,
       this,
@@ -85,7 +90,7 @@ void PostCredentials::Request(
 
   auto request = type::UrlRequest::New();
   request->url = GetUrl(order_id);
-  request->content = GeneratePayload(item_id, type, std::move(blinded_creds));
+  request->content = GeneratePayload(item_id, type, blinded_creds);
   request->content_type = "application/json; charset=utf-8";
   request->method = type::UrlMethod::POST;
   ledger_->LoadURL(std::move(request), url_callback);

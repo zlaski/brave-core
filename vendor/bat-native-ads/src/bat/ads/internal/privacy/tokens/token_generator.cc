@@ -6,6 +6,7 @@
 #include "bat/ads/internal/privacy/tokens/token_generator.h"
 
 #include "bat/ads/internal/logging.h"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 namespace ads {
 namespace privacy {
@@ -18,7 +19,7 @@ std::vector<Token> TokenGenerator::Generate(const int count) const {
   std::vector<Token> tokens;
 
   for (int i = 0; i < count; i++) {
-    Token token = Token::random();
+    Token token = challenge_bypass_ristretto::generate_token();
     tokens.push_back(token);
   }
 

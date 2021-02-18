@@ -12,7 +12,7 @@
 #include "bat/ads/internal/account/wallet/wallet_info.h"
 #include "bat/ads/internal/server/url_request_builder.h"
 #include "bat/ads/mojom.h"
-#include "wrapper.hpp"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 namespace ads {
 

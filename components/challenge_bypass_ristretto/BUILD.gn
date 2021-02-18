@@ -22,7 +22,11 @@ rust_ffi("challenge_bypass_ristretto") {
     "//brave/vendor/challenge_bypass_ristretto_ffi/src/wrapper.hpp",
   ]
 
-  deps = [ "//base" ]
+  deps = [
+    "//base",
+    # TODO remove rust_ffi and just use this
+    "rust/cpp",
+  ]
 
   if (is_mac || is_ios) {
     frameworks = [ "Security.framework" ]

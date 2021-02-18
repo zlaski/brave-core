@@ -13,25 +13,25 @@
 #include "base/values.h"
 #include "bat/ledger/internal/credentials/credentials_redeem.h"
 #include "bat/ledger/mojom_structs.h"
-
-#include "wrapper.hpp"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 using challenge_bypass_ristretto::Token;
 using challenge_bypass_ristretto::BlindedToken;
+using rust::cxxbridge1::Box;
 
 namespace ledger {
 namespace credential {
 
-std::vector<Token> GenerateCreds(const int count);
+std::vector<Box<Token>> GenerateCreds(const int count);
 
-std::string GetCredsJSON(const std::vector<Token>& creds);
+std::string GetCredsJSON(const std::vector<Box<Token>>& creds);
 
-std::vector<BlindedToken> GenerateBlindCreds(
-    const std::vector<Token>& tokens);
+std::vector<Box<BlindedToken>> GenerateBlindCreds(
+    const std::vector<Box<Token>>& tokens);
 
-std::string GetBlindedCredsJSON(const std::vector<BlindedToken>& blinded);
+std::string GetBlindedCredsJSON(const std::vector<Box<BlindedToken>>& blinded);
 
-std::unique_ptr<base::ListValue> ParseStringToBaseList(
+std::vector<std::string> ParseStringToBaseList(
     const std::string& string_list);
 
 bool UnBlindCreds(

@@ -11,6 +11,7 @@
 #include "base/strings/stringprintf.h"
 #include "base/values.h"
 #include "bat/ledger/internal/contribution/contribution_anon_card.h"
+#include "bat/ledger/internal/endpoint/payment/payment_server.h"
 #include "bat/ledger/internal/ledger_impl.h"
 #include "bat/ledger/internal/sku/sku_util.h"
 

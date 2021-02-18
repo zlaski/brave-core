@@ -8,7 +8,7 @@
 
 #include <vector>
 
-#include "wrapper.hpp"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 namespace ads {
 namespace privacy {

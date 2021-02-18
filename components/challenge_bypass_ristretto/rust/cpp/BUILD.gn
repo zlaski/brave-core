@@ -1,0 +1,11 @@
+import("//brave/build/cargo.gni")
+
+rust_cpp_binding("cpp") {
+  input = "lib.rs"
+
+  inputs = [
+    input,
+    "export.h",
+  ]
+  output_dir = "$root_gen_dir/brave/components/challenge_bypass_ristretto"
+}

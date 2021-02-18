@@ -6,7 +6,7 @@
 #include "bat/ads/internal/privacy/challenge_bypass_ristretto_util.h"
 
 #include "bat/ads/internal/logging.h"
-#include "wrapper.hpp"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 namespace ads {
 namespace privacy {

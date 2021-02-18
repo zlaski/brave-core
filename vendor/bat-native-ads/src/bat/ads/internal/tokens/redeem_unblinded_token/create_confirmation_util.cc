@@ -21,7 +21,7 @@
 #include "bat/ads/internal/privacy/unblinded_tokens/unblinded_token_info.h"
 #include "brave/components/l10n/browser/locale_helper.h"
 #include "brave/components/l10n/common/locale_util.h"
-#include "wrapper.hpp"
+#include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
 namespace ads {
 
