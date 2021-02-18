@@ -7,8 +7,7 @@
 
 namespace ads {
 
-ConfirmationInfo::ConfirmationInfo()
-    : payment_token(nullptr), blinded_payment_token(nullptr) {}
+ConfirmationInfo::ConfirmationInfo() {}
 
 ConfirmationInfo::ConfirmationInfo(const ConfirmationInfo& info) = default;
 

@@ -10,22 +10,24 @@
 
 #include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
+using challenge_bypass_ristretto::PublicKey;
+using challenge_bypass_ristretto::UnblindedToken;
+using rust::cxxbridge1::Box;
+
 namespace ads {
 namespace privacy {
 
-using challenge_bypass_ristretto::PublicKey;
-using challenge_bypass_ristretto::UnblindedToken;
-
 struct UnblindedTokenInfo {
   UnblindedTokenInfo();
-  UnblindedTokenInfo(const UnblindedTokenInfo& info);
+  UnblindedTokenInfo(const UnblindedTokenInfo&) = delete;
+  UnblindedTokenInfo& operator=(const UnblindedTokenInfo&) = delete;
   ~UnblindedTokenInfo();
 
   bool operator==(const UnblindedTokenInfo& rhs) const;
   bool operator!=(const UnblindedTokenInfo& rhs) const;
 
-  UnblindedToken value;
-  PublicKey public_key;
+  Box<UnblindedToken> value;
+  Box<PublicKey> public_key;
 };
 
 using UnblindedTokenList = std::vector<UnblindedTokenInfo>;

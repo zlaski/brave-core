@@ -8,11 +8,7 @@
 namespace ads {
 namespace privacy {
 
-UnblindedTokenInfo::UnblindedTokenInfo()
-    : value(nullptr), public_key(nullptr) {}
-
-UnblindedTokenInfo::UnblindedTokenInfo(
-    const UnblindedTokenInfo& unblinded_token) = default;
+UnblindedTokenInfo::UnblindedTokenInfo() {}
 
 UnblindedTokenInfo::~UnblindedTokenInfo() = default;
 

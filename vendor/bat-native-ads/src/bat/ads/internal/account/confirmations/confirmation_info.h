@@ -15,14 +15,16 @@
 #include "bat/ads/internal/privacy/unblinded_tokens/unblinded_token_info.h"
 #include "brave/components/challenge_bypass_ristretto/cxxbridge.h"
 
-namespace ads {
-
 using challenge_bypass_ristretto::BlindedToken;
 using challenge_bypass_ristretto::Token;
+using rust::cxxbridge1::Box;
+
+namespace ads {
 
 struct ConfirmationInfo {
   ConfirmationInfo();
-  ConfirmationInfo(const ConfirmationInfo& info);
+  ConfirmationInfo(const ConfirmationInfo&) = delete;
+  ConfirmationInfo& operator=(const ConfirmationInfo&) = delete;
   ~ConfirmationInfo();
 
   bool operator==(const ConfirmationInfo& rhs) const;
@@ -34,8 +36,8 @@ struct ConfirmationInfo {
   std::string creative_instance_id;
   ConfirmationType type = ConfirmationType::kUndefined;
   privacy::UnblindedTokenInfo unblinded_token;
-  Token payment_token;
-  BlindedToken blinded_payment_token;
+  Box<Token> payment_token;
+  Box<BlindedToken> blinded_payment_token;
   std::string credential;
   int64_t timestamp = 0;
   bool created = false;
