@@ -38,6 +38,9 @@ class BitflyerAuthorization {
 
   void OnClaimWallet(
       const type::Result result,
+      const std::string& token,
+      const std::string& address,
+      const std::string& linking_info,
       ledger::ExternalWalletAuthorizationCallback callback);
 
   LedgerImpl* ledger_;  // NOT OWNED

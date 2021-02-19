@@ -162,17 +162,12 @@ void BitflyerAuthorization::OnAuthorize(
     return;
   }
 
-  auto wallet_ptr = GetWallet(ledger_);
-
-  wallet_ptr->token = token;
-  wallet_ptr->address = address;
-  wallet_ptr->linking_info = linking_info;
-
-  ledger_->bitflyer()->SetWallet(wallet_ptr->Clone());
-
   auto url_callback = std::bind(&BitflyerAuthorization::OnClaimWallet,
       this,
       _1,
+      token,
+      address,
+      linking_info,
       callback);
 
   bitflyer_server_->post_claim()->Request(linking_info, url_callback);
@@ -180,6 +175,9 @@ void BitflyerAuthorization::OnAuthorize(
 
 void BitflyerAuthorization::OnClaimWallet(
     const type::Result result,
+    const std::string& token,
+    const std::string& address,
+    const std::string& linking_info,
     ledger::ExternalWalletAuthorizationCallback callback) {
   if (result != type::Result::LEDGER_OK) {
     BLOG(0, "Couldn't claim wallet");
@@ -188,6 +186,10 @@ void BitflyerAuthorization::OnClaimWallet(
   }
 
   auto wallet_ptr = GetWallet(ledger_);
+
+  wallet_ptr->token = token;
+  wallet_ptr->address = address;
+  wallet_ptr->linking_info = linking_info;
 
   switch (wallet_ptr->status) {
     case type::WalletStatus::NOT_CONNECTED:
