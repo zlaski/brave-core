@@ -5,10 +5,7 @@
 
 import("//third_party/protobuf/proto_library.gni")
 
-declare_args() {
-  bitflyer_client_secret = ""
-  bitflyer_staging_url = ""
-}
+import("//brave/vendor/bat-native-ledger/config.gni")
 
 if (is_android) {
   import("//build/config/android/rules.gni")
