@@ -50,6 +50,9 @@ class BraveRewardsNativeWorker : public brave_rewards::RewardsServiceObserver,
     base::android::ScopedJavaLocalRef<jstring> GetWalletBalance(JNIEnv* env,
         const base::android::JavaParamRef<jobject>& obj);
 
+    base::android::ScopedJavaLocalRef<jstring> GetExternalWalletType(JNIEnv* env,
+        const base::android::JavaParamRef<jobject>& obj);
+
     double GetWalletRate(JNIEnv* env,
         const base::android::JavaParamRef<jobject>& obj);
 

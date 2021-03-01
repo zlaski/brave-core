@@ -34,6 +34,7 @@ void BitflyerAuthorization::Authorize(
     ledger::ExternalWalletAuthorizationCallback callback) {
   const auto wallet = ledger_->wallet()->GetWallet();
   if (!wallet) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "Wallet is null";
     BLOG(0, "Wallet is null");
     callback(type::Result::LEDGER_ERROR, {});
     return;
@@ -41,6 +42,7 @@ void BitflyerAuthorization::Authorize(
 
   auto bitflyer_wallet = GetWallet(ledger_);
   if (!bitflyer_wallet) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "bitflyer_wallet is null";
     BLOG(0, "Wallet is null");
     callback(type::Result::LEDGER_ERROR, {});
     return;
@@ -53,6 +55,7 @@ void BitflyerAuthorization::Authorize(
   const bool success = ledger_->bitflyer()->SetWallet(bitflyer_wallet->Clone());
 
   if (!success) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "!success";
     callback(type::Result::LEDGER_ERROR, {});
     return;
   }
@@ -61,7 +64,9 @@ void BitflyerAuthorization::Authorize(
   if (it != args.end()) {
     const std::string message = args.at("error_description");
     BLOG(1, message);
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "error_description";
     if (message == "User does not meet minimum requirements") {
+      LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "User does not meet minimum requirements";
       callback(type::Result::NOT_FOUND, {});
       return;
     }
@@ -71,6 +76,7 @@ void BitflyerAuthorization::Authorize(
   }
 
   if (args.empty()) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "Arguments are empty";
     BLOG(0, "Arguments are empty");
     callback(type::Result::LEDGER_ERROR, {});
     return;
@@ -83,6 +89,7 @@ void BitflyerAuthorization::Authorize(
   }
 
   if (code.empty()) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "Code is empty";
     BLOG(0, "Code is empty");
     callback(type::Result::LEDGER_ERROR, {});
     return;
@@ -95,12 +102,14 @@ void BitflyerAuthorization::Authorize(
   }
 
   if (one_time_string.empty()) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "One time string is empty";
     BLOG(0, "One time string is empty");
     callback(type::Result::LEDGER_ERROR, {});
     return;
   }
 
   if (current_one_time != one_time_string) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::Authorize : "<< "One time string mismatch";
     BLOG(0, "One time string mismatch");
     callback(type::Result::LEDGER_ERROR, {});
     return;
@@ -132,6 +141,7 @@ void BitflyerAuthorization::OnAuthorize(
     const std::string& linking_info,
     ledger::ExternalWalletAuthorizationCallback callback) {
   if (result == type::Result::EXPIRED_TOKEN) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::OnAuthorize : "<< "Expired token";
     BLOG(0, "Expired token");
     callback(type::Result::EXPIRED_TOKEN, {});
     ledger_->bitflyer()->DisconnectWallet();
@@ -139,24 +149,28 @@ void BitflyerAuthorization::OnAuthorize(
   }
 
   if (result != type::Result::LEDGER_OK) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::OnAuthorize : "<< "Couldn't get token";
     BLOG(0, "Couldn't get token");
     callback(type::Result::LEDGER_ERROR, {});
     return;
   }
 
   if (token.empty()) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::OnAuthorize : "<< "Token is empty";
     BLOG(0, "Token is empty");
     callback(type::Result::LEDGER_ERROR, {});
     return;
   }
 
   if (address.empty()) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::OnAuthorize : "<< "Address is empty";
     BLOG(0, "Address is empty");
     callback(type::Result::LEDGER_ERROR, {});
     return;
   }
 
   if (linking_info.empty()) {
+    LOG(ERROR) << "NTP" << "BitflyerAuthorization::OnAuthorize : "<< "Linking info is empty";
     BLOG(0, "Linking info is empty");
     callback(type::Result::LEDGER_ERROR, {});
     return;

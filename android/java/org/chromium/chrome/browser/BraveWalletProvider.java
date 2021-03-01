@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.chromium.base.ContextUtils;
+import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.BraveRewardsBalance;
 import org.chromium.chrome.browser.BraveRewardsHelper;
@@ -27,12 +28,20 @@ import org.chromium.components.external_intents.ExternalNavigationParams;
 import java.util.Locale;
 
 //used from org.chromium.chrome.browser.externalnav
-public class BraveUphold implements BraveRewardsObserver {
+public class BraveWalletProvider implements BraveRewardsObserver {
+
+    public static final String ACTION_VALUE = "authorization";
+
     public static final String UPHOLD_REDIRECT_URL = "rewards://uphold";
     public static final String UPHOLD_REDIRECT_URL_KEY = "redirect_url";
-    public static final String ACTION_VALUE = "authorization";
     public static final String UPHOLD_SUPPORT_URL = "http://uphold.com/en/brave/support";
     public static final String UPHOLD_ORIGIN_URL = "http://uphold.com";
+
+    public static final String BITFLYER_REDIRECT_URL = "rewards://bitflyer";
+
+    // Wallet types
+    public static final String UPHOLD = "uphold";
+    public static final String BITFLYER = "bitflyer";
 
     private static int UNKNOWN_ERROR_CODE = -1;
 
@@ -40,7 +49,7 @@ public class BraveUphold implements BraveRewardsObserver {
     private BraveExternalNavigationHandler mBraveExternalNavigationHandler;
     private BraveRewardsNativeWorker rewardsNativeProxy;
 
-    public void CompleteUpholdVerification(ExternalNavigationParams params,
+    public void completeWalletProviderVerification(ExternalNavigationParams params,
             BraveExternalNavigationHandler handler) {
         mExternalNavigationParams = params;
         mBraveExternalNavigationHandler = handler;
@@ -51,10 +60,13 @@ public class BraveUphold implements BraveRewardsObserver {
         String path = uri.getPath();
         String query = uri.getQuery();
 
+        Log.e("NTP", "Before Path : "+path);
+        Log.e("NTP", "Before query : "+query);
+
         if (TextUtils.isEmpty(path) || TextUtils.isEmpty(query)) {
             rewardsNativeProxy.RemoveObserver(this);
-            ReleaseDependencies();
-            ShowErrorMessageBox(UNKNOWN_ERROR_CODE);
+            releaseDependencies();
+            showErrorMessageBox(UNKNOWN_ERROR_CODE);
             return;
         }
 
@@ -62,47 +74,53 @@ public class BraveUphold implements BraveRewardsObserver {
         // path: "/uphold/path"
         // query: "?query"
         path = String.format(Locale.US,"/%s/%s",
-                BraveRewardsBalance.WALLET_UPHOLD, path);
+                rewardsNativeProxy.getExternalWalletType(), path);
         query = String.format(Locale.US,"?%s", query);
+
+        Log.e("NTP", "Path : "+path);
+        Log.e("NTP", "query : "+query);
         rewardsNativeProxy.ProcessRewardsPageUrl(path, query);
     }
 
     @Override
-    public void OnProcessRewardsPageUrl(int error_code,
-            String wallet_type, String action,
-            String json_args ) {
+    public void OnProcessRewardsPageUrl(int errorCode,
+            String walletType, String action,
+            String jsonArgs ) {
 
         //remove observer
         if (rewardsNativeProxy != null) {
             rewardsNativeProxy.RemoveObserver(this);
         }
-
-        String redirect_url = parseJsonArgs (json_args);
-        if (BraveRewardsNativeWorker.LEDGER_OK == error_code &&
+        String redirectUrl = parseJsonArgs (jsonArgs);
+        Log.e("NTP", "redirect url : "+redirectUrl);
+        Log.e("NTP", "Error code : "+errorCode);
+        Log.e("NTP", "Action : "+action);
+        if (BraveRewardsNativeWorker.LEDGER_OK == errorCode &&
                 TextUtils.equals(action, ACTION_VALUE)) {
 
                     //wallet is verified: redirect to chrome://rewards for now
-                    if (TextUtils.isEmpty(redirect_url)) {
-                        redirect_url = BraveActivity.REWARDS_SETTINGS_URL;
+                    if (TextUtils.isEmpty(redirectUrl)) {
+                        redirectUrl = BraveActivity.REWARDS_SETTINGS_URL;
                     }
                     mBraveExternalNavigationHandler.
-                            clobberCurrentTabWithFallbackUrl (redirect_url,
+                            clobberCurrentTabWithFallbackUrl (redirectUrl,
                             mExternalNavigationParams);
 
                     // temporary: open Rewards Panel to show wallet transition state.
                     // remove this step once settings activity has this info
                     BraveActivity.getBraveActivity().openRewardsPanel();
-                    ReleaseDependencies();
+                    releaseDependencies();
         }
         else {
-            ShowErrorMessageBox(error_code);
+            showErrorMessageBox(errorCode);
         }
     }
 
-    private String parseJsonArgs(String json_args) {
+    private String parseJsonArgs(String jsonArgs) {
         String redirect_url = "";
         try {
-            JSONObject jsonObj = new JSONObject(json_args);
+            Log.e("NTP", "jsonArgs : "+ jsonArgs);
+            JSONObject jsonObj = new JSONObject(jsonArgs);
             if (jsonObj.has(UPHOLD_REDIRECT_URL_KEY)) {
                 redirect_url = jsonObj.getString(UPHOLD_REDIRECT_URL_KEY);
             }
@@ -111,39 +129,39 @@ public class BraveUphold implements BraveRewardsObserver {
         return redirect_url;
     }
 
-    private void ReleaseDependencies() {
+    private void releaseDependencies() {
         mExternalNavigationParams = null;
         mBraveExternalNavigationHandler = null;
     }
 
-    private void ShowErrorMessageBox (int error_code) {
-        String msg = "";
-        String msg_title = "";
+    private void showErrorMessageBox (int errorCode) {
+        String message = "";
+        String messageTitle = "";
         Context context = ContextUtils.getApplicationContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 BraveRewardsHelper.getChromeTabbedActivity(),
                 R.style.Theme_Chromium_AlertDialog);
 
-        if (BraveRewardsNativeWorker.BAT_NOT_ALLOWED == error_code) {
-            msg = context.getResources().getString(R.string.bat_not_allowed_in_region);
-            msg_title = context.getResources().getString(R.string.bat_not_allowed_in_region_title);
+        if (BraveRewardsNativeWorker.BAT_NOT_ALLOWED == errorCode) {
+            message = context.getResources().getString(R.string.bat_not_allowed_in_region);
+            messageTitle = context.getResources().getString(R.string.bat_not_allowed_in_region_title);
         }
         else {
-            msg = context.getResources().getString(R.string.wallet_verification_generic_error);
-            msg_title = context.getResources().getString(R.string.wallet_verification_generic_error_title);
+            message = context.getResources().getString(R.string.wallet_verification_generic_error);
+            messageTitle = context.getResources().getString(R.string.wallet_verification_generic_error_title);
         }
-        builder.setMessage(msg)
-                .setTitle (msg_title)
+        builder.setMessage(message)
+                .setTitle (messageTitle)
                 .setPositiveButton(R.string.ok, (DialogInterface dialog, int which)-> {
                         mBraveExternalNavigationHandler.
                             clobberCurrentTabWithFallbackUrl (UPHOLD_SUPPORT_URL,
                             mExternalNavigationParams);
                 })
                 .setOnDismissListener((DialogInterface dialog)-> {
-                    ReleaseDependencies();
+                    releaseDependencies();
                 });
 
-        AlertDialog dlg = builder.create();
-        dlg.show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

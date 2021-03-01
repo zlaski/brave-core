@@ -112,6 +112,7 @@ void Wallet::AuthorizeWallet(
     const std::string& wallet_type,
     const base::flat_map<std::string, std::string>& args,
     ledger::ExternalWalletAuthorizationCallback callback) {
+  LOG(ERROR) << "NTP" << "AuthorizeWallet : "<< "Wllet type : "<<wallet_type;
   if (wallet_type == constant::kWalletUphold) {
     ledger_->uphold()->WalletAuthorization(args, callback);
     return;

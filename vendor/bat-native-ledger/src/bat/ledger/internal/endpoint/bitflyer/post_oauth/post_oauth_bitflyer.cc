@@ -70,6 +70,7 @@ std::string PostOauth::GeneratePayload(
 
   std::string payload;
   base::JSONWriter::Write(dict, &payload);
+  LOG(ERROR) << "NTP" << " Payload : " << payload;
   return payload;
 }
 
@@ -96,30 +97,35 @@ type::Result PostOauth::ParseBody(
 
   base::Optional<base::Value> value = base::JSONReader::Read(body);
   if (!value || !value->is_dict()) {
+    LOG(ERROR) << "NTP" << " ParseBody : " << "Invalid JSON";
     BLOG(0, "Invalid JSON");
     return type::Result::LEDGER_ERROR;
   }
 
   base::DictionaryValue* dictionary = nullptr;
   if (!value->GetAsDictionary(&dictionary)) {
+    LOG(ERROR) << "NTP" << " ParseBody : " << "Invalid JSON";
     BLOG(0, "Invalid JSON");
     return type::Result::LEDGER_ERROR;
   }
 
   const auto* access_token = dictionary->FindStringKey("access_token");
   if (!access_token) {
+    LOG(ERROR) << "NTP" << " ParseBody : " << "Missing access token";
     BLOG(0, "Missing access token");
     return type::Result::LEDGER_ERROR;
   }
 
   const auto* deposit_id = dictionary->FindStringKey("deposit_id");
   if (!deposit_id) {
+    LOG(ERROR) << "NTP" << " ParseBody : " << "Missing deposit id";
     BLOG(0, "Missing deposit id");
     return type::Result::LEDGER_ERROR;
   }
 
   const auto* linking_information = dictionary->FindStringKey("linking_info");
   if (!linking_information) {
+    LOG(ERROR) << "NTP" << " ParseBody : " << "Missing linking info";
     BLOG(0, "Missing linking info");
     return type::Result::LEDGER_ERROR;
   }
@@ -157,6 +163,7 @@ void PostOauth::OnRequest(
   type::Result result = CheckStatusCode(response.status_code);
 
   if (result != type::Result::LEDGER_OK) {
+    LOG(ERROR) << "NTP" << " OnRequest : " << "response.status_code : " << response.status_code;
     callback(result, "", "", "");
     return;
   }

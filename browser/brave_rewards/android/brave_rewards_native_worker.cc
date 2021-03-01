@@ -261,6 +261,18 @@ base::android::ScopedJavaLocalRef<jstring>
   return base::android::ConvertUTF8ToJavaString(env, json_balance);
 }
 
+base::android::ScopedJavaLocalRef<jstring>
+    BraveRewardsNativeWorker::GetExternalWalletType(JNIEnv* env,
+    const base::android::JavaParamRef<jobject>& obj) {
+
+  std::string wallet_type;
+  if (brave_rewards_service_) {
+    wallet_type = brave_rewards_service_->GetExternalWalletType();
+  }
+
+  return base::android::ConvertUTF8ToJavaString(env, wallet_type);
+}
+
 double BraveRewardsNativeWorker::GetWalletRate(JNIEnv* env,
     const base::android::JavaParamRef<jobject>& obj) {
   return parameters_.rate;

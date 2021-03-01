@@ -187,6 +187,12 @@ public class BraveRewardsNativeWorker {
         }
     }
 
+    public String getExternalWalletType() {
+        synchronized(lock) {
+            return nativeGetExternalWalletType(mNativeBraveRewardsNativeWorker);
+        }
+    }
+
     public double GetWalletRate() {
         synchronized(lock) {
             return nativeGetWalletRate(mNativeBraveRewardsNativeWorker);
@@ -589,6 +595,7 @@ public class BraveRewardsNativeWorker {
     private native void nativeInit();
     private native void nativeDestroy(long nativeBraveRewardsNativeWorker);
     private native String nativeGetWalletBalance(long nativeBraveRewardsNativeWorker);
+    private native String nativeGetExternalWalletType(long nativeBraveRewardsNativeWorker);
     private native double nativeGetWalletRate(long nativeBraveRewardsNativeWorker);
     private native void nativeGetPublisherInfo(long nativeBraveRewardsNativeWorker, int tabId, String host);
     private native String nativeGetPublisherURL(long nativeBraveRewardsNativeWorker, int tabId);
