@@ -117,7 +117,6 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
     private static final String REWARDS_NOTIFICATION_NO_INTERNET_ID = "29d835c2-5752-4152-93c3-8a1ded9dd4ec";
     private static final int REWARDS_PROMOTION_CLAIM_ERROR = REWARDS_NOTIFICATION_NO_INTERNET + 1;
     private static final String REWARDS_PROMOTION_CLAIM_ERROR_ID = "rewards_promotion_claim_error_id";
-    //
 
     // Auto contribute results
     private static final String AUTO_CONTRIBUTE_SUCCESS = "0";
@@ -1691,12 +1690,12 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
 
                 Button btnVerifyWallet = (Button) root.findViewById(R.id.btn_verify_wallet);
                 if (btnVerifyWallet != null) {
-                    if (walletBalance < WALLET_BALANCE_LIMIT && !isVerifyWalletEnabled()) {
-                        btnVerifyWallet.setBackgroundResource(
-                            R.drawable.wallet_disconnected_button);
-                    } else {
+                    // if (walletBalance < WALLET_BALANCE_LIMIT && !isVerifyWalletEnabled() && mBraveRewardsNativeWorker.getExternalWalletType().equals(UPHOLD)) {
+                    //     btnVerifyWallet.setBackgroundResource(
+                    //         R.drawable.wallet_disconnected_button);
+                    // } else {
                         btnVerifyWallet.setBackgroundResource(R.drawable.wallet_verify_button);
-                    }
+                    // }
                 }
             }
             walletDetailsReceived = true;
@@ -1825,27 +1824,27 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                 case BraveRewardsExternalWallet.CONNECTED:
                 case BraveRewardsExternalWallet.PENDING:
                 case BraveRewardsExternalWallet.VERIFIED:
-                    if (walletBalance < WALLET_BALANCE_LIMIT && !isVerifyWalletEnabled()) {
-                        Toast.makeText(ContextUtils.getApplicationContext(), root.getResources().getString(R.string.required_minium_balance), Toast.LENGTH_SHORT).show();
-                    } else {
+                    // if (walletBalance < WALLET_BALANCE_LIMIT && !isVerifyWalletEnabled() && mBraveRewardsNativeWorker.getExternalWalletType().equals(UPHOLD)) {
+                    //     Toast.makeText(ContextUtils.getApplicationContext(), root.getResources().getString(R.string.required_minium_balance), Toast.LENGTH_SHORT).show();
+                    // } else {
                         int requestCode =
                             (status == BraveRewardsExternalWallet.NOT_CONNECTED) ?
                             BraveActivity.VERIFY_WALLET_ACTIVITY_REQUEST_CODE :
                             BraveActivity.USER_WALLET_ACTIVITY_REQUEST_CODE;
                         Intent intent = BuildVerifyWalletActivityIntent(status);
                         mActivity.startActivityForResult(intent, requestCode);
-                    }
+                    // }
                     break;
                 case BraveRewardsExternalWallet.DISCONNECTED_NOT_VERIFIED:
                 case BraveRewardsExternalWallet.DISCONNECTED_VERIFIED:
-                    if (walletBalance < WALLET_BALANCE_LIMIT && !isVerifyWalletEnabled()) {
-                        Toast.makeText(ContextUtils.getApplicationContext(), root.getResources().getString(R.string.required_minium_balance), Toast.LENGTH_SHORT).show();
-                    } else {
+                    // if (walletBalance < WALLET_BALANCE_LIMIT && !isVerifyWalletEnabled() && mBraveRewardsNativeWorker.getExternalWalletType().equals(UPHOLD)) {
+                    //     Toast.makeText(ContextUtils.getApplicationContext(), root.getResources().getString(R.string.required_minium_balance), Toast.LENGTH_SHORT).show();
+                    // } else {
                         if (!TextUtils.isEmpty(mExternal_wallet.mVerify_url)) {
                             dismiss();
                             mBraveActivity.openNewOrSelectExistingTab (mExternal_wallet.mVerify_url);
                         }
-                    }
+                    // }
                     break;
                 default:
                     Log.e (TAG, "Unexpected external wallet status");
@@ -1889,6 +1888,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
         if(!TextUtils.isEmpty(external_wallet)) {
             try {
                 mExternal_wallet = new BraveRewardsExternalWallet(external_wallet);
+                Log.e("NTP", "BraveRewardsExternalWallet toString : "+mExternal_wallet.toString());
                 walletStatus = mExternal_wallet.mStatus;
             } catch (JSONException e) {
                 Log.e (TAG, "Error parsing external wallet status");
@@ -1934,8 +1934,8 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                 refreshStatusProgress.setVisibility(View.VISIBLE);
                 refreshPublisher.setEnabled(false);
                 publisherVerified.setAlpha(.3f);
-                publisherDelimiter.setAlpha(.3f);
-                refreshPublisher.setAlpha(.3f);
+                // publisherDelimiter.setAlpha(.3f);
+                // refreshPublisher.setAlpha(.3f);
                 mBraveRewardsNativeWorker.RefreshPublisher(pubId);
             }
         }));
@@ -1944,14 +1944,14 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
             verified_text = root.getResources().getString(R.string.brave_ui_verified_publisher);
             publisherVerified.setCompoundDrawablesWithIntrinsicBounds(
                 R.drawable.bat_verified, 0, 0, 0);
-            publisherDelimiter.setVisibility(View.GONE);
-            refreshPublisher.setVisibility(View.GONE);
+            // publisherDelimiter.setVisibility(View.GONE);
+            // refreshPublisher.setVisibility(View.GONE);
         } else {
             verified_text = root.getResources().getString(R.string.brave_ui_not_verified_publisher);
             publisherVerified.setCompoundDrawablesWithIntrinsicBounds(
                 R.drawable.bat_unverified, 0, 0, 0);
-            publisherDelimiter.setVisibility(View.VISIBLE);
-            refreshPublisher.setVisibility(View.VISIBLE);
+            // publisherDelimiter.setVisibility(View.VISIBLE);
+            // refreshPublisher.setVisibility(View.VISIBLE);
         }
         publisherVerified.setText(verified_text);
         publisherVerified.setVisibility(View.VISIBLE);

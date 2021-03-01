@@ -21,14 +21,20 @@ import org.chromium.chrome.R;
 import org.chromium.chrome.browser.BraveRewardsBalance;
 import org.chromium.chrome.browser.BraveRewardsExternalWallet;
 import org.chromium.chrome.browser.BraveRewardsNativeWorker;
+import org.chromium.chrome.browser.BraveWalletProvider;
 import org.chromium.chrome.browser.app.BraveActivity;
 
 public class BraveRewardsUserWalletActivity extends AppCompatActivity {
+
+  private String walletType = BraveRewardsNativeWorker.getInstance().getExternalWalletType();
+  private String walletTypeString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_wallet_activity);
+
+        walletTypeString = walletType.equals(BraveWalletProvider.UPHOLD) ? getResources().getString(R.string.uphold) : getResources().getString(R.string.bitflyer);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,8 +54,9 @@ public class BraveRewardsUserWalletActivity extends AppCompatActivity {
         TextView txtUserStatus = (TextView)findViewById(R.id.user_status);
         Button btn1 = (Button)findViewById(R.id.user_wallet_btn1);
         Button btn2 = null;
-        Button btnGotoUphold = (Button)findViewById(
-                R.id.user_wallet_go_to_uphold);
+        Button btnGotoProvider = (Button)findViewById(
+                R.id.user_wallet_go_to_provider);
+        btnGotoProvider.setText(String.format(getResources().getString(R.string.user_wallet_goto_provider),walletTypeString));
 
         if (status < BraveRewardsExternalWallet.NOT_CONNECTED ||
                 status > BraveRewardsExternalWallet.PENDING) {
@@ -91,7 +98,7 @@ public class BraveRewardsUserWalletActivity extends AppCompatActivity {
                   intent.getStringExtra(BraveRewardsExternalWallet.VERIFY_URL));
         }
 
-        SetBtnOpenUrlClickHandler(btnGotoUphold,
+        SetBtnOpenUrlClickHandler(btnGotoProvider,
                   intent.getStringExtra(BraveRewardsExternalWallet.ACCOUNT_URL));
 
         String userId = intent.getStringExtra(BraveRewardsExternalWallet.USER_NAME);

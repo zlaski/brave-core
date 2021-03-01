@@ -2936,6 +2936,8 @@ void RewardsServiceImpl::ExternalWalletAuthorization(
     return;
   }
 
+  LOG(ERROR) << "NTP" << "Rewards_service_impl : "<< "Inside ExternalWalletAuthorization";
+
   bat_ledger_->ExternalWalletAuthorization(
       wallet_type,
       args,
@@ -2951,7 +2953,9 @@ void RewardsServiceImpl::OnProcessExternalWalletAuthorization(
     ProcessRewardsPageUrlCallback callback,
     const ledger::type::Result result,
     const base::flat_map<std::string, std::string>& args) {
+  LOG(ERROR) << "NTP" << "Rewards_service_impl : "<< "Inside OnProcessExternalWalletAuthorization";
   if (result == ledger::type::Result::ALREADY_EXISTS) {
+    LOG(ERROR) << "NTP" << "Rewards_service_impl : "<< "ledger::type::Result::ALREADY_EXISTS";
     notification_service_->AddNotification(
         RewardsNotificationService::REWARDS_NOTIFICATION_DEVICE_LIMIT_REACHED,
         RewardsNotificationService::RewardsNotificationArgs(),
@@ -2983,12 +2987,16 @@ void RewardsServiceImpl::ProcessRewardsPageUrl(
 
   const auto url = GURL("brave:/" + path + query);
   for (net::QueryIterator it(url); !it.IsAtEnd(); it.Advance()) {
+    LOG(ERROR) << "NTP" << "Rewards_service_impl : "<< " Key : "<< it.GetKey() << "Value : " << it.GetUnescapedValue();
     query_map[it.GetKey()] = it.GetUnescapedValue();
   }
+
+  LOG(ERROR) << "NTP" << "Rewards_service_impl : "<< " Action : "<<action<<" wallet_type : "<<wallet_type;
 
   if (action == "authorization") {
     if (wallet_type == ledger::constant::kWalletUphold ||
         wallet_type == ledger::constant::kWalletBitflyer) {
+      LOG(ERROR) << "NTP" << "Rewards_service_impl : "<< "Inside authorization";
       ExternalWalletAuthorization(
           wallet_type,
           query_map,

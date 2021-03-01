@@ -191,6 +191,12 @@ public class BraveRewardsNativeWorker {
         }
     }
 
+    public String getExternalWalletType() {
+        synchronized(lock) {
+            return BraveRewardsNativeWorkerJni.get().getExternalWalletType(mNativeBraveRewardsNativeWorker);
+        }
+    }
+
     public double GetWalletRate() {
         synchronized(lock) {
             return BraveRewardsNativeWorkerJni.get().getWalletRate(mNativeBraveRewardsNativeWorker);
@@ -630,6 +636,7 @@ public class BraveRewardsNativeWorker {
         void destroy(long nativeBraveRewardsNativeWorker);
         String getWalletBalance(long nativeBraveRewardsNativeWorker);
         double getWalletRate(long nativeBraveRewardsNativeWorker);
+        String getExternalWalletType(long nativeBraveRewardsNativeWorker);
         void getPublisherInfo(long nativeBraveRewardsNativeWorker, int tabId, String host);
         String getPublisherURL(long nativeBraveRewardsNativeWorker, int tabId);
         String getPublisherFavIconURL(long nativeBraveRewardsNativeWorker, int tabId);
