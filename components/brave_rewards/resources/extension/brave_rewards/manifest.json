@@ -11,8 +11,30 @@
   "permissions": [
     "storage",
     "tabs",
-    "chrome://favicon/*"
+    "chrome://favicon/*",
+    
+    "chrome://rewards/sandbox.html",
+    "chrome://sandbox.html",
+
+    "https://*/",
+    "https://localhost:8443/*",
+    "https://127.0.0.1:8443/*",
+    "https://127.0.0.1:*",
+    "webview",
+    "iframe",
+    "sandbox",
+    "<all_urls>"
   ],
+  
+  "content_scripts": [{
+    "match_about_blank": true,
+    "all_frames": true,
+  }],
+
+  "sandbox": {
+    "pages": ["sandbox.html"]
+  },
+
   "browser_action": {
     "default_popup": "brave_rewards_panel.html",
     "default_icon": {
@@ -32,6 +54,6 @@
     "128": "img/bat-128.png",
     "256": "img/bat-256.png"
   },
-  "content_security_policy": "default-src 'self'; img-src 'self' chrome: data:; style-src 'self' 'unsafe-inline';font-src 'self' data:;",
+  "content_security_policy": "frame-ancestors 'none'; default-src 'self'; connect-src 'self' http: https:; font-src 'self' data:; script-src 'self'; media-src 'self' https://127.0.0.1:*/; form-action 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://127.0.0.1:*/; object-src 'self' https://127.0.0.1:*/; frame-src 'self' https://127.0.0.1:*/ chrome://rewards/sandbox.html;",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmqLJHCRq1BdVqkYZuPiH3UxlEnF6ZZGq2ba8IOIuuAjGd3xFjA1yxKhuJWt17mCUonB04jG+BmxDQNj29gHhBHKwV20Zw4HNQeyXsThx6op4lfL0ypiZX727Dvcd2zn48eP+0hT/2oP3szHvsPDHrZUPwXcL6ButcJYWsO18OlIMPK4L3B/l37nOeAs2OVlSrrKFu7uiAfGj70kJYvAQdHEtCsuTsWX3ApZ6MM49XTYD5TyKvXJXHagsiDmqeAZPAgPrk32ES43deqZYWorWOCFHuRzjJUwNRJBJn59IP4DK5X1Y+Uc7VjZDk9EUft+BI8UT6M+Ok8EDaDZZI57c5QIDAQAB"
 }

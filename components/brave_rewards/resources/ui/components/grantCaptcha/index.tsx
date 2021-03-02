@@ -5,15 +5,15 @@
 import * as React from 'react'
 import {
   StyledWrapper,
-  StyledDropArea,
-  StyledDrag,
-  StyledText,
-  StyledImageWrap,
-  StyledImage
+  //StyledDropArea,
+  //StyledDrag,
+  //StyledText,
+  //StyledImageWrap,
+  //StyledImage
 } from './style'
-import { getLocale } from 'brave-ui/helpers'
+//import { getLocale } from 'brave-ui/helpers'
 
-import batUrl from './assets/bat.png'
+//import batUrl from './assets/bat.png'
 
 export interface Props {
   id?: string
@@ -92,7 +92,32 @@ export default class GrantCaptcha extends React.PureComponent<Props, {}> {
   }
 
   render () {
-    const { id, isPanel, captchaImage, hint } = this.props
+    const { id, 
+      //isPanel, captchaImage, hint 
+    } = this.props
+
+    // <webview id="captcha" src="https://localhost:8443/jigsaw/index.html"> </webview>
+    // const extImageUrl = "https://storage.googleapis.com/thisday-846548948316-wp-data/wp-media/2020/10/f534d7d6-wd-black.jpg"; 
+
+    //<iframe id="captcha"
+    //  src="https://localhost:8443/jigsaw/index.html" 
+    //  sandbox="allow-scripts allow-forms"
+    //  width="500" height="600" frameBorder="0"> 
+    //</iframe>
+
+    //<iframe 
+    // sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+    // src="https://localhost:8443/jigsaw/index.html" 
+    // width="380" height="140">
+    //</iframe>
+
+    const frameUrl = "https://127.0.0.1:8443/jigsaw/demo.html";
+    const content = (
+      //<webview id="captcha" src="https://127.0.0.1:8443/jigsaw/index.html"> </webview>
+      //<iframe src="sandbox.html" width="380" height="140"></iframe>
+      <iframe id='iframe' src={frameUrl} sandbox='allow-same-origin allow-scripts' width="380" height="140"/>
+    
+      )
 
     return (
       <StyledWrapper
@@ -100,19 +125,10 @@ export default class GrantCaptcha extends React.PureComponent<Props, {}> {
         innerRef={this.refWrapper}
         data-test-id={'captcha'}
       >
-        <StyledDrag innerRef={this.refDrag}>
-          <StyledImageWrap>
-            <StyledImage data-test-id={'captcha-triangle'} src={batUrl} onDragStart={this.onCaptchaDrag} draggable={true} />
-          </StyledImageWrap>
-          {
-            !isPanel
-            ? <StyledText>
-                {getLocale('dndCaptchaText1')} <b>{hint}</b> {getLocale('dndCaptchaText2')}
-              </StyledText>
-            : null
-          }
-        </StyledDrag>
-        <StyledDropArea data-test-id={'captcha-drop'} src={captchaImage} draggable={false} onDrop={this.onCaptchaDrop} onDragOver={this.preventDefault} />
+        <p>Cool CAPTCHA 3</p>
+        
+        {content}
+      
       </StyledWrapper>
     )
   }
