@@ -7,6 +7,7 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { WalletAddIcon, BatColorIcon } from 'brave-ui/components/icons'
 import { WalletWrapper, WalletSummary, WalletSummarySlider, WalletPanel } from '../../../ui/components'
+import AdaptiveCaptcha from '../../../ui/components/adaptiveCaptcha'
 import { Provider } from '../../../ui/components/profile'
 import { NotificationType, WalletState } from '../../../ui/components/walletWrapper'
 import { RewardsNotificationType } from '../constants/rewards_panel_types'
@@ -34,7 +35,13 @@ interface State {
   refreshingPublisher: boolean
   publisherRefreshed: boolean
   timerPassed: boolean
+  captchaID: string | null
+  walletID: string
 }
+
+// TODO: where to fetch this from?
+const challengeBaseUrl = "http://127.0.0.1:3334/v3/challenge/";
+const captchaBaseUrl = "http://127.0.0.1:3334/v3/captcha/";
 
 export class Panel extends React.Component<Props, State> {
   readonly defaultTipAmounts = [1, 5, 10]
@@ -48,7 +55,9 @@ export class Panel extends React.Component<Props, State> {
       publisherKey: null,
       refreshingPublisher: false,
       publisherRefreshed: false,
-      timerPassed: false
+      timerPassed: false,
+      captchaID: null,
+      walletID: "39e6ad32-5353-4b9b-9752-e1ab6cea1a00", // TODO: where to get this from?
     }
   }
 
@@ -59,6 +68,18 @@ export class Panel extends React.Component<Props, State> {
   componentDidMount () {
     const publisher: RewardsExtension.Publisher | undefined = this.getPublisher()
     const newKey = publisher && publisher.publisherKey
+    
+    // TODO: HTTP requests should be in the cpp layer
+    fetch(challengeBaseUrl + this.state.walletID)
+      .then(res => res.json())
+      .then(json => {
+        this.setState({
+          captchaID: json.captchaId
+        })
+      }),
+      (error?: string) => {
+        console.log(error)
+      }
 
     if (newKey) {
       this.setState({
@@ -740,6 +761,16 @@ export class Panel extends React.Component<Props, State> {
     )
   }
 
+  getCaptchaChallengeURL = () => {
+    if (this.state.captchaID != null) {
+      console.log("getCaptchaChallengeURL():", this.state.captchaID)
+      console.log(captchaBaseUrl + this.state.walletID + "/" + this.state.captchaID)
+      return captchaBaseUrl + this.state.walletID + "/" + this.state.captchaID
+    } else {
+      return null
+    }
+  }
+
   render () {
     const { pendingContributionTotal, enabledAC, externalWallet, balance, parameters } = this.props.rewardsPanelData
     const publisher: RewardsExtension.Publisher | undefined = this.getPublisher()
@@ -829,13 +860,16 @@ export class Panel extends React.Component<Props, State> {
             />
             : null
           }
-          <WalletSummary
-            compact={true}
-            reservedAmount={pendingTotal}
-            onlyAnonWallet={this.props.onlyAnonWallet}
-            reservedMoreLink={'https://brave.com/faq/#unclaimed-funds'}
-            {...this.getWalletSummary()}
-          />
+
+          { this.getCaptchaChallengeURL() ? <AdaptiveCaptcha url={this.getCaptchaChallengeURL()} /> 
+          : <WalletSummary
+              compact={true}
+              reservedAmount={pendingTotal}
+              onlyAnonWallet={this.props.onlyAnonWallet}
+              reservedMoreLink={'https://brave.com/faq/#unclaimed-funds'}
+              {...this.getWalletSummary()}
+            />
+        }
         </WalletSummarySlider>
         {this.showOnboarding()}
       </WalletWrapper>
