@@ -11,6 +11,7 @@
 
  export default class AdaptiveCaptcha extends React.PureComponent<Props, {}> {
 
+
   generateCaptchaURL() {
     const url = this.props.url;
     if (url === null) {
@@ -21,6 +22,12 @@
   }
 
   render() {
+
+    const reloadHandler = () => {
+      window.location.reload();
+    }
+    window.addEventListener("message", reloadHandler);
+
     return (
           <span>
             <iframe
