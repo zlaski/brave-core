@@ -31,4 +31,6 @@ public interface BraveRewardsObserver {
   default public void OnRefreshPublisher(int status, String publisherKey){};
   default public void OnOneTimeTip(){};
   default public void OnStartProcess(){};
+  default public void onUnblindedTokensReady(){};
+  default public void onReconcileComplete(){};
 }

@@ -762,6 +762,25 @@ void BraveRewardsNativeWorker::OnRefreshPublisher(
       base::android::ConvertUTF8ToJavaString(env, publisher_key));
 }
 
+void BraveRewardsNativeWorker::OnUnblindedTokensReady(
+    brave_rewards::RewardsService* rewards_service) {
+  JNIEnv* env = base::android::AttachCurrentThread();
+  Java_BraveRewardsNativeWorker_onUnblindedTokensReady(
+      env, weak_java_brave_rewards_native_worker_.get(env));
+}
+
+void BraveRewardsNativeWorker::OnReconcileComplete(
+    brave_rewards::RewardsService* rewards_service,
+    const ledger::type::Result result,
+    const std::string& contribution_id,
+    const double amount,
+    const ledger::type::RewardsType type,
+    const ledger::type::ContributionProcessor processor) {
+  JNIEnv* env = base::android::AttachCurrentThread();
+  Java_BraveRewardsNativeWorker_onReconcileComplete(
+      env, weak_java_brave_rewards_native_worker_.get(env));
+}
+
 void BraveRewardsNativeWorker::SetAutoContributeEnabled(
     JNIEnv* env,
     bool isAutoContributeEnabled) {

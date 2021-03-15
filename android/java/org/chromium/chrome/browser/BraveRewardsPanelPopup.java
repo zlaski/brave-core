@@ -1624,6 +1624,17 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
         // mBraveRewardsNativeWorker.GetExternalWallet();
     }
 
+    @Override
+    public void onUnblindedTokensReady() {
+        Log.e("NTP", "onUnblindedTokensReady");
+        mBraveRewardsNativeWorker.GetRewardsParameters();
+    }
+
+    @Override
+    public void onReconcileComplete() {
+        Log.e("NTP", "onReconcileComplete");
+        mBraveRewardsNativeWorker.GetRewardsParameters();
+    }
 
     /**
      * OnRecurringDonationUpdated is fired after a publisher was added or removed to/from

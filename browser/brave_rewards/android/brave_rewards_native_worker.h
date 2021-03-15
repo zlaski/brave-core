@@ -211,6 +211,18 @@ class BraveRewardsNativeWorker : public brave_rewards::RewardsServiceObserver,
     void OnRefreshPublisher(
         const ledger::type::PublisherStatus status,
         const std::string& publisher_key);
+
+    void OnUnblindedTokensReady(
+        brave_rewards::RewardsService* rewards_service) override;
+
+    void OnReconcileComplete(
+        brave_rewards::RewardsService* rewards_service,
+        const ledger::type::Result result,
+        const std::string& contribution_id,
+        const double amount,
+        const ledger::type::RewardsType type,
+        const ledger::type::ContributionProcessor processor) override;
+
     void SetAutoContributeEnabled(
         JNIEnv* env,
         bool isAutoContributeEnabled);
