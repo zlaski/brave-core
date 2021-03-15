@@ -344,6 +344,8 @@ class RewardsServiceImpl : public RewardsService,
 
   bool IsRewardsEnabled() const override;
 
+  std::string GetExternalWalletType() const override;
+
   // Testing methods
   void SetLedgerEnvForTesting();
   void PrepareLedgerEnvForTesting();
@@ -367,8 +369,6 @@ class RewardsServiceImpl : public RewardsService,
   void StartLedger(StartProcessCallback callback);
 
   void EnableGreaseLion();
-
-  std::string GetExternalWalletType() const;
 
   void OnStopLedger(
       StopLedgerCallback callback,
