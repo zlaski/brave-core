@@ -132,6 +132,9 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
     private static final int BALANCE_REPORT_RECURRING_DONATION = 3;
     private static final int BALANCE_REPORT_ONE_TIME_DONATION = 4;
 
+    private static final int CLICK_DISABLE_INTERVAL = 1000; // In milliseconds
+    private static final int WALLET_BALANCE_LIMIT = 25;
+
     public static final String PREF_VERIFY_WALLET_ENABLE = "verify_wallet_enable";
 
     protected final View anchor;
@@ -163,15 +166,13 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
     private boolean showRewardsSummary;        //flag: we don't want OnGetCurrentBalanceReport always opens up Rewards Summary window
     private BraveRewardsHelper mIconFetcher;
 
-    private DonationsAdapter mTip_amount_spinner_data_adapter; //data adapter for mTip_amount_spinner (Spinner)
-    private Spinner mTip_amount_spinner;
-    private boolean mTip_amount_spinner_auto_select; //spinner selection was changed programmatically (true)
+    private DonationsAdapter mTipAmountSpinnerDataAdapter; //data adapter for mTip_amount_spinner (Spinner)
+    private Spinner mTipAmountSpinner;
+    private boolean mTipAmountSpinnerAutoSelect; //spinner selection was changed programmatically (true)
 
     //flag, Handler and delay to prevent quick opening of multiple site banners
     private boolean mTippingInProgress;
     private final Handler mHandler = new Handler();
-    private static final int CLICK_DISABLE_INTERVAL = 1000; // In milliseconds
-    private static final int WALLET_BALANCE_LIMIT = 25;
 
     private boolean mClaimInProcess;
 
@@ -180,7 +181,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
 
     private String batPointsText;
 
-    private BraveRewardsExternalWallet mExternal_wallet;
+    private BraveRewardsExternalWallet mExternalWallet;
 
     private double walletBalance;
 
@@ -287,7 +288,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
         btRewardsSummary = (Button)root.findViewById(R.id.rewards_summary);
         btSendATip = (Button)root.findViewById(R.id.send_a_tip);
         tvPublisherNotVerified = (TextView)root.findViewById(R.id.publisher_not_verified);
-        mTip_amount_spinner = root.findViewById(R.id.auto_tip_amount);
+        mTipAmountSpinner = root.findViewById(R.id.auto_tip_amount);
 
         tvBrBatWallet = root.findViewById(R.id.br_bat_wallet);
     }
@@ -419,18 +420,18 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
             });
         }
 
-        if (mTip_amount_spinner != null) {
-            mTip_amount_spinner.setOnItemSelectedListener(
+        if (mTipAmountSpinner != null) {
+            mTipAmountSpinner.setOnItemSelectedListener(
             new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(
                     AdapterView<?> parent, View view, int position, long id) {
-                    if (mTip_amount_spinner_auto_select) { //do nothing
-                        mTip_amount_spinner_auto_select = false;
+                    if (mTipAmountSpinnerAutoSelect) { //do nothing
+                        mTipAmountSpinnerAutoSelect = false;
                         return;
                     }
 
-                    Integer intObj = (Integer)mTip_amount_spinner_data_adapter.getItem (position);
+                    Integer intObj = (Integer)mTipAmountSpinnerDataAdapter.getItem (position);
                     if (null == intObj) {
                         Log.e(TAG, "Wrong position at Recurrent Donations Spinner");
                         return;
@@ -464,8 +465,8 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
         initViewActionEvents();
 
         //setting Recurrent Donations spinner
-        mTip_amount_spinner_data_adapter = new DonationsAdapter(ContextUtils.getApplicationContext());
-        mTip_amount_spinner.setAdapter(mTip_amount_spinner_data_adapter);
+        mTipAmountSpinnerDataAdapter = new DonationsAdapter(ContextUtils.getApplicationContext());
+        mTipAmountSpinner.setAdapter(mTipAmountSpinnerDataAdapter);
 
         boolean isAnonWallet = BraveRewardsHelper.isAnonWallet();
         tvYourWalletTitle.setText(isAnonWallet ? root.getResources().getString(R.string.brave_ui_your_balance) : root.getResources().getString(R.string.brave_ui_your_wallet));
@@ -1047,7 +1048,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
 
             String strValue = String.format("%d.0 " + batPointsText + " (%.2f USD)", bat_donations[position], bat_donations[position] * usdrate);
             tv.setText(strValue);
-            int selected = mTip_amount_spinner.getSelectedItemPosition();
+            int selected = mTipAmountSpinner.getSelectedItemPosition();
             if (selected == position) {
                 tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.changetip_icon, 0, 0, 0);
             }
@@ -1708,6 +1709,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                         btnVerifyWallet.setBackgroundResource(R.drawable.wallet_verify_button);
                     // }
                 }
+                // ShowRewardsSummary();
             }
             walletDetailsReceived = true;
         } else if (errorCode == BraveRewardsNativeWorker.LEDGER_ERROR) {   // No Internet connection
@@ -1723,16 +1725,16 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
     }
 
     void UpdateRecurentDonationSpinner(double amount) {
-        int RequestedPosition = mTip_amount_spinner_data_adapter.getPosition ((int)amount);
-        if (RequestedPosition < 0 || RequestedPosition >= mTip_amount_spinner_data_adapter.getCount() ) {
+        int RequestedPosition = mTipAmountSpinnerDataAdapter.getPosition ((int)amount);
+        if (RequestedPosition < 0 || RequestedPosition >= mTipAmountSpinnerDataAdapter.getCount() ) {
             Log.e(TAG, "Requested position in Recurrent Donations Spinner doesn't exist");
             return;
         }
 
-        int selectedItemPos = mTip_amount_spinner.getSelectedItemPosition();
+        int selectedItemPos = mTipAmountSpinner.getSelectedItemPosition();
         if (RequestedPosition != selectedItemPos) {
-            mTip_amount_spinner_auto_select = true; //spinner selection was changed programmatically
-            mTip_amount_spinner.setSelection(RequestedPosition);
+            mTipAmountSpinnerAutoSelect = true; //spinner selection was changed programmatically
+            mTipAmountSpinner.setSelection(RequestedPosition);
         }
     }
 
@@ -1815,7 +1817,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
             @Override
             public void onClick(View v) {
                 dismiss();
-                mBraveActivity.openNewOrSelectExistingTab (mExternal_wallet.mAdd_url);
+                mBraveActivity.openNewOrSelectExistingTab (mExternalWallet.mAdd_url);
             }
         }));
     }
@@ -1851,9 +1853,9 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                     // if (walletBalance < WALLET_BALANCE_LIMIT && !isVerifyWalletEnabled() && mBraveRewardsNativeWorker.getExternalWalletType().equals(UPHOLD)) {
                     //     Toast.makeText(ContextUtils.getApplicationContext(), root.getResources().getString(R.string.required_minium_balance), Toast.LENGTH_SHORT).show();
                     // } else {
-                        if (!TextUtils.isEmpty(mExternal_wallet.mVerify_url)) {
+                        if (!TextUtils.isEmpty(mExternalWallet.mVerify_url)) {
                             dismiss();
-                            mBraveActivity.openNewOrSelectExistingTab (mExternal_wallet.mVerify_url);
+                            mBraveActivity.openNewOrSelectExistingTab (mExternalWallet.mVerify_url);
                         }
                     // }
                     break;
@@ -1882,14 +1884,14 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
         }
 
         Intent intent = new Intent(ContextUtils.getApplicationContext(), clazz);
-        intent.putExtra(BraveRewardsExternalWallet.ACCOUNT_URL, mExternal_wallet.mAccount_url);
-        intent.putExtra(BraveRewardsExternalWallet.ADD_URL, mExternal_wallet.mAdd_url);
-        intent.putExtra(BraveRewardsExternalWallet.ADDRESS, mExternal_wallet.mAddress);
-        intent.putExtra(BraveRewardsExternalWallet.STATUS, mExternal_wallet.mStatus);
-        intent.putExtra(BraveRewardsExternalWallet.TOKEN, mExternal_wallet.mToken);
-        intent.putExtra(BraveRewardsExternalWallet.USER_NAME, mExternal_wallet.mUser_name);
-        intent.putExtra(BraveRewardsExternalWallet.VERIFY_URL, mExternal_wallet.mVerify_url);
-        intent.putExtra(BraveRewardsExternalWallet.WITHDRAW_URL, mExternal_wallet.mWithdraw_url);
+        intent.putExtra(BraveRewardsExternalWallet.ACCOUNT_URL, mExternalWallet.mAccount_url);
+        intent.putExtra(BraveRewardsExternalWallet.ADD_URL, mExternalWallet.mAdd_url);
+        intent.putExtra(BraveRewardsExternalWallet.ADDRESS, mExternalWallet.mAddress);
+        intent.putExtra(BraveRewardsExternalWallet.STATUS, mExternalWallet.mStatus);
+        intent.putExtra(BraveRewardsExternalWallet.TOKEN, mExternalWallet.mToken);
+        intent.putExtra(BraveRewardsExternalWallet.USER_NAME, mExternalWallet.mUser_name);
+        intent.putExtra(BraveRewardsExternalWallet.VERIFY_URL, mExternalWallet.mVerify_url);
+        intent.putExtra(BraveRewardsExternalWallet.WITHDRAW_URL, mExternalWallet.mWithdraw_url);
         return intent;
     }
 
@@ -1898,12 +1900,11 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
         int walletStatus = BraveRewardsExternalWallet.NOT_CONNECTED;
         if(!TextUtils.isEmpty(external_wallet)) {
             try {
-                mExternal_wallet = new BraveRewardsExternalWallet(external_wallet);
-                Log.e("NTP", "BraveRewardsExternalWallet toString : "+mExternal_wallet.toString());
-                walletStatus = mExternal_wallet.mStatus;
+                mExternalWallet = new BraveRewardsExternalWallet(external_wallet);
+                walletStatus = mExternalWallet.mStatus;
             } catch (JSONException e) {
                 Log.e (TAG, "Error parsing external wallet status");
-                mExternal_wallet = null;
+                mExternalWallet = null;
             }
         }
         SetVerifyWalletControl(walletStatus);
