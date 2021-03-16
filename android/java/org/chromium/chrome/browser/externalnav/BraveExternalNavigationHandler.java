@@ -29,8 +29,6 @@ public class BraveExternalNavigationHandler extends ExternalNavigationHandler {
     }
 
     private boolean isWalletProviderOverride(ExternalNavigationParams params) {
-        Log.e("NTP", "url : "+params.getUrl());
-
         if (params.getUrl().startsWith(BraveWalletProvider.UPHOLD_REDIRECT_URL)) {
             return true;
         }
