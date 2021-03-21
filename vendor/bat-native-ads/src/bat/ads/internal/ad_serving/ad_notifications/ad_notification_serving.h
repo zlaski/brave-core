@@ -24,6 +24,10 @@ class SubdivisionTargeting;
 }  // namespace geographic
 }  // namespace ad_targeting
 
+namespace resource {
+class AntiTargeting;
+}  // namespace resource
+
 namespace ad_notifications {
 
 using MaybeServeAdForSegmentsCallback =
@@ -33,7 +37,8 @@ class AdServing {
  public:
   AdServing(
       AdTargeting* ad_targeting,
-      ad_targeting::geographic::SubdivisionTargeting* subdivision_targeting);
+      ad_targeting::geographic::SubdivisionTargeting* subdivision_targeting,
+      resource::AntiTargeting* anti_targeting);
 
   ~AdServing();
 
@@ -97,6 +102,8 @@ class AdServing {
 
   ad_targeting::geographic::SubdivisionTargeting*
       subdivision_targeting_;  // NOT OWNED
+
+  resource::AntiTargeting* anti_targeting_;  // NOT OWNED
 };
 
 }  // namespace ad_notifications

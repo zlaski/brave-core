@@ -14,7 +14,6 @@
 #include "bat/ads/internal/ad_targeting/resources/resource.h"
 
 namespace ads {
-namespace ad_targeting {
 namespace resource {
 
 class PurchaseIntent : public Resource<PurchaseIntentInfo> {
@@ -42,7 +41,6 @@ class PurchaseIntent : public Resource<PurchaseIntentInfo> {
 };
 
 }  // namespace resource
-}  // namespace ad_targeting
 }  // namespace ads
 
 #endif  // BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_AD_TARGETING_RESOURCES_BEHAVIORAL_PURCHASE_INTENT_PURCHASE_INTENT_RESOURCE_H_

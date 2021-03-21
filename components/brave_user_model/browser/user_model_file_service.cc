@@ -145,10 +145,11 @@ void UserModelFileService::OnComponentReady(
       { base::ThreadPool(), base::MayBlock() },
       base::BindOnce(&GetManifest, install_dir.Append(kManifestFile)),
       base::BindOnce(&UserModelFileService::OnGetManifest,
-          weak_factory_.GetWeakPtr(), install_dir));
+          weak_factory_.GetWeakPtr(), component_id, install_dir));
 }
 
 void UserModelFileService::OnGetManifest(
+    const std::string& component_id,
     const base::FilePath& install_dir,
     const std::string& json) {
   VLOG(8) << "User model manifest: " << json;
@@ -210,10 +211,10 @@ void UserModelFileService::OnGetManifest(
       VLOG(1) << "Adding " << user_model.id << " user model";
       user_models_.insert({user_model.id, user_model});
     }
-
-    VLOG(1) << "Notifying user model observers";
-    NotifyObservers(user_model.id);
   }
+
+  VLOG(1) << "Notifying user model observers";
+  NotifyObservers(component_id);
 }
 
 }  // namespace brave_user_model

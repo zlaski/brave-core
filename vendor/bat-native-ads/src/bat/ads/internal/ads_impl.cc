@@ -27,6 +27,7 @@
 #include "bat/ads/internal/ad_targeting/processors/contextual/text_classification/text_classification_processor.h"
 #include "bat/ads/internal/ad_targeting/resources/behavioral/bandits/epsilon_greedy_bandit_resource.h"
 #include "bat/ads/internal/ad_targeting/resources/behavioral/purchase_intent/purchase_intent_resource.h"
+#include "bat/ads/internal/ad_targeting/resources/frequency_capping/anti_targeting_resource.h"
 #include "bat/ads/internal/ad_targeting/resources/contextual/text_classification/text_classification_resource.h"
 #include "bat/ads/internal/ad_transfer/ad_transfer.h"
 #include "bat/ads/internal/ads/ad_notifications/ad_notification.h"
@@ -123,6 +124,7 @@ void AdsImpl::ChangeLocale(const std::string& locale) {
   subdivision_targeting_->MaybeFetchForLocale(locale);
   text_classification_resource_->LoadForLocale(locale);
   purchase_intent_resource_->LoadForLocale(locale);
+  anti_targeting_resource_->Load();
 }
 
 void AdsImpl::OnAdsSubdivisionTargetingCodeHasChanged() {
@@ -276,6 +278,7 @@ void AdsImpl::OnUserModelUpdated(const std::string& id) {
   } else if (kPurchaseIntentComponentIds.find(id) !=
              kPurchaseIntentComponentIds.end()) {
     purchase_intent_resource_->LoadForId(id);
+    anti_targeting_resource_->Load();
   } else {
     BLOG(0, "Unknown " << id << " user model");
   }
@@ -409,27 +412,31 @@ void AdsImpl::set(privacy::TokenGeneratorInterface* token_generator) {
   account_->AddObserver(this);
 
   epsilon_greedy_bandit_resource_ =
-      std::make_unique<ad_targeting::resource::EpsilonGreedyBandit>();
+      std::make_unique<resource::EpsilonGreedyBandit>();
   epsilon_greedy_bandit_processor_ =
       std::make_unique<ad_targeting::processor::EpsilonGreedyBandit>();
 
   text_classification_resource_ =
-      std::make_unique<ad_targeting::resource::TextClassification>();
+      std::make_unique<resource::TextClassification>();
   text_classification_processor_ =
       std::make_unique<ad_targeting::processor::TextClassification>(
           text_classification_resource_.get());
 
   purchase_intent_resource_ =
-      std::make_unique<ad_targeting::resource::PurchaseIntent>();
+      std::make_unique<resource::PurchaseIntent>();
   purchase_intent_processor_ =
       std::make_unique<ad_targeting::processor::PurchaseIntent>(
           purchase_intent_resource_.get());
+
+  anti_targeting_resource_ =
+      std::make_unique<resource::AntiTargeting>();
 
   ad_targeting_ = std::make_unique<AdTargeting>();
   subdivision_targeting_ =
       std::make_unique<ad_targeting::geographic::SubdivisionTargeting>();
   ad_notification_serving_ = std::make_unique<ad_notifications::AdServing>(
-      ad_targeting_.get(), subdivision_targeting_.get());
+      ad_targeting_.get(), subdivision_targeting_.get(),
+      anti_targeting_resource_.get());
   ad_notification_ = std::make_unique<AdNotification>();
   ad_notification_->AddObserver(this);
   ad_notifications_ = std::make_unique<AdNotifications>();

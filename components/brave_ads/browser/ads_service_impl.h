@@ -229,9 +229,6 @@ class AdsServiceImpl : public AdsService,
 
   void NotificationTimedOut(const std::string& uuid);
 
-  void SearchBrowsingHistoryForProfile();
-  void OnBrowsingHistorySearchComplete(history::QueryResults results);
-
   void RegisterUserModelComponentsForLocale(const std::string& locale);
 
   void OnURLRequestStarted(
@@ -340,6 +337,16 @@ class AdsServiceImpl : public AdsService,
 
   void LoadUserModelForId(const std::string& id,
                           ads::LoadCallback callback) override;
+
+  void SearchBrowsingHistory(
+      // TODO(Moritz Haller): make feature params
+      const int max_count,
+      const int days_ago,
+      ads::SearchBrowsingHistoryCallback callback) override;
+
+  void OnBrowsingHistorySearchComplete(
+      ads::SearchBrowsingHistoryCallback callback,
+      history::QueryResults results);
 
   std::string LoadResourceForId(const std::string& id) override;
 

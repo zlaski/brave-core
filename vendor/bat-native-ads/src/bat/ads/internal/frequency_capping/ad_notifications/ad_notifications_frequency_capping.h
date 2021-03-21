@@ -8,6 +8,9 @@
 
 #include "bat/ads/internal/ad_events/ad_event_info.h"
 
+#include <string>
+#include <vector>
+
 namespace ads {
 
 struct CreativeAdInfo;
@@ -18,13 +21,18 @@ class SubdivisionTargeting;
 }  // namespace geographic
 }  // namespace ad_targeting
 
+namespace resource {
+class AntiTargeting;
+}  // namespace resource
+
 namespace ad_notifications {
 
 class FrequencyCapping {
  public:
   FrequencyCapping(
       ad_targeting::geographic::SubdivisionTargeting* subdivision_targeting,
-      const AdEventList& ad_events);
+      resource::AntiTargeting* anti_targeting,
+      const AdEventList& ad_events, const std::vector<std::string>& history);
 
   ~FrequencyCapping();
 
@@ -38,7 +46,12 @@ class FrequencyCapping {
  private:
   ad_targeting::geographic::SubdivisionTargeting* subdivision_targeting_;
 
+  resource::AntiTargeting* anti_targeting_;
+
   AdEventList ad_events_;
+
+  // TODO(Moritz Haller): Maybe use alias
+  std::vector<std::string> history_;
 };
 
 }  // namespace ad_notifications

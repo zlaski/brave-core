@@ -19,6 +19,8 @@
 #include "bat/ads/internal/ad_serving/ad_targeting/models/contextual/text_classification/text_classification_model.h"
 #include "bat/ads/internal/ad_targeting/ad_targeting_segment_util.h"
 #include "bat/ads/internal/ad_targeting/ad_targeting_values.h"
+#include "bat/ads/internal/ad_targeting/resources/frequency_capping/anti_targeting_resource.h"
+#include "bat/ads/internal/ads_client_helper.h"
 #include "bat/ads/internal/client/client.h"
 #include "bat/ads/internal/database/tables/ad_events_database_table.h"
 #include "bat/ads/internal/database/tables/creative_ad_notifications_database_table.h"
@@ -36,11 +38,14 @@ namespace ad_notifications {
 
 AdServing::AdServing(
     AdTargeting* ad_targeting,
-    ad_targeting::geographic::SubdivisionTargeting* subdivision_targeting)
+    ad_targeting::geographic::SubdivisionTargeting* subdivision_targeting,
+    resource::AntiTargeting* anti_targeting)
     : ad_targeting_(ad_targeting),
-      subdivision_targeting_(subdivision_targeting) {
+      subdivision_targeting_(subdivision_targeting),
+      anti_targeting_(anti_targeting) {
   DCHECK(ad_targeting_);
   DCHECK(subdivision_targeting_);
+  DCHECK(anti_targeting_);
 }
 
 AdServing::~AdServing() = default;
@@ -132,17 +137,27 @@ void AdServing::MaybeServeAdForSegments(
       return;
     }
 
-    FrequencyCapping frequency_capping(subdivision_targeting_, ad_events);
+    const int max_count = 10000;
+    const int days_ago = 180;
+    // TODO(Moritz Haller): Rename Get not Search
+    AdsClientHelper::Get()->SearchBrowsingHistory(
+        max_count, days_ago, [=](const Result result,
+                                const std::vector<std::string> history) {
+      // TODO(Moritz Haller): Remove duplicates from history
 
-    if (!frequency_capping.IsAdAllowed()) {
-      BLOG(1, "Ad notification not served: Not allowed");
-      callback(Result::FAILED, AdNotificationInfo());
-      return;
-    }
+      FrequencyCapping frequency_capping(subdivision_targeting_,
+          anti_targeting_, ad_events, history);
 
-    RecordAdOpportunityForSegments(segments);
+      if (!frequency_capping.IsAdAllowed()) {
+        BLOG(1, "Ad notification not served: Not allowed");
+        callback(Result::FAILED, AdNotificationInfo());
+        return;
+      }
 
-    MaybeServeAdForParentChildSegments(segments, ad_events, callback);
+      RecordAdOpportunityForSegments(segments);
+
+      MaybeServeAdForParentChildSegments(segments, ad_events, callback);
+    });
   });
 }
 
@@ -165,19 +180,27 @@ void AdServing::MaybeServeAdForParentChildSegments(
   database_table.GetForSegments(
       segments, [=](const Result result, const SegmentList& segments,
                     const CreativeAdNotificationList& ads) {
-        EligibleAds eligible_ad_notifications(subdivision_targeting_);
+        EligibleAds eligible_ad_notifications(subdivision_targeting_,
+            anti_targeting_);
 
-        const CreativeAdNotificationList eligible_ads =
-            eligible_ad_notifications.Get(ads, last_delivered_creative_ad_,
-                                          ad_events);
+        const int max_count = 10000;
+        const int days_ago = 180;
+        // TODO(Moritz Haller): Rename Get not Search
+        AdsClientHelper::Get()->SearchBrowsingHistory(
+            max_count, days_ago, [=](const Result result,
+                const std::vector<std::string> history) mutable {
+          // TODO(Moritz Haller): Remove duplicates from history
+          const CreativeAdNotificationList eligible_ads =
+              eligible_ad_notifications.Get(ads, last_delivered_creative_ad_,
+                                            ad_events, history);
+          if (eligible_ads.empty()) {
+            BLOG(1, "No eligible ads found for segments");
+            MaybeServeAdForParentSegments(segments, ad_events, callback);
+            return;
+          }
 
-        if (eligible_ads.empty()) {
-          BLOG(1, "No eligible ads found for segments");
-          MaybeServeAdForParentSegments(segments, ad_events, callback);
-          return;
-        }
-
-        MaybeServeAd(eligible_ads, callback);
+          MaybeServeAd(eligible_ads, callback);
+        });
       });
 }
 
@@ -196,19 +219,27 @@ void AdServing::MaybeServeAdForParentSegments(
   database_table.GetForSegments(
       parent_segments, [=](const Result result, const SegmentList& segments,
                            const CreativeAdNotificationList& ads) {
-        EligibleAds eligible_ad_notifications(subdivision_targeting_);
+        EligibleAds eligible_ad_notifications(subdivision_targeting_,
+            anti_targeting_);
 
-        const CreativeAdNotificationList eligible_ads =
-            eligible_ad_notifications.Get(ads, last_delivered_creative_ad_,
-                                          ad_events);
+        const int max_count = 10000;
+        const int days_ago = 180;
+        // TODO(Moritz Haller): Rename Get not Search
+        AdsClientHelper::Get()->SearchBrowsingHistory(
+            max_count, days_ago, [=](const Result result,
+                const std::vector<std::string> history) mutable {
+          // TODO(Moritz Haller): Remove duplicates from history
+          const CreativeAdNotificationList eligible_ads =
+              eligible_ad_notifications.Get(ads, last_delivered_creative_ad_,
+                                            ad_events, history);
+          if (eligible_ads.empty()) {
+            BLOG(1, "No eligible ads found for parent segments");
+            MaybeServeAdForUntargeted(ad_events, callback);
+            return;
+          }
 
-        if (eligible_ads.empty()) {
-          BLOG(1, "No eligible ads found for parent segments");
-          MaybeServeAdForUntargeted(ad_events, callback);
-          return;
-        }
-
-        MaybeServeAd(eligible_ads, callback);
+          MaybeServeAd(eligible_ads, callback);
+        });
       });
 }
 
@@ -223,20 +254,29 @@ void AdServing::MaybeServeAdForUntargeted(
   database_table.GetForSegments(
       segments, [=](const Result result, const SegmentList& segments,
                     const CreativeAdNotificationList& ads) {
-        EligibleAds eligible_ad_notifications(subdivision_targeting_);
+        EligibleAds eligible_ad_notifications(subdivision_targeting_,
+            anti_targeting_);
 
-        const CreativeAdNotificationList eligible_ads =
-            eligible_ad_notifications.Get(ads, last_delivered_creative_ad_,
-                                          ad_events);
+        const int max_count = 10000;
+        const int days_ago = 180;
+        // TODO(Moritz Haller): Rename Get not Search
+        AdsClientHelper::Get()->SearchBrowsingHistory(
+            max_count, days_ago, [=](const Result result,
+                const std::vector<std::string> history) mutable {
+          // TODO(Moritz Haller): Remove duplicates from history
+          const CreativeAdNotificationList eligible_ads =
+              eligible_ad_notifications.Get(ads, last_delivered_creative_ad_,
+                                            ad_events, history);
 
-        if (eligible_ads.empty()) {
-          BLOG(1, "No eligible ads found for untargeted segment");
-          BLOG(1, "Ad notification not served: No eligible ads found");
-          callback(Result::FAILED, AdNotificationInfo());
-          return;
-        }
+          if (eligible_ads.empty()) {
+            BLOG(1, "No eligible ads found for untargeted segment");
+            BLOG(1, "Ad notification not served: No eligible ads found");
+            callback(Result::FAILED, AdNotificationInfo());
+            return;
+          }
 
-        MaybeServeAd(eligible_ads, callback);
+          MaybeServeAd(eligible_ads, callback);
+        });
       });
 }
 

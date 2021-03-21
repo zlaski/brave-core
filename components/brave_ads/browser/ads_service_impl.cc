@@ -313,9 +313,6 @@ void AdsServiceImpl::OnTextLoaded(const SessionID& tab_id,
     return;
   }
 
-  SearchBrowsingHistoryForProfile();
-  VLOG(6) << "*** FOOBAR: OnTextLoaded";
-
   std::vector<std::string> redirect_chain_as_strings;
   for (const auto& url : redirect_chain) {
     redirect_chain_as_strings.push_back(url.spec());
@@ -1111,29 +1108,6 @@ void AdsServiceImpl::NotificationTimedOut(const std::string& uuid) {
   CloseNotification(uuid);
 }
 
-void AdsServiceImpl::SearchBrowsingHistoryForProfile() {
-  history::HistoryService* history_service =
-      HistoryServiceFactory::GetForProfile(profile_,
-      ServiceAccessType::EXPLICIT_ACCESS);
-
-  base::string16 search_text;
-  history::QueryOptions options;
-  history_service->QueryHistory(search_text, options,
-      base::BindOnce(&AdsServiceImpl::OnBrowsingHistorySearchComplete,
-                    base::Unretained(this)),
-      &task_tracker_);
-}
-
-void AdsServiceImpl::OnBrowsingHistorySearchComplete(
-    history::QueryResults results) {
-  VLOG(6) << "*** FOOBAR: OnBrowsingHistorySearchComplete"
-          << " results: " << results.size();
-  for (const auto& result : results) {
-    // TODO(Moritz Haller): aggregate over eTLD+1 in query or here?
-    VLOG(6) << "    " << result.url().host() << " " << result.visit_count();
-  }
-}
-
 void AdsServiceImpl::RegisterUserModelComponentsForLocale(
     const std::string& locale) {
   g_brave_browser_process->user_model_file_service()
@@ -1914,6 +1888,46 @@ void AdsServiceImpl::LoadUserModelForId(const std::string& id,
       base::BindOnce(&LoadOnFileTaskRunner, path.value()),
       base::BindOnce(&AdsServiceImpl::OnLoaded, AsWeakPtr(),
                      std::move(callback)));
+}
+
+void AdsServiceImpl::SearchBrowsingHistory(
+    const int max_count,
+    const int days_ago,
+    ads::SearchBrowsingHistoryCallback callback) {
+  history::HistoryService* history_service =
+      HistoryServiceFactory::GetForProfile(profile_,
+      ServiceAccessType::EXPLICIT_ACCESS);
+
+  base::string16 search_text;
+  history::QueryOptions options;
+  options.SetRecentDayRange(days_ago);
+  options.max_count = max_count;
+  options.duplicate_policy = history::QueryOptions::REMOVE_ALL_DUPLICATES; // TODO(Moritz Haller): Shoudl be default
+  history_service->QueryHistory(search_text, options,
+      base::BindOnce(&AdsServiceImpl::OnBrowsingHistorySearchComplete,
+                    AsWeakPtr(), std::move(callback)),
+      &task_tracker_);
+}
+
+void AdsServiceImpl::OnBrowsingHistorySearchComplete(
+    // TODO(Moritz Haller): How to pass ads::SearchBrowsingHistoryCallback?
+    ads::SearchBrowsingHistoryCallback callback,
+    history::QueryResults results) {
+  if (!connected()) {
+    return;
+  }
+
+  std::vector<std::string> browsing_history_as_strings;
+  for (const auto& result : results) {
+    browsing_history_as_strings.push_back(result.url().host());
+    // TODO(Moritz Haller): filter over eTLD+1 in query or here to prevent dupes; see todo above
+    // TODO(Moritz Haller): use .Swap? https://source.chromium.org/chromium/chromium/src/+/master:components/history/core/browser/history_service.h;l=246
+    // VLOG(6) << "*** TEST-CASE: " << result.url().host() << " "
+    //         << result.visit_count();
+  }
+
+  // TODO(Moritz Haller): w/o results (deprecated anyways)
+  callback(ads::Result::SUCCESS, browsing_history_as_strings);
 }
 
 void AdsServiceImpl::RecordP2AEvent(const std::string& name,

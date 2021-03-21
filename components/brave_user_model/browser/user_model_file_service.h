@@ -54,6 +54,7 @@ class UserModelFileService : public BraveComponent {
       const std::string& manifest) override;
 
   void OnGetManifest(
+      const std::string& component_id,
       const base::FilePath& install_dir,
       const std::string& json);
 

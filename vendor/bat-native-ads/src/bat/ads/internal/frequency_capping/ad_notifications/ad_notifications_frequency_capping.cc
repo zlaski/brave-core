@@ -6,7 +6,9 @@
 #include "bat/ads/internal/frequency_capping/ad_notifications/ad_notifications_frequency_capping.h"
 
 #include "bat/ads/internal/ad_serving/ad_targeting/geographic/subdivision/subdivision_targeting.h"
+#include "bat/ads/internal/ad_targeting/resources/frequency_capping/anti_targeting_resource.h"
 #include "bat/ads/internal/bundle/creative_ad_info.h"
+#include "bat/ads/internal/frequency_capping/exclusion_rules/anti_targeting_frequency_cap.h"
 #include "bat/ads/internal/frequency_capping/exclusion_rules/conversion_frequency_cap.h"
 #include "bat/ads/internal/frequency_capping/exclusion_rules/daily_cap_frequency_cap.h"
 #include "bat/ads/internal/frequency_capping/exclusion_rules/daypart_frequency_cap.h"
@@ -40,9 +42,13 @@ namespace ad_notifications {
 
 FrequencyCapping::FrequencyCapping(
     ad_targeting::geographic::SubdivisionTargeting* subdivision_targeting,
-    const AdEventList& ad_events)
-    : subdivision_targeting_(subdivision_targeting), ad_events_(ad_events) {
+    resource::AntiTargeting* anti_targeting,
+    const AdEventList& ad_events, const std::vector<std::string>& history)
+    : subdivision_targeting_(subdivision_targeting),
+      anti_targeting_(anti_targeting), ad_events_(ad_events),
+      history_(history) {
   DCHECK(subdivision_targeting_);
+  DCHECK(anti_targeting_);
 }
 
 FrequencyCapping::~FrequencyCapping() = default;
@@ -107,6 +113,9 @@ bool FrequencyCapping::IsAdAllowed() {
 }
 
 bool FrequencyCapping::ShouldExcludeAd(const CreativeAdInfo& ad) {
+  // TODO(Moritz Haller): |history_| not needed by |IsAdAllowed| only in used
+  // by one frequency cap in |ShouldExcludeAd| (here)
+  // DCHECK_NE(history_.empty());
   bool should_exclude = false;
 
   DailyCapFrequencyCap daily_cap_frequency_cap(ad_events_);
@@ -167,6 +176,12 @@ bool FrequencyCapping::ShouldExcludeAd(const CreativeAdInfo& ad) {
 
   SplitTestFrequencyCap split_test_frequency_cap;
   if (ShouldExclude(ad, &split_test_frequency_cap)) {
+    should_exclude = true;
+  }
+
+  AntiTargetingFrequencyCap anti_targeting_frequency_cap(anti_targeting_,
+      history_);
+  if (ShouldExclude(ad, &anti_targeting_frequency_cap)) {
     should_exclude = true;
   }
 
