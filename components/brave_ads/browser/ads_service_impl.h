@@ -54,6 +54,10 @@ namespace brave_rewards {
 class RewardsService;
 }  // namespace brave_rewards
 
+namespace history {
+class HistoryService;
+}
+
 namespace network {
 class SimpleURLLoader;
 }  // namespace network
@@ -72,7 +76,8 @@ class AdsServiceImpl : public AdsService,
   void OnWalletUpdated();
 
   // AdsService implementation
-  explicit AdsServiceImpl(Profile* profile);
+  explicit AdsServiceImpl(Profile* profile,
+                          history::HistoryService* history_service);
   ~AdsServiceImpl() override;
 
   AdsServiceImpl(const AdsServiceImpl&) = delete;
@@ -403,6 +408,7 @@ class AdsServiceImpl : public AdsService,
   ///////////////////////////////////////////////////////////////////////////////
 
   Profile* profile_;  // NOT OWNED
+  history::HistoryService* history_service_;  // NOT OWNED
 
   bool is_initialized_ = false;
 

@@ -7,11 +7,11 @@
 
 #include <memory>
 
+#include "brave/browser/brave_ads/ads_service_factory.h"
 #include "brave/browser/brave_browser_process_impl.h"
 #include "brave/browser/profiles/profile_util.h"
 #include "brave/common/pref_names.h"
 #include "brave/components/brave_ads/browser/ads_service.h"
-#include "brave/components/brave_ads/browser/ads_service_factory.h"
 #include "brave/components/ntp_background_images/browser/ntp_background_images_service.h"
 #include "brave/components/ntp_background_images/browser/ntp_background_images_source.h"
 #include "brave/components/ntp_background_images/browser/view_counter_service.h"

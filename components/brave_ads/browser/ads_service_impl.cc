@@ -73,6 +73,7 @@
 #include "chrome/browser/ui/browser_navigator_params.h"
 #include "chrome/common/buildflags.h"
 #include "chrome/common/chrome_constants.h"
+#include "components/history/core/browser/history_service.h"
 #include "components/prefs/pref_service.h"
 #include "components/wifi/wifi_service.h"
 #include "content/public/browser/browser_thread.h"
@@ -86,9 +87,6 @@
 #include "ui/base/l10n/l10n_util.h"
 #include "ui/base/resource/resource_bundle.h"
 #include "ui/message_center/public/cpp/notification.h"
-
-#include "chrome/browser/history/history_service_factory.h"
-#include "components/history/core/browser/history_service.h"
 
 #if defined(OS_ANDROID)
 #include "brave/browser/notifications/brave_notification_platform_bridge_helper_android.h"
@@ -199,8 +197,10 @@ net::NetworkTrafficAnnotationTag GetNetworkTrafficAnnotationTag() {
 
 }  // namespace
 
-AdsServiceImpl::AdsServiceImpl(Profile* profile)
+AdsServiceImpl::AdsServiceImpl(Profile* profile,
+                               history::HistoryService* history_service)
     : profile_(profile),
+      history_service_(history_service),
       file_task_runner_(base::CreateSequencedTaskRunner(
           {base::ThreadPool(), base::MayBlock(),
            base::TaskPriority::BEST_EFFORT,
@@ -1894,18 +1894,17 @@ void AdsServiceImpl::SearchBrowsingHistory(
     const int max_count,
     const int days_ago,
     ads::SearchBrowsingHistoryCallback callback) {
-  history::HistoryService* history_service =
-      HistoryServiceFactory::GetForProfile(profile_,
-      ServiceAccessType::EXPLICIT_ACCESS);
-
   base::string16 search_text;
   history::QueryOptions options;
   options.SetRecentDayRange(days_ago);
   options.max_count = max_count;
-  options.duplicate_policy = history::QueryOptions::REMOVE_ALL_DUPLICATES; // TODO(Moritz Haller): Shoudl be default
-  history_service->QueryHistory(search_text, options,
+  options.duplicate_policy =
+      history::QueryOptions::REMOVE_ALL_DUPLICATES;  // TODO(Moritz Haller):
+                                                     // Shoudl be default
+  history_service_->QueryHistory(
+      search_text, options,
       base::BindOnce(&AdsServiceImpl::OnBrowsingHistorySearchComplete,
-                    AsWeakPtr(), std::move(callback)),
+                     AsWeakPtr(), std::move(callback)),
       &task_tracker_);
 }
 
@@ -1920,8 +1919,10 @@ void AdsServiceImpl::OnBrowsingHistorySearchComplete(
   std::vector<std::string> browsing_history_as_strings;
   for (const auto& result : results) {
     browsing_history_as_strings.push_back(result.url().host());
-    // TODO(Moritz Haller): filter over eTLD+1 in query or here to prevent dupes; see todo above
-    // TODO(Moritz Haller): use .Swap? https://source.chromium.org/chromium/chromium/src/+/master:components/history/core/browser/history_service.h;l=246
+    // TODO(Moritz Haller): filter over eTLD+1 in query or here to prevent
+    // dupes; see todo above
+    // TODO(Moritz Haller): use .Swap?
+    // https://source.chromium.org/chromium/chromium/src/+/master:components/history/core/browser/history_service.h;l=246
     // VLOG(6) << "*** TEST-CASE: " << result.url().host() << " "
     //         << result.visit_count();
   }

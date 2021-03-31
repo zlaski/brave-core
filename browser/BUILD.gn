@@ -124,6 +124,7 @@ source_set("browser_process") {
     "themes",
     "ui",
     "//base",
+    "//brave/browser/brave_ads",
     "//brave/browser/brave_ads/notifications",
     "//brave/browser/net",
     "//brave/browser/translate/buildflags",
@@ -376,6 +377,10 @@ source_set("browser_process") {
       sources += [
         "brave_rewards/android/brave_rewards_native_worker.cc",
         "brave_rewards/android/brave_rewards_native_worker.h",
+      ]
+
+      deps += [
+        "brave_ads",
       ]
     } else {
       sources += [
