@@ -12,7 +12,7 @@ if (!is_android) {
     ]
 
     deps = [
-      "//brave/browser:browser_process",
+      "//brave/browser:browser",
       "//chrome/browser",
       "//chrome/browser/ui",
       "//chrome/test:test_support",

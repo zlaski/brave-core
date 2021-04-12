@@ -56,7 +56,7 @@ source_set("browser_tests") {
       ":widevine",
       "//base",
       "//brave/browser",
-      "//brave/browser:browser_process",
+      "//brave/browser:browser",
       "//brave/common",
       "//brave/common:pref_names",
       "//chrome/browser",

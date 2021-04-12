@@ -1,6 +1,7 @@
 component("cpp") {
   visibility = [
-    "//brave/browser:browser_process",
+    "//brave/browser:browser",
+    "//chrome/browser:browser",
     "//services/network/public/cpp:cpp",
   ]
 
