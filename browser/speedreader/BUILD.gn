@@ -1,0 +1,15 @@
+source_set("speedreader") {
+  sources = [
+    "speedreader_service_factory.cc",
+    "speedreader_service_factory.h",
+    "speedreader_tab_helper.cc",
+    "speedreader_tab_helper.h",
+  ]
+
+  deps = [
+    "//brave/components/speedreader",
+    "//chrome/browser:browser",
+    "//chrome/browser/profiles:profile",
+    "//components/keyed_service/content:content",
+  ]
+}

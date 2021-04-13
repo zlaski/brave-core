@@ -3,6 +3,15 @@ import("//build/buildflag_header.gni")
 import("//build/config/features.gni")
 import("//chrome/common/features.gni")
 
+import("//brave/components/greaselion/browser/buildflags/buildflags.gni")
+import("//brave/components/brave_rewards/browser/buildflags/buildflags.gni")
+import("//third_party/widevine/cdm/widevine.gni")
+import("//brave/components/brave_wayback_machine/buildflags/buildflags.gni")
+import("//brave/components/brave_perf_predictor/browser/buildflags/buildflags.gni")
+import("//brave/components/speedreader/buildflags.gni")
+import("//brave/components/tor/buildflags/buildflags.gni")
+import("//brave/components/ipfs/buildflags/buildflags.gni")
+
 buildflag_header("sparkle_buildflags") {
   header = "sparkle_buildflags.h"
   flags = [ "ENABLE_SPARKLE=$enable_sparkle" ]
@@ -27,6 +36,89 @@ source_set("version_info") {
     "version_info.cc",
     "version_info.h",
   ]
+}
+
+source_set("tab_helpers") {
+  sources = [
+    "brave_tab_helpers.cc",
+    "brave_tab_helpers.h",
+  ]
+
+  deps = [
+    "//brave/browser/brave_ads:brave_ads",
+    "//brave/browser/brave_stats:stats_updater",
+    "//brave/browser/ephemeral_storage:ephemeral_storage",
+    "//brave/browser/ui/bookmark:bookmark",
+    "//brave/common:pref_names",
+    "//brave/components/brave_rewards/browser/buildflags:buildflags",
+    "//brave/components/brave_shields/browser:browser",
+    "//brave/components/brave_shields/browser:browser",
+    "//brave/components/brave_shields/browser/buildflags:buildflags",
+    "//brave/components/brave_wayback_machine:buildflags",
+    "//brave/components/greaselion/browser/buildflags:buildflags",
+    "//brave/components/ipfs/buildflags:buildflags",
+    "//brave/components/speedreader:buildflags",
+    "//brave/components/tor/buildflags:buildflags",
+    "//chrome/browser:browser",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui:ui",
+    "//net:net",
+    "//third_party/widevine/cdm:buildflags",
+  ]
+
+  if (enable_greaselion) {
+    deps += [
+      "//brave/browser/greaselion:greaselion",
+    ]
+  }
+
+  if (brave_rewards_enabled) {
+    deps += [
+      # TODO
+    ]
+  }
+
+  if (enable_widevine) {
+    sources += [
+      "brave_drm_tab_helper.cc",
+      "brave_drm_tab_helper.h",
+    ]
+
+    deps += [
+      "//brave/browser/widevine",
+      "//brave/components/brave_drm:brave_drm",
+    ]
+  }
+
+  if (enable_brave_wayback_machine) {
+    deps += [
+      "//brave/browser/infobars:infobars"
+    ]
+  }
+
+  if (enable_brave_perf_predictor) {
+    deps += [
+      "//brave/components/brave_perf_predictor/browser:browser",
+    ]
+  }
+
+  if (enable_speedreader) {
+    deps += [
+      "//brave/browser/speedreader:speedreader",
+    ]
+  }
+
+  if (enable_tor) {
+    deps += [
+      "//brave/components/tor:tor",
+    ]
+  }
+
+  if (ipfs_enabled) {
+    deps += [
+      "//brave/browser/ipfs:ipfs",
+    ]
+  }
 }
 
 group("browser") {

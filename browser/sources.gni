@@ -72,8 +72,6 @@ brave_chrome_browser_sources = [
   "//brave/browser/brave_shields/ad_block_pref_service_factory.h",
   "//brave/browser/brave_shields/cookie_pref_service_factory.cc",
   "//brave/browser/brave_shields/cookie_pref_service_factory.h",
-  "//brave/browser/brave_tab_helpers.cc",
-  "//brave/browser/brave_tab_helpers.h",
   "//brave/browser/browser_context_keyed_service_factories.cc",
   "//brave/browser/browser_context_keyed_service_factories.h",
   "//brave/browser/component_updater/brave_component_installer.cc",
@@ -312,36 +310,6 @@ if (decentralized_dns_enabled) {
   brave_chrome_browser_deps += [ "//brave/browser/decentralized_dns" ]
 }
 
-if (ipfs_enabled) {
-  brave_chrome_browser_sources += [
-    "//brave/browser/ipfs/content_browser_client_helper.cc",
-    "//brave/browser/ipfs/content_browser_client_helper.h",
-    "//brave/browser/ipfs/ipfs_host_resolver.cc",
-    "//brave/browser/ipfs/ipfs_host_resolver.h",
-    "//brave/browser/ipfs/ipfs_service_factory.cc",
-    "//brave/browser/ipfs/ipfs_service_factory.h",
-    "//brave/browser/ipfs/ipfs_tab_helper.cc",
-    "//brave/browser/ipfs/ipfs_tab_helper.h",
-  ]
-
-  brave_chrome_browser_deps += [
-    "//brave/components/ipfs",
-    "//brave/components/services/ipfs/public/mojom",
-    "//components/user_prefs",
-  ]
-
-  if (enable_extensions) {
-    brave_chrome_browser_deps += [
-      "//extensions/browser",
-      "//extensions/common",
-    ]
-  }
-
-  if (!is_android) {
-    brave_chrome_browser_deps += [ "//brave/browser/infobars" ]
-  }
-}
-
 if (brave_together_enabled) {
   brave_chrome_browser_deps += [ "//brave/components/brave_together/browser" ]
 }
@@ -380,26 +348,8 @@ if (enable_brave_wayback_machine) {
   brave_chrome_browser_deps += [ "//brave/components/brave_wayback_machine" ]
 }
 
-if (enable_widevine) {
-  brave_chrome_browser_sources += [
-    "//brave/browser/brave_drm_tab_helper.cc",
-    "//brave/browser/brave_drm_tab_helper.h",
-  ]
-  brave_chrome_browser_deps += [ "//brave/browser/widevine" ]
-}
-
 if (enable_brave_perf_predictor) {
   brave_chrome_browser_deps += [ "//brave/components/brave_perf_predictor/browser" ]
-}
-
-if (enable_speedreader) {
-  brave_chrome_browser_sources += [
-    "//brave/browser/speedreader/speedreader_service_factory.cc",
-    "//brave/browser/speedreader/speedreader_service_factory.h",
-    "//brave/browser/speedreader/speedreader_tab_helper.cc",
-    "//brave/browser/speedreader/speedreader_tab_helper.h",
-  ]
-  brave_chrome_browser_deps += [ "//brave/components/speedreader" ]
 }
 
 if (is_win && is_official_build) {

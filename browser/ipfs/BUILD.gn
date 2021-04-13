@@ -1,0 +1,38 @@
+import("//extensions/buildflags/buildflags.gni")
+
+source_set("ipfs") {
+  sources = [
+    "content_browser_client_helper.cc",
+    "content_browser_client_helper.h",
+    "ipfs_host_resolver.cc",
+    "ipfs_host_resolver.h",
+    "ipfs_service_factory.cc",
+    "ipfs_service_factory.h",
+    "ipfs_tab_helper.cc",
+    "ipfs_tab_helper.h",
+  ]
+
+  deps = [
+    "//brave/browser/profiles:util",
+    "//brave/components/ipfs",
+    "//brave/components/services/ipfs/public/mojom",
+    "//chrome/browser:browser_process",
+    "//chrome/browser:browser",
+    "//chrome/common:channel_info",
+    "//components/keyed_service/content:content",
+    "//components/prefs:prefs",
+    "//components/user_prefs",
+    "//extensions/buildflags:buildflags",
+  ]
+
+  if (enable_extensions) {
+    deps += [
+      "//extensions/browser",
+      "//extensions/common",
+    ]
+  }
+
+  if (!is_android) {
+    deps += [ "//brave/browser/infobars" ]
+  }
+}

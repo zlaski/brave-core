@@ -1,0 +1,7 @@
+source_set("brave_rewards") {
+  sources = [
+
+  ]
+
+  deps = [  ]
+}
