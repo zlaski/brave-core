@@ -104,6 +104,7 @@ source_set("testutil") {
     ":browser",
     "//base",
     "//brave/browser:browser",
+    "//brave/browser/brave_rewards:brave_rewards",
     "//brave/vendor/bat-native-ledger:headers",
     "//chrome/test:test_support",
     "//content/public/browser",

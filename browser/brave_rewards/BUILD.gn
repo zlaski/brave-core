@@ -1,7 +1,78 @@
+import("//brave/components/greaselion/browser/buildflags/buildflags.gni")
+import("//extensions/buildflags/buildflags.gni")
+
 source_set("brave_rewards") {
   sources = [
-
+    "rewards_service_factory.cc",
+    "rewards_service_factory.h",
+    "rewards_tab_helper.cc",
+    "rewards_tab_helper.h",
   ]
 
-  deps = [  ]
+  deps = [
+    "//brave/browser/profiles:profiles",
+    "//brave/browser/profiles:util",
+    "//brave/components/brave_rewards/browser",
+    "//brave/components/brave_rewards/common:common",
+    "//brave/vendor/bat-native-ledger:headers",
+    "//chrome/browser:browser_process",
+    "//chrome/browser:browser",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui:ui",
+    "//components/keyed_service/content",
+    "//components/prefs:prefs",
+    "//components/sessions:session_id",
+    "//components/sessions:sessions",
+    "//extensions/buildflags:buildflags",
+  ]
+
+  if (enable_greaselion) {
+    deps += [
+      "//brave/browser/greaselion",
+      "//brave/components/greaselion/browser",
+    ]
+  }
+
+  if (enable_extensions) {
+    sources += [
+      "extension_rewards_notification_service_observer.cc",
+      "extension_rewards_notification_service_observer.h",
+      "extension_rewards_service_observer.cc",
+      "extension_rewards_service_observer.h",
+    ]
+
+    deps += [
+      "//brave/common/extensions/api",
+      "//extensions/browser"
+    ]
+  }
+
+  if (is_android) {
+    sources += [
+      "android/brave_rewards_native_worker.cc",
+      "android/brave_rewards_native_worker.h",
+    ]
+
+    deps += [
+      "//brave/browser/brave_ads",
+      "//brave/components/brave_ads/browser",
+    ]
+  } else {
+    sources += [
+      "tip_dialog.cc",
+      "tip_dialog.h",
+    ]
+
+    deps += [
+      "//brave/common:common",
+      "//components/guest_view/browser:browser",
+      "//components/web_modal:web_modal",
+      "//ui/web_dialogs:web_dialogs",
+    ]
+  }
+
+  if (!is_android) {
+    deps +=
+        [ "//brave/components/brave_rewards/common:features" ]
+  }
 }

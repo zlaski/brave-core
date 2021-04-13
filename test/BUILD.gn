@@ -731,12 +731,13 @@ if (!is_android) {
 
       deps += [
         "//brave/browser/brave_ads",
+        "//brave/browser/brave_rewards:brave_rewards",
         "//brave/components/brave_ads/browser",
         "//brave/components/brave_ads/common",
         "//brave/components/brave_rewards/browser",
         "//brave/vendor/bat-native-ads",
-        "//brave/vendor/bat-native-ledger",
         "//brave/vendor/bat-native-ledger:publishers_proto",
+        "//brave/vendor/bat-native-ledger",
       ]
 
       configs += [ "//brave/vendor/bat-native-ads:internal_config" ]

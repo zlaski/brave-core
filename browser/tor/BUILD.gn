@@ -99,6 +99,7 @@ source_set("browser_tests") {
       "//base",
       "//brave/app:brave_generated_resources_grit",
       "//brave/browser:browser",
+      "//brave/browser/brave_rewards:brave_rewards",
       "//brave/browser/ipfs:ipfs",
       "//brave/browser/tor",
       "//brave/browser/ui",

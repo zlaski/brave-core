@@ -174,6 +174,7 @@ source_set("brave_ads_unit_tests") {
       "//base/test:test_support",
       "//brave/browser:browser",
       "//brave/browser/brave_ads",
+      "//brave/browser/brave_rewards:brave_rewards",
       "//brave/components/brave_ads/browser:browser",
       "//brave/components/brave_ads/browser:testutil",
       "//brave/components/brave_rewards/browser:browser",
