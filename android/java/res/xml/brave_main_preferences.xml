@@ -8,18 +8,46 @@
     android:orderingFromXml="false">
 
     <PreferenceCategory
-        android:key="search_engine_section"
+        android:key="features"
         android:order="0"
+        android:title="@string/prefs_features"/>
+    <org.chromium.components.browser_ui.settings.ChromeBasePreference
+        android:fragment="org.chromium.chrome.browser.privacy.BravePrivacySettings"
+        android:key="brave_shields_and_privacy"
+        android:icon="@drawable/btn_brave"
+        android:order="1"
+        android:title="@string/brave_shields_and_privacy"/>       
+    <org.chromium.components.browser_ui.settings.ChromeBasePreference
+        android:fragment="org.chromium.chrome.browser.settings.BraveRewardsPreferences"
+        android:key="brave_rewards"
+        android:order="2"
+        android:icon="@drawable/btn_bat"
+        android:title="@string/brave_ui_brave_rewards"/>     
+    <org.chromium.components.browser_ui.settings.ChromeBasePreference
+        android:fragment="org.chromium.chrome.browser.settings.BraveRewardsPreferences"
+        android:key="brave_today"
+        android:icon="@drawable/btn_bat"
+        android:order="3"
+        android:title="@string/brave_today"/>     
+    <org.chromium.components.browser_ui.settings.ChromeBasePreference
+        android:fragment="org.chromium.chrome.browser.settings.BraveRewardsPreferences"
+        android:key="brave_vpn"
+        android:icon="@drawable/btn_bat"
+        android:order="4"
+        android:title="@string/brave_vpn"/> 
+    <PreferenceCategory
+        android:key="search_engine_section"
+        android:order="5"
         android:title="@string/prefs_section_search_engine"/>
     <org.chromium.components.browser_ui.settings.ChromeBasePreference
         android:fragment="org.chromium.chrome.browser.settings.BraveStandardSearchEnginePreference"
         android:key="standard_search_engine"
-        android:order="1"
+        android:order="6"
         android:title="@string/prefs_standard_search_engine"/>
     <org.chromium.components.browser_ui.settings.ChromeBasePreference
         android:fragment="org.chromium.chrome.browser.settings.BravePrivateSearchEnginePreference"
         android:key="private_search_engine"
-        android:order="2"
+        android:order="7"
         android:title="@string/prefs_private_search_engine"/>
     <PreferenceCategory
         android:key="display_section"
@@ -63,11 +91,7 @@
         android:key="use_custom_tabs"
         android:order="20"
         android:title="@string/prefs_use_custom_tabs"/>
-    <org.chromium.components.browser_ui.settings.ChromeBasePreference
-        android:fragment="org.chromium.chrome.browser.settings.BraveRewardsPreferences"
-        android:key="brave_rewards"
-        android:order="21"
-        android:title="@string/brave_ui_brave_rewards"/>
+
     <org.chromium.components.browser_ui.settings.ChromeBasePreference
         android:fragment="org.chromium.chrome.browser.settings.BraveSyncScreensPreference"
         android:key="brave_sync_layout"

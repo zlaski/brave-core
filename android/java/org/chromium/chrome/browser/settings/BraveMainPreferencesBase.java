@@ -44,7 +44,8 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
     private static final String PREF_BACKGROUND_VIDEO_PLAYBACK = "background_video_playback";
     private static final String PREF_CLOSING_ALL_TABS_CLOSES_BRAVE = "closing_all_tabs_closes_brave";
     private static final String PREF_ADVANCED_SECTION = "advanced_section";
-    private static final String PREF_PRIVACY = "privacy";
+    // private static final String PREF_PRIVACY = "privacy";
+    private static final String PREF_SHIELDS_AND_PRIVACY = "brave_shields_and_privacy";
     private static final String PREF_SYNC = "brave_sync_layout";
     private static final String PREF_ACCESSIBILITY = "accessibility";
     private static final String PREF_CONTENT_SETTINGS = "content_settings";
@@ -141,8 +142,8 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
             findPreference(PREF_USE_CUSTOM_TABS).setOrder(++order);
         }
         findPreference(PREF_ADVANCED_SECTION).setOrder(++order);
-        findPreference(PREF_PRIVACY).setOrder(++order);
-        findPreference(PREF_BRAVE_REWARDS).setOrder(++order);
+        // findPreference(PREF_PRIVACY).setOrder(++order);
+        // findPreference(PREF_BRAVE_REWARDS).setOrder(++order);
         findPreference(PREF_SYNC).setOrder(++order);
         findPreference(PREF_ACCESSIBILITY).setOrder(++order);
         findPreference(PREF_CONTENT_SETTINGS).setOrder(++order);
@@ -204,7 +205,7 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
 
     private void overrideChromiumPreferences() {
         // Replace fragment.
-        findPreference(PREF_PRIVACY).setFragment(BravePrivacySettings.class.getName());
+        findPreference(PREF_SHIELDS_AND_PRIVACY).setFragment(BravePrivacySettings.class.getName());
         findPreference(PREF_HOMEPAGE).setFragment(BraveHomepageSettings.class.getName());
     }
 

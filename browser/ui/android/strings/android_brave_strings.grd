@@ -175,6 +175,12 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       <message name="IDS_PREFS_SECTION_SEARCH_ENGINE" desc="Title for search engine section that can select DSE of normal and private tab">
         Search engine
       </message>
+      <message name="IDS_PREFS_FEATURES" desc="Title for Brave-specific features section">
+        Features
+      </message>
+      <message name="IDS_BRAVE_SHIELDS_AND_PRIVACY" desc="Label for the settings related to shields and privacy">
+        Brave shields &amp; privacy 
+      </message>
       <message name="IDS_PREFS_STANDARD_SEARCH_ENGINE" desc="Title for standard tab search engine option">
         Standard Tab
       </message>
@@ -440,6 +446,12 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       </message>
       <message name="IDS_BRAVE_UI_YOUR_WALLET" desc="Your wallet title">
         Your wallet
+      </message>      
+      <message name="IDS_BRAVE_TODAY" desc="Title for Brave today settings">
+        Brave today
+      </message>      
+      <message name="IDS_BRAVE_VPN" desc="Title for Brave vpn settings">
+        Brave VPN
       </message>
       <message name="IDS_BRAVE_UI_BAT_TEXT" desc="A token name">
         BAT
