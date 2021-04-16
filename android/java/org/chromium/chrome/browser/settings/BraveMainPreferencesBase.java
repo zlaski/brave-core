@@ -46,7 +46,9 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
     private static final String PREF_ADVANCED_SECTION = "advanced_section";
     // private static final String PREF_PRIVACY = "privacy";
     private static final String PREF_SHIELDS_AND_PRIVACY = "brave_shields_and_privacy";
+    private static final String PREF_BRAVE_SEARCH_ENGINES = "brave_search_engines";
     private static final String PREF_SYNC = "brave_sync_layout";
+    private static final String PREF_PASSWORDS = "passwords";
     private static final String PREF_ACCESSIBILITY = "accessibility";
     private static final String PREF_CONTENT_SETTINGS = "content_settings";
     private static final String PREF_ABOUT_CHROME = "about_chrome";
@@ -99,7 +101,7 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
         removePreferenceIfPresent(MainSettings.PREF_SAFETY_CHECK);
         removePreferenceIfPresent(PREF_LANGUAGES);
 
-        updateSearchEnginePreference();
+        // updateSearchEnginePreference();
         updateControlSectionPreferences();
 
         rearrangePreferenceOrders();
@@ -135,6 +137,9 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
         // We don't need to consider search engine section because they are using 0 ~ 2 ordered
         // and we deleted original 0 ~ 2 ordered preferences.
         // Advanced section will be located below our controls section.
+        int newOrder = findPreference(PREF_BRAVE_SEARCH_ENGINES).getOrder();
+        findPreference(PREF_PASSWORDS).setOrder(newOrder++);
+
         int order = findPreference(PREF_CLOSING_ALL_TABS_CLOSES_BRAVE).getOrder();
         if (DeviceFormFactor.isTablet()) {
             removePreferenceIfPresent(PREF_USE_CUSTOM_TABS);

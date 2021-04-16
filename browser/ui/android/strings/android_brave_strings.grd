@@ -181,6 +181,9 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       <message name="IDS_BRAVE_SHIELDS_AND_PRIVACY" desc="Label for the settings related to shields and privacy">
         Brave shields &amp; privacy 
       </message>
+      <message name="IDS_BRAVE_SEARCH_ENGINES" desc="Label for the settings related to the search engines">
+        Search engines
+      </message>      
       <message name="IDS_PREFS_STANDARD_SEARCH_ENGINE" desc="Title for standard tab search engine option">
         Standard Tab
       </message>
@@ -969,6 +972,9 @@ until they verify, or until 90 days have passed.
       <message name="IDS_PREFS_RATE_BRAVE" desc="Title for rate brave settings option.">
         Rate Brave
       </message>
+      <message name="IDS_PREFS_GENERAL" desc="Title for the general section in settings.">
+        General
+      </message>      
       <message name="IDS_RATE" desc="Text for rate brave dialog button.">
         Rate
       </message>

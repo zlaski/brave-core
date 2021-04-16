@@ -36,19 +36,15 @@
         android:order="4"
         android:title="@string/brave_vpn"/> 
     <PreferenceCategory
-        android:key="search_engine_section"
+        android:key="prefs_general"
         android:order="5"
-        android:title="@string/prefs_section_search_engine"/>
+        android:title="@string/prefs_general"/>
     <org.chromium.components.browser_ui.settings.ChromeBasePreference
-        android:fragment="org.chromium.chrome.browser.settings.BraveStandardSearchEnginePreference"
-        android:key="standard_search_engine"
+        android:fragment="org.chromium.chrome.browser.settings.BraveSearchEnginesPreferences"
+        android:key="brave_search_engines"
         android:order="6"
-        android:title="@string/prefs_standard_search_engine"/>
-    <org.chromium.components.browser_ui.settings.ChromeBasePreference
-        android:fragment="org.chromium.chrome.browser.settings.BravePrivateSearchEnginePreference"
-        android:key="private_search_engine"
-        android:order="7"
-        android:title="@string/prefs_private_search_engine"/>
+        android:icon="@drawable/ic_search"
+        android:title="@string/brave_search_engines"/>
     <PreferenceCategory
         android:key="display_section"
         android:order="11"
