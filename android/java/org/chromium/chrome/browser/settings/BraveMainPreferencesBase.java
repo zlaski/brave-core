@@ -256,6 +256,7 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
         updatePreferenceIcon(PREF_PRIVACY, R.drawable.ic_privacy_reports);
         updatePreferenceIcon(PREF_ADDRESSES, R.drawable.ic_addresses);
         updatePreferenceIcon(PREF_NOTIFICATIONS, R.drawable.ic_notification);
+        updatePreferenceIcon(MainSettings.PREF_DEVELOPER, R.drawable.ic_info);
     }
 
     private void updateSearchEnginePreference() {
