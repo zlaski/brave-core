@@ -65,7 +65,7 @@ public class BravePrivacySettings extends PrivacySettings {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         super.onCreatePreferences(savedInstanceState, rootKey);
-        
+
         // override title
         getActivity().setTitle(R.string.brave_shields_and_privacy);
 

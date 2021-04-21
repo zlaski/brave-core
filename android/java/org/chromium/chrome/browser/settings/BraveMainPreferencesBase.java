@@ -14,6 +14,7 @@ import android.util.DisplayMetrics;
 
 import androidx.preference.Preference;
 
+import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.BraveConfig;
 import org.chromium.chrome.browser.BraveFeatureList;
@@ -38,17 +39,34 @@ import java.util.HashMap;
 
 // This exculdes some settings in main settings screen.
 public class BraveMainPreferencesBase extends BravePreferenceFragment {
+    // sections
+    private static final String PREF_FEATURES_SECTION = "features_section";
+    private static final String PREF_DISPLAY_SECTION = "display_section";
+    private static final String PREF_GENERAL_SECTION = "general_section";
+    private static final String PREF_BASICS_SECTION = "basics_section";
+    private static final String PREF_ADVANCED_SECTION = "advanced_section";
+    private static final String PREF_ONLINE_CHECKOUT_SECTION = "online_checkout_section";
+    private static final String PREF_SEARCH_ENGINE_SECTION = "search_engine_section";
+    private static final String PREF_SUPPORT_SECTION = "support_section";
+    private static final String PREF_ABOUT_SECTION = "about_section";
+
+    // prefs
     private static final String PREF_STANDARD_SEARCH_ENGINE = "standard_search_engine";
     private static final String PREF_PRIVATE_SEARCH_ENGINE = "private_search_engine";
-    private static final String PREF_SEARCH_ENGINE_SECTION = "search_engine_section";
     private static final String PREF_BACKGROUND_VIDEO_PLAYBACK = "background_video_playback";
     private static final String PREF_CLOSING_ALL_TABS_CLOSES_BRAVE = "closing_all_tabs_closes_brave";
-    private static final String PREF_ADVANCED_SECTION = "advanced_section";
-    // private static final String PREF_PRIVACY = "privacy";
+    private static final String PREF_PRIVACY = "privacy";
     private static final String PREF_SHIELDS_AND_PRIVACY = "brave_shields_and_privacy";
     private static final String PREF_BRAVE_SEARCH_ENGINES = "brave_search_engines";
     private static final String PREF_SYNC = "brave_sync_layout";
     private static final String PREF_PASSWORDS = "passwords";
+    private static final String PREF_NOTIFICATIONS = "notifications";
+    private static final String PREF_PAYMENT_METHODS = "autofill_payment_methods";
+    private static final String PREF_ADDRESSES = "autofill_addresses";
+    private static final String PREF_APPEARANCE = "appearance";
+    private static final String PREF_NEW_TAB_PAGE = "background_images";
+    private static final String PREF_WELCOME_TOUR = "welcome_tour";
+    private static final String PREF_REPORT_BROKEN_SITE = "report_broken_site";
     private static final String PREF_ACCESSIBILITY = "accessibility";
     private static final String PREF_CONTENT_SETTINGS = "content_settings";
     private static final String PREF_ABOUT_CHROME = "about_chrome";
@@ -60,7 +78,7 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
     private static final String PREF_BRAVE_LANGUAGES = "brave_languages";
     private static final String PREF_RATE_BRAVE = "rate_brave";
     private static final String PREF_BRAVE_STATS = "brave_stats";
-    private static final String PREF_BRAVE_DOWNLOADS = "brave_downloads";
+    private static final String PREF_DOWNLOADS = "brave_downloads";
 
     private final HashMap<String, Preference> mRemovedPreferences = new HashMap<>();
 
@@ -100,9 +118,17 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
         removePreferenceIfPresent(MainSettings.PREF_DOWNLOADS);
         removePreferenceIfPresent(MainSettings.PREF_SAFETY_CHECK);
         removePreferenceIfPresent(PREF_LANGUAGES);
+        removePreferenceIfPresent(PREF_BASICS_SECTION);
+        removePreferenceIfPresent(PREF_HOMEPAGE);
 
+        removePreferenceIfPresent(PREF_USE_CUSTOM_TABS);
+        removePreferenceIfPresent(PREF_ADVANCED_SECTION);
+        removePreferenceIfPresent(PREF_PRIVACY);
+
+        // @TODO should we keep this reference/method ?
         // updateSearchEnginePreference();
         updateControlSectionPreferences();
+        updatePreferenceIcons();
 
         rearrangePreferenceOrders();
 
@@ -134,32 +160,63 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
      * With this, we can insert our own preferences at any position.
      */
     private void rearrangePreferenceOrders() {
-        // We don't need to consider search engine section because they are using 0 ~ 2 ordered
-        // and we deleted original 0 ~ 2 ordered preferences.
-        // Advanced section will be located below our controls section.
-        int newOrder = findPreference(PREF_BRAVE_SEARCH_ENGINES).getOrder();
-        findPreference(PREF_PASSWORDS).setOrder(newOrder++);
+        int firstSectionOrder = 0;
 
-        int order = findPreference(PREF_CLOSING_ALL_TABS_CLOSES_BRAVE).getOrder();
-        if (DeviceFormFactor.isTablet()) {
-            removePreferenceIfPresent(PREF_USE_CUSTOM_TABS);
-        } else {
-            findPreference(PREF_USE_CUSTOM_TABS).setOrder(++order);
-        }
-        findPreference(PREF_ADVANCED_SECTION).setOrder(++order);
-        // findPreference(PREF_PRIVACY).setOrder(++order);
-        // findPreference(PREF_BRAVE_REWARDS).setOrder(++order);
-        findPreference(PREF_SYNC).setOrder(++order);
-        findPreference(PREF_ACCESSIBILITY).setOrder(++order);
-        findPreference(PREF_CONTENT_SETTINGS).setOrder(++order);
-        findPreference(PREF_BRAVE_LANGUAGES).setOrder(++order);
-        findPreference(MainSettings.PREF_DATA_REDUCTION).setOrder(++order);
-        findPreference(PREF_BRAVE_DOWNLOADS).setOrder(++order);
+        findPreference(PREF_FEATURES_SECTION).setOrder(firstSectionOrder);
+
+        findPreference(PREF_SHIELDS_AND_PRIVACY).setOrder(++firstSectionOrder);
+        findPreference(PREF_BRAVE_REWARDS).setOrder(++firstSectionOrder);
+
+        int generalOrder = firstSectionOrder;
+        findPreference(PREF_GENERAL_SECTION).setOrder(++generalOrder);
+
+        findPreference(PREF_BRAVE_SEARCH_ENGINES).setOrder(++generalOrder);
+        findPreference(PREF_PASSWORDS).setOrder(++generalOrder);
+        findPreference(PREF_SYNC).setOrder(++generalOrder);
+        findPreference(PREF_BRAVE_STATS).setOrder(++generalOrder);
+        // if notification is not available (eg. for emulators)
+        if (findPreference(PREF_NOTIFICATIONS) != null)
+            findPreference(PREF_NOTIFICATIONS).setOrder(++generalOrder);
+        findPreference(PREF_CONTENT_SETTINGS).setOrder(++generalOrder);
+        findPreference(PREF_DOWNLOADS).setOrder(++generalOrder);
+        findPreference(PREF_CLOSING_ALL_TABS_CLOSES_BRAVE).setOrder(++generalOrder);
+        findPreference(PREF_BACKGROUND_VIDEO_PLAYBACK).setOrder(++generalOrder);
+
+        int displaySectionOrder = generalOrder;
+        findPreference(PREF_DISPLAY_SECTION).setOrder(++displaySectionOrder);
+
+        findPreference(PREF_APPEARANCE).setOrder(++displaySectionOrder);
+        findPreference(PREF_NEW_TAB_PAGE).setOrder(++displaySectionOrder);
+        findPreference(PREF_ACCESSIBILITY).setOrder(++displaySectionOrder);
+        findPreference(PREF_BRAVE_LANGUAGES).setOrder(++displaySectionOrder);
+
+        int onlineCheckoutSectionOrder = displaySectionOrder;
+        findPreference(PREF_ONLINE_CHECKOUT_SECTION).setOrder(++onlineCheckoutSectionOrder);
+
+        findPreference(PREF_PAYMENT_METHODS).setOrder(++onlineCheckoutSectionOrder);
+        findPreference(PREF_ADDRESSES).setOrder(++onlineCheckoutSectionOrder);
+
+        int supportSectionOrder = onlineCheckoutSectionOrder;
+        findPreference(PREF_SUPPORT_SECTION).setOrder(++supportSectionOrder);
+
+        findPreference(PREF_WELCOME_TOUR).setOrder(++supportSectionOrder);
+        findPreference(PREF_REPORT_BROKEN_SITE).setOrder(++supportSectionOrder);
+        findPreference(PREF_RATE_BRAVE).setOrder(++supportSectionOrder);
+
+        int aboutSectionOrder = supportSectionOrder;
+        findPreference(PREF_ABOUT_SECTION).setOrder(++aboutSectionOrder);
         // This preference doesn't exist by default in Release mode
         if (findPreference(MainSettings.PREF_DEVELOPER) != null) {
-            findPreference(MainSettings.PREF_DEVELOPER).setOrder(++order);
+            findPreference(MainSettings.PREF_DEVELOPER).setOrder(++aboutSectionOrder);
         }
-        findPreference(PREF_ABOUT_CHROME).setOrder(++order);
+        findPreference(PREF_ABOUT_CHROME).setOrder(++aboutSectionOrder);
+
+        // int order = findPreference(PREF_CLOSING_ALL_TABS_CLOSES_BRAVE).getOrder();
+        // if (DeviceFormFactor.isTablet()) {
+        //     removePreferenceIfPresent(PREF_USE_CUSTOM_TABS);
+        // } else {
+        //     findPreference(PREF_USE_CUSTOM_TABS).setOrder(++order);
+        // }
 
         // If gn flag enable_brave_sync is false, hide Sync pref
         if (BraveConfig.SYNC_ENABLED == false) {
@@ -172,6 +229,13 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
         }
     }
 
+    private void updatePreferenceIcon(String preferenceString, int drawable) {
+        Preference preference = findPreference(preferenceString);
+        if (preference != null) {
+            preference.setIcon(drawable);
+        }
+    }
+
     private void removePreferenceIfPresent(String key) {
         Preference preference = getPreferenceScreen().findPreference(key);
         if (preference != null) {
@@ -180,21 +244,27 @@ public class BraveMainPreferencesBase extends BravePreferenceFragment {
         }
     }
 
+    private void updatePreferenceIcons() {
+        updatePreferenceIcon(PREF_PASSWORDS, R.drawable.ic_password);
+        updatePreferenceIcon(PREF_CONTENT_SETTINGS, R.drawable.ic_site_settings);
+        updatePreferenceIcon(PREF_PAYMENT_METHODS, R.drawable.ic_payment_methods);
+        updatePreferenceIcon(PREF_DOWNLOADS, R.drawable.ic_downloads);
+        updatePreferenceIcon(PREF_LANGUAGES, R.drawable.ic_languages);
+        updatePreferenceIcon(PREF_BRAVE_LANGUAGES, R.drawable.ic_languages);
+        updatePreferenceIcon(PREF_ABOUT_CHROME, R.drawable.ic_info);
+        updatePreferenceIcon(PREF_ACCESSIBILITY, R.drawable.ic_accessibility);
+        updatePreferenceIcon(PREF_PRIVACY, R.drawable.ic_privacy_reports);
+        updatePreferenceIcon(PREF_ADDRESSES, R.drawable.ic_addresses);
+        updatePreferenceIcon(PREF_NOTIFICATIONS, R.drawable.ic_notification);
+    }
+
     private void updateSearchEnginePreference() {
         if (!TemplateUrlServiceFactory.get().isLoaded()) {
             ChromeBasePreference searchEnginePref =
-                    (ChromeBasePreference) findPreference(PREF_SEARCH_ENGINE_SECTION);
+                    (ChromeBasePreference) findPreference(PREF_BRAVE_SEARCH_ENGINES);
             searchEnginePref.setEnabled(false);
             return;
         }
-
-        Preference searchEnginePreference = findPreference(PREF_STANDARD_SEARCH_ENGINE);
-        searchEnginePreference.setEnabled(true);
-        searchEnginePreference.setSummary(BraveSearchEngineUtils.getDSEShortName(false));
-
-        searchEnginePreference = findPreference(PREF_PRIVATE_SEARCH_ENGINE);
-        searchEnginePreference.setEnabled(true);
-        searchEnginePreference.setSummary(BraveSearchEngineUtils.getDSEShortName(true));
     }
 
     private void updateControlSectionPreferences() {

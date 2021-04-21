@@ -174,8 +174,14 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       </message>
       <message name="IDS_PREFS_SECTION_SEARCH_ENGINE" desc="Title for search engine section that can select DSE of normal and private tab">
         Search engine
+      </message>      
+      <message name="IDS_PREFS_SECTION_ONLINE_CHECKOUT" desc="Title for online checkout section">
+        Online checkout
+      </message>      
+      <message name="IDS_PREFS_SUPPORT_SECTION" desc="Title for the support section ">
+        Support
       </message>
-      <message name="IDS_PREFS_FEATURES" desc="Title for Brave-specific features section">
+      <message name="IDS_PREFS_SECTION_FEATURES" desc="Title for Brave-specific features section">
         Features
       </message>
       <message name="IDS_BRAVE_SHIELDS_AND_PRIVACY" desc="Label for the settings related to shields and privacy">
@@ -300,6 +306,12 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       </message>
       <message name="IDS_PREFS_APPEARANCE" desc="Title of Appearance settings, which allows the user to change display settings. [CHAR-LIMIT=32]">
         Appearance
+      </message>      
+      <message name="IDS_PREFS_WELCOME_TOUR" desc="Title of Welcome tour">
+        Welcome tour
+      </message>      
+      <message name="IDS_PREFS_REPORT_BROKEN_SITE" desc="Title of Report broken site settings">
+        Report broken site
       </message>
       <message name="IDS_HIDE_BRAVE_REWARDS_ICON_TITLE" desc="Title for preference that hides or shows Brave Rewards icon.">
         Hide Brave Rewards Icon
@@ -471,12 +483,12 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       <message name="IDS_BRAVE_UI_YOUR_WALLET" desc="Your wallet title">
         Your wallet
       </message>      
-      <message name="IDS_BRAVE_TODAY" desc="Title for Brave today settings">
+<!--       <message name="IDS_BRAVE_TODAY" desc="Title for Brave today settings">
         Brave today
       </message>      
       <message name="IDS_BRAVE_VPN" desc="Title for Brave vpn settings">
         Brave VPN
-      </message>
+      </message> -->
       <message name="IDS_BRAVE_UI_USD" desc="USD value of tokens">
         <ph name="VALUE">%1$s<ex>0.0</ex></ph>
       </message>
@@ -972,8 +984,11 @@ until they verify, or until 90 days have passed.
       <message name="IDS_PREFS_RATE_BRAVE" desc="Title for rate brave settings option.">
         Rate Brave
       </message>
-      <message name="IDS_PREFS_GENERAL" desc="Title for the general section in settings.">
+      <message name="IDS_PREFS_SECTION_GENERAL" desc="Title for the general section in settings.">
         General
+      </message>       
+      <message name="IDS_PREFS_ABOUT_SECTION" desc="Title for the about section in settings.">
+        About
       </message>      
       <message name="IDS_RATE" desc="Text for rate brave dialog button.">
         Rate
