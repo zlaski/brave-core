@@ -64,7 +64,6 @@ if (brave_rewards_enabled) {
     ]
 
     brave_browser_brave_rewards_deps += [
-      "//brave/browser/brave_ads",
       "//brave/components/brave_ads/browser",
     ]
   } else {
