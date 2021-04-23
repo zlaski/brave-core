@@ -2,8 +2,6 @@ import("//build/buildflag_header.gni")
 import("//components/gcm_driver/config.gni")
 
 source_set("gcm_driver") {
-  # Remove when https://github.com/brave/brave-browser/issues/10663 is resolved
-  check_includes = false
   if (!use_gcm_from_platform) {
     sources = [
       "brave_gcm_channel_status.cc",
@@ -19,6 +17,8 @@ source_set("gcm_driver") {
       "//components/pref_registry",
       # For profile.h
       "//content/public/browser",
+      "//chrome/browser/profiles:profile",
+      "//components/gcm_driver",
     ]
   }
 }
