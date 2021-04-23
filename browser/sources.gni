@@ -18,6 +18,7 @@ import("//brave/browser/greaselion/sources.gni")
 import("//brave/browser/importer/sources.gni")
 import("//brave/browser/ipfs/sources.gni")
 import("//brave/browser/new_tab/sources.gni")
+import("//brave/browser/ntp_background_images/sources.gni")
 import("//brave/browser/permissions/sources.gni")
 import("//brave/browser/profiles/sources.gni")
 import("//brave/browser/search_engines/sources.gni")
@@ -93,7 +94,6 @@ brave_chrome_browser_deps = [
   "//brave/browser/ephemeral_storage",
   "//brave/browser/gcm_driver",
   "//brave/browser/net",
-  "//brave/browser/ntp_background_images",
   "//brave/browser/renderer_context_menu",
   "//brave/browser/search",
   "//brave/browser/sync",
@@ -313,6 +313,7 @@ brave_chrome_browser_sources += brave_browser_greaselion_sources
 brave_chrome_browser_sources += brave_browser_importer_sources
 brave_chrome_browser_sources += brave_browser_ipfs_sources
 brave_chrome_browser_sources += brave_browser_new_tab_sources
+brave_chrome_browser_sources += brave_browser_ntp_background_images_sources
 brave_chrome_browser_sources += brave_browser_permissions_sources
 brave_chrome_browser_sources += brave_browser_profiles_sources
 brave_chrome_browser_sources += brave_browser_search_engines_sources
@@ -336,6 +337,7 @@ brave_chrome_browser_deps += brave_browser_greaselion_deps
 brave_chrome_browser_deps += brave_browser_importer_deps
 brave_chrome_browser_deps += brave_browser_ipfs_deps
 brave_chrome_browser_deps += brave_browser_new_tab_deps
+brave_chrome_browser_deps += brave_browser_ntp_background_images_deps
 brave_chrome_browser_deps += brave_browser_permissions_deps
 brave_chrome_browser_deps += brave_browser_profiles_deps
 brave_chrome_browser_deps += brave_browser_search_engines_deps
