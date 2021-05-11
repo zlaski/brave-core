@@ -2,10 +2,11 @@ source_set("common") {
   sources = [
     "common/content_message_generator.cc",
     "common/content_message_generator.h",
-    "common/frame_messages.h",
   ]
 
-  deps = [ "//ipc" ]
+  deps = [
+    "//ipc"
+  ]
 }
 
 source_set("browser") {
@@ -16,8 +17,8 @@ source_set("browser") {
 
   deps = [
     "//base",
-    "//brave/ui/webui/resources",
     "//content/public/browser",
+    "//brave/ui/webui/resources",
     "//ui/base",
   ]
 }
