@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { AssetOptionType, OrderTypes, SwapViewTypes, SlippagePresetObjectType } from '../../../constants/types'
-// import { SlippagePresetOptions } from '../../../options/slippage-preset-options'
+import { AssetOptionType, OrderTypes, SwapViewTypes, SlippagePresetObjectType, ExpirationPresetObjectType } from '../../../constants/types'
 import { NavButton } from '../../extension'
 import SwapInputComponent from '../swap-input-component'
 // Styled Components
@@ -17,7 +16,7 @@ export interface Props {
   toAmount: string
   exchangeRate: string
   slippageTolerance: SlippagePresetObjectType
-  orderExpiration: number
+  orderExpiration: ExpirationPresetObjectType
   orderType: OrderTypes
   onToggleTradeType: () => void
   onFlipAssets: () => void
@@ -25,6 +24,7 @@ export interface Props {
   onInputChange: (value: string, name: string) => void
   onChangeSwapView: (view: SwapViewTypes, option?: string) => void
   onSelectPresetAmount: (percent: number) => void
+  onSelectExpiration: (expiration: ExpirationPresetObjectType) => void
   onSelectSlippageTolerance: (slippage: SlippagePresetObjectType) => void
 }
 
@@ -41,19 +41,12 @@ function Swap (props: Props) {
     onToggleTradeType,
     onInputChange,
     onSelectPresetAmount,
+    onSelectExpiration,
     onSelectSlippageTolerance,
     onFlipAssets,
     onSubmitSwap,
     onChangeSwapView
   } = props
-
-  const onShowEpirationOrSlippage = () => {
-    if (orderType === 'market') {
-      onChangeSwapView('slippage')
-    } else {
-      onChangeSwapView('expiration')
-    }
-  }
 
   const onShowAssetTo = () => {
     onChangeSwapView('assets', 'to')
@@ -101,11 +94,10 @@ function Swap (props: Props) {
         componentType='selector'
         orderType={orderType}
         onSelectSlippageTolerance={onSelectSlippageTolerance}
+        onSelectExpiration={onSelectExpiration}
         slippageTolerance={slippageTolerance}
         orderExpiration={orderExpiration}
-        onShowSelection={onShowEpirationOrSlippage}
       />
-      {/* <div>{SlippagePresetOptions.map((slippage) => <span>{slippage.slippage}</span>)}</div> */}
       <NavButton
         disabled={false}
         buttonType='primary'

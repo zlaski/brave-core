@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { AssetOptionType, OrderTypes, SlippagePresetObjectType } from '../../../constants/types'
+import { AssetOptionType, OrderTypes, SlippagePresetObjectType, ExpirationPresetObjectType } from '../../../constants/types'
 import { AmountPresetOptions } from '../../../options/amount-preset-options'
 import { SlippagePresetOptions } from '../../../options/slippage-preset-options'
+import { ExpirationPresetOptions } from '../../../options/expiration-preset-options'
 import locale from '../../../constants/locale'
 
 // Styled Components
@@ -32,10 +33,11 @@ export interface Props {
   inputName?: string
   orderType?: OrderTypes
   slippageTolerance?: SlippagePresetObjectType
-  orderExpiration?: number
+  orderExpiration?: ExpirationPresetObjectType
   onInputChange?: (value: string, name: string) => void
   onSelectPresetAmount?: (percent: number) => void
   onSelectSlippageTolerance?: (slippage: SlippagePresetObjectType) => void
+  onSelectExpiration?: (expiration: ExpirationPresetObjectType) => void
   onToggleTradeType?: () => void
   onShowSelection?: () => void
   onRefresh?: () => void
@@ -55,6 +57,7 @@ function SwapInputComponent (props: Props) {
     onRefresh,
     onSelectPresetAmount,
     onSelectSlippageTolerance,
+    onSelectExpiration,
     onToggleTradeType,
     onShowSelection
   } = props
@@ -75,6 +78,13 @@ function SwapInputComponent (props: Props) {
   const setPresetSlippageValue = (slippage: SlippagePresetObjectType) => () => {
     if (onSelectSlippageTolerance) {
       onSelectSlippageTolerance(slippage)
+      setExpandSelector(false)
+    }
+  }
+
+  const setExpirationValue = (expiration: ExpirationPresetObjectType) => () => {
+    if (onSelectExpiration) {
+      onSelectExpiration(expiration)
       setExpandSelector(false)
     }
   }
@@ -182,19 +192,34 @@ function SwapInputComponent (props: Props) {
           <Row>
             <SelectText>{getTitle()}</SelectText>
             <AssetButton onClick={toggleExpandSelector}>
-              <SelectValueText>{orderType === 'market' ? `${slippageTolerance?.slippage}%` : `${orderExpiration} days`}</SelectValueText>
+              <SelectValueText>{orderType === 'market' ? `${slippageTolerance?.slippage}%` : `${orderExpiration?.expiration} days`}</SelectValueText>
               <CaratDownIcon />
             </AssetButton>
           </Row>
           {expandSelector &&
             <PresetRow>
-              {SlippagePresetOptions.map((preset) =>
-                <PresetButton
-                  key={preset.id}
-                  onClick={setPresetSlippageValue(preset)}
-                >
-                  {preset.slippage}%
-                </PresetButton>
+              {orderType === 'market' ? (
+                <>
+                  {SlippagePresetOptions.map((preset) =>
+                    <PresetButton
+                      key={preset.id}
+                      onClick={setPresetSlippageValue(preset)}
+                    >
+                      {preset.slippage}%
+                    </PresetButton>
+                  )}
+                </>
+              ) : (
+                <>
+                  {ExpirationPresetOptions.map((preset) =>
+                    <PresetButton
+                      key={preset.id}
+                      onClick={setExpirationValue(preset)}
+                    >
+                      {preset.name}
+                    </PresetButton>
+                  )}
+                </>
               )}
             </PresetRow>
           }

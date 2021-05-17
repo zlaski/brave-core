@@ -97,7 +97,6 @@ export type SwapViewTypes =
   | 'acounts'
   | 'networks'
   | 'assets'
-  | 'expiration'
 
 export interface BuySendSwapObjectType {
   name: string
@@ -171,6 +170,12 @@ export interface AmountPresetObjectType {
 export interface SlippagePresetObjectType {
   id: number
   slippage: number
+}
+
+export interface ExpirationPresetObjectType {
+  id: number
+  name: string
+  expiration: number
 }
 
 export interface NetworkOptionsType {
