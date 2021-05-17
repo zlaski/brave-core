@@ -2,13 +2,17 @@ import * as React from 'react'
 
 // Components
 import { ConnectWithSite, ConnectedPanel, Panel, WelcomePanel } from '../components/extension'
-import { AppList } from '../components/shared'
-import { WalletAccountType, PanelTypes, AppObjectType, AppsListType } from '../constants/types'
+import { WalletAccountType, PanelTypes, AppObjectType, AppsListType, NetworkOptionsType } from '../constants/types'
+import { AppList, SelectNetwork } from '../components/shared'
+import Swap from './screens/swap-tab'
+import { mockUserAccounts } from './mock-data/user-accounts'
+import { NetworkOptions } from '../options/network-options'
 import { AppsList } from '../options/apps-list-options'
 import { filterAppList } from '../utils/filter-app-list'
 import LockPanel from '../components/extension/lock-panel'
 import {
   StyledExtensionWrapper,
+  ConectedScrollContainer,
   ScrollContainer
 } from './style'
 
@@ -111,6 +115,7 @@ export const _ConnectedPanel = (args: { locked: boolean }) => {
   const [favoriteApps, setFavoriteApps] = React.useState<AppObjectType[]>([
     AppsList[0].appList[0]
   ])
+  const [selectedNetwork, setSelectedNetwork] = React.useState<NetworkOptionsType>(NetworkOptions[0])
   const [filteredAppsList, setFilteredAppsList] = React.useState<AppsListType[]>(AppsList)
   const [walletConnected, setWalletConnected] = React.useState<boolean>(true)
   const toggleConnected = () => {
@@ -161,6 +166,11 @@ export const _ConnectedPanel = (args: { locked: boolean }) => {
     setInputValue(value)
   }
 
+  const onSelectNetwork = (network: NetworkOptionsType) => () => {
+    setSelectedNetwork(network)
+    navigateTo('main')
+  }
+
   return (
     <StyledExtensionWrapper>
       {walletLocked ? (
@@ -169,6 +179,7 @@ export const _ConnectedPanel = (args: { locked: boolean }) => {
         <>
           {selectedPanel === 'main' ? (
             <ConnectedPanel
+              selectedNetwork={selectedNetwork}
               selectedAccount={selectedAccount}
               isConnected={walletConnected}
               connectAction={toggleConnected}
@@ -191,6 +202,19 @@ export const _ConnectedPanel = (args: { locked: boolean }) => {
                     action={browseMore}
                   />
                 </ScrollContainer>
+              }
+              {selectedPanel === 'networks' &&
+                <ScrollContainer>
+                  <SelectNetwork
+                    networks={NetworkOptions}
+                    onSelectNetwork={onSelectNetwork}
+                  />
+                </ScrollContainer>
+              }
+              {selectedPanel === 'swap' &&
+                <ConectedScrollContainer>
+                  <Swap accounts={mockUserAccounts} />
+                </ConectedScrollContainer>
               }
             </Panel>
           )}

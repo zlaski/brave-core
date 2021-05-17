@@ -33,6 +33,19 @@ export const ScrollContainer = styled.div`
   box-sizing: border-box;
 `
 
+export const ConectedScrollContainer = styled.div`
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  position: relative;
+  padding: 12px;
+  box-sizing: border-box;
+`
+
 export const DesktopComponentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -68,5 +81,4 @@ export const WalletWidgetStandIn = styled.div`
   align-items: center;
   justify-content: center;
   width: 285px;
-  height: 500px;
 `

@@ -116,7 +116,39 @@ const locale = {
 
   // Lock Screen
   lockScreenTitle: 'Enter password to unlock wallet',
-  lockScreenButton: 'Unlock'
+  lockScreenButton: 'Unlock',
+
+  // AmountPresets
+  preset25: '25%',
+  preset50: '50%',
+  preset75: '75%',
+  preset100: 'All',
+
+  // Networks
+  networkETH: 'Ethereum',
+  networkMain: 'Mainnet',
+  networkTest: 'Test Network',
+  networkRopsten: 'Roptsten',
+  networkKavan: 'Kavan',
+  networkRinkeby: 'Rinkeby',
+  networkGoerli: 'Goerli',
+  networkBinance: 'Binance Smart Chain',
+  networkBinanceAbbr: 'BSC',
+
+  // Select Screens
+  selectAccount: 'Select Account',
+  searchAccount: 'Search Accounts',
+  selectNetwork: 'Select Network',
+  selectAsset: 'Select From',
+  searchAsset: 'Search Coins',
+
+  // Swap
+  swapFrom: 'From',
+  swapTo: 'To',
+  swapEstimate: 'estimate',
+  swapMarket: 'Market',
+  swapLimit: 'Limit',
+  swapPriceIn: 'Price in'
 }
 
 export default locale

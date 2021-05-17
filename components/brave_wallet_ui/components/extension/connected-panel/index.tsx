@@ -27,18 +27,19 @@ import {
 
 // Utils
 import { reduceAddress } from '../../../utils/reduce-address'
-import { WalletAccountType, PanelTypes } from '../../../constants/types'
+import { WalletAccountType, PanelTypes, NetworkOptionsType } from '../../../constants/types'
 import { create, background } from 'ethereum-blockies'
 
 export interface Props {
   selectedAccount: WalletAccountType
+  selectedNetwork: NetworkOptionsType
   isConnected: boolean
   connectAction: () => void
   navAction: (path: PanelTypes) => void
 }
 
 const ConnectedPanel = (props: Props) => {
-  const { connectAction, isConnected, navAction, selectedAccount } = props
+  const { connectAction, isConnected, navAction, selectedAccount, selectedNetwork } = props
 
   const navigate = (path: PanelTypes) => () => {
     navAction(path)
@@ -63,7 +64,7 @@ const ConnectedPanel = (props: Props) => {
             <OvalButtonText>{isConnected ? 'Connected' : 'Not Connected'}</OvalButtonText>
           </OvalButton>
           <OvalButton onClick={navigate('networks')}>
-            <OvalButtonText>Mainnet</OvalButtonText>
+            <OvalButtonText>{selectedNetwork.abbr}</OvalButtonText>
             <CaratDownIcon />
           </OvalButton>
         </StatusRow>
@@ -72,7 +73,7 @@ const ConnectedPanel = (props: Props) => {
           <AccountNameText>{selectedAccount.name}</AccountNameText>
           <AccountAddressText>{reduceAddress(selectedAccount.address)}</AccountAddressText>
         </BalanceColumn>
-        <OvalButton onClick={navigate('swap')}><SwapIcon /></OvalButton>
+        <OvalButton onClick={navigate('accounts')}><SwapIcon /></OvalButton>
         <BalanceColumn>
           <AssetBalanceText>{selectedAccount.balance} {selectedAccount.asset.toUpperCase()}</AssetBalanceText>
           <FiatBalanceText>${FiatBalance.toFixed(2)}</FiatBalanceText>

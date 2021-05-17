@@ -13,8 +13,8 @@ import {
 } from '../constants/types'
 import Onboarding from './screens/onboarding'
 import { LinkedAccountsOptions, NavOptions, StaticOptions } from '../options/side-nav-options'
-import BuySendSwap from '../components/buy-send-swap'
-import { recoveryPhrase } from './mock-data/user-accounts'
+import BuySendSwap from './screens/buy-send-swap'
+import { mockUserAccounts, recoveryPhrase } from './mock-data/user-accounts'
 export default {
   title: 'Wallet/Desktop',
   argTypes: {
@@ -81,7 +81,7 @@ export const _DesktopWalletConcept = (args: { onboarding: boolean, locked: boole
 
       <WalletWidgetStandIn>
         {!needsOnboarding && !walletLocked &&
-          <BuySendSwap />
+          <BuySendSwap accounts={mockUserAccounts} />
         }
       </WalletWidgetStandIn>
     </WalletPageLayout>
