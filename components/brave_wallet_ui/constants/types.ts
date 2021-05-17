@@ -40,6 +40,12 @@ export interface RPCResponseType {
   transactions: RPCTransactionType[]
 }
 
+export type AmountPresetTypes =
+  | 0.25
+  | 0.50
+  | 0.75
+  | 1
+
 export type PanelTypes =
   | 'main'
   | 'buy'
@@ -49,6 +55,7 @@ export type PanelTypes =
   | 'networks'
   | 'settings'
   | 'expanded'
+  | 'accounts'
 
 export type NavTypes =
   | 'crypto'
@@ -80,6 +87,18 @@ export type ChartTimelineType =
   | '3Months'
   | '1Year'
   | 'AllTime'
+
+export type OrderTypes =
+  | 'market'
+  | 'limit'
+
+export type SwapViewTypes =
+  | 'swap'
+  | 'acounts'
+  | 'networks'
+  | 'assets'
+  | 'slippage'
+  | 'expiration'
 
 export interface BuySendSwapObjectType {
   name: string
@@ -143,4 +162,15 @@ export interface WalletPageState {
 export interface WalletPanelState {
   wallet: WalletState
   panel: PanelState
+}
+
+export interface AmountPresetObjectType {
+  name: string
+  id: AmountPresetTypes
+}
+
+export interface NetworkOptionsType {
+  name: string
+  id: number
+  abbr: string
 }

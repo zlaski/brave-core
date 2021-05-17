@@ -5,9 +5,9 @@ import { NavTypes, NavObjectType, TopTabNavTypes, ChartTimelineType } from '../c
 import { LinkedAccountsOptions, NavOptions, StaticOptions } from '../options/side-nav-options'
 import { TopNavOptions } from '../options/top-nav-options'
 import { ChartTimelineOptions } from '../options/chart-timeline-options'
-import BuySendSwap from '../components/buy-send-swap'
+import BuySendSwap from './screens/buy-send-swap'
 import Onboarding from './screens/onboarding'
-import { recoveryPhrase } from './mock-data/user-accounts'
+import { recoveryPhrase, mockUserAccounts } from './mock-data/user-accounts'
 
 export default {
   title: 'Wallet/Desktop/Components',
@@ -87,7 +87,7 @@ _LineChartControls.story = {
 export const _BuySendSwap = () => {
   return (
     <WalletWidgetStandIn>
-      <BuySendSwap />
+      <BuySendSwap accounts={mockUserAccounts} />
     </WalletWidgetStandIn>
   )
 }
