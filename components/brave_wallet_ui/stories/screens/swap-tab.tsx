@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { UserAccountType, AssetOptionType, NetworkOptionsType, OrderTypes, SwapViewTypes, SlippagePresetObjectType } from '../../constants/types'
+import { UserAccountType, AssetOptionType, NetworkOptionsType, OrderTypes, SwapViewTypes, SlippagePresetObjectType, ExpirationPresetObjectType } from '../../constants/types'
 import { AssetOptions } from '../../options/asset-options'
 import { NetworkOptions } from '../../options/network-options'
+import { ExpirationPresetOptions } from '../../options/expiration-preset-options'
 import { SlippagePresetOptions } from '../../options/slippage-preset-options'
 import {
   Header,
   SelectAccount,
   SelectAsset,
   SelectNetwork,
-  SelectExpire,
   Swap
 } from '../../components/buy-send-swap'
 
@@ -29,7 +29,7 @@ function SwapTab (props: Props) {
   const [exchangeRate, setExchangeRate] = React.useState('0.0027533')
   const [orderType, setOrderType] = React.useState<OrderTypes>('market')
   const [slippageTolerance, setSlippageTolerance] = React.useState<SlippagePresetObjectType>(SlippagePresetOptions[0])
-  const [orderExpiration] = React.useState<number>(7)
+  const [orderExpiration, setOrderExpiration] = React.useState<ExpirationPresetObjectType>(ExpirationPresetOptions[3])
 
   const calculateToAmount = (amount: number, market: boolean) => {
     if (market) {
@@ -68,6 +68,10 @@ function SwapTab (props: Props) {
 
   const onSelectSlippageTolerance = (slippage: SlippagePresetObjectType) => {
     setSlippageTolerance(slippage)
+  }
+
+  const onSelectExpiration = (expiration: ExpirationPresetObjectType) => {
+    setOrderExpiration(expiration)
   }
 
   const onSelectAsset = (asset: AssetOptionType) => () => {
@@ -140,6 +144,7 @@ function SwapTab (props: Props) {
             onSubmitSwap={onSubmit}
             onSelectPresetAmount={onSelectPresetAmount}
             onSelectSlippageTolerance={onSelectSlippageTolerance}
+            onSelectExpiration={onSelectExpiration}
             onChangeSwapView={onChangeSwapView}
             onToggleTradeType={toggleTradeType}
           />
@@ -163,11 +168,6 @@ function SwapTab (props: Props) {
         <SelectNetwork
           networks={NetworkOptions}
           onSelectNetwork={onSelectNetwork}
-          onBack={goBack}
-        />
-      }
-      {swapView === 'expiration' &&
-        <SelectExpire
           onBack={goBack}
         />
       }
