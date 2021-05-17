@@ -1,13 +1,13 @@
 import * as React from 'react'
-import { UserAccountType, AssetOptionType, NetworkOptionsType, OrderTypes, SwapViewTypes } from '../../constants/types'
+import { UserAccountType, AssetOptionType, NetworkOptionsType, OrderTypes, SwapViewTypes, SlippagePresetObjectType } from '../../constants/types'
 import { AssetOptions } from '../../options/asset-options'
 import { NetworkOptions } from '../../options/network-options'
+import { SlippagePresetOptions } from '../../options/slippage-preset-options'
 import {
   Header,
   SelectAccount,
   SelectAsset,
   SelectNetwork,
-  SelectSlippage,
   SelectExpire,
   Swap
 } from '../../components/buy-send-swap'
@@ -28,7 +28,7 @@ function SwapTab (props: Props) {
   const [toAmount, setToAmount] = React.useState('')
   const [exchangeRate, setExchangeRate] = React.useState('0.0027533')
   const [orderType, setOrderType] = React.useState<OrderTypes>('market')
-  const [slippageTolerance] = React.useState<number>(2)
+  const [slippageTolerance, setSlippageTolerance] = React.useState<SlippagePresetObjectType>(SlippagePresetOptions[0])
   const [orderExpiration] = React.useState<number>(7)
 
   const calculateToAmount = (amount: number, market: boolean) => {
@@ -41,7 +41,7 @@ function SwapTab (props: Props) {
     }
   }
 
-  const presetSelect = (percent: number) => {
+  const onSelectPresetAmount = (percent: number) => {
     const amount = 1.2832 * percent
     setFromAmount(amount.toString())
     calculateToAmount(amount, true)
@@ -64,6 +64,10 @@ function SwapTab (props: Props) {
   const onSelectAccount = (account: UserAccountType) => () => {
     setSelectedAccount(account)
     setSwapView('swap')
+  }
+
+  const onSelectSlippageTolerance = (slippage: SlippagePresetObjectType) => {
+    setSlippageTolerance(slippage)
   }
 
   const onSelectAsset = (asset: AssetOptionType) => () => {
@@ -134,7 +138,8 @@ function SwapTab (props: Props) {
             onInputChange={onInputChange}
             onFlipAssets={flipAssets}
             onSubmitSwap={onSubmit}
-            onSelectPreset={presetSelect}
+            onSelectPresetAmount={onSelectPresetAmount}
+            onSelectSlippageTolerance={onSelectSlippageTolerance}
             onChangeSwapView={onChangeSwapView}
             onToggleTradeType={toggleTradeType}
           />
@@ -158,11 +163,6 @@ function SwapTab (props: Props) {
         <SelectNetwork
           networks={NetworkOptions}
           onSelectNetwork={onSelectNetwork}
-          onBack={goBack}
-        />
-      }
-      {swapView === 'slippage' &&
-        <SelectSlippage
           onBack={goBack}
         />
       }

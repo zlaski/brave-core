@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { AssetOptionType, OrderTypes } from '../../../constants/types'
+import { AssetOptionType, OrderTypes, SlippagePresetObjectType } from '../../../constants/types'
 import { AmountPresetOptions } from '../../../options/amount-preset-options'
+import { SlippagePresetOptions } from '../../../options/slippage-preset-options'
 import locale from '../../../constants/locale'
 
 // Styled Components
@@ -30,10 +31,11 @@ export interface Props {
   selectedAssetInputAmount?: string
   inputName?: string
   orderType?: OrderTypes
-  slippageTolerance?: number
+  slippageTolerance?: SlippagePresetObjectType
   orderExpiration?: number
   onInputChange?: (value: string, name: string) => void
-  onSelectPreset?: (percent: number) => void
+  onSelectPresetAmount?: (percent: number) => void
+  onSelectSlippageTolerance?: (slippage: SlippagePresetObjectType) => void
   onToggleTradeType?: () => void
   onShowSelection?: () => void
   onRefresh?: () => void
@@ -51,11 +53,17 @@ function SwapInputComponent (props: Props) {
     orderExpiration,
     onInputChange,
     onRefresh,
-    onSelectPreset,
+    onSelectPresetAmount,
+    onSelectSlippageTolerance,
     onToggleTradeType,
     onShowSelection
   } = props
   const [spin, setSpin] = React.useState<number>(0)
+  const [expandSelector, setExpandSelector] = React.useState<boolean>(false)
+
+  const toggleExpandSelector = () => {
+    setExpandSelector(!expandSelector)
+  }
 
   const refresh = () => {
     if (onRefresh) {
@@ -64,9 +72,16 @@ function SwapInputComponent (props: Props) {
     setSpin(1)
   }
 
-  const setPresetValue = (percent: number) => () => {
-    if (onSelectPreset) {
-      onSelectPreset(percent)
+  const setPresetSlippageValue = (slippage: SlippagePresetObjectType) => () => {
+    if (onSelectSlippageTolerance) {
+      onSelectSlippageTolerance(slippage)
+      setExpandSelector(false)
+    }
+  }
+
+  const setPresetAmmountValue = (percent: number) => () => {
+    if (onSelectPresetAmount) {
+      onSelectPresetAmount(percent)
     }
   }
 
@@ -153,7 +168,7 @@ function SwapInputComponent (props: Props) {
               {AmountPresetOptions.map((preset) =>
                 <PresetButton
                   key={preset.id}
-                  onClick={setPresetValue(preset.id)}
+                  onClick={setPresetAmmountValue(preset.id)}
                 >
                   {preset.name}
                 </PresetButton>
@@ -163,13 +178,27 @@ function SwapInputComponent (props: Props) {
         </>
       }
       {componentType === 'selector' &&
-        <Row>
-          <SelectText>{getTitle()}</SelectText>
-          <AssetButton onClick={onShowSelection}>
-            <SelectValueText>{orderType === 'market' ? `${slippageTolerance}%` : `${orderExpiration} days`}</SelectValueText>
-            <CaratDownIcon />
-          </AssetButton>
-        </Row>
+        <>
+          <Row>
+            <SelectText>{getTitle()}</SelectText>
+            <AssetButton onClick={toggleExpandSelector}>
+              <SelectValueText>{orderType === 'market' ? `${slippageTolerance?.slippage}%` : `${orderExpiration} days`}</SelectValueText>
+              <CaratDownIcon />
+            </AssetButton>
+          </Row>
+          {expandSelector &&
+            <PresetRow>
+              {SlippagePresetOptions.map((preset) =>
+                <PresetButton
+                  key={preset.id}
+                  onClick={setPresetSlippageValue(preset)}
+                >
+                  {preset.slippage}%
+                </PresetButton>
+              )}
+            </PresetRow>
+          }
+        </>
       }
     </BubbleContainer >
   )
