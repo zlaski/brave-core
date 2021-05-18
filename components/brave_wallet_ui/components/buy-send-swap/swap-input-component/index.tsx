@@ -155,6 +155,7 @@ function SwapInputComponent (props: Props) {
               value={selectedAssetInputAmount}
               name={inputName}
               onChange={onInputChanged}
+              hasError={selectedAssetBalance && componentType === 'fromAmount' ? Number(selectedAssetInputAmount) > selectedAssetBalance : false}
               disabled={orderType === 'market' && componentType === 'exchange' || orderType === 'limit' && componentType === 'toAmount'}
             />
             {componentType === 'exchange' && orderType === 'market' &&
