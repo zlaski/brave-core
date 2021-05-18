@@ -6,6 +6,7 @@ interface StyleProps {
   icon: string | undefined
   isExchange: boolean
   spin: number
+  hasError: boolean
 }
 
 export const Row = styled.div<Partial<StyleProps>>`
@@ -151,7 +152,7 @@ export const Input = styled.input<Partial<StyleProps>>`
   font-weight: 600;
   padding: 0px;
   margin: ${(p) => p.isExchange ? '0px' : '4px 0px'};
-  color: ${(p) => p.theme.color.text01};
+  color: ${(p) => p.hasError ? p.theme.color.errorText : p.theme.color.text01};
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   ::placeholder {
