@@ -1110,6 +1110,13 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
       <message name="IDS_BRAVE_P3A_ENABLE_SETTING_SUBITEM" desc="Description that shows under main toggle setting for P3A">
         This anonymous info only lets Brave estimate the overall usage of certain features.
       </message>
+      <!-- Griffin
+      <message name="IDS_BRAVE_GRIFFIN_ENABLE_SETTING" desc="Description that shows in settings for toggling Griffin">
+        Allow staged roll-outs and feature testing
+      </message>
+      <message name="IDS_BRAVE_GRIFFIN_ENABLE_SETTING_SUBITEM" desc="Description that shows under main toggle setting for Griffin">
+        This completely anonymized info helps Brave improve the security and performance of certain features to make it better for you. Learn more
+      </message> -->
       <!-- Web3 detection -->
       <message name="IDS_BRAVE_CRYPTO_WALLETS_LAZY_LOAD_TEXT" desc="Text that shows on the info bar when a Dapp is detected">
         Would you like to start Crypto Wallets for Ethereum support?

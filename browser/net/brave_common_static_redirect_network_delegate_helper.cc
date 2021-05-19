@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>  // TODO(Moritz Haller): remove
+
 #include "base/command_line.h"
 #include "base/feature_list.h"
 #include "base/strings/string_split.h"
@@ -17,6 +19,7 @@
 #include "brave/components/brave_component_updater/browser/features.h"
 #include "brave/components/brave_component_updater/browser/switches.h"
 #include "components/component_updater/component_updater_url_constants.h"
+#include "components/variations/variations_switches.h"
 #include "extensions/buildflags/buildflags.h"
 #include "extensions/common/url_pattern.h"
 #include "net/base/net_errors.h"
@@ -92,6 +95,19 @@ bool RewriteBugReportingURL(const GURL& request_url, GURL* new_url) {
   return true;
 }
 
+bool IsVariationsServerUrl(const GURL& gurl) {
+  static std::vector<URLPattern> patterns(
+      {URLPattern(URLPattern::SCHEME_HTTPS,
+                  std::string("https://variations.brave.com/") + "*"),
+       URLPattern(
+           URLPattern::SCHEME_HTTP,
+           std::string("http://variations.brave.com/") + "*"),
+  });
+  return std::any_of(
+      patterns.begin(), patterns.end(),
+      [&gurl](URLPattern pattern) { return pattern.MatchesURL(gurl); });
+}
+
 }  // namespace
 
 void SetUpdateURLHostForTesting(bool testing) {
@@ -150,6 +166,13 @@ int OnBeforeURLRequest_CommonStaticRedirectWorkForGURL(
   if (bugsChromium_pattern.MatchesURL(request_url)) {
     if (RewriteBugReportingURL(request_url, new_url))
       return net::OK;
+  }
+
+  if (IsVariationsServerUrl(request_url)) {
+    std::cout << "*** FOOBAR 1 - is variations URL" << std::endl;
+    // if local state disabled/enabled? return net::ERR_BLOCKED_BY_CLIENT;
+    return net::ERR_BLOCKED_BY_CLIENT;
+    // return net::OK;
   }
 
   return net::OK;
