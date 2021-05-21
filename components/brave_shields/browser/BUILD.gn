@@ -1,4 +1,10 @@
 source_set("browser") {
+   defines = [
+    "TRACY_ENABLE",
+    "TRACY_DELAYED_INIT",
+    "TRACY_MANUAL_LIFETIME",
+  ]
+
   sources = [
     "ad_block_base_service.cc",
     "ad_block_base_service.h",
@@ -62,5 +68,12 @@ source_set("browser") {
     "//third_party/re2",
     "//third_party/zlib/google:zip",
     "//url",
+    "//brave/third_party/tracy",
+  ]
+
+  cflags_cc = [
+    "-Wno-extra-semi",
+    "-Wno-ignored-attributes",
+    "-Wno-unused-function",
   ]
 }

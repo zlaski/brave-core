@@ -1,6 +1,11 @@
 import("//brave/components/speedreader/buildflags.gni")
 import("//build/buildflag_header.gni")
 
+defines = [
+  "TRACY_ENABLE",
+  "TRACY_DELAYED_INIT",
+  "TRACY_MANUAL_LIFETIME",
+]
 buildflag_header("buildflags") {
   header = "buildflags.h"
   flags = [
@@ -49,5 +54,12 @@ source_set("speedreader") {
     "//third_party/re2",
     "//ui/base",  # For ResourceBundle, consider getting rid of this ?
     "//url",
+    "//brave/third_party/tracy",
+  ]
+
+  cflags_cc = [
+    "-Wno-extra-semi",
+    "-Wno-ignored-attributes",
+    "-Wno-unused-function",
   ]
 }

@@ -21,6 +21,8 @@
 #include "ui/base/resource/resource_bundle.h"
 #include "url/gurl.h"
 
+#include "brave/third_party/tracy/Tracy.hpp"
+
 namespace speedreader {
 
 namespace {
@@ -92,6 +94,7 @@ void SpeedreaderRewriterService::OnStylesheetReady(const base::FilePath& path) {
 }
 
 bool SpeedreaderRewriterService::IsWhitelisted(const GURL& url) {
+  ZoneScoped
   if (backend_ == RewriterType::RewriterStreaming) {
     return speedreader_->IsReadableURL(url.spec());
   } else {

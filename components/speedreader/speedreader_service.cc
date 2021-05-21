@@ -13,6 +13,8 @@
 #include "components/prefs/pref_registry_simple.h"
 #include "components/prefs/pref_service.h"
 
+#include "brave/third_party/tracy/Tracy.hpp"
+
 namespace speedreader {
 
 namespace {
@@ -74,9 +76,13 @@ void RecordHistograms(PrefService* prefs, bool toggled, bool enabled_now) {
 
 }  // namespace
 
-SpeedreaderService::SpeedreaderService(PrefService* prefs) : prefs_(prefs) {}
+SpeedreaderService::SpeedreaderService(PrefService* prefs) : prefs_(prefs) {
+    tracy::StartupProfiler();
+}
 
-SpeedreaderService::~SpeedreaderService() {}
+SpeedreaderService::~SpeedreaderService() {
+    tracy::ShutdownProfiler();
+}
 
 // static
 void SpeedreaderService::RegisterPrefs(PrefRegistrySimple* registry) {

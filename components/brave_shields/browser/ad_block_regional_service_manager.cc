@@ -22,6 +22,8 @@
 #include "content/public/browser/browser_task_traits.h"
 #include "content/public/browser/browser_thread.h"
 
+#include "brave/third_party/tracy/Tracy.hpp"
+
 using adblock::FilterList;
 
 namespace brave_shields {
@@ -36,6 +38,7 @@ AdBlockRegionalServiceManager::~AdBlockRegionalServiceManager() {
 }
 
 void AdBlockRegionalServiceManager::StartRegionalServices() {
+  ZoneScoped;
   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
   PrefService* local_state = delegate_->local_state();
   if (!local_state)
@@ -91,6 +94,7 @@ void AdBlockRegionalServiceManager::StartRegionalServices() {
 void AdBlockRegionalServiceManager::UpdateFilterListPrefs(
     const std::string& uuid,
     bool enabled) {
+  ZoneScoped;
   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
   PrefService* local_state = delegate_->local_state();
   if (!local_state)
@@ -107,6 +111,7 @@ bool AdBlockRegionalServiceManager::IsInitialized() const {
 }
 
 bool AdBlockRegionalServiceManager::Start() {
+  ZoneScoped;
   base::AutoLock lock(regional_services_lock_);
   for (const auto& regional_service : regional_services_) {
     regional_service.second->Start();
@@ -123,6 +128,7 @@ void AdBlockRegionalServiceManager::ShouldStartRequest(
     bool* did_match_exception,
     bool* did_match_important,
     std::string* mock_data_url) {
+  ZoneScoped;
   base::AutoLock lock(regional_services_lock_);
 
   for (const auto& regional_service : regional_services_) {
@@ -139,6 +145,7 @@ base::Optional<std::string> AdBlockRegionalServiceManager::GetCspDirectives(
     const GURL& url,
     blink::mojom::ResourceType resource_type,
     const std::string& tab_host) {
+  ZoneScoped;
   base::Optional<std::string> csp_directives = base::nullopt;
 
   for (const auto& regional_service : regional_services_) {
@@ -152,6 +159,7 @@ base::Optional<std::string> AdBlockRegionalServiceManager::GetCspDirectives(
 
 void AdBlockRegionalServiceManager::EnableTag(const std::string& tag,
                                               bool enabled) {
+  ZoneScoped;
   base::AutoLock lock(regional_services_lock_);
   for (const auto& regional_service : regional_services_) {
     regional_service.second->EnableTag(tag, enabled);
@@ -160,6 +168,7 @@ void AdBlockRegionalServiceManager::EnableTag(const std::string& tag,
 
 void AdBlockRegionalServiceManager::AddResources(
     const std::string& resources) {
+  ZoneScoped;
   base::AutoLock lock(regional_services_lock_);
   for (const auto& regional_service : regional_services_) {
     regional_service.second->AddResources(resources);
@@ -168,6 +177,7 @@ void AdBlockRegionalServiceManager::AddResources(
 
 void AdBlockRegionalServiceManager::EnableFilterList(
     const std::string& uuid, bool enabled) {
+  ZoneScoped;
   DCHECK(!uuid.empty());
   auto catalog_entry = brave_shields::FindAdBlockFilterListByUUID(
       regional_catalog_, uuid);
@@ -204,6 +214,7 @@ void AdBlockRegionalServiceManager::EnableFilterList(
 base::Optional<base::Value>
 AdBlockRegionalServiceManager::UrlCosmeticResources(
         const std::string& url) {
+  ZoneScoped;
   base::AutoLock lock(regional_services_lock_);
   auto it = regional_services_.begin();
   if (it == regional_services_.end()) {
@@ -232,6 +243,7 @@ AdBlockRegionalServiceManager::HiddenClassIdSelectors(
         const std::vector<std::string>& classes,
         const std::vector<std::string>& ids,
         const std::vector<std::string>& exceptions) {
+  ZoneScoped;
   base::AutoLock lock(regional_services_lock_);
   auto it = regional_services_.begin();
   if (it == regional_services_.end()) {
@@ -261,6 +273,7 @@ AdBlockRegionalServiceManager::HiddenClassIdSelectors(
 
 void AdBlockRegionalServiceManager::SetRegionalCatalog(
         std::vector<adblock::FilterList> catalog) {
+  ZoneScoped;
   regional_catalog_ = std::move(catalog);
   for (const auto& regional_service : regional_services_) {
     auto catalog_entry = brave_shields::FindAdBlockFilterListByUUID(
@@ -281,6 +294,7 @@ AdBlockRegionalServiceManager::GetRegionalCatalog() {
 
 std::unique_ptr<base::ListValue>
 AdBlockRegionalServiceManager::GetRegionalLists() {
+  ZoneScoped;
   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
   PrefService* local_state = delegate_->local_state();
   if (!local_state)

@@ -16,6 +16,7 @@ deps = {
   "vendor/gn-project-generators": "https://github.com/brave/gn-project-generators.git@b76e14b162aa0ce40f11920ec94bfc12da29e5d0",
   "third_party/ethash/src": "https://github.com/chfast/ethash.git@e4a15c3d76dc09392c7efd3e30d84ee3b871e9ce",
   "third_party/bitcoin-core/src": "https://github.com/bitcoin/bitcoin.git@95ea54ba089610019a74c1176a2c7c0dba144b1c",
+  "third_party/tracy": "https://github.com/wolfpld/tracy.git@07778badcced109b8190805fbf2d7abfaef0d3b9",
 }
 
 hooks = [

@@ -26,6 +26,8 @@
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
 #include "url/origin.h"
 
+#include "brave/third_party/tracy/Tracy.hpp"
+
 using brave_component_updater::BraveComponent;
 using content::BrowserThread;
 using namespace net::registry_controlled_domains;  // NOLINT
@@ -105,10 +107,13 @@ namespace brave_shields {
 AdBlockBaseService::AdBlockBaseService(BraveComponent::Delegate* delegate)
     : BaseBraveShieldsService(delegate),
       ad_block_client_(new adblock::Engine()),
-      weak_factory_(this) {}
+      weak_factory_(this) {
+  tracy::StartupProfiler();
+}
 
 AdBlockBaseService::~AdBlockBaseService() {
   GetTaskRunner()->DeleteSoon(FROM_HERE, ad_block_client_.release());
+  tracy::ShutdownProfiler();
 }
 
 void AdBlockBaseService::ShouldStartRequest(
@@ -119,6 +124,7 @@ void AdBlockBaseService::ShouldStartRequest(
     bool* did_match_exception,
     bool* did_match_important,
     std::string* mock_data_url) {
+  ZoneScoped;
   DCHECK(GetTaskRunner()->RunsTasksInCurrentSequence());
 
   // Determine third-party here so the library doesn't need to figure it out.
@@ -143,6 +149,7 @@ base::Optional<std::string> AdBlockBaseService::GetCspDirectives(
     const GURL& url,
     blink::mojom::ResourceType resource_type,
     const std::string& tab_host) {
+  ZoneScoped;
   DCHECK(GetTaskRunner()->RunsTasksInCurrentSequence());
 
   // Determine third-party here so the library doesn't need to figure it out.
@@ -165,6 +172,7 @@ base::Optional<std::string> AdBlockBaseService::GetCspDirectives(
 
 void AdBlockBaseService::EnableTag(const std::string& tag, bool enabled) {
   if (BrowserThread::CurrentlyOn(BrowserThread::UI)) {
+  ZoneScoped;
     GetTaskRunner()->PostTask(
         FROM_HERE, base::BindOnce(&AdBlockBaseService::EnableTag,
                                   base::Unretained(this), tag, enabled));
@@ -202,6 +210,7 @@ bool AdBlockBaseService::TagExists(const std::string& tag) {
 
 base::Optional<base::Value> AdBlockBaseService::UrlCosmeticResources(
         const std::string& url) {
+  ZoneScoped;
   DCHECK(GetTaskRunner()->RunsTasksInCurrentSequence());
   return base::JSONReader::Read(ad_block_client_->urlCosmeticResources(url));
 }
@@ -210,6 +219,7 @@ base::Optional<base::Value> AdBlockBaseService::HiddenClassIdSelectors(
         const std::vector<std::string>& classes,
         const std::vector<std::string>& ids,
         const std::vector<std::string>& exceptions) {
+  ZoneScoped;
   DCHECK(GetTaskRunner()->RunsTasksInCurrentSequence());
   return base::JSONReader::Read(
       ad_block_client_->hiddenClassIdSelectors(classes, ids, exceptions));
@@ -241,6 +251,7 @@ void AdBlockBaseService::OnGetDATFileData(GetDATFileDataResult result) {
 
 void AdBlockBaseService::UpdateAdBlockClient(
     std::unique_ptr<adblock::Engine> ad_block_client) {
+  ZoneScoped;
   DCHECK(GetTaskRunner()->RunsTasksInCurrentSequence());
   ad_block_client_ = std::move(ad_block_client);
   AddKnownTagsToAdBlockInstance();

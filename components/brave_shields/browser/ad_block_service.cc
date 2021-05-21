@@ -33,6 +33,8 @@
 #define DAT_FILE "rs-ABPFilterParserData.dat"
 #define REGIONAL_CATALOG "regional_catalog.json"
 
+#include "brave/third_party/tracy/Tracy.hpp"
+
 namespace brave_shields {
 
 namespace {
@@ -42,6 +44,7 @@ namespace {
 void AdBlockServiceDomainResolver(const char* host,
                                   uint32_t* start,
                                   uint32_t* end) {
+  ZoneScoped;
   const auto host_str = std::string(host);
   const auto domain = net::registry_controlled_domains::GetDomainAndRegistry(
       host_str,
@@ -70,6 +73,7 @@ void AdBlockService::ShouldStartRequest(
     bool* did_match_exception,
     bool* did_match_important,
     std::string* mock_data_url) {
+  ZoneScoped;
   AdBlockBaseService::ShouldStartRequest(
       url, resource_type, tab_host, did_match_rule, did_match_exception,
       did_match_important, mock_data_url);
@@ -109,6 +113,7 @@ base::Optional<std::string> AdBlockService::GetCspDirectives(
 
 base::Optional<base::Value> AdBlockService::UrlCosmeticResources(
     const std::string& url) {
+  ZoneScoped;
   base::Optional<base::Value> resources =
       AdBlockBaseService::UrlCosmeticResources(url);
 
@@ -139,6 +144,7 @@ base::Optional<base::Value> AdBlockService::HiddenClassIdSelectors(
     const std::vector<std::string>& classes,
     const std::vector<std::string>& ids,
     const std::vector<std::string>& exceptions) {
+  ZoneScoped;
   base::Optional<base::Value> hide_selectors =
       AdBlockBaseService::HiddenClassIdSelectors(classes, ids, exceptions);
 
@@ -186,6 +192,7 @@ base::Optional<base::Value> AdBlockService::HiddenClassIdSelectors(
 }
 
 AdBlockRegionalServiceManager* AdBlockService::regional_service_manager() {
+  ZoneScoped;
   if (!regional_service_manager_)
     regional_service_manager_ =
         brave_shields::AdBlockRegionalServiceManagerFactory(
@@ -195,6 +202,7 @@ AdBlockRegionalServiceManager* AdBlockService::regional_service_manager() {
 
 brave_shields::AdBlockCustomFiltersService*
 AdBlockService::custom_filters_service() {
+  ZoneScoped;
   if (!custom_filters_service_)
     custom_filters_service_ =
         brave_shields::AdBlockCustomFiltersServiceFactory(component_delegate_);
@@ -208,6 +216,7 @@ AdBlockService::AdBlockService(
 AdBlockService::~AdBlockService() {}
 
 bool AdBlockService::Init() {
+  ZoneScoped;
   // Initializes adblock-rust's domain resolution implementation
   adblock::SetDomainResolver(AdBlockServiceDomainResolver);
 
@@ -222,6 +231,7 @@ bool AdBlockService::Init() {
 void AdBlockService::OnComponentReady(const std::string& component_id,
                                       const base::FilePath& install_dir,
                                       const std::string& manifest) {
+  ZoneScoped;
   // Regional service manager depends on regional catalog loading
   custom_filters_service()->Start();
 
@@ -248,6 +258,7 @@ void AdBlockService::OnComponentReady(const std::string& component_id,
 }
 
 void AdBlockService::OnResourcesFileDataReady(const std::string& resources) {
+  ZoneScoped;
   AddResources(resources);
   custom_filters_service()->AddResources(resources);
 }

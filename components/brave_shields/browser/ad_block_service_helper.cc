@@ -13,6 +13,8 @@
 #include "base/strings/string_util.h"
 #include "base/values.h"
 
+#include "brave/third_party/tracy/Tracy.hpp"
+
 using adblock::FilterList;
 
 namespace brave_shields {
@@ -20,6 +22,7 @@ namespace brave_shields {
 std::vector<FilterList>::const_iterator FindAdBlockFilterListByUUID(
     const std::vector<FilterList>& region_lists,
     const std::string& uuid) {
+  ZoneScoped;
   std::string uuid_uppercase = base::ToUpperASCII(uuid);
   return std::find_if(region_lists.begin(), region_lists.end(),
                       [&uuid_uppercase](const FilterList& filter_list) {
@@ -30,6 +33,7 @@ std::vector<FilterList>::const_iterator FindAdBlockFilterListByUUID(
 std::vector<FilterList>::const_iterator FindAdBlockFilterListByLocale(
     const std::vector<FilterList>& region_lists,
     const std::string& locale) {
+  ZoneScoped;
   std::string adjusted_locale;
   std::string::size_type loc = locale.find("-");
   if (loc == std::string::npos) {
@@ -50,6 +54,7 @@ std::vector<FilterList>::const_iterator FindAdBlockFilterListByLocale(
 
 std::vector<FilterList> RegionalCatalogFromJSON(
     const std::string& catalog_json) {
+  ZoneScoped;
   std::vector<adblock::FilterList> catalog = std::vector<adblock::FilterList>();
 
   base::Optional<base::Value> regional_lists =
@@ -122,6 +127,7 @@ std::vector<FilterList> RegionalCatalogFromJSON(
 void MergeCspDirectiveInto(base::Optional<std::string> from,
                            base::Optional<std::string>* into) {
   DCHECK(into);
+  ZoneScoped;
 
   if (!from) {
     return;
@@ -145,6 +151,7 @@ void MergeCspDirectiveInto(base::Optional<std::string> from,
 // will be moved into a possibly new field of `into` called
 // `force_hide_selectors`.
 void MergeResourcesInto(base::Value from, base::Value* into, bool force_hide) {
+  ZoneScoped;
   base::Value* resources_hide_selectors = nullptr;
   if (force_hide) {
     resources_hide_selectors = into->FindKey("force_hide_selectors");

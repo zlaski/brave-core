@@ -19,6 +19,8 @@
 #include "mojo/public/cpp/bindings/self_owned_receiver.h"
 #include "services/network/public/mojom/url_response_head.mojom.h"
 
+#include "brave/third_party/tracy/Tracy.hpp"
+
 namespace speedreader {
 
 namespace {
@@ -251,6 +253,7 @@ void SpeedReaderURLLoader::MaybeLaunchSpeedreader() {
         base::BindOnce(
             [](std::string data, std::unique_ptr<Rewriter> rewriter,
                const std::string& stylesheet) -> auto {
+              ZoneScopedN("Speedreader Lambda");
               SCOPED_UMA_HISTOGRAM_TIMER("Brave.Speedreader.Distill");
               int written = rewriter->Write(data.c_str(), data.length());
               // Error occurred

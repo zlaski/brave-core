@@ -1,6 +1,7 @@
 include_rules = [
   "+services/network/public",
   "+ui/base",
+  "+third_party/brave/tracy",
 ]
 
 # Existing exceptions
