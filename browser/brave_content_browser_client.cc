@@ -135,6 +135,7 @@ using extensions::ChromeContentBrowserClientExtensionsPart;
 #if BUILDFLAG(BRAVE_WALLET_ENABLED)
 #include "brave/browser/brave_wallet/brave_wallet_context_utils.h"
 #include "brave/browser/brave_wallet/brave_wallet_service_factory.h"
+#include "brave/browser/ethereum_remote_client/ethereum_remote_client_service.h"
 #include "brave/components/brave_wallet/browser/brave_wallet_constants.h"
 #include "brave/components/brave_wallet/browser/brave_wallet_provider_impl.h"
 #include "brave/components/brave_wallet/browser/brave_wallet_service.h"
@@ -541,7 +542,7 @@ bool BraveContentBrowserClient::HandleURLOverrideRewrite(
 
 #if BUILDFLAG(BRAVE_WALLET_ENABLED) && BUILDFLAG(ENABLE_EXTENSIONS)
   // If the Crypto Wallets extension is loaded, then it replaces the WebUI
-  auto* service = BraveWalletServiceFactory::GetForContext(browser_context);
+  auto* service = EthereumRemoteClientServiceFactory::GetForContext(browser_context);
   if (service->IsCryptoWalletsReady() &&
       url->SchemeIs(content::kChromeUIScheme) &&
       url->host() == ethereum_remote_client_host) {
