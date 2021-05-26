@@ -4,8 +4,6 @@
 # You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 brave_browser_component_updater_sources = [
-  "//brave/browser/component_updater/brave_component_installer.cc",
-  "//brave/browser/component_updater/brave_component_installer.h",
   "//brave/browser/component_updater/brave_component_updater_configurator.cc",
   "//brave/browser/component_updater/brave_component_updater_configurator.h",
   "//brave/browser/component_updater/brave_component_updater_delegate.cc",
@@ -14,6 +12,7 @@ brave_browser_component_updater_sources = [
 
 brave_browser_component_updater_deps = [
   "//base",
+  "//brave/browser/component_updater:component_installer",
   "//brave/common:switches",
   "//brave/components/brave_component_updater/browser",
   "//chrome/browser:browser_process",
