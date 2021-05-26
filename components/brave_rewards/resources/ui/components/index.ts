@@ -27,7 +27,6 @@ import ModalDonation from './modalDonation'
 import ModalPending from './modalPending'
 import ModalRedirect from './modalRedirect'
 import ModalShowAdsHistory from './modalShowAdsHistory'
-import ModalVerify from './modalVerify'
 import ModalQRCode from './modalQRCode'
 import NextContribution from './nextContribution'
 import Profile from './profile'
@@ -80,7 +79,6 @@ export {
   ModalPending,
   ModalRedirect,
   ModalShowAdsHistory,
-  ModalVerify,
   ModalQRCode,
   NextContribution,
   Profile,

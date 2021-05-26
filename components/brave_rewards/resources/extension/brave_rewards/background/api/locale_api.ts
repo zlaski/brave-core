@@ -137,20 +137,6 @@ export const getUIMessages = (): Record<string, string> => {
     'walletGoToVerifyPage',
     'walletGoToProvider',
     'walletDisconnect',
-    'walletSelectGemini',
-    'walletSelectText',
-    'walletSelectTitle',
-    'walletSelectUphold',
-    'walletSelectUpholdMessage',
-    'walletSelectUpholdMessageLink',
-    'walletVerificationButton',
-    'walletVerificationFooter',
-    'walletVerificationID',
-    'walletVerificationListCompact1',
-    'walletVerificationListCompact2',
-    'walletVerificationListCompact3',
-    'walletVerificationListHeader',
-    'walletVerificationTitle1',
     'walletVerified',
     'cancel',
     'changeAmount',
@@ -158,8 +144,7 @@ export const getUIMessages = (): Record<string, string> => {
     'loginMessageTitle',
     'loginMessageText',
     'walletPending',
-    'walletConnected',
-    'walletVerificationNote3'
+    'walletConnected'
   ]
 
   let translations = {}

@@ -37,7 +37,7 @@ import {
   StyledVerifiedButtonIcon,
   StyledVerifiedButtonText,
   StyledDialogList,
-  StyledLink,
+  StyledLink
 } from './style'
 import { getLocale } from 'brave-ui/helpers'
 import { GrantCaptcha, GrantComplete, GrantError, GrantWrapper, WalletPopup } from '../'
@@ -53,7 +53,6 @@ import {
 } from 'brave-ui/components/icons'
 
 import { BitflyerIcon } from '../../../shared/components/icons/bitflyer_icon'
-import { GeminiIcon } from '../../../shared/components/icons/gemini_icon'
 
 import giftIconUrl from './assets/gift.svg'
 import loveIconUrl from './assets/love.svg'
@@ -145,7 +144,6 @@ export interface Props {
   onDisconnectClick?: () => void
   goToExternalWallet?: () => void
   greetings?: string
-  showLoginMessage?: boolean
 }
 
 export type Step = '' | 'captcha' | 'complete'
@@ -179,7 +177,7 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
       return
     }
 
-    action();
+    action()
   }
 
   onNotificationClick = () => {

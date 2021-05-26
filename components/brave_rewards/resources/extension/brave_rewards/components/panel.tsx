@@ -16,7 +16,6 @@ import { RewardsOptInModal, RewardsTourModal } from '../../../shared/components/
 // Utils
 import * as rewardsPanelActions from '../actions/rewards_panel_actions'
 import * as utils from '../utils'
-import { upholdMinimumBalance } from '../../../shared/lib/uphold'
 
 import * as style from './panel.style'
 
@@ -678,17 +677,6 @@ export class Panel extends React.Component<Props, State> {
     return utils.getPromotion(currentPromotion[0])
   }
 
-  showUpholdWarning = () => {
-    const { balance, externalWallet } = this.props.rewardsPanelData
-    const walletStatus = utils.getWalletStatus(externalWallet)
-
-    return (
-      (!walletStatus || walletStatus === 'unverified') &&
-      balance &&
-      balance.total < upholdMinimumBalance
-    )
-  }
-
   showOnboarding () {
     const {
       balance,
@@ -845,7 +833,6 @@ export class Panel extends React.Component<Props, State> {
         onDisconnectClick={this.onDisconnectClick}
         goToExternalWallet={this.goToExternalWallet}
         greetings={utils.getGreetings(externalWallet)}
-        showLoginMessage={this.showLoginMessage()}
         {...notification}
       >
         <WalletSummarySlider

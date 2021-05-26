@@ -25,7 +25,7 @@ function CheckIcon () {
   )
 }
 
-function getMinimumBalance (provider: string) {
+export function getMinimumBalance (provider: string) {
   switch (provider) {
     case 'uphold': return 15
     default: return 0

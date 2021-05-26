@@ -7,8 +7,6 @@ import BigNumber from 'bignumber.js'
 import { getMessage } from './background/api/locale_api'
 import { WalletState } from '../../ui/components/walletWrapper'
 
-import { upholdMinimumBalance } from '../../shared/lib/uphold'
-
 export const convertBalance = (tokens: number, rate: number): string => {
   if (tokens === 0) {
     return '0.00'
@@ -146,10 +144,6 @@ export const handleExternalWalletLink = (actions: any, balance: RewardsExtension
 
   if (!externalWallet || (externalWallet && externalWallet.status === 0)) {
     link = 'brave://rewards/#verify'
-  }
-
-  if (balance.total < upholdMinimumBalance && externalWallet && externalWallet.type === 'uphold') {
-    link = externalWallet.loginUrl
   }
 
   chrome.tabs.create({
