@@ -14,7 +14,6 @@
 #include "brave/common/pref_names.h"
 #include "brave/components/ipfs/buildflags/buildflags.h"
 #include "brave/components/tor/buildflags/buildflags.h"
-#include "chrome/browser/browser_process.h"
 #include "chrome/browser/extensions/extension_management_internal.h"
 #include "chrome/browser/extensions/external_policy_loader.h"
 #include "chrome/browser/profiles/profile.h"
@@ -45,7 +44,8 @@ BraveExtensionManagement::BraveExtensionManagement(Profile* profile)
   extension_registry_observer_.Add(
       ExtensionRegistry::Get(static_cast<content::BrowserContext*>(profile)));
   providers_.push_back(std::make_unique<BraveExtensionProvider>());
-  local_state_pref_change_registrar_.Init(g_browser_process->local_state());
+  local_state_pref_change_registrar_.Init(
+      g_brave_browser_process->GetLocalState());
 #if BUILDFLAG(ENABLE_TOR)
   local_state_pref_change_registrar_.Add(
       tor::prefs::kTorDisabled,

@@ -21,10 +21,11 @@ class WebContents;
 // An infobar that is run with a string, buttons, and a "Learn More" link.
 class CryptoWalletsInfoBarDelegate : public ConfirmInfoBarDelegate {
  public:
-  enum class InfobarSubType { LOAD_CRYPTO_WALLETS, GENERIC_SETUP };
-  static void Create(InfoBarService* infobar_service, InfobarSubType subtype);
+  static bool CreateForContents(content::WebContents* contents);
 
  private:
+  enum class InfobarSubType { LOAD_CRYPTO_WALLETS, GENERIC_SETUP };
+
   explicit CryptoWalletsInfoBarDelegate(InfobarSubType subtype);
   CryptoWalletsInfoBarDelegate(const CryptoWalletsInfoBarDelegate&) = delete;
   CryptoWalletsInfoBarDelegate& operator=(const CryptoWalletsInfoBarDelegate&) =

@@ -36,11 +36,14 @@
 #include "brave/components/p3a/buildflags.h"
 #include "brave/services/network/public/cpp/system_request_handler.h"
 #include "chrome/browser/component_updater/component_updater_utils.h"
+#include "chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "chrome/browser/net/system_network_context_manager.h"
 #include "chrome/common/buildflags.h"
 #include "chrome/common/chrome_paths.h"
 #include "components/component_updater/component_updater_service.h"
 #include "components/component_updater/timer_update_scheduler.h"
+#include "components/prefs/pref_service.h"
+#include "content/public/browser/browser_context.h"
 #include "content/public/browser/browser_thread.h"
 #include "content/public/browser/child_process_security_policy.h"
 #include "services/network/public/cpp/resource_request.h"
@@ -408,3 +411,18 @@ BraveBrowserProcessImpl::ipfs_client_updater() {
   return ipfs_client_updater_.get();
 }
 #endif  // BUILDFLAG(IPFS_ENABLED)
+
+PrefService* BraveBrowserProcessImpl::GetLocalState() {
+  return g_browser_process->local_state();
+}
+
+component_updater::ComponentUpdateService*
+BraveBrowserProcessImpl::GetComponentUpdater() {
+  return g_browser_process->component_updater();
+}
+
+HostContentSettingsMap*
+BraveBrowserProcessImpl::GetHostContentSettingsMapForProfile(
+    content::BrowserContext* browser_context) {
+  return HostContentSettingsMapFactory::GetForProfile(browser_context);
+}

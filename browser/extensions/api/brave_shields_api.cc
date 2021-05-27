@@ -21,8 +21,6 @@
 #include "brave/components/brave_shields/browser/brave_shields_util.h"
 #include "brave/components/brave_shields/common/brave_shield_constants.h"
 #include "brave/components/brave_shields/common/features.h"
-#include "chrome/browser/browser_process.h"
-#include "chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "chrome/browser/extensions/api/tabs/tabs_constants.h"
 #include "chrome/browser/extensions/chrome_extension_function_details.h"
 #include "chrome/browser/extensions/extension_tab_util.h"
@@ -226,10 +224,8 @@ BraveShieldsSetBraveShieldsEnabledFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   ::brave_shields::SetBraveShieldsEnabled(
-      HostContentSettingsMapFactory::GetForProfile(profile),
-      params->enabled,
-      url,
-      g_browser_process->local_state());
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
+      params->enabled, url, g_brave_browser_process->GetLocalState());
 
   return RespondNow(NoArguments());
 }
@@ -248,7 +244,7 @@ BraveShieldsGetBraveShieldsEnabledFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   auto enabled = ::brave_shields::GetBraveShieldsEnabled(
-      HostContentSettingsMapFactory::GetForProfile(profile),
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
       url);
 
   return RespondNow(OneArgument(base::Value(enabled)));
@@ -274,7 +270,7 @@ BraveShieldsShouldDoCosmeticFilteringFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   const bool enabled = ::brave_shields::ShouldDoCosmeticFiltering(
-      HostContentSettingsMapFactory::GetForProfile(profile),
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
       url);
 
   return RespondNow(OneArgument(base::Value(enabled)));
@@ -300,10 +296,8 @@ BraveShieldsSetCosmeticFilteringControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   ::brave_shields::SetCosmeticFilteringControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
-      control_type,
-      url,
-      g_browser_process->local_state());
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
+      control_type, url, g_brave_browser_process->GetLocalState());
 
   return RespondNow(NoArguments());
 }
@@ -324,7 +318,8 @@ BraveShieldsIsFirstPartyCosmeticFilteringEnabledFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   const bool enabled = ::brave_shields::IsFirstPartyCosmeticFilteringEnabled(
-      HostContentSettingsMapFactory::GetForProfile(profile), url);
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
+      url);
 
   return RespondNow(OneArgument(base::Value(enabled)));
 }
@@ -347,10 +342,8 @@ ExtensionFunction::ResponseAction BraveShieldsSetAdControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   ::brave_shields::SetAdControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
-      control_type,
-      url,
-      g_browser_process->local_state());
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
+      control_type, url, g_brave_browser_process->GetLocalState());
 
   return RespondNow(NoArguments());
 }
@@ -368,7 +361,7 @@ ExtensionFunction::ResponseAction BraveShieldsGetAdControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   auto type = ::brave_shields::GetAdControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
       url);
 
   return RespondNow(OneArgument(base::Value(ControlTypeToString(type))));
@@ -393,10 +386,8 @@ BraveShieldsSetCookieControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   ::brave_shields::SetCookieControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
-      control_type,
-      url,
-      g_browser_process->local_state());
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
+      control_type, url, g_brave_browser_process->GetLocalState());
 
   return RespondNow(NoArguments());
 }
@@ -415,7 +406,7 @@ BraveShieldsGetCookieControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   auto type = ::brave_shields::GetCookieControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
       url);
 
   return RespondNow(OneArgument(base::Value(ControlTypeToString(type))));
@@ -440,10 +431,8 @@ BraveShieldsSetFingerprintingControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   ::brave_shields::SetFingerprintingControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
-      control_type,
-      url,
-      g_browser_process->local_state());
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
+      control_type, url, g_brave_browser_process->GetLocalState());
 
   return RespondNow(NoArguments());
 }
@@ -462,7 +451,7 @@ BraveShieldsGetFingerprintingControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   auto type = ::brave_shields::GetFingerprintingControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
       url);
 
   return RespondNow(OneArgument(base::Value(ControlTypeToString(type))));
@@ -482,10 +471,8 @@ BraveShieldsSetHTTPSEverywhereEnabledFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   ::brave_shields::SetHTTPSEverywhereEnabled(
-      HostContentSettingsMapFactory::GetForProfile(profile),
-      params->enabled,
-      url,
-      g_browser_process->local_state());
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
+      params->enabled, url, g_brave_browser_process->GetLocalState());
 
   return RespondNow(NoArguments());
 }
@@ -504,7 +491,7 @@ BraveShieldsGetHTTPSEverywhereEnabledFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   auto type = ::brave_shields::GetHTTPSEverywhereEnabled(
-      HostContentSettingsMapFactory::GetForProfile(profile),
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
       url);
 
   return RespondNow(OneArgument(base::Value(type)));
@@ -529,10 +516,8 @@ BraveShieldsSetNoScriptControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   ::brave_shields::SetNoScriptControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
-      control_type,
-      url,
-      g_browser_process->local_state());
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
+      control_type, url, g_brave_browser_process->GetLocalState());
 
   return RespondNow(NoArguments());
 }
@@ -551,7 +536,7 @@ BraveShieldsGetNoScriptControlTypeFunction::Run() {
 
   Profile* profile = Profile::FromBrowserContext(browser_context());
   auto type = ::brave_shields::GetNoScriptControlType(
-      HostContentSettingsMapFactory::GetForProfile(profile),
+      g_brave_browser_process->GetHostContentSettingsMapForProfile(profile),
       url);
 
   return RespondNow(OneArgument(base::Value(ControlTypeToString(type))));
@@ -559,8 +544,8 @@ BraveShieldsGetNoScriptControlTypeFunction::Run() {
 
 ExtensionFunction::ResponseAction
 BraveShieldsOnShieldsPanelShownFunction::Run() {
-  ::brave_shields::MaybeRecordShieldsUsageP3A(::brave_shields::kClicked,
-                                              g_browser_process->local_state());
+  ::brave_shields::MaybeRecordShieldsUsageP3A(
+      ::brave_shields::kClicked, g_brave_browser_process->GetLocalState());
   return RespondNow(NoArguments());
 }
 
