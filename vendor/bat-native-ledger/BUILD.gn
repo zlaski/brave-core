@@ -71,7 +71,7 @@ source_set("headers") {
 
     # add this only when ads is in the same process
     # rebase_path("bat-native-ads", dep_base),
-    "//brave/browser/extensions:extensions",
+    "//brave/browser/extensions:api",
     "//brave/browser/ui:ui",
     "//brave/components/brave_rewards/browser:browser",
     "//brave/components/brave_rewards/browser:testutil",
