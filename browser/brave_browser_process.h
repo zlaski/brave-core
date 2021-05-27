@@ -19,6 +19,9 @@
 #include "brave/components/tor/buildflags/buildflags.h"
 #include "extensions/buildflags/buildflags.h"
 
+class HostContentSettingsMap;
+class PrefService;
+
 namespace brave {
 class BraveReferralsService;
 class BraveP3AService;
@@ -41,6 +44,14 @@ class HTTPSEverywhereService;
 namespace brave_stats {
 class BraveStatsUpdater;
 }  // namespace brave_stats
+
+namespace component_updater {
+class ComponentUpdateService;
+}  // namespace component_updater
+
+namespace content {
+class BrowserContext;
+}  // namespace content
 
 namespace greaselion {
 #if BUILDFLAG(ENABLE_GREASELION)
@@ -105,6 +116,15 @@ class BraveBrowserProcess {
 #if BUILDFLAG(BRAVE_ADS_ENABLED)
   virtual brave_ads::ResourceComponent* resource_component() = 0;
 #endif
+
+  // Helper methods to access some methods from BrowserProcess needed to free
+  // ourselves from depending on //chrome/browser/browser_process.h from Brave.
+  virtual PrefService* GetLocalState() = 0;
+  virtual component_updater::ComponentUpdateService* GetComponentUpdater() = 0;
+
+  // Other helper methods to avoid depending on //chrome/browser when possible.
+  virtual HostContentSettingsMap* GetHostContentSettingsMapForProfile(
+      content::BrowserContext* browser_context) = 0;
 };
 
 extern BraveBrowserProcess* g_brave_browser_process;

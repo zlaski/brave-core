@@ -20,6 +20,9 @@
 #include "chrome/browser/browser_process_impl.h"
 #include "extensions/buildflags/buildflags.h"
 
+class HostContentSettingsMap;
+class PrefService;
+
 namespace brave {
 class BraveReferralsService;
 class BraveP3AService;
@@ -42,6 +45,14 @@ class HTTPSEverywhereService;
 namespace brave_stats {
 class BraveStatsUpdater;
 }  // namespace brave_stats
+
+namespace component_updater {
+class ComponentUpdateService;
+}
+
+namespace content {
+class BrowserContext;
+}  // namespace content
 
 namespace greaselion {
 #if BUILDFLAG(ENABLE_GREASELION)
@@ -116,6 +127,11 @@ class BraveBrowserProcessImpl : public BraveBrowserProcess,
 #if BUILDFLAG(BRAVE_ADS_ENABLED)
   brave_ads::ResourceComponent* resource_component() override;
 #endif
+
+  PrefService* GetLocalState() override;
+  component_updater::ComponentUpdateService* GetComponentUpdater() override;
+  HostContentSettingsMap* GetHostContentSettingsMapForProfile(
+      content::BrowserContext* browser_context) override;
 
  private:
   // BrowserProcessImpl overrides:

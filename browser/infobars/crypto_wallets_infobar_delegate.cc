@@ -28,11 +28,24 @@
 #include "ui/views/vector_icons.h"
 
 // static
-void CryptoWalletsInfoBarDelegate::Create(InfoBarService* infobar_service,
-    CryptoWalletsInfoBarDelegate::InfobarSubType subtype) {
+bool CryptoWalletsInfoBarDelegate::CreateForContents(
+    content::WebContents* contents) {
+  InfoBarService* infobar_service = InfoBarService::FromWebContents(contents);
+  if (infobar_service)
+    return false;
+
+  InfobarSubType subtype = InfobarSubType::GENERIC_SETUP;
+  auto* service =
+      BraveWalletServiceFactory::GetForContext(contents->GetBrowserContext());
+  if (service->ShouldShowLazyLoadInfobar()) {
+    subtype = InfobarSubType::LOAD_CRYPTO_WALLETS;
+  }
+
   infobar_service->AddInfoBar(infobar_service->CreateConfirmInfoBar(
       std::unique_ptr<ConfirmInfoBarDelegate>(
           new CryptoWalletsInfoBarDelegate(subtype))));
+
+  return true;
 }
 
 CryptoWalletsInfoBarDelegate::CryptoWalletsInfoBarDelegate(

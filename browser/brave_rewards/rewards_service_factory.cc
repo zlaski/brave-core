@@ -17,7 +17,6 @@
 #include "brave/components/brave_rewards/browser/rewards_service_private_observer.h"
 #include "brave/components/brave_rewards/common/pref_names.h"
 #include "brave/components/greaselion/browser/buildflags/buildflags.h"
-#include "chrome/browser/browser_process.h"
 #include "chrome/browser/chrome_notification_types.h"
 #include "chrome/browser/profiles/incognito_helpers.h"
 #include "chrome/browser/profiles/profile.h"
