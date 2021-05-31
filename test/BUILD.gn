@@ -139,7 +139,6 @@ test("brave_unit_tests") {
     "//brave/browser/themes",
     "//brave/browser/tor:unit_tests",
     "//brave/browser/translate/buildflags",
-    "//brave/browser/ui",
     "//brave/browser/ui/sidebar:unit_tests",
     "//brave/browser/ui/webui/new_tab_page:unit_tests",
     "//brave/browser/widevine:unittest",
@@ -179,6 +178,7 @@ test("brave_unit_tests") {
     "//chrome:browser_dependencies",
     "//chrome:child_dependencies",
     "//chrome/app:command_ids",
+    "//chrome/browser/ui",
     "//chrome/test:test_support",
     "//components/assist_ranker",
     "//components/assist_ranker/proto",
@@ -413,10 +413,7 @@ test("brave_unit_tests") {
   if (enable_brave_translate_extension) {
     sources += [ "//brave/browser/ui/views/translate/brave_translate_bubble_view_unittest.cc" ]
 
-    deps += [
-      "//brave/browser/ui",
-      "//components/language/core/common",
-    ]
+    deps += [ "//components/language/core/common" ]
   }
 
   if (enable_brave_sync) {
@@ -820,7 +817,6 @@ if (!is_android) {
       "//brave/browser/profiles",
       "//brave/browser/themes",
       "//brave/browser/tor",
-      "//brave/browser/ui",
       "//brave/browser/ui/tabs",
       "//brave/common:network_constants",
       "//brave/common:pref_names",

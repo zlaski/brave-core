@@ -52,7 +52,6 @@ source_set("browser_tests") {
 
     deps = [
       "//base",
-      "//brave/browser/ui",
       "//brave/browser/ui/sidebar",
       "//brave/components/sidebar",
       "//chrome/browser",
@@ -71,9 +70,9 @@ source_set("unit_tests") {
 
     deps = [
       "//base",
-      "//brave/browser/ui",
       "//brave/browser/ui/sidebar",
       "//brave/components/sidebar",
+      "//chrome/browser/ui",
       "//chrome/test:test_support",
       "//components/prefs",
       "//components/sync_preferences:test_support",

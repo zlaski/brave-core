@@ -15,7 +15,3 @@ source_set("favicon_source") {
     "//url",
   ]
 }
-
-group("ui") {
-  public_deps = [ "//chrome/browser/ui" ]
-}

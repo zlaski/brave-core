@@ -15,7 +15,6 @@ source_set("infobars") {
   deps = [
     "//base",
     "//brave/app:brave_generated_resources_grit",
-    "//brave/browser/ui",
     "//brave/components/p3a",
     "//chrome/app:chromium_strings",
     "//chrome/browser/ui",

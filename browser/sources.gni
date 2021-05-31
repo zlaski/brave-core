@@ -101,7 +101,6 @@ brave_chrome_browser_deps = [
   "//brave/browser/sync",
   "//brave/browser/themes",
   "//brave/browser/translate/buildflags",
-  "//brave/browser/ui",
   "//brave/common",
   "//brave/common:pref_names",
   "//brave/common:switches",
