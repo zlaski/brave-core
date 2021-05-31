@@ -33,8 +33,6 @@ source_set("extensions") {
     "api/greaselion_api.h",
     "api/settings_private/brave_prefs_util.cc",
     "api/settings_private/brave_prefs_util.h",
-    "brave_component_loader.cc",
-    "brave_component_loader.h",
     "brave_extension_management.cc",
     "brave_extension_management.h",
     "brave_extension_provider.cc",
@@ -99,15 +97,9 @@ source_set("extensions") {
     sources += [
       "api/brave_wallet_api.cc",
       "api/brave_wallet_api.h",
-      "ethereum_remote_client_util.cc",
-      "ethereum_remote_client_util.h",
-    ]
-    configs += [
-      ":infura_config",
-      ":brave_services_config",
     ]
     deps += [
-      "//brave/browser/ethereum_remote_client",
+      ":ethereum_remote_client_util",
       "//brave/components/brave_wallet/browser",
     ]
   }
@@ -136,7 +128,6 @@ source_set("extensions") {
       "//brave/browser/brave_ads",
       "//brave/components/brave_ads/browser",
       "//brave/components/brave_rewards/browser",
-      "//brave/vendor/bat-native-ads:headers",
       "//brave/vendor/bat-native-ledger:headers",
     ]
   }
@@ -211,6 +202,62 @@ source_set("extensions") {
       "//components/prefs",
       "//extensions/browser",
       "//extensions/common:common_constants",
+    ]
+  }
+}
+
+source_set("component_loader") {
+  sources = [
+    "brave_component_loader.cc",
+    "brave_component_loader.h",
+  ]
+
+  deps = [
+    ":ethereum_remote_client_util",
+    ":resources",
+    "//base",
+    "//brave/browser:browser_process",
+    "//brave/browser/component_updater:component_installer",
+    "//brave/common:pref_names",
+    "//brave/common:switches",
+    "//brave/components/brave_ads/common",
+    "//brave/components/brave_component_updater/browser",
+    "//brave/components/brave_extension:static_resources_grit",
+    "//brave/components/brave_rewards/browser/buildflags",
+    "//brave/components/brave_rewards/common",
+    "//brave/components/brave_rewards/resources/extension:static_resources_grit",
+    "//brave/components/brave_wallet/browser",
+    "//brave/components/brave_wallet/common/buildflags",
+    "//brave/components/brave_webtorrent:static_resources_grit",
+    "//brave/components/resources:static_resources_grit",
+    "//brave/vendor/bat-native-ads:headers",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/extensions",
+    "//chrome/browser/profiles:profile",
+    "//chrome/common:constants",
+    "//components/prefs",
+    "//extensions/browser",
+    "//extensions/common:common_constants",
+    "//extensions/common:mojom",
+  ]
+
+  if (ethereum_remote_client_enabled) {
+    deps += [ "//brave/browser/ethereum_remote_client" ]
+  }
+}
+
+source_set("ethereum_remote_client_util") {
+  if (brave_wallet_enabled) {
+    sources = [
+      "ethereum_remote_client_util.cc",
+      "ethereum_remote_client_util.h",
+    ]
+
+    deps = [ "//base" ]
+
+    configs += [
+      ":infura_config",
+      ":brave_services_config",
     ]
   }
 }

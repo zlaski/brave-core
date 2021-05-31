@@ -367,6 +367,7 @@ if (enable_extensions && toolkit_views) {
     ]
 
     brave_browser_ui_deps += [
+      "//brave/browser/extensions:component_loader",
       "//brave/components/ipfs/buildflags",
       "//third_party/widevine/cdm:buildflags",
     ]
@@ -403,6 +404,7 @@ if (enable_extensions && toolkit_views) {
 
   brave_browser_ui_deps += [
     "//brave/browser/extensions",
+    "//brave/browser/extensions:component_loader",
     "//brave/browser/resources/extensions:resources",
     "//brave/components/brave_extension:generated_resources",
     "//brave/components/brave_extension:static_resources",
