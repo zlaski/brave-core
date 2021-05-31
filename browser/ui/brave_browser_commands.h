@@ -20,5 +20,4 @@ void CloseWalletBubble(Browser* browser);
 
 }  // namespace brave
 
-
 #endif  // BRAVE_BROWSER_UI_BROWSER_COMMANDS_H_

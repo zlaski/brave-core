@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/browser/ui/browser_commands.h"
+#include "brave/browser/ui/brave_browser_commands.h"
 
 #include "base/files/file_path.h"
 #include "brave/components/brave_wallet/common/buildflags/buildflags.h"
@@ -39,8 +39,7 @@
 
 using content::WebContents;
 
-namespace {
-}  // namespace
+namespace {}  // namespace
 
 namespace brave {
 
@@ -59,10 +58,9 @@ void NewTorConnectionForSite(Browser* browser) {
   Profile* profile = browser->profile();
   DCHECK(profile);
   tor::TorProfileService* service =
-    TorProfileServiceFactory::GetForContext(profile);
+      TorProfileServiceFactory::GetForContext(profile);
   DCHECK(service);
-  WebContents* current_tab =
-    browser->tab_strip_model()->GetActiveWebContents();
+  WebContents* current_tab = browser->tab_strip_model()->GetActiveWebContents();
   if (!current_tab)
     return;
   service->SetNewTorCircuit(current_tab);

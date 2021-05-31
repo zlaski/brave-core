@@ -1,12 +1,12 @@
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
-index 5c150b1b020eeabe061e4837a95e772cd70b5372..661ece94ac23347c29793f7b595aabea4ab93ab6 100644
+index 5c150b1b020eeabe061e4837a95e772cd70b5372..79cd6f967d54a84f9adb72b755073220f869360c 100644
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
 @@ -604,6 +604,7 @@ static_library("ui") {
      "//ui/webui/resources/cr_components/customize_themes:mojom",
      "//v8:v8_version",
    ]
-+  deps+= [ "//brave/browser/ui" ]
++  import("//brave/browser/ui/sources.gni") sources += brave_browser_ui_sources deps += brave_browser_ui_deps
  
    # TODO(crbug/925153): Remove this circular dependency.
    allow_circular_includes_from = [

@@ -5,7 +5,7 @@
 
 #include "base/strings/utf_string_conversions.h"
 #include "brave/browser/tor/tor_profile_service_factory.h"
-#include "brave/browser/ui/browser_commands.h"
+#include "brave/browser/ui/brave_browser_commands.h"
 #include "brave/browser/ui/views/location_bar/brave_location_bar_view.h"
 #include "brave/browser/ui/views/location_bar/onion_location_view.h"
 #include "brave/components/tor/onion_location_tab_helper.h"

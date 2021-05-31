@@ -9,8 +9,8 @@
 
 #include "brave/app/brave_command_ids.h"
 #include "brave/browser/profiles/profile_util.h"
+#include "brave/browser/ui/brave_browser_commands.h"
 #include "brave/browser/ui/brave_pages.h"
-#include "brave/browser/ui/browser_commands.h"
 #include "brave/common/pref_names.h"
 #include "brave/components/brave_rewards/browser/buildflags/buildflags.h"
 #include "brave/components/brave_sync/buildflags/buildflags.h"

@@ -7,7 +7,7 @@
 
 #include "base/test/metrics/histogram_tester.h"
 #include "brave/browser/profiles/profile_util.h"
-#include "brave/browser/ui/browser_commands.h"
+#include "brave/browser/ui/brave_browser_commands.h"
 #include "brave/components/search_engines/brave_prepopulated_engines.h"
 #include "brave/components/tor/buildflags/buildflags.h"
 #include "chrome/browser/search_engines/template_url_service_factory.h"

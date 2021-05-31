@@ -10,7 +10,7 @@
 #include "brave/browser/search_engines/guest_window_search_engine_provider_service.h"
 #include "brave/browser/search_engines/search_engine_provider_service_factory.h"
 #include "brave/browser/search_engines/search_engine_provider_util.h"
-#include "brave/browser/ui/browser_commands.h"
+#include "brave/browser/ui/brave_browser_commands.h"
 #include "brave/components/search_engines/brave_prepopulated_engines.h"
 #include "brave/components/tor/buildflags/buildflags.h"
 #include "chrome/browser/profiles/profile.h"
