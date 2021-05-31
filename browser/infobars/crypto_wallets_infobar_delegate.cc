@@ -37,7 +37,8 @@ bool CryptoWalletsInfoBarDelegate::CreateForContents(
 
   InfobarSubType subtype = InfobarSubType::GENERIC_SETUP;
   auto* service =
-      BraveWalletServiceFactory::GetForContext(contents->GetBrowserContext());
+      EthereumRemoteClientServiceFactory::GetInstance()->GetForContext(
+          contents->GetBrowserContext());
   if (service->ShouldShowLazyLoadInfobar()) {
     subtype = InfobarSubType::LOAD_CRYPTO_WALLETS;
   }

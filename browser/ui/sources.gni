@@ -358,23 +358,12 @@ if (enable_extensions && toolkit_views) {
     "//brave/browser/ui/views/tabs/brave_tab_search_button.h",
     "//brave/browser/ui/views/toolbar/brave_toolbar_view.cc",
     "//brave/browser/ui/views/toolbar/brave_toolbar_view.h",
+    "//brave/browser/ui/webui/settings/brave_default_extensions_handler.cc",
+    "//brave/browser/ui/webui/settings/brave_default_extensions_handler.h",
   ]
 
-  if (enable_extensions) {
-    brave_browser_ui_sources += [
-      "//brave/browser/ui/webui/settings/brave_default_extensions_handler.cc",
-      "//brave/browser/ui/webui/settings/brave_default_extensions_handler.h",
-    ]
-
-    brave_browser_ui_deps += [
-      "//brave/browser/extensions:component_loader",
-      "//brave/components/ipfs/buildflags",
-      "//third_party/widevine/cdm:buildflags",
-    ]
-
-    if (enable_widevine) {
-      brave_browser_ui_deps += [ "//brave/browser/widevine" ]
-    }
+  if (enable_widevine) {
+    brave_browser_ui_deps += [ "//brave/browser/widevine" ]
   }
 
   if (decentralized_dns_enabled) {
@@ -403,16 +392,18 @@ if (enable_extensions && toolkit_views) {
   }
 
   brave_browser_ui_deps += [
-    "//brave/browser/extensions",
+    "//brave/browser/extensions:api",
     "//brave/browser/extensions:component_loader",
     "//brave/browser/resources/extensions:resources",
     "//brave/components/brave_extension:generated_resources",
     "//brave/components/brave_extension:static_resources",
+    "//brave/components/ipfs/buildflags",
     "//brave/components/resources:static_resources",
     "//chrome/browser/extensions",
     "//components/sessions",
     "//extensions/browser",
     "//extensions/common:common_constants",
+    "//third_party/widevine/cdm:buildflags",
     "//ui/base/dragdrop:types",
   ]
 }
