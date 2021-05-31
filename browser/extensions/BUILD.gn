@@ -19,20 +19,6 @@ source_set("extensions") {
   # Remove when https://github.com/brave/brave-browser/issues/10661 is resolved
   check_includes = false
   sources = [
-    "api/brave_action_api.cc",
-    "api/brave_action_api.h",
-    "api/brave_extensions_api_client.cc",
-    "api/brave_extensions_api_client.h",
-    "api/brave_shields_api.cc",
-    "api/brave_shields_api.h",
-    "api/brave_theme_api.cc",
-    "api/brave_theme_api.h",
-    "api/brave_today_api.cc",
-    "api/brave_today_api.h",
-    "api/greaselion_api.cc",
-    "api/greaselion_api.h",
-    "api/settings_private/brave_prefs_util.cc",
-    "api/settings_private/brave_prefs_util.h",
     "brave_extension_management.cc",
     "brave_extension_management.h",
     "brave_extension_provider.cc",
@@ -50,6 +36,7 @@ source_set("extensions") {
   ]
 
   deps = [
+    ":api",
     ":resources",
     "//base",
     "//brave/app:brave_generated_resources_grit",
@@ -90,6 +77,77 @@ source_set("extensions") {
     deps += [ "//brave/components/sidebar" ]
   }
 
+  if (decentralized_dns_enabled) {
+    deps += [ "//brave/components/decentralized_dns" ]
+  }
+
+  if (enable_brave_webtorrent) {
+    deps += [ "//brave/components/brave_webtorrent/browser" ]
+    sources += [
+      "brave_webtorrent_navigation_throttle.cc",
+      "brave_webtorrent_navigation_throttle.h",
+    ]
+  }
+
+  if (enable_brave_wayback_machine) {
+    deps += [ "//brave/components/brave_wayback_machine" ]
+  }
+}
+
+source_set("api") {
+  # [WIP] Remove when fixed the cycles below
+  check_includes = false
+
+  sources = [
+    "api/brave_action_api.cc",
+    "api/brave_action_api.h",
+    "api/brave_extensions_api_client.cc",
+    "api/brave_extensions_api_client.h",
+    "api/brave_shields_api.cc",
+    "api/brave_shields_api.h",
+    "api/brave_theme_api.cc",
+    "api/brave_theme_api.h",
+    "api/brave_today_api.cc",
+    "api/brave_today_api.h",
+    "api/greaselion_api.cc",
+    "api/greaselion_api.h",
+    "api/settings_private/brave_prefs_util.cc",
+    "api/settings_private/brave_prefs_util.h",
+  ]
+
+  deps = [
+    ":component_loader",
+    ":ethereum_remote_client_util",
+    ":resources",
+    "//brave/app:brave_generated_resources_grit",
+    "//brave/browser:browser_process",
+    "//brave/browser/brave_wallet",
+    "//brave/browser/ftx",
+    #"//brave/browser/infobars", #  -> CYCLE (depends on //brave/browser/ui, which depends on :api)
+    "//brave/browser/themes",
+    #"//brave/browser/ui", #  -> CYCLE (depends on :api)
+    "//brave/browser/webcompat_reporter",
+    "//brave/common:pref_names",
+    "//brave/components/brave_rewards/common",
+    "//brave/components/brave_shields/browser",
+    "//brave/components/brave_shields/common",
+    "//brave/components/brave_today/browser",
+    "//brave/components/brave_wallet/common/buildflags",
+    "//brave/components/brave_wayback_machine",
+    "//brave/components/brave_wayback_machine:buildflags",
+    "//brave/components/decentralized_dns/buildflags",
+    "//brave/components/greaselion/browser",
+    "//brave/components/ipfs/buildflags",
+    "//brave/components/ntp_background_images/common",
+    "//brave/components/sidebar",
+    "//brave/components/sidebar/buildflags",
+    "//brave/components/tor/buildflags",
+    "//chrome/browser/profiles:profile",
+    #"//chrome/browser/ui", #  -> CYCLE (depends on //brave/browser/ui, which depends on :api)
+    "//components/browsing_data/core",
+    "//components/gcm_driver:gcm_buildflags",
+  ]
+
   # It seems like this brave_wallet_api should be renamed to ethereum_remote_client_api.
   # However this is not possible right now because the ethereum-remote-client extension
   # uses chrome.braveWallet, so the API is intentionally not being renamed now.
@@ -104,16 +162,16 @@ source_set("extensions") {
     ]
   }
 
+  if (decentralized_dns_enabled) {
+    deps += [ "//brave/components/decentralized_dns" ]
+  }
+
   if (ipfs_enabled) {
     sources += [
       "api/ipfs_api.cc",
       "api/ipfs_api.h",
     ]
     deps += [ "//brave/components/ipfs" ]
-  }
-
-  if (decentralized_dns_enabled) {
-    deps += [ "//brave/components/decentralized_dns" ]
   }
 
   if (brave_rewards_enabled) {
@@ -131,16 +189,7 @@ source_set("extensions") {
       "//brave/vendor/bat-native-ledger:headers",
     ]
   }
-  if (enable_brave_webtorrent) {
-    deps += [ "//brave/components/brave_webtorrent/browser" ]
-    sources += [
-      "brave_webtorrent_navigation_throttle.cc",
-      "brave_webtorrent_navigation_throttle.h",
-    ]
-  }
-  if (enable_brave_wayback_machine) {
-    deps += [ "//brave/components/brave_wayback_machine" ]
-  }
+
   if (gemini_enabled) {
     sources += [
       "api/gemini_api.cc",
@@ -162,6 +211,10 @@ source_set("extensions") {
       "//brave/components/ftx/common",
       "//brave/components/ntp_widget_utils/browser",
     ]
+  }
+
+  if (enable_tor) {
+    deps += [ "//brave/components/tor:pref_names" ]
   }
 
   if (binance_enabled) {
