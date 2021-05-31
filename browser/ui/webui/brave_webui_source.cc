@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 
+#include "base/no_destructor.h"
 #include "base/strings/utf_string_conversions.h"
 #include "brave/common/url_constants.h"
 #include "brave/components/crypto_dot_com/browser/buildflags/buildflags.h"
@@ -61,7 +62,7 @@ void CustomizeWebUIHTMLSource(const std::string &name,
 #endif
 
   // clang-format off
-  static std::map<std::string, std::vector<WebUISimpleItem> > resources = {
+  static base::NoDestructor<std::map<std::string, std::vector<WebUISimpleItem>>> resources({
     {
       std::string("newtab"), {
         { "img/toolbar/menu_btn.svg", IDR_BRAVE_COMMON_TOOLBAR_IMG },
@@ -102,12 +103,11 @@ void CustomizeWebUIHTMLSource(const std::string &name,
     }, {
       std::string("adblock"), {}
     }
-  };
-  AddResourcePaths(source, resources[name]);
+  });
+  AddResourcePaths(source, resources->at(name));
 
   // clang-format off
-  static std::map<std::string, std::vector<WebUISimpleItem> >
-                                                           localized_strings = {
+  static base::NoDestructor<std::map<std::string, std::vector<WebUISimpleItem>>> localized_strings({
     {
       std::string("newtab"), {
         { "adsTrackersBlocked", IDS_BRAVE_NEW_TAB_TOTAL_ADS_TRACKERS_BLOCKED },
@@ -1146,9 +1146,9 @@ void CustomizeWebUIHTMLSource(const std::string &name,
             IDS_BRAVE_WEBCOMPATREPORTER_CONFIRMATION_NOTICE },
       }
     }
-  };
+  });
   // clang-format on
-  AddLocalizedStringsBulk(source, localized_strings[name]);
+  AddLocalizedStringsBulk(source, localized_strings->at(name));
 }  // NOLINT(readability/fn_size)
 
 content::WebUIDataSource* CreateWebUIDataSource(

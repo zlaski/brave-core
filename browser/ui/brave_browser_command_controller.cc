@@ -7,6 +7,7 @@
 
 #include <vector>
 
+#include "base/no_destructor.h"
 #include "brave/app/brave_command_ids.h"
 #include "brave/browser/profiles/profile_util.h"
 #include "brave/browser/ui/brave_browser_commands.h"
@@ -47,12 +48,12 @@ bool IsBraveCommands(int id) {
 }
 
 bool IsBraveOverrideCommands(int id) {
-  static std::vector<int> override_commands({
+  static base::NoDestructor<std::vector<int>> override_commands({
       IDC_NEW_WINDOW,
       IDC_NEW_INCOGNITO_WINDOW,
   });
-  return std::find(override_commands.begin(), override_commands.end(), id) !=
-         override_commands.end();
+  return std::find(override_commands->begin(), override_commands->end(), id) !=
+         override_commands->end();
 }
 
 }  // namespace
