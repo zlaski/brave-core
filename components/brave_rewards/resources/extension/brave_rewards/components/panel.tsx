@@ -27,6 +27,7 @@ interface Props extends RewardsExtension.ComponentProps {
 }
 
 interface State {
+  stage: string
   showSummary: boolean
   showRewardsTour: boolean
   firstTimeSetup: boolean
@@ -42,6 +43,7 @@ export class Panel extends React.Component<Props, State> {
   constructor (props: Props) {
     super(props)
     this.state = {
+      stage: "wallet",
       showSummary: true,
       showRewardsTour: false,
       firstTimeSetup: false,
@@ -298,7 +300,7 @@ export class Panel extends React.Component<Props, State> {
       return
     }
 
-    utils.handleExternalWalletLink(balance, externalWallet)
+    utils.handleExternalWalletLink(this.props.actions, balance, externalWallet)
   }
 
   showTipSiteDetail = (entryPoint: RewardsExtension.TipDialogEntryPoint) => {
@@ -676,14 +678,12 @@ export class Panel extends React.Component<Props, State> {
     return utils.getPromotion(currentPromotion[0])
   }
 
-  showLoginMessage = () => {
+  showUpholdWarning = () => {
     const { balance, externalWallet } = this.props.rewardsPanelData
     const walletStatus = utils.getWalletStatus(externalWallet)
-    const walletType = externalWallet ? externalWallet.type : ''
 
     return (
       (!walletStatus || walletStatus === 'unverified') &&
-      walletType === 'uphold' &&
       balance &&
       balance.total < upholdMinimumBalance
     )
@@ -728,7 +728,7 @@ export class Panel extends React.Component<Props, State> {
       }
 
       const onVerifyClick = () => {
-        utils.handleExternalWalletLink(balance, externalWallet)
+        utils.handleExternalWalletLink(this.props.actions, balance, externalWallet)
       }
 
       return (
@@ -780,6 +780,18 @@ export class Panel extends React.Component<Props, State> {
         onClose={onClose}
       />
     )
+  }
+
+  verifyClicked = () => {
+    this.setState({
+      stage: "connect-wallet"
+    })
+  }
+
+  selectWallet = () => {
+    this.setState({
+      stage: "select-wallet"
+    })
   }
 
   render () {
