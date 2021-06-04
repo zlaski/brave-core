@@ -325,7 +325,7 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
     const walletProviderIcon =
       walletType === 'uphold' ? <UpholdSystemIcon /> :
       walletType === 'bitflyer' ? <BitflyerIcon white={true} /> :
-      walletType === 'gemini' ? <GeminiIcon white={true} size={"10"} /> :
+      walletType === 'gemini' ? <GeminiIcon /> :
       null
 
     const buttonProps: Partial<ButtonProps> = {
@@ -603,7 +603,7 @@ export default class WalletWrapper extends React.PureComponent<Props, State> {
 
     const walletIcon =
       walletType === 'uphold' ? <UpholdColorIcon /> :
-      walletType === 'gemini' ? <GeminiIcon white={false} size={"18"} /> :
+      walletType === 'gemini' ? <GeminiIcon /> :
       null
 
     return (

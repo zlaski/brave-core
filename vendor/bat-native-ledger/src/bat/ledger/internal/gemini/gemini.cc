@@ -121,9 +121,8 @@ void Gemini::OnFetchBalance(const type::Result result,
                             FetchBalanceCallback callback) {
   if (result == type::Result::EXPIRED_TOKEN) {
     BLOG(0, "Expired token");
-    DisconnectWallet([callback](const type::Result result){
-      callback(type::Result::EXPIRED_TOKEN, 0.0);
-    });
+    DisconnectWallet();
+    callback(type::Result::EXPIRED_TOKEN, 0.0);
     return;
   }
 
@@ -155,8 +154,7 @@ void Gemini::GenerateWallet(ledger::ResultCallback callback) {
   wallet_->Generate(callback);
 }
 
-void Gemini::DisconnectWallet(ledger::ResultCallback callback,
-                              const bool manual) {
+void Gemini::DisconnectWallet(const bool manual) {
   auto wallet = GetWallet();
   if (!wallet) {
     return;
@@ -170,7 +168,7 @@ void Gemini::DisconnectWallet(ledger::ResultCallback callback,
             wallet->address.substr(0, 5));
   }
 
-  wallet = ResetWallet(std::move(wallet), manual);
+  wallet = ResetWallet(std::move(wallet));
 
   const bool shutting_down = ledger_->IsShuttingDown();
 
@@ -183,12 +181,6 @@ void Gemini::DisconnectWallet(ledger::ResultCallback callback,
 
   if (!shutting_down) {
     ledger_->ledger_client()->WalletDisconnected(constant::kWalletGemini);
-  }
-
-  if (manual) {
-    wallet_->Disconnect(callback);
-  } else {
-    callback(type::Result::LEDGER_OK);
   }
 }
 

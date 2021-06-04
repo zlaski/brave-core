@@ -114,9 +114,9 @@ void UpholdAuthorization::OnAuthorize(
     ledger::ExternalWalletAuthorizationCallback callback) {
   if (result == type::Result::EXPIRED_TOKEN) {
     BLOG(0, "Expired token");
-    ledger_->uphold()->DisconnectWallet([callback](const type::Result result){
-      callback(type::Result::EXPIRED_TOKEN, {});
-    }, false);
+    ledger_->uphold()->DisconnectWallet();
+    callback(type::Result::EXPIRED_TOKEN, {});
+
     return;
   }
 

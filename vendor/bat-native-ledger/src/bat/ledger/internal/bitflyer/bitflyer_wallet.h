@@ -13,12 +13,6 @@
 
 namespace ledger {
 
-namespace endpoint {
-namespace promotion {
-class DeleteClaimBitflyer;
-}  // namespace promotion
-}  // namespace endpoint
-
 class LedgerImpl;
 
 namespace bitflyer {
@@ -30,11 +24,9 @@ class BitflyerWallet {
   ~BitflyerWallet();
 
   void Generate(ledger::ResultCallback callback);
-  void Disconnect(ledger::ResultCallback callback);
 
  private:
   LedgerImpl* ledger_;  // NOT OWNED
-  std::unique_ptr<endpoint::promotion::DeleteClaimBitflyer> delete_claim_;
 };
 
 }  // namespace bitflyer

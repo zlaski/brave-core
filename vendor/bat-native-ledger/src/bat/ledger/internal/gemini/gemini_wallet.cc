@@ -8,7 +8,6 @@
 
 #include "bat/ledger/global_constants.h"
 #include "bat/ledger/internal/common/random_util.h"
-#include "bat/ledger/internal/endpoint/promotion/delete_claim_gemini/delete_claim_gemini.h"
 #include "bat/ledger/internal/gemini/gemini_util.h"
 #include "bat/ledger/internal/gemini/gemini_wallet.h"
 #include "bat/ledger/internal/ledger_impl.h"
@@ -22,10 +21,7 @@ namespace ledger {
 namespace gemini {
 
 GeminiWallet::GeminiWallet(LedgerImpl* ledger)
-    : ledger_(ledger),
-      delete_claim_(
-          std::make_unique<ledger::endpoint::promotion::DeleteClaimGemini>(
-              ledger)) {}
+    : ledger_(ledger) {}
 
 GeminiWallet::~GeminiWallet() = default;
 
@@ -64,10 +60,6 @@ void GeminiWallet::Generate(ledger::ResultCallback callback) {
   }
 
   callback(type::Result::LEDGER_OK);
-}
-
-void GeminiWallet::Disconnect(ledger::ResultCallback callback) {
-  delete_claim_->Request(callback);
 }
 
 }  // namespace gemini

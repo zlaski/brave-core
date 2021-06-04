@@ -13,12 +13,6 @@
 
 namespace ledger {
 
-namespace endpoint {
-namespace promotion {
-class DeleteClaimUphold;
-}  // namespace promotion
-}  // namespace endpoint
-
 class LedgerImpl;
 
 namespace uphold {
@@ -30,7 +24,6 @@ class UpholdWallet {
   ~UpholdWallet();
 
   void Generate(ledger::ResultCallback callback);
-  void Disconnect(ledger::ResultCallback callback);
 
  private:
   void OnGenerate(
@@ -48,7 +41,6 @@ class UpholdWallet {
       const User& user);
 
   LedgerImpl* ledger_;  // NOT OWNED
-  std::unique_ptr<endpoint::promotion::DeleteClaimUphold> delete_claim_;
 };
 
 }  // namespace uphold

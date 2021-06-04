@@ -8,7 +8,6 @@
 #include "base/json/json_reader.h"
 #include "bat/ledger/global_constants.h"
 #include "bat/ledger/internal/common/random_util.h"
-#include "bat/ledger/internal/endpoint/promotion/delete_claim_uphold/delete_claim_uphold.h"
 #include "bat/ledger/internal/ledger_impl.h"
 #include "bat/ledger/internal/logging/event_log_keys.h"
 #include "bat/ledger/internal/uphold/uphold_util.h"
@@ -22,10 +21,7 @@ namespace ledger {
 namespace uphold {
 
 UpholdWallet::UpholdWallet(LedgerImpl* ledger) :
-    ledger_(ledger),
-    delete_claim_(
-        std::make_unique<ledger::endpoint::promotion::DeleteClaimUphold>(
-            ledger)) {
+    ledger_(ledger) {
 }
 
 UpholdWallet::~UpholdWallet() = default;
@@ -72,9 +68,7 @@ void UpholdWallet::OnGenerate(
     ledger::ResultCallback callback) {
   auto wallet_ptr = GetWallet(ledger_);
   if (result == type::Result::EXPIRED_TOKEN) {
-    ledger_->uphold()->DisconnectWallet([callback](const type::Result result){
-      callback(type::Result::EXPIRED_TOKEN);
-    }, false);
+    ledger_->uphold()->DisconnectWallet();
     callback(result);
     return;
   }
@@ -194,10 +188,6 @@ type::WalletStatus UpholdWallet::GetNewStatus(
   }
 
   return new_status;
-}
-
-void UpholdWallet::Disconnect(ledger::ResultCallback callback) {
-  delete_claim_->Request(callback);
 }
 
 }  // namespace uphold

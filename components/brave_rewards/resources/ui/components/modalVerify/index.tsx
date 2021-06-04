@@ -86,7 +86,7 @@ export default class ModalVerify extends React.PureComponent<Props, {}> {
         </span>
         <StyledFooterIcon>
           {walletType === 'uphold' ? <UpholdColorIcon /> : null}
-          {walletType === 'gemini' ? <GeminiIcon white={false} size={"10"} /> : null}
+          {walletType === 'gemini' ? <GeminiIcon /> : null}
         </StyledFooterIcon>
       </StyledFooter>
     )

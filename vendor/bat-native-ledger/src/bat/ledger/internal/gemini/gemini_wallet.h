@@ -13,12 +13,6 @@
 
 namespace ledger {
 
-namespace endpoint {
-namespace promotion {
-class DeleteClaimGemini;
-}  // namespace promotion
-}  // namespace endpoint
-
 class LedgerImpl;
 
 namespace gemini {
@@ -30,11 +24,9 @@ class GeminiWallet {
   ~GeminiWallet();
 
   void Generate(ledger::ResultCallback callback);
-  void Disconnect(ledger::ResultCallback callback);
 
  private:
   LedgerImpl* ledger_;  // NOT OWNED
-  std::unique_ptr<endpoint::promotion::DeleteClaimGemini> delete_claim_;
 };
 
 }  // namespace gemini

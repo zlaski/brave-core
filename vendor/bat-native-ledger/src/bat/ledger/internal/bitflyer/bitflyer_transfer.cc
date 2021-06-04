@@ -46,10 +46,8 @@ void BitflyerTransfer::OnCreateTransaction(
     const std::string& id,
     client::TransactionCallback callback) {
   if (result == type::Result::EXPIRED_TOKEN) {
-    ledger_->bitflyer()->DisconnectWallet(
-      [callback](const type::Result result) {
-        callback(type::Result::EXPIRED_TOKEN, "");
-    }, false);
+    ledger_->bitflyer()->DisconnectWallet();
+    callback(type::Result::EXPIRED_TOKEN, "");
     return;
   }
 

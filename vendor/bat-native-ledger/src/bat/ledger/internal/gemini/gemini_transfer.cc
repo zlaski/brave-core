@@ -45,9 +45,8 @@ void GeminiTransfer::OnCreateTransaction(
     const std::string& id,
     client::TransactionCallback callback) {
   if (result == type::Result::EXPIRED_TOKEN) {
-    ledger_->gemini()->DisconnectWallet([callback](const type::Result result) {
-      callback(type::Result::EXPIRED_TOKEN, "");
-    });
+    ledger_->gemini()->DisconnectWallet();
+    callback(type::Result::EXPIRED_TOKEN, "");
     return;
   }
 

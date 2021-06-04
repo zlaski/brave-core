@@ -78,7 +78,7 @@ export default class WalletPopup extends React.PureComponent<Props, {}> {
                 {
                   walletType === 'uphold' ? <UpholdColorIcon /> :
                   walletType === 'bitflyer' ? <BitflyerIconWithText /> :
-                  walletType === 'gemini' ? <GeminiIcon white={false} size={"10"} /> :
+                  walletType === 'gemini' ? <GeminiIcon /> :
                   null
                 }
               </StyledIcon>

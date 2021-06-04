@@ -253,20 +253,13 @@ type::ExternalWalletPtr GenerateLinks(type::ExternalWalletPtr wallet) {
   return wallet;
 }
 
-type::ExternalWalletPtr ResetWallet(type::ExternalWalletPtr wallet,
-                                    const bool manual) {
+type::ExternalWalletPtr ResetWallet(type::ExternalWalletPtr wallet) {
   if (!wallet) {
     return nullptr;
   }
 
   const auto status = wallet->status;
   wallet = type::ExternalWallet::New();
-  if (manual) {
-    wallet->type = "";
-    wallet->status = type::WalletStatus::NOT_CONNECTED;
-    return wallet;
-  }
-
   wallet->type = constant::kWalletGemini;
 
   if (status != type::WalletStatus::NOT_CONNECTED) {

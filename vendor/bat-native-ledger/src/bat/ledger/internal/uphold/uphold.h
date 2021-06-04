@@ -70,8 +70,7 @@ class Uphold {
 
   void CreateCard(CreateCardCallback callback);
 
-  void DisconnectWallet(ledger::ResultCallback callback,
-                        const bool manual = false);
+  void DisconnectWallet(const bool manual = false);
 
   void GetUser(GetUserCallback callback);
 
