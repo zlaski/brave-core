@@ -49,6 +49,7 @@ declare namespace Rewards {
       github: boolean
     }
     excludedList: ExcludedPublisher[]
+    externalWalletProviderList: ExternalWalletProvider[]
     firstLoad: boolean | null
     monthlyReport: MonthlyReport
     monthlyReportIds: string[]
@@ -192,6 +193,11 @@ declare namespace Rewards {
     id: string
     tipDate?: number
     weight: number
+  }
+
+  export interface ExternalWalletProvider {
+    type: string
+    name: string
   }
 
   export interface ExcludedPublisher {

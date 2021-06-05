@@ -1298,6 +1298,21 @@ void RewardsServiceImpl::OnRecoverWallet(const ledger::type::Result result) {
   }
 }
 
+base::Value RewardsServiceImpl::GetExternalWalletProviders() {
+  base::Value data(base::Value::Type::LIST);
+
+  base::Value provider(base::Value::Type::DICTIONARY);  
+  provider.SetStringKey("type", "uphold");
+  provider.SetStringKey("name", "Uphold");
+  data.Append(std::move(provider));
+
+  provider.SetStringKey("type", "gemini");
+  provider.SetStringKey("name", "Gemini");
+  data.Append(std::move(provider));
+  
+  return data;
+}
+
 void RewardsServiceImpl::AttestPromotion(
     const std::string& promotion_id,
     const std::string& solution,

@@ -770,15 +770,9 @@ export class Panel extends React.Component<Props, State> {
     )
   }
 
-  verifyClicked = () => {
-    this.setState({
-      stage: "connect-wallet"
-    })
-  }
-
-  selectWallet = () => {
-    this.setState({
-      stage: "select-wallet"
+  onVerifyClick = () => {
+    chrome.tabs.create({
+        url: 'brave://rewards/#verify'
     })
   }
 
@@ -808,7 +802,6 @@ export class Panel extends React.Component<Props, State> {
     let currentPromotion = this.getCurrentPromotion()
 
     const walletStatus = utils.getWalletStatus(externalWallet)
-    const onVerifyClick = utils.handleExternalWalletLink.bind(this, balance, externalWallet)
 
     return (
       <WalletWrapper
@@ -829,7 +822,7 @@ export class Panel extends React.Component<Props, State> {
         walletType={externalWallet ? externalWallet.type : undefined}
         walletState={walletStatus}
         walletProvider={utils.getWalletProviderName(externalWallet)}
-        onVerifyClick={onVerifyClick}
+        onVerifyClick={this.onVerifyClick}
         onDisconnectClick={this.onDisconnectClick}
         goToExternalWallet={this.goToExternalWallet}
         greetings={utils.getGreetings(externalWallet)}

@@ -61,6 +61,7 @@ class PageWallet extends React.Component<Props, State> {
     this.isDisconnectUrl()
     this.isVerifyUrl()
     this.actions.getMonthlyReportIds()
+    chrome.send('brave_rewards.getExternalWalletProviders')
   }
 
   onModalBackupClose = () => {
@@ -779,6 +780,7 @@ class PageWallet extends React.Component<Props, State> {
   render () {
     const {
       balance,
+      externalWalletProviderList,
       ui,
       pendingContributionTotal,
       recoveryKey,
@@ -854,7 +856,7 @@ class PageWallet extends React.Component<Props, State> {
             ? <ConnectWalletModal
                 rewardsBalance={balance.total}
                 defaultProvider={walletType || ''}
-                providers={[{ type: walletType || '', name: walletProvider }]}
+                providers={externalWalletProviderList}
                 onContinue={this.onConnectWalletContinue}
                 onClose={this.toggleVerifyModal}
             />
