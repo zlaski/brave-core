@@ -96,8 +96,6 @@ window.cr.define('brave_rewards', function () {
   }
 
   function externalWalletProviderList (list: Rewards.ExternalWalletProvider[]) {
-    console.log("Getting external wallet list")
-    console.log(list)
     getActions().onExternalWalletProviderList(list)
   }
 

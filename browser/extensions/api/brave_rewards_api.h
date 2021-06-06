@@ -485,16 +485,6 @@ class BraveRewardsUpdatePrefsFunction : public ExtensionFunction {
   ResponseAction Run() override;
 };
 
-class BraveRewardsSetSelectedWalletFunction : public ExtensionFunction {
- public:
-  DECLARE_EXTENSION_FUNCTION("braveRewards.setSelectedWallet", UNKNOWN)
-
- protected:
-  ~BraveRewardsSetSelectedWalletFunction() override;
-
-  ResponseAction Run() override;
-};
-
 }  // namespace api
 }  // namespace extensions
 
