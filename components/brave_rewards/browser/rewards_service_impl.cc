@@ -1300,16 +1300,26 @@ void RewardsServiceImpl::OnRecoverWallet(const ledger::type::Result result) {
 
 base::Value RewardsServiceImpl::GetExternalWalletProviders() {
   base::Value data(base::Value::Type::LIST);
+  base::Value provider(base::Value::Type::DICTIONARY);
 
-  base::Value provider(base::Value::Type::DICTIONARY);  
+  if (IsBitFlyerRegion()) {
+    provider.SetStringKey("type", "bitflyer");
+    provider.SetStringKey("name", "bitFlyer");
+    data.Append(std::move(provider));
+    return data;
+  }
+
   provider.SetStringKey("type", "uphold");
   provider.SetStringKey("name", "Uphold");
   data.Append(std::move(provider));
 
-  provider.SetStringKey("type", "gemini");
-  provider.SetStringKey("name", "Gemini");
-  data.Append(std::move(provider));
-  
+#if !defined(OS_ANDROID)
+  if (base::FeatureList::IsEnabled(features::kGeminiFeature)) {
+    provider.SetStringKey("type", "gemini");
+    provider.SetStringKey("name", "Gemini");
+    data.Append(std::move(provider));
+  }
+#endif
   return data;
 }
 
@@ -3435,7 +3445,7 @@ void RewardsServiceImpl::OnWalletCreatedForSetAdsEnabled(
   }
 }
 
-std::string RewardsServiceImpl::GetExternalWalletType() const {
+bool RewardsServiceImpl::IsBitFlyerRegion() const {
   int32_t current_country = country_id_;
 
   if (!current_country) {
@@ -3449,9 +3459,19 @@ std::string RewardsServiceImpl::GetExternalWalletType() const {
           country_codes::CountryCharsToCountryID(country.at(0), country.at(1));
 
       if (id == current_country)
-        return ledger::constant::kWalletBitflyer;
+        return true;
     }
   }
+  return false;
+}
+
+std::string RewardsServiceImpl::GetExternalWalletType() const {
+  if (IsBitFlyerRegion()) {
+    return ledger::constant::kWalletBitflyer; 
+  }
+#if defined(OS_ANDROID)
+  return ledger::constant::kWalletUphold;
+#endif
 
   return wallet_type_;
 }

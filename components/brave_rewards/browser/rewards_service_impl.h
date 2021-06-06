@@ -750,6 +750,8 @@ class RewardsServiceImpl : public RewardsService,
       GetBraveWalletCallback callback,
       ledger::type::BraveWalletPtr wallet);
 
+  bool IsBitFlyerRegion() const;
+
 #if defined(OS_ANDROID)
   ledger::type::Environment GetServerEnvironmentForAndroid();
   void GrantAttestationResult(
