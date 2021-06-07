@@ -68,8 +68,13 @@ void SpeedreaderTabHelper::UpdateActiveState(
   active_ = false;
 }
 
+bool SpeedreaderTabHelper::IsActiveForMainFrame() const {
+  return active_ || single_shot_mode_;
+}
+
 void SpeedreaderTabHelper::DidStartNavigation(
     content::NavigationHandle* navigation_handle) {
+  is_distilled_ = false;
   if (navigation_handle->IsInMainFrame()) {
     UpdateActiveState(navigation_handle);
   }
@@ -80,6 +85,18 @@ void SpeedreaderTabHelper::DidRedirectNavigation(
   if (navigation_handle->IsInMainFrame()) {
     UpdateActiveState(navigation_handle);
   }
+}
+
+void SpeedreaderTabHelper::DidReceiveResponse() {
+  if (IsActiveForMainFrame())
+    is_distilled_ = true;
+}
+
+void SpeedreaderTabHelper::DidStopLoading() {
+  // This will be called after the URLLoaders have already been created. If we
+  // are in single-shot mode, disable the Speedreader loader since that has
+  // completed.
+  single_shot_mode_ = false;
 }
 
 SpeedreaderBubbleView* SpeedreaderTabHelper::speedreader_bubble_view() const {
