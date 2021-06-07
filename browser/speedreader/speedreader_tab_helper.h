@@ -30,7 +30,7 @@ class SpeedreaderTabHelper
   SpeedreaderTabHelper(const SpeedreaderTabHelper&) = delete;
   SpeedreaderTabHelper& operator=(SpeedreaderTabHelper&) = delete;
 
-  bool IsActiveForMainFrame() const { return active_; }
+  bool IsActiveForMainFrame() const;
 
   bool IsSpeedreaderEnabled() const;
 
@@ -40,6 +40,10 @@ class SpeedreaderTabHelper
   // Allow or deny a site from being run through speedreader if |on| toggles
   // the setting. Triggers page reload on toggle.
   void MaybeToggleEnabledForSite(bool on);
+
+  bool IsDistilledPage() const { return is_distilled_; }
+
+  void SingleShotNextRequest() { single_shot_mode_ = true; }
 
   // returns nullptr if no bubble currently shown
   SpeedreaderBubbleView* speedreader_bubble_view() const;
@@ -64,8 +68,12 @@ class SpeedreaderTabHelper
       content::NavigationHandle* navigation_handle) override;
   void DidRedirectNavigation(
       content::NavigationHandle* navigation_handle) override;
+  void DidReceiveResponse() override;
+  void DidStopLoading() override;
 
-  bool active_ = false;  // speedreader active for this tab
+  bool active_ = false;            // speedreader active for this tab
+  bool single_shot_mode_ = false;  // run speedreader once on next page load
+  bool is_distilled_ = false;      // is the page distilled
   SpeedreaderBubbleView* speedreader_bubble_ = nullptr;
 
   WEB_CONTENTS_USER_DATA_KEY_DECL();

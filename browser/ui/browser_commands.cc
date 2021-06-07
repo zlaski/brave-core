@@ -97,6 +97,25 @@ void ToggleSpeedreader(Browser* browser) {
 #endif  // BUILDFLAG(ENABLE_SPEEDREADER)
 }
 
+void ShowSpeedreaderBubble(Browser* browser) {
+#if BUILDFLAG(ENABLE_SPEEDREADER)
+  speedreader::SpeedreaderService* service =
+      speedreader::SpeedreaderServiceFactory::GetForProfile(browser->profile());
+  if (service) {
+    WebContents* contents = browser->tab_strip_model()->GetActiveWebContents();
+    if (contents) {
+      auto* tab_helper = speedreader::SpeedreaderTabHelper::Get(contents);
+      if (!tab_helper->IsSpeedreaderEnabled() &&
+          !tab_helper->IsDistilledPage()) {
+        tab_helper->SingleShotNextRequest();
+        contents->GetController().Reload(content::ReloadType::NORMAL, false);
+      }
+      tab_helper->ShowBubble();
+    }
+  }
+#endif  // BUILDFLAG(ENABLE_SPEEDREADER)
+}
+
 void ShowWalletBubble(Browser* browser) {
 #if BUILDFLAG(BRAVE_WALLET_ENABLED) && defined(TOOLKIT_VIEWS)
   static_cast<BraveBrowserView*>(browser->window())->CreateWalletBubble();
