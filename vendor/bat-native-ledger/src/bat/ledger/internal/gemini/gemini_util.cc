@@ -66,7 +66,6 @@ std::string GetAuthorizeUrl(const std::string& state) {
       "payments:read,"
       "history:read,"
       "clearing:create,"
-      "clearing:read,"
       "crypto:send,"
       "orders:read,"
       "addresses:create,"
