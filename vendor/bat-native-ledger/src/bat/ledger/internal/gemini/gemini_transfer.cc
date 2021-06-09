@@ -36,8 +36,9 @@ void GeminiTransfer::Start(const Transaction& transaction,
 
   auto url_callback =
       std::bind(&GeminiTransfer::OnCreateTransaction, this, _1, _2, callback);
-  gemini_server_->post_transaction()->Request(wallet->token, transaction,
-                                                false, url_callback);
+  gemini_server_->post_transaction()->Request(wallet->token,
+                                              transaction,
+                                              url_callback);
 }
 
 void GeminiTransfer::OnCreateTransaction(

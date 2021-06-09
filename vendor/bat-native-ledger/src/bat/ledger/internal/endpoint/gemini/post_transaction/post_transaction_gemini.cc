@@ -7,6 +7,7 @@
 
 #include <utility>
 
+#include "base/base64.h"
 #include "base/guid.h"
 #include "base/json/json_reader.h"
 #include "base/json/json_writer.h"
@@ -28,29 +29,23 @@ PostTransaction::PostTransaction(LedgerImpl* ledger) : ledger_(ledger) {
 PostTransaction::~PostTransaction() = default;
 
 std::string PostTransaction::GetUrl() {
-  return GetApiServerUrl("/api/link/v1/coin/withdraw-to-deposit-id/request");
+  return GetApiServerUrl("/v1/payments/pay");
 }
 
 std::string PostTransaction::GeneratePayload(
-    const ::ledger::gemini::Transaction& transaction,
-    const bool dry_run) {
+    const ::ledger::gemini::Transaction& transaction) {
   base::Value payload(base::Value::Type::DICTIONARY);
-  payload.SetStringKey("currency_code", "BAT");
+  payload.SetStringKey("tx_ref", base::GenerateGUID());
   payload.SetStringKey("amount", base::StringPrintf("%f", transaction.amount));
-  payload.SetBoolKey("dry_run", false);
-  payload.SetStringKey("deposit_id", transaction.address);
-  payload.SetStringKey("transfer_id", base::GenerateGUID());
-  if (dry_run) {
-    base::Value dry_run_option(base::Value::Type::DICTIONARY);
-    dry_run_option.SetStringKey("request_api_transfer_status", "SUCCESS");
-    dry_run_option.SetIntKey("process_time_sec", 5);
-    dry_run_option.SetStringKey("status_api_transfer_status", "SUCCESS");
-    payload.SetKey("dry_run_option", std::move(dry_run_option));
-  }
+  payload.SetStringKey("currency", "BAT");
+  payload.SetStringKey("destination", transaction.address);
 
   std::string json;
   base::JSONWriter::Write(payload, &json);
-  return json;
+
+  std::string base64;
+  base::Base64Encode(base::StringPiece(json), &base64);
+  return base64;
 }
 
 type::Result PostTransaction::CheckStatusCode(const int status_code) {
@@ -72,11 +67,9 @@ type::Result PostTransaction::CheckStatusCode(const int status_code) {
 
 type::Result PostTransaction::ParseBody(const std::string& body,
                                         std::string* transfer_id,
-                                        std::string* transfer_status,
-                                        std::string* message) {
+                                        std::string* transfer_status) {
   DCHECK(transfer_id);
   DCHECK(transfer_status);
-  DCHECK(message);
 
   base::Optional<base::Value> value = base::JSONReader::Read(body);
   if (!value || !value->is_dict()) {
@@ -90,24 +83,21 @@ type::Result PostTransaction::ParseBody(const std::string& body,
     return type::Result::LEDGER_ERROR;
   }
 
-  const auto* transfer_id_str = dictionary->FindStringKey("transfer_id");
+  const auto* transfer_id_str = dictionary->FindStringKey("tx_ref");
   if (!transfer_id_str) {
     BLOG(0, "Missing transfer id");
     return type::Result::LEDGER_ERROR;
   }
 
   const auto* transfer_status_str =
-      dictionary->FindStringKey("transfer_status");
+      dictionary->FindStringKey("result");
   if (!transfer_status_str) {
     BLOG(0, "Missing transfer status");
     return type::Result::LEDGER_ERROR;
   }
 
-  const auto* message_str = dictionary->FindStringKey("message");
-
   *transfer_id = *transfer_id_str;
   *transfer_status = *transfer_status_str;
-  *message = message_str ? *message_str : "";
 
   return type::Result::LEDGER_OK;
 }
@@ -115,17 +105,19 @@ type::Result PostTransaction::ParseBody(const std::string& body,
 void PostTransaction::Request(
     const std::string& token,
     const ::ledger::gemini::Transaction& transaction,
-    const bool dry_run,
     PostTransactionCallback callback) {
   auto url_callback =
       std::bind(&PostTransaction::OnRequest, this, _1, callback);
 
   auto request = type::UrlRequest::New();
+  auto payload = GeneratePayload(transaction);
+
   request->url = GetUrl();
-  request->content = GeneratePayload(transaction, dry_run);
   request->headers = RequestAuthorization(token);
   request->content_type = "application/json; charset=utf-8";
   request->method = type::UrlMethod::POST;
+  request->headers.push_back("X-GEMINI-PAYLOAD: " + payload);
+
   ledger_->LoadURL(std::move(request), url_callback);
 }
 
@@ -142,11 +134,9 @@ void PostTransaction::OnRequest(const type::UrlResponse& response,
 
   std::string id;
   std::string transfer_status;
-  std::string message;
-  result = ParseBody(response.body, &id, &transfer_status, &message);
-  if (result == type::Result::LEDGER_OK && transfer_status != "SUCCESS") {
+  result = ParseBody(response.body, &id, &transfer_status);
+  if (result == type::Result::LEDGER_OK && transfer_status != "OK") {
     BLOG(0, "Transfer failed (status: " << transfer_status << ")");
-    BLOG_IF(0, !message.empty(), message);
     callback(type::Result::LEDGER_ERROR, "");
     return;
   }

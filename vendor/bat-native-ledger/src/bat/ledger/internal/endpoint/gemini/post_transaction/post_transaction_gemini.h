@@ -60,22 +60,19 @@ class PostTransaction {
 
   void Request(const std::string& token,
                const ::ledger::gemini::Transaction& transaction,
-               const bool dry_run,
                PostTransactionCallback callback);
 
  private:
   std::string GetUrl();
 
   std::string GeneratePayload(
-      const ::ledger::gemini::Transaction& transaction,
-      const bool dry_run);
+      const ::ledger::gemini::Transaction& transaction);
 
   type::Result CheckStatusCode(const int status_code);
 
   type::Result ParseBody(const std::string& body,
                          std::string* transfer_id,
-                         std::string* transfer_status,
-                         std::string* message);
+                         std::string* transfer_status);
 
   void OnRequest(const type::UrlResponse& response,
                  PostTransactionCallback callback);
