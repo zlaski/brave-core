@@ -16,12 +16,14 @@
 #include "chrome/app/chrome_command_ids.h"
 #include "chrome/browser/themes/theme_properties.h"
 #include "chrome/browser/ui/views/location_bar/location_bar_bubble_delegate_view.h"
+#include "chrome/browser/ui/views/page_action/page_action_icon_view.h"
 #include "chrome/grit/generated_resources.h"
 #include "components/dom_distiller/content/browser/distillable_page_utils.h"
 #include "components/dom_distiller/content/browser/uma_helper.h"
 #include "include/core/SkColor.h"
 #include "ui/base/l10n/l10n_util.h"
 #include "ui/base/theme_provider.h"
+#include "ui/views/animation/ink_drop_state.h"
 #include "ui/views/metadata/metadata_impl_macros.h"
 
 using DistillState = speedreader::SpeedreaderTabHelper::DistillState;
@@ -39,8 +41,9 @@ SpeedreaderIconView::SpeedreaderIconView(
                          IDC_SPEEDREADER_ICON_ONCLICK,
                          this, /* Make ourselves the icon bubble delegate */
                          page_action_icon_delegate),
-      icon_label_bubble_delegate_(icon_label_bubble_delegate) {}
-// pref_service_(pref_service) {}
+      icon_label_bubble_delegate_(icon_label_bubble_delegate) {
+  SetVisible(false);
+}
 
 SpeedreaderIconView::~SpeedreaderIconView() = default;
 
@@ -50,6 +53,9 @@ void SpeedreaderIconView::UpdateImpl() {
     SetVisible(false);
     return;
   }
+
+  if (GetHighlighted() && !IsBubbleShowing())
+    AnimateInkDrop(views::InkDropState::HIDDEN, nullptr);
 
   if (contents != web_contents_) {
     if (web_contents_)
@@ -126,7 +132,8 @@ SkColor SpeedreaderIconView::GetIconLabelBubbleSurroundingForegroundColor()
 }
 
 SkColor SpeedreaderIconView::GetIconLabelBubbleInkDropColor() const {
-  return icon_label_bubble_delegate_->GetIconLabelBubbleInkDropColor();
+  return kReaderIconColor;
+  // return icon_label_bubble_delegate_->GetIconLabelBubbleBackgroundColor();
 }
 
 SkColor SpeedreaderIconView::GetIconLabelBubbleBackgroundColor() const {
