@@ -7,6 +7,7 @@
 
 #include <string>
 
+#include "base/notreached.h"
 #include "base/strings/utf_string_conversions.h"
 #include "brave/app/brave_command_ids.h"
 #include "brave/app/vector_icons/vector_icons.h"
@@ -22,6 +23,8 @@
 #include "ui/base/l10n/l10n_util.h"
 #include "ui/base/theme_provider.h"
 #include "ui/views/metadata/metadata_impl_macros.h"
+
+using DistillState = speedreader::SpeedreaderTabHelper::DistillState;
 
 namespace {
 SkColor kReaderIconColor = SkColorSetRGB(0x4c, 0x54, 0xd2);
@@ -56,33 +59,36 @@ void SpeedreaderIconView::UpdateImpl() {
   }
 
   auto* tab_helper = speedreader::SpeedreaderTabHelper::Get(web_contents_);
-  const bool is_distilled = tab_helper->IsDistilledPage();
-  auto result = dom_distiller::GetLatestResult(web_contents_);
-  if (result) {
-    // fixme: (is_distilled && !isSpeedreaderEnabled)
-    const bool visible =
-        (result->is_last && result->is_distillable) || is_distilled;
-    LOG(ERROR) << "visible: " << result->is_last << " "
-               << result->is_distillable << " "
-               << web_contents_->GetLastCommittedURL().spec();
-    SetVisible(visible);
-  } else {
-    SetVisible(false);
+  const bool is_distilled = tab_helper->IsActiveForMainFrame();
+
+  if (!is_distilled) {
+    auto result = dom_distiller::GetLatestResult(web_contents_);
+    if (result) {
+      const bool visible = result->is_last && result->is_distillable;
+      SetVisible(visible);
+      label()->SetVisible(false);
+
+      if (GetVisible()) {
+        // Reset the icon color
+        const ui::ThemeProvider* tp = GetThemeProvider();
+        SkColor icon_color_default =
+            tp->GetColor(ThemeProperties::COLOR_TOOLBAR_BUTTON_ICON);
+        SetIconColor(icon_color_default);
+      }
+    }
   }
 
-  if (GetVisible() && is_distilled) {
-    int mode_label = tab_helper->IsSpeedreaderEnabled()
-                         ? IDS_ICON_SPEEDREADER_MODE_LABEL
-                         : IDS_ICON_READER_MODE_LABEL;
-    SetLabel(l10n_util::GetStringUTF16(mode_label));
+  if (is_distilled) {
+    const DistillState state = tab_helper->PageDistillState();
+    DCHECK(state != DistillState::kNone);
+
+    const int label_id = state == DistillState::kReaderMode
+                             ? IDS_ICON_READER_MODE_LABEL
+                             : IDS_ICON_SPEEDREADER_MODE_LABEL;
+    SetLabel(l10n_util::GetStringUTF16(label_id));
     SetIconColor(kReaderIconColor);
+    SetVisible(true);
     label()->SetVisible(true);
-  } else {
-    const ui::ThemeProvider* tp = GetThemeProvider();
-    SkColor icon_color_default =
-        tp->GetColor(ThemeProperties::COLOR_TOOLBAR_BUTTON_ICON);
-    SetIconColor(icon_color_default);
-    label()->SetVisible(false);
   }
 }
 

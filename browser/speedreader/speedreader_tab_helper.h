@@ -23,6 +23,11 @@ class SpeedreaderTabHelper
     : public content::WebContentsObserver,
       public content::WebContentsUserData<SpeedreaderTabHelper> {
  public:
+  enum class DistillState {
+    kNone,
+    kReaderMode,
+    kSpeedreaderMode,
+  };
   ~SpeedreaderTabHelper() override;
 
   static SpeedreaderTabHelper* Get(content::WebContents* web_contents);
@@ -32,18 +37,22 @@ class SpeedreaderTabHelper
 
   bool IsActiveForMainFrame() const;
 
+  // Returns |true| if Speedreader is turned on for all sites.
   bool IsSpeedreaderEnabled() const;
 
-  // Returns |true| if the domain is speedreadable
+  // Returns |true| if the domain is Speedreader is enabled and the domain was
+  // not blacklisted by the user.
   bool IsEnabledForSite();
+
+  DistillState PageDistillState() const { return distill_state_; }
 
   // Allow or deny a site from being run through speedreader if |on| toggles
   // the setting. Triggers page reload on toggle.
   void MaybeToggleEnabledForSite(bool on);
 
-  bool IsDistilledPage() const { return is_distilled_; }
-
-  void SingleShotNextRequest() { single_shot_mode_ = true; }
+  // Reload the page and mark the next request to run through Speedreader,
+  // without turning it on. This mimics the standard reader mode.
+  void SingleShotSpeedreader();
 
   // returns nullptr if no bubble currently shown
   SpeedreaderBubbleView* speedreader_bubble_view() const;
@@ -68,12 +77,11 @@ class SpeedreaderTabHelper
       content::NavigationHandle* navigation_handle) override;
   void DidRedirectNavigation(
       content::NavigationHandle* navigation_handle) override;
-  void DidReceiveResponse() override;
   void DidStopLoading() override;
 
-  bool active_ = false;            // speedreader active for this tab
-  bool single_shot_mode_ = false;  // run speedreader once on next page load
-  bool is_distilled_ = false;      // is the page distilled
+  bool single_shot_next_request_ =
+      false;  // run speedreader once on next page load
+  DistillState distill_state_ = DistillState::kNone;
   SpeedreaderBubbleView* speedreader_bubble_ = nullptr;
 
   WEB_CONTENTS_USER_DATA_KEY_DECL();
