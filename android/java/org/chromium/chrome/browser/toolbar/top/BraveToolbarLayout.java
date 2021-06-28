@@ -375,6 +375,12 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                         checkForTooltip(tab);
                     }
                 }
+                Log.e("NTP",
+                        "Json : "
+                                + BraveShieldsUtils.loadJSONFromAsset(
+                                        BraveActivity.getBraveActivity() != null
+                                                ? BraveActivity.getBraveActivity()
+                                                : getContext()));
             }
 
             @Override

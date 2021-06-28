@@ -20,6 +20,7 @@ import org.chromium.chrome.browser.profiles.Profile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -159,5 +160,22 @@ public class BraveShieldsUtils {
             } finally {
                 if (urlConnection != null) urlConnection.disconnect();
             }
+        }
+
+        public static String loadJSONFromAsset(Context context) {
+            String json = null;
+            try {
+                InputStream inputStream = context.getAssets().open("blocking_summary_jp.json");
+                int size = inputStream.available();
+                byte[] buffer = new byte[size];
+                inputStream.read(buffer);
+                inputStream.close();
+                json = new String(buffer, "UTF-8");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Log.e("NTP", ex.getMessage());
+                return null;
+            }
+            return json;
         }
 }
