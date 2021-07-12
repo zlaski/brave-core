@@ -3,65 +3,6 @@ import("//brave/components/brave_wallet/browser/config.gni")
 import("//brave/components/brave_webtorrent/browser/buildflags/buildflags.gni")
 import("//build/config/features.gni")
 
-source_set("component_loader") {
-  sources = [
-    "brave_component_loader.cc",
-    "brave_component_loader.h",
-  ]
-
-  deps = [
-    ":ethereum_remote_client_util",
-    ":resources",
-    "//base",
-    "//brave/browser:browser_process",
-    "//brave/browser/component_updater",
-    "//brave/browser/ethereum_remote_client:constants",
-    "//brave/browser/ethereum_remote_client:pref_names",
-    "//brave/browser/ethereum_remote_client/buildflags:buildflags",
-    "//brave/common:pref_names",
-    "//brave/common:switches",
-    "//brave/components/brave_ads/common",
-    "//brave/components/brave_component_updater/browser",
-    "//brave/components/brave_extension:static_resources_grit",
-    "//brave/components/brave_rewards/browser/buildflags",
-    "//brave/components/brave_rewards/common",
-    "//brave/components/brave_rewards/resources/extension:static_resources_grit",
-    "//brave/components/brave_wallet/browser",
-    "//brave/components/brave_wallet/common/buildflags",
-    "//brave/components/brave_webtorrent:static_resources_grit",
-    "//brave/components/resources:static_resources_grit",
-    "//brave/vendor/bat-native-ads:headers",
-    "//chrome/browser:browser_process",
-    "//chrome/browser/extensions",
-    "//chrome/browser/profiles:profile",
-    "//chrome/common:constants",
-    "//components/prefs",
-    "//extensions/browser",
-    "//extensions/common:common_constants",
-    "//extensions/common:mojom",
-  ]
-}
-
-source_set("ethereum_remote_client_util") {
-  if (brave_wallet_enabled) {
-    sources = [
-      "ethereum_remote_client_util.cc",
-      "ethereum_remote_client_util.h",
-    ]
-
-    deps = [
-      "//base",
-      "//brave/browser/ethereum_remote_client",
-      "//brave/components/brave_wallet/browser",
-    ]
-
-    configs += [
-      ":infura_config",
-      ":brave_services_config",
-    ]
-  }
-}
-
 group("resources") {
   deps = [
     "//brave/components/brave_extension:generated_resources",

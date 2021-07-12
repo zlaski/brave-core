@@ -1,12 +1,12 @@
 diff --git a/chrome/browser/extensions/BUILD.gn b/chrome/browser/extensions/BUILD.gn
-index 370ea00c87c0b1864ff2b5c853c89d1b4199bbc8..4cae9bcd6eec1b61c06cc0bf2d08b3b7407c5697 100644
+index 370ea00c87c0b1864ff2b5c853c89d1b4199bbc8..0dc7aaaaa2f0211903a8d7fb9ee1aa50adc3b8be 100644
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
 @@ -957,6 +957,7 @@ static_library("extensions") {
      "//ui/strings",
      "//url",
    ]
-+  import("//brave/browser/extensions/sources.gni") sources += brave_browser_extensions_sources deps += brave_browser_extensions_deps
++  import("//brave/browser/extensions/sources.gni") sources += brave_browser_extensions_sources deps += brave_browser_extensions_deps config = brave_browser_extensions_config
  
    if (is_chromeos_ash) {
      deps += [ "//chromeos/resources:media_app_bundle_resources_grit" ]

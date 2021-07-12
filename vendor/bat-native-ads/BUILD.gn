@@ -48,9 +48,9 @@ static_library("bat-native-ads-standalone") {
 source_set("headers") {
   visibility = [
     ":*",
-    "//brave/browser/extensions:component_loader",
     "//brave/components/brave_ads/test:*",
     "//brave/test:*",
+    "//chrome/browser/extensions",
   ]
 
   public_configs = [ ":external_config" ]

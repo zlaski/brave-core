@@ -9,6 +9,8 @@ import("//brave/components/brave_webtorrent/browser/buildflags/buildflags.gni")
 import("//brave/components/ipfs/buildflags/buildflags.gni")
 
 brave_browser_extensions_sources = [
+  "//brave/browser/extensions/brave_component_loader.cc",
+  "//brave/browser/extensions/brave_component_loader.h",
   "//brave/browser/extensions/brave_extension_management.cc",
   "//brave/browser/extensions/brave_extension_management.h",
   "//brave/browser/extensions/brave_extension_provider.cc",
@@ -21,6 +23,8 @@ brave_browser_extensions_sources = [
   "//brave/browser/extensions/brave_extensions_browser_client_impl.h",
   "//brave/browser/extensions/brave_theme_event_router.cc",
   "//brave/browser/extensions/brave_theme_event_router.h",
+  "//brave/browser/extensions/ethereum_remote_client_util.cc",
+  "//brave/browser/extensions/ethereum_remote_client_util.h",
   "//brave/browser/extensions/updater/brave_update_client_config.cc",
   "//brave/browser/extensions/updater/brave_update_client_config.h",
 ]
@@ -29,20 +33,39 @@ brave_browser_extensions_deps = [
   "//base",
   "//brave/app:brave_generated_resources_grit",
   "//brave/browser:browser_process",
-  "//brave/browser/ethereum_remote_client/buildflags:buildflags",
+  "//brave/browser/component_updater",
+  "//brave/browser/ethereum_remote_client",
+  "//brave/browser/ethereum_remote_client:constants",
+  "//brave/browser/ethereum_remote_client:pref_names",
+  "//brave/browser/ethereum_remote_client/buildflags",
+  "//brave/browser/extensions:resources",
   "//brave/browser/themes",
   "//brave/browser/tor",
   "//brave/common:pref_names",
+  "//brave/common:switches",
   "//brave/common/extensions/api",
+  "//brave/components/brave_ads/common",
   "//brave/components/brave_component_updater/browser",
+  "//brave/components/brave_extension:static_resources_grit",
+  "//brave/components/brave_rewards/browser/buildflags",
+  "//brave/components/brave_rewards/common",
+  "//brave/components/brave_rewards/resources/extension:static_resources_grit",
+  "//brave/components/brave_wallet/browser",
+  "//brave/components/brave_wallet/common/buildflags",
+  "//brave/components/brave_webtorrent:static_resources_grit",
   "//brave/components/ipfs/buildflags",
+  "//brave/components/resources:static_resources_grit",
   "//brave/components/tor/buildflags",
+  "//brave/vendor/bat-native-ads:headers",
   "//chrome/browser:browser_process",
   "//chrome/browser/profiles:profile",
+  "//chrome/common:constants",
   "//components/prefs",
   "//components/update_client:network_impl",
   "//content/public/browser",
   "//extensions/browser",
+  "//extensions/common:common_constants",
+  "//extensions/common:mojom",
   "//ui/native_theme",
 ]
 
@@ -53,7 +76,6 @@ if (enable_brave_webtorrent) {
   ]
 
   brave_browser_extensions_deps += [
-    "//brave/browser/extensions:component_loader",
     "//brave/browser/net",
     "//brave/browser/profiles:util",
     "//brave/components/brave_webtorrent/browser",
@@ -79,3 +101,8 @@ if (ipfs_enabled) {
 
 brave_browser_extensions_sources += brave_browser_extensions_api_sources
 brave_browser_extensions_deps += brave_browser_extensions_api_deps
+
+brave_browser_extensions_configs = [
+  "//brave/browser/extensions:infura_config",
+  "//brave/browser/extensions:brave_services_config",
+]

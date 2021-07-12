@@ -68,7 +68,6 @@ source_set("browser") {
   ]
   deps = [
     "//brave/browser/ethereum_remote_client",
-    "//brave/browser/extensions:component_loader",
     "//chrome/browser/extensions",
     "//chrome/browser/profiles",
     "//components/keyed_service/content",
