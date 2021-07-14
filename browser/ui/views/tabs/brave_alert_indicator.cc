@@ -9,12 +9,14 @@
 #include <string>
 
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
+#include "chrome/browser/ui/tabs/tab_types.h"
 #include "chrome/browser/ui/views/tabs/browser_tab_strip_controller.h"
 #include "chrome/browser/ui/views/tabs/tab_controller.h"
 #include "chrome/browser/ui/views/tabs/tab_strip.h"
 #include "chrome/browser/ui/views/tabs/tab_strip_controller.h"
 #include "chrome/browser/ui/views/tabs/tab_style_views.h"
 #include "content/public/browser/web_contents.h"
+#include "include/core/SkColor.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
 #include "third_party/skia/include/core/SkPathTypes.h"
 #include "ui/gfx/color_utils.h"
@@ -62,13 +64,28 @@ BraveAlertIndicator::BraveAlertIndicator(Tab* parent_tab)
 }
 
 SkColor BraveAlertIndicator::GetBackgroundColor() const {
-  TabStyle::TabColors colors = parent_tab_->tab_style()->CalculateColors();
+  // TabStyle::TabColors colors = parent_tab_->tab_style()->CalculateColors();
+
+  auto is_tab_active = parent_tab_->IsActive();
+  auto* tab_strip = static_cast<TabStrip*>(parent_tab_->controller());
+
+  auto browser_frame_color = tab_strip->controller()->
+  GetFrameColor(BrowserFrameActiveState::kUseCurrent);
+
+  auto active_tab_color = tab_strip->
+  GetTabBackgroundColor(TabActive::kActive,
+  BrowserFrameActiveState::kUseCurrent);
+
+  SkColor bg_color = is_tab_active ? browser_frame_color : active_tab_color;
+
   if (!IsTabAudioToggleable() || !IsMouseHovered())
-    return colors.background_color;
+    return bg_color;
 
   // Approximating the InkDrop behavior of the close button.
-  return color_utils::BlendTowardMaxContrast(colors.background_color,
+  return color_utils::BlendTowardMaxContrast(bg_color,
                                              mouse_pressed_ ? 72 : 36);
+  // return color_utils::BlendTowardMaxContrast(colors.background_color,
+  //                                            mouse_pressed_ ? 72 : 36);
 }
 
 bool BraveAlertIndicator::OnMousePressed(const ui::MouseEvent& event) {

@@ -1,0 +1,47 @@
+diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
+index e5c02320a7520f9cc92b614c9429b9d0e5b231b0..150062c770e6f0797fa65ae66b409e4d254cce67 100644
+--- a/chrome/browser/ui/views/tabs/tab.cc
++++ b/chrome/browser/ui/views/tabs/tab.cc
+@@ -345,6 +345,7 @@ void Tab::Layout() {
+   close_button_->SetVisible(showing_close_button_);
+ 
+   if (showing_alert_indicator_) {
++LOG(ERROR) << "showing indicator";
+     int right = contents_rect.right();
+     if (showing_close_button_) {
+       right = close_x;
+@@ -352,10 +353,14 @@ void Tab::Layout() {
+         right -= ui::TouchUiController::Get()->touch_ui() ? 8 : 6;
+     }
+     const gfx::Size image_size = alert_indicator_->GetPreferredSize();
+-    gfx::Rect bounds(
+-        std::max(contents_rect.x(), right - image_size.width()),
+-        contents_rect.y() + Center(contents_rect.height(), image_size.height()),
+-        image_size.width(), image_size.height());
++    // gfx::Rect bounds(
++    //     std::max(contents_rect.x(), right - image_size.width()),
++    //     contents_rect.y() + Center(contents_rect.height(), image_size.height()),
++    //     image_size.width(), image_size.height());
++  gfx::Rect bounds(
++      std::max(contents_rect.x(), start + after_title_padding + image_size.width()),
++      contents_rect.y() + Center(contents_rect.height(), image_size.height()),
++      image_size.width(), image_size.height());
+     if (center_icon_) {
+       // When centering the alert icon, it is allowed to escape the normal
+       // contents rect.
+@@ -383,11 +388,14 @@ void Tab::Layout() {
+     }
+     int title_right = contents_rect.right();
+     if (showing_alert_indicator_) {
+-      title_right = alert_indicator_->x() - after_title_padding;
++      // title_right = alert_indicator_->x() - after_title_padding;
++title_left = alert_indicator_->x() + alert_indicator_->width() + after_title_padding;
++title_right = title_right - after_title_padding - alert_indicator_->width();
+     } else if (showing_close_button_) {
+       // Allow the title to overlay the close button's empty border padding.
+       title_right = close_x - after_title_padding;
+     }
++
+     const int title_width = std::max(title_right - title_left, 0);
+     // The Label will automatically center the font's cap height within the
+     // provided vertical space.
