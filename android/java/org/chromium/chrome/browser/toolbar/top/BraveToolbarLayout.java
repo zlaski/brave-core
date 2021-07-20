@@ -459,9 +459,9 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
         String countryCode = Locale.getDefault().getCountry();
 
         // the tooltip for stats sharing is shown only for Japan
-        if (!countryCode.equals(JAPAN_COUNTRY_CODE)) {
-            return;
-        }
+        // if (!countryCode.equals(JAPAN_COUNTRY_CODE)) {
+        //     return;
+        // }
 
         // double check if the shields button is shown to prevent situations like showing the
         // tooltip on new tabs
@@ -477,11 +477,14 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                 Math.round(Float.parseFloat(BraveStatsUtil.getAdsTrackersBlocked().first.trim()));
         // show after BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF (20) blocked stuff above the TIER
         // threshold
+        totalBlocked = 1030;
+        Log.d("tiers", "blocked :" + totalBlocked);
         if (!BraveShieldsUtils.hasShieldsTooltipShown(
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER1)
                 && (totalBlocked >= BraveShieldsUtils.BRAVE_BLOCKED_TIER1
                                         + BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF
                         && totalBlocked < BraveShieldsUtils.BRAVE_BLOCKED_TIER2)) {
+            Log.d("tiers", "1 :");
             showTooltip(ShieldsTooltipEnum.BRAVE_SHARE_STATS_TIER1_TOOLTIP,
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER1);
         } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
@@ -489,6 +492,8 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                 && (totalBlocked >= BraveShieldsUtils.BRAVE_BLOCKED_TIER2
                                         + BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF
                         && totalBlocked < BraveShieldsUtils.BRAVE_BLOCKED_TIER3)) {
+            Log.d("tiers", "2 :");
+
             showTooltip(ShieldsTooltipEnum.BRAVE_SHARE_STATS_TIER2_TOOLTIP,
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER2);
         } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
@@ -496,6 +501,8 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                 && (totalBlocked >= BraveShieldsUtils.BRAVE_BLOCKED_TIER3
                                         + BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF
                         && totalBlocked < BraveShieldsUtils.BRAVE_BLOCKED_TIER4)) {
+            Log.d("tiers", "3 :");
+
             showTooltip(ShieldsTooltipEnum.BRAVE_SHARE_STATS_TIER3_TOOLTIP,
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER3);
         } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
@@ -503,6 +510,8 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                 && (totalBlocked >= BraveShieldsUtils.BRAVE_BLOCKED_TIER4
                                         + BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF
                         && totalBlocked < BraveShieldsUtils.BRAVE_BLOCKED_TIER5)) {
+            Log.d("tiers", "4 :");
+
             showTooltip(ShieldsTooltipEnum.BRAVE_SHARE_STATS_TIER4_TOOLTIP,
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER4);
         } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
@@ -510,6 +519,8 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                 && (totalBlocked >= BraveShieldsUtils.BRAVE_BLOCKED_TIER5
                                         + BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF
                         && totalBlocked < BraveShieldsUtils.BRAVE_BLOCKED_TIER6)) {
+            Log.d("tiers", "5 :");
+
             showTooltip(ShieldsTooltipEnum.BRAVE_SHARE_STATS_TIER5_TOOLTIP,
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER5);
         } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
@@ -517,6 +528,8 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                 && (totalBlocked >= BraveShieldsUtils.BRAVE_BLOCKED_TIER6
                                         + BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF
                         && totalBlocked < BraveShieldsUtils.BRAVE_BLOCKED_TIER7)) {
+            Log.d("tiers", "6 :");
+
             showTooltip(ShieldsTooltipEnum.BRAVE_SHARE_STATS_TIER6_TOOLTIP,
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER6);
         } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
@@ -524,6 +537,8 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                 && (totalBlocked >= BraveShieldsUtils.BRAVE_BLOCKED_TIER7
                                         + BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF
                         && totalBlocked < BraveShieldsUtils.BRAVE_BLOCKED_TIER8)) {
+            Log.d("tiers", "7 :");
+
             showTooltip(ShieldsTooltipEnum.BRAVE_SHARE_STATS_TIER7_TOOLTIP,
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER7);
         } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
@@ -531,6 +546,7 @@ public abstract class BraveToolbarLayout extends ToolbarLayout
                 && (totalBlocked >= BraveShieldsUtils.BRAVE_BLOCKED_TIER8
                                         + BraveShieldsUtils.BRAVE_BLOCKED_SHOW_DIFF
                         && totalBlocked < BraveShieldsUtils.BRAVE_BLOCKED_TIER9)) {
+            Log.d("tiers", "8 :");
             showTooltip(ShieldsTooltipEnum.BRAVE_SHARE_STATS_TIER8_TOOLTIP,
                     BraveShieldsUtils.PREF_SHARE_SHIELDS_TOOLTIP_TIER8);
         } else if (!BraveShieldsUtils.hasShieldsTooltipShown(

@@ -17,6 +17,8 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -173,33 +175,46 @@ public class BraveStatsUtil {
 
     public static void shareStatsAction(View view) {
         try {
-            Context context = ContextUtils.getApplicationContext();
-            Bitmap bmp = convertToBitmap(view);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Context context = ContextUtils.getApplicationContext();
+                    Bitmap bmp = convertToBitmap(view);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                shareStatsFile = MediaStore.Images.Media.insertImage(
-                        context.getContentResolver(), bmp, "tempimage", null);
-            } else {
-                storeImage(bmp);
-                shareStatsFile = getOutputMediaFile().getAbsolutePath();
-            }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        shareStatsFile = MediaStore.Images.Media.insertImage(
+                                context.getContentResolver(), bmp, "tempimage", null);
+                    } else {
+                        storeImage(bmp);
+                        shareStatsFile = getOutputMediaFile().getAbsolutePath();
+                    }
 
-            Uri uri = Uri.parse(shareStatsFile);
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("tiers", "shareStatsFile:" + shareStatsFile);
+                            Uri uri = Uri.parse(shareStatsFile);
 
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT,
-                    context.getResources().getString(R.string.brave_stats_share_text));
-            sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            sendIntent.setType("image/text");
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT,
+                                    context.getResources().getString(
+                                            R.string.brave_stats_share_text));
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            sendIntent.setType("image/text");
 
-            Intent shareIntent = Intent.createChooser(sendIntent, " ");
-            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            Intent shareIntent = Intent.createChooser(sendIntent, " ");
+                            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            if (BraveActivity.getBraveActivity() != null) {
-                BraveActivity.getBraveActivity().startActivity(shareIntent);
-            }
+                            if (BraveActivity.getBraveActivity() != null) {
+                                BraveActivity.getBraveActivity().startActivity(shareIntent);
+                            }
+                        }
+                    }, 100);
+                }
+            }).start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -207,16 +222,21 @@ public class BraveStatsUtil {
 
     public static void removeShareStatsFile() {
         Context context = ContextUtils.getApplicationContext();
-
-        if (shareStatsFile.startsWith("content://")) {
-            ContentResolver contentResolver = context.getContentResolver();
-            contentResolver.delete(Uri.parse(shareStatsFile), null, null);
-        } else {
-            File file = new File(shareStatsFile);
-            if (file.exists()) {
-                file.delete();
+        new Thread( new Runnable() { @Override public void run() {
+            if (shareStatsFile.startsWith("content://")) {
+                try {
+                    ContentResolver contentResolver = context.getContentResolver();
+                    contentResolver.delete(Uri.parse(shareStatsFile), null, null);
+                } catch (SecurityException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                File file = new File(shareStatsFile);
+                if (file.exists()) {
+                    file.delete();
+                }
             }
-        }
+        } } ).start();    
     }
 
     private static void storeImage(Bitmap image) {

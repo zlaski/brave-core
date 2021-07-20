@@ -71,6 +71,18 @@ public class BraveShieldsUtils {
 
         public static final int BRAVE_BLOCKED_SHOW_DIFF = 20;
 
+        // public static final int BRAVE_BLOCKED_TIER1 = 10;
+        // public static final int BRAVE_BLOCKED_TIER2 = 20;
+        // public static final int BRAVE_BLOCKED_TIER3 = 30;
+        // public static final int BRAVE_BLOCKED_TIER4 = 40;
+        // public static final int BRAVE_BLOCKED_TIER5 = 50;
+        // public static final int BRAVE_BLOCKED_TIER6 = 60;
+        // public static final int BRAVE_BLOCKED_TIER7 = 70;
+        // public static final int BRAVE_BLOCKED_TIER8 = 80;
+        // public static final int BRAVE_BLOCKED_TIER9 = 90;
+
+        // public static final int BRAVE_BLOCKED_SHOW_DIFF = 2;
+
         public static boolean isTooltipShown;
 
         public interface BraveShieldsCallback {
@@ -79,6 +91,8 @@ public class BraveShieldsUtils {
 
         public static boolean hasShieldsTooltipShown(String tooltipType) {
             SharedPreferences mSharedPreferences = ContextUtils.getAppSharedPreferences();
+            Boolean shown = mSharedPreferences.getBoolean(tooltipType, false);
+            Log.d("tiers", "hasShieldsTooltipShown tooltipType:" + tooltipType + " shown:" + shown);
             return mSharedPreferences.getBoolean(tooltipType, false);
         }
 
