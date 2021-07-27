@@ -8,17 +8,25 @@ package org.chromium.chrome.browser.crypto_wallet;
 import org.chromium.base.annotations.CalledByNative;
 import org.chromium.base.annotations.JNINamespace;
 import org.chromium.base.annotations.NativeMethods;
+import org.chromium.brave_wallet.mojom.KeyringController;
 import org.chromium.chrome.browser.crypto_wallet.BraveWalletNativeWorker;
 import org.chromium.chrome.browser.crypto_wallet.BraveWalletObserver;
+import org.chromium.mojo.bindings.ConnectionErrorHandler;
+import org.chromium.mojo.bindings.Interface;
+import org.chromium.mojo.bindings.Interface.Proxy.Handler;
+import org.chromium.mojo.system.impl.CoreImpl;
+import org.chromium.mojo.system.MessagePipeHandle;
+import org.chromium.mojo.system.MojoException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @JNINamespace("chrome::android")
-public class BraveWalletNativeWorker {
+public class BraveWalletNativeWorker implements ConnectionErrorHandler {
     private long mNativeBraveWalletNativeWorker;
     private static final Object lock = new Object();
     private static BraveWalletNativeWorker instance;
+    private KeyringController mKeyringController;
 
     private List<BraveWalletObserver> mObservers;
 
@@ -64,6 +72,26 @@ public class BraveWalletNativeWorker {
         synchronized (lock) {
             mObservers.remove(observer);
         }
+    }
+
+    public KeyringController getKeyringController() {
+        if (mKeyringController != null)
+            return mKeyringController;
+        int nativeHandle = BraveWalletNativeWorkerJni.get().getInterfaceToKeyringController();
+        MessagePipeHandle handle = wrapNativeHandle(nativeHandle);
+        mKeyringController = KeyringController.MANAGER.attachProxy(handle, 0);
+        Handler handler = ((Interface.Proxy) mKeyringController).getProxyHandler();
+        handler.setErrorHandler(this);
+        return mKeyringController;
+    }
+
+    private MessagePipeHandle wrapNativeHandle(int nativeHandle) {
+        return CoreImpl.getInstance().acquireNativeHandle(nativeHandle).toMessagePipeHandle();
+    }
+
+    @Override
+    public void onConnectionError(MojoException e) {
+        mKeyringController = null;
     }
 
     @CalledByNative
@@ -129,6 +157,7 @@ public class BraveWalletNativeWorker {
 
     @NativeMethods
     interface Natives {
+        int getInterfaceToKeyringController();
         void init(BraveWalletNativeWorker caller);
         void destroy(long nativeBraveWalletNativeWorker, BraveWalletNativeWorker caller);
         String getRecoveryWords(long nativeBraveWalletNativeWorker);

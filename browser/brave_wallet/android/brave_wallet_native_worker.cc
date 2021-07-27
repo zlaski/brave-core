@@ -34,6 +34,15 @@ BraveWalletNativeWorker::BraveWalletNativeWorker(
 
 BraveWalletNativeWorker::~BraveWalletNativeWorker() {}
 
+JNI_EXPORT jint JNI_BraveWalletNativeWorker_GetInterfaceToKeyringController(
+    JNIEnv* env) {
+  auto* profile = ProfileManager::GetActiveUserProfile()->GetOriginalProfile();
+  auto pending =
+        brave_wallet::KeyringControllerFactory::GetInstance()->GetForContext(
+            profile);
+  return static_cast<jint>(pending.PassPipe().release().value());
+}
+
 void BraveWalletNativeWorker::EnsureConnected() {
   auto* profile = ProfileManager::GetActiveUserProfile()->GetOriginalProfile();
   if (!keyring_controller_) {
