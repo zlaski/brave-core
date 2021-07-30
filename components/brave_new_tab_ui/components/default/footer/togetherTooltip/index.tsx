@@ -26,7 +26,7 @@ const TogetherTooltip: React.FunctionComponent<Props> = function (props) {
         <S.Body>
           {getLocale('togetherPromptDescription')}
         </S.Body>
-        <LinkButton href={braveTalkWidgetUrl}>
+        <LinkButton href={braveTalkWidgetUrl} onClick={props.onClose}>
           {getLocale('togetherPromptAction')}
         </LinkButton>
         <S.CloseButton
