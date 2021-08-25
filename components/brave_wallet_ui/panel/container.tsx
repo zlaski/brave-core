@@ -429,7 +429,8 @@ function Container (props: Props) {
             onApprove={onApproveAddNetwork}
             onCancel={onCancelAddNetwork}
             onLearnMore={onNetworkLearnMore}
-            networkPayload={networkPayload}          />
+            networkPayload={networkPayload}
+          />
         </SignContainer>
       </PanelWrapper>
     )
