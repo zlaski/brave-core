@@ -39,12 +39,10 @@ import org.chromium.base.Log;
 
 public class BraveNewsPreferences extends BravePreferenceFragment
         implements Preference.OnPreferenceChangeListener {
-
-
-    private static final String PREF_TURN_ON_NEWS = "turn_on_news";
-    private static final String PREF_SHOW_NEWS = "show_news";
-    private static final String PREF_SOURCES_SECTION = "your_sources_section";
-    private static final String PREF_ADD_SOURCES = "add_source_news";
+    public static final String PREF_TURN_ON_NEWS = "turn_on_news";
+    public static final String PREF_SHOW_NEWS = "show_news";
+    public static final String PREF_SOURCES_SECTION = "your_sources_section";
+    public static final String PREF_ADD_SOURCES = "add_source_news";
 
     private ChromeSwitchPreference turnOnNews;
     private ChromeSwitchPreference showNews;

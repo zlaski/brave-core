@@ -1,5 +1,7 @@
 package org.chromium.chrome.browser.brave_news;
 
+import static org.chromium.ui.base.ViewUtils.dpToPx;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +14,7 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -27,7 +30,10 @@ import androidx.annotation.RequiresApi;
 import androidx.core.widget.NestedScrollView;
 
 import org.chromium.chrome.R;
+import org.chromium.chrome.browser.app.BraveActivity;
 import org.chromium.chrome.browser.brave_news.models.NewsItem;
+import org.chromium.chrome.browser.util.ConfigurationUtils;
+import org.chromium.ui.base.DeviceFormFactor;
 
 import java.util.ArrayList;
 
@@ -51,6 +57,10 @@ public class CardBuilder { //implements ItemClickListener {
     NewsItem mNewsItem;
     int mPosition;
     int mType;
+    int horizontalMargin;
+    boolean isTablet;
+    int mDeviceWidth;
+    boolean isLandscape;
 
     private ItemClickListener mClickListener;
     private String TAG = "BN";
@@ -62,6 +72,21 @@ public class CardBuilder { //implements ItemClickListener {
         mPosition = position;
         mType = type;
         mNewsItem = newsItem;
+
+        // DisplayMetrics displayMetrics = new DisplayMetrics();
+        // activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        // int mDeviceHeight = displayMetrics.heightPixels;
+        // mDeviceWidth = displayMetrics.widthPixels;
+        mDeviceWidth = ConfigurationUtils.getDisplayMetrics(activity).get("width");
+
+        isTablet = ConfigurationUtils.isTablet(
+                activity); // DeviceFormFactor.isNonMultiDisplayContextOnTablet(activity);
+        isLandscape = ConfigurationUtils.isLandscape(activity);
+
+        horizontalMargin = isTablet
+                ? isLandscape ? (int) (0.20 * mDeviceWidth) : (int) (0.10 * mDeviceWidth)
+                : 40;
+
         createCard(mType, mPosition);
     }
 
@@ -98,12 +123,13 @@ public class CardBuilder { //implements ItemClickListener {
 
         LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 //        linearLayoutParams.setMargins(0, 40, 0, 40);
-        linearLayoutParams.setMargins(40, 0, 40, 40);
+        linearLayoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 40);
 
         switch (type) {
             case WELCOME:
                 NestedScrollView.LayoutParams welcomeParams = new NestedScrollView.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                welcomeParams.setMargins(40, displayHeight - 570, 40, 500);
+                welcomeParams.setMargins(
+                        horizontalMargin, displayHeight - 570, horizontalMargin, 500);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 linearLayout.setLayoutParams(welcomeParams);
                 linearLayout.setBackgroundColor(mActivity.getResources().getColor(R.color.card_background));
@@ -190,12 +216,10 @@ public class CardBuilder { //implements ItemClickListener {
                         if (mClickListener != null) mClickListener.onOptInClick(view);
                     }
                 });
-
                 linearLayout.addView(learnMoreWelcome);
 
                 break;
             case HEADLINE:
-
                 addElementsToSingleLayout(linearLayout, position, HEADLINE);
                 linearLayout.setBackground(makeRound(CARD_LAYOUT));
 
@@ -210,7 +234,7 @@ public class CardBuilder { //implements ItemClickListener {
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 linearLayout.setBackgroundColor(mActivity.getResources().getColor(R.color.card_background));
                 linearLayoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                linearLayoutParams.setMargins(40, 0, 40, 20);
+                linearLayoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 20);
                 linearLayout.setLayoutParams(linearLayoutParams);
 
                 tableLayoutTopNews.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -253,7 +277,7 @@ public class CardBuilder { //implements ItemClickListener {
                 tableLayoutTopNews.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
                 tableParamsTopNews.setMargins(10, 30, 5, 30);
                 linearLayoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                linearLayoutParams.setMargins(40, 0, 40, 20);
+                linearLayoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 20);
                 linearLayout.setLayoutParams(linearLayoutParams);
 
                 linearLayout.addView(tableLayoutTopNews);
@@ -282,37 +306,72 @@ public class CardBuilder { //implements ItemClickListener {
                 linearLayout.setBackground(makeRound(CARD_LAYOUT));
                 break;
             case TOP_NEWS:
- /*3 rows
+                /*3 rows
 
-                TOP NEWS
+                               TOP NEWS
 
-                Title           ---------
-                Description     |       |
-                                |       |
-                                ---------
+                               Title           ---------
+                               Description     |       |
+                                               |       |
+                                               ---------
 
-                Title           ---------
-                Description     |       |
-                                |       |
-                                --------
+                               Title           ---------
+                               Description     |       |
+                                               |       |
+                                               --------
 
 
-                Title           ---------
-                Description     |       |
-                                |       |
-                                --------
+                               Title           ---------
+                               Description     |       |
+                                               |       |
+                                               --------
 
-                 */
+                                               tablet landscape credit position good, first card too
+                   low with int topCardMargin = ConfigurationUtils.isLandscape(mActivity) ? (int)
+                   (dpHeight - 50) : (int) (dpHeight + 200); tablet portrait credit position too
+                   high, first card too low
+
+                                */
 
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 linearLayoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
                 linearLayout.setBackgroundColor(mActivity.getResources().getColor(R.color.card_background));
 
-                LinearLayout.LayoutParams params = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+                // DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+                float dpHeight = ConfigurationUtils.getDpDisplayMetrics(mActivity).get("height");
 
-                params.setMargins(40, 0, 40, 40);
+                LinearLayout.LayoutParams params =
+                        new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
+                                TableLayout.LayoutParams.WRAP_CONTENT);
+                Log.d("bn", "firstcard dpheight:" + dpHeight);
+                Log.d("bn", "firstcard dpheight px:" + dpToPx(mActivity, dpHeight));
+                Log.d("bn", "firstcard dpheight+200:" + (int) (dpHeight + 200));
+                Log.d("bn", "firstcard dptopx 35:" + dpToPx(mActivity, 35));
+
+                // int imageCreditCorrection = isLandscape ? (int) (dpHeight - 50) : (int) (dpHeight
+                // + 450);
+                int topCardMargin =
+                        (int) (BraveActivity.getBraveActivity().getImageCreditLayoutBottom() + 20);
+                Log.d("bn", "firstcard topCardMargin:" + topCardMargin);
+                // if (ConfigurationUtils.isTablet(mActivity)){
+                //     topCardMargin = ConfigurationUtils.isLandscape(mActivity) ? (int)
+                //     (BraveActivity.getBraveActivity().getImageCreditLayoutBottom() + 50) : (int)
+                //     (BraveActivity.getBraveActivity().getImageCreditLayoutBottom() + 50);
+                // } else {
+                //     topCardMargin = ConfigurationUtils.isLandscape(mActivity) ? (int) (dpHeight -
+                //     200) : (int) (dpHeight - 20);
+                // }
+
+                // int topCardMargin = ConfigurationUtils.isLandscape(mActivity) ? (int) (dpHeight -
+                // 650) : (int) (dpHeight - 200);
+
+                params.setMargins(horizontalMargin, 0, horizontalMargin, 40);
                 int height = mActivity.getResources().getDisplayMetrics().heightPixels;
                 linearLayout.setLayoutParams(params);
+                Log.d("bn",
+                        "newlayout display height:"
+                                + ConfigurationUtils.getDisplayMetrics(mActivity).get("height"));
+                Log.d("bn", "newlayout linearLayout.getBottom:" + linearLayout.getBottom());
                 linearLayout.addView(tableLayoutTopNews);
                 tableLayoutTopNews.addView(rowTop);
                 rowTop.addView(topText);
@@ -353,7 +412,7 @@ public class CardBuilder { //implements ItemClickListener {
                 linearLayout.setOrientation(LinearLayout.HORIZONTAL);
                 linearLayout.setBackgroundColor(Color.TRANSPARENT);
                 linearLayoutParams.height = 650;
-                linearLayoutParams.setMargins(40, 0, 40, 20);
+                linearLayoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 20);
                 linearLayout.setLayoutParams(linearLayoutParams);
 
                 LinearLayout.LayoutParams cellParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
@@ -505,7 +564,7 @@ public class CardBuilder { //implements ItemClickListener {
             case HEADLINE:
                 layout.setOrientation(LinearLayout.VERTICAL);
                 linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                linearLayoutParams.setMargins(50, 20, 40, 50);
+                linearLayoutParams.setMargins(horizontalMargin, 20, horizontalMargin, 50);
                 layout.setLayoutParams(linearLayoutParams);
 
                 layout.addView(image);

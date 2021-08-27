@@ -23,6 +23,9 @@ public class BraveNewsUtils {
 
     private Context mContext;
 
+    private static final String PREF_TURN_ON_NEWS = "turn_on_news";
+    private static final String PREF_SHOW_NEWS = "show_news";
+
     public BraveNewsUtils(Context context){
         mContext = context;
     }

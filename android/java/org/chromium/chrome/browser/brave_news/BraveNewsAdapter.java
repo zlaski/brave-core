@@ -51,8 +51,8 @@ public class BraveNewsAdapter extends RecyclerView.Adapter<BraveNewsAdapter.View
     private LinearLayout.LayoutParams linearLayoutParams;
     private CopyOnWriteArrayList<NewsItem> mNewsItems;
 
-    private int cardPosition = 0;
-    private boolean isOptIn = false;
+    private int cardPosition;
+    private boolean isOptIn;
 
     private final int CARD_LAYOUT = 0;
     private final int BUTTON_LAYOUT = 1;
@@ -124,18 +124,18 @@ public class BraveNewsAdapter extends RecyclerView.Adapter<BraveNewsAdapter.View
 //            {
 //            linearLayoutParams.setMargins(40, 0, 40, 40);
         switch (cardPosition) {
-            case 1:
+            case 0:
                 //TOP news
                 Log.d(TAG, "creating TOP_NEWS");
                 new CardBuilder(mHolder.linearLayout, mActivity, position, mNewsItems.get(position), TOP_NEWS);
                 break;
-            case 2:
+            case 1:
                 Log.d(TAG, "creating HEADLINE");
                 new CardBuilder(mHolder.linearLayout, mActivity, position, mNewsItems.get(position), HEADLINE);
                 // Display Ad
                 break;
+            case 2:
             case 3:
-            case 4:
                 /* headline
 
                       Image
@@ -149,7 +149,7 @@ public class BraveNewsAdapter extends RecyclerView.Adapter<BraveNewsAdapter.View
                 */
                 new CardBuilder(mHolder.linearLayout, mActivity, position, mNewsItems.get(position), HEADLINE);
                 break;
-            case 5:
+            case 4:
                 /*headlinepair
 
                       Image      Image
@@ -164,19 +164,20 @@ public class BraveNewsAdapter extends RecyclerView.Adapter<BraveNewsAdapter.View
                 new CardBuilder(mHolder.linearLayout, mActivity, position, mNewsItems.get(position), HEADLINEPAIR);
 
                 break;
-            case 6:
+            case 5:
                 // promoted content
                 new CardBuilder(mHolder.linearLayout, mActivity, position, mNewsItems.get(position), HEADLINE);
                 break;
-            case 7:
+            case 6:
                 // 3x Headlines
                 new CardBuilder(mHolder.linearLayout, mActivity, position, mNewsItems.get(position), THREE_ROWS_HEADLINES);
                 break;
+            case 7:
             case 8:
-            case 9:
                 new CardBuilder(mHolder.linearLayout, mActivity, position, mNewsItems.get(position), DEALS);
                 // headline
                 break;
+            case 9:
             case 10:
             case 11:
                 // 2 col headline
