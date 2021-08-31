@@ -489,7 +489,7 @@ function Container (props: Props) {
       </PanelWrapper>
     )
   }
-  console.log(selectedPanel)
+
   if (selectedPanel === 'networks') {
     return (
       <PanelWrapper isLonger={false}>
