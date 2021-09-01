@@ -13,6 +13,7 @@ export const showConnectToSite = createAction<ShowConnectToSitePayload>('showCon
 export const addEthereumChain = createAction<EthereumChainPayload>('addEthereumChain')
 export const addEthereumChainApproved = createAction<AddEthereumChainPayload>('addEthereumChainApproved')
 export const addEthereumChainCanceled = createAction<AddEthereumChainPayload>('addEthereumChainCanceled')
+export const showApproveTransaction = createAction('showApproveTransaction')
 export const setupWallet = createAction('setupWallet')
 export const expandWallet = createAction('expandWallet')
 export const openWalletSettings = createAction('openWalletSettings')

@@ -73,6 +73,8 @@ export type PanelTypes =
   | 'settings'
   | 'expanded'
   | 'assets'
+  | 'approveTransaction'
+  | 'connectWithSite'
 
 export type NavTypes =
   | 'crypto'
@@ -163,6 +165,8 @@ export interface WalletState {
   userVisibleTokensInfo: TokenInfo[]
   fullTokenList: TokenInfo[]
   portfolioPriceHistory: PriceDataObjectType[]
+  pendingTransactions: TransactionInfo[]
+  selectedPendingTransaction: TransactionInfo | undefined
   isFetchingPortfolioPriceHistory: boolean
   selectedPortfolioTimeline: AssetPriceTimeframe
   networkList: EthereumChain[]
@@ -178,7 +182,6 @@ export interface PanelState {
   connectingAccounts: string[]
   showSignTransaction: boolean
   showAllowSpendERC20Token: boolean
-  showConfirmTransaction: boolean
   networkPayload: EthereumChain
 }
 
@@ -247,7 +250,8 @@ export enum TransactionStatus {
   Approved = 1,
   Rejected = 2,
   Submitted = 3,
-  Confirmed = 4
+  Confirmed = 4,
+  Error = 5
 }
 
 // Keep in sync with components/brave_wallet/common/brave_wallet.mojom until
