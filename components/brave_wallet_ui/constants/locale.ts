@@ -214,7 +214,7 @@ const locale = {
   searchAsset: 'Search Coins',
 
   // Swap
-  swapFrom: 'From',
+  swapFrom: 'Amount',
   swapTo: 'To',
   swapEstimate: 'estimate',
   swapMarket: 'Market',

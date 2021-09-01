@@ -335,11 +335,20 @@ function Container (props: Props) {
 
   const getTokenPrice = (symbol: string): AssetPriceInfo => {
     // Need to create an action to get a SpotPrice of a token
-    return {
-      fromAsset: '',
-      toAsset: '',
-      price: '',
-      assetTimeframeChange: ''
+    if (symbol === 'ETH') {
+      return {
+        fromAsset: 'ETH',
+        toAsset: 'USD',
+        price: '3300',
+        assetTimeframeChange: ''
+      }
+    } else {
+      return {
+        fromAsset: 'BAT',
+        toAsset: 'USD',
+        price: '0.85',
+        assetTimeframeChange: ''
+      }
     }
   }
 
@@ -404,7 +413,7 @@ function Container (props: Props) {
             onConfirm={onConfirmTransaction}
             onReject={onRejectTransaction}
             accounts={accounts}
-            selectedNetwork={selectedNetwork}
+            selectedNetwork={GetNetworkInfo(selectedNetwork.chainId, networkList)}
             transactionInfo={selectedPendingTransaction}
             getTokenPrice={getTokenPrice}
             visibleTokens={userVisibleTokensInfo}
