@@ -73,7 +73,6 @@ export type PanelTypes =
   | 'settings'
   | 'expanded'
   | 'assets'
-  | 'approveTransaction'
   | 'connectWithSite'
 
 export type NavTypes =
@@ -166,6 +165,7 @@ export interface WalletState {
   fullTokenList: TokenInfo[]
   portfolioPriceHistory: PriceDataObjectType[]
   pendingTransactions: TransactionInfo[]
+  knownTransactions: TransactionInfo[]
   selectedPendingTransaction: TransactionInfo | undefined
   isFetchingPortfolioPriceHistory: boolean
   selectedPortfolioTimeline: AssetPriceTimeframe
@@ -213,8 +213,8 @@ export interface WalletPanelState {
 }
 
 export interface AccountInfo {
-  address: string[]
-  name: string[]
+  address: string
+  name: string
   isImported: boolean
 }
 

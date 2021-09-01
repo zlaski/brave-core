@@ -101,10 +101,6 @@ handler.on(PanelActions.addEthereumChain.getType(), async (store, payload: Ether
   apiProxy.showUI()
 })
 
-handler.on(PanelActions.showApproveTransaction.getType(), async (store) => {
-  store.dispatch(PanelActions.navigateTo('approveTransaction'))
-})
-
 handler.on(PanelActions.addEthereumChainApproved.getType(), async (store, payload: EthereumChainPayload) => {
   const state = getPanelState(store)
   const apiProxy = await getAPIProxy()
