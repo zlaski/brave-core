@@ -62,6 +62,13 @@ void BraveWalletTabHelper::ShowBubble() {
   wallet_bubble_manager_delegate_->ShowBubble();
 }
 
+void BraveWalletTabHelper::ShowApproveWalletBubble() {
+  wallet_bubble_manager_delegate_ =
+      WalletBubbleManagerDelegate::Create(web_contents_,
+          GetApproveBubbleURL());
+  wallet_bubble_manager_delegate_->ShowBubble();
+}
+
 void BraveWalletTabHelper::UserRequestCompleted(size_t hash,
                                                 const std::string& result) {
   DCHECK(request_callbacks_.contains(hash));
@@ -141,6 +148,20 @@ GURL BraveWalletTabHelper::GetBubbleURL() {
   return webui_url;
 }
 #endif  // !defined(OS_ANDROID) && !defined(OS_IOS)
+
+GURL BraveWalletTabHelper::GetApproveBubbleURL() {
+  GURL webui_url = GURL(kBraveUIWalletPanelURL);
+  url::Replacements<char> replacements;
+  std::vector<std::string> query_parts;
+  int32_t tab_id = sessions::SessionTabHelper::IdForTab(web_contents_).id();
+  query_parts.push_back(base::StringPrintf("tabId=%d", tab_id));
+  std::string query_str = base::JoinString(query_parts, "&");
+  replacements.SetQuery(query_str.c_str(), url::Component(0, query_str.size()));
+  const std::string ref = "approveTransaction";
+  replacements.SetRef(ref.c_str(), url::Component(0, ref.size()));
+  return webui_url.ReplaceComponents(replacements);
+}
+
 
 WEB_CONTENTS_USER_DATA_KEY_IMPL(BraveWalletTabHelper)
 

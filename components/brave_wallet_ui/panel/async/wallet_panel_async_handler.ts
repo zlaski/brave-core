@@ -7,7 +7,6 @@ import { MiddlewareAPI, Dispatch, AnyAction } from 'redux'
 import AsyncActionHandler from '../../../common/AsyncActionHandler'
 import * as PanelActions from '../actions/wallet_panel_actions'
 import * as WalletActions from '../../common/actions/wallet_actions'
-import { NewUnapprovedTxAdded } from '../../common/constants/action_types'
 import { WalletPanelState, PanelState, EthereumChain } from '../../constants/types'
 import { AccountPayloadType, ShowConnectToSitePayload, EthereumChainPayload } from '../constants/action_types'
 
@@ -50,6 +49,12 @@ handler.on(WalletActions.initialize.getType(), async (store) => {
     const accounts = url.searchParams.getAll('addr') || []
     const origin = url.searchParams.get('origin') || ''
     store.dispatch(PanelActions.showConnectToSite({ tabId, accounts, origin }))
+    return
+  }
+  if (url.hash === '#approveTransaction') {
+    // When this panel is explicitly selected we close the panel
+    // UI after all transactions are approved or rejected.
+    store.dispatch(PanelActions.navigateTo('approveTransaction'))
     return
   }
   if (url.hash === '#addEthereumChain') {
@@ -155,8 +160,21 @@ handler.on(PanelActions.openWalletSettings.getType(), async (store) => {
   })
 })
 
-handler.on(WalletActions.newUnapprovedTxAdded.getType(), async (store, payload: NewUnapprovedTxAdded) => {
-  store.dispatch(PanelActions.showApproveTransaction())
+handler.on(WalletActions.approveTransaction.getType(), async (store) => {
+  const state = getPanelState(store)
+  if (state.selectedPanel == 'approveTransaction') {
+    const apiProxy = await getAPIProxy()
+    apiProxy.closeUI()
+  }
 })
+
+handler.on(WalletActions.rejectTransaction.getType(), async (store) => {
+  const state = getPanelState(store)
+  if (state.selectedPanel == 'approveTransaction') {
+    const apiProxy = await getAPIProxy()
+    apiProxy.closeUI()
+  }
+})
+
 
 export default handler.middleware

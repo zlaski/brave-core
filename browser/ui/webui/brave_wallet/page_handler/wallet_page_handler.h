@@ -26,7 +26,10 @@ class WalletPageHandler : public brave_wallet::mojom::PageHandler {
   WalletPageHandler& operator=(const WalletPageHandler&) = delete;
   ~WalletPageHandler() override;
 
+  void ShowPanelUI() override;
+
  private:
+  Profile* profile_;  // NOT OWNED
   mojo::Receiver<brave_wallet::mojom::PageHandler> receiver_;
   base::WeakPtrFactory<WalletPageHandler> weak_ptr_factory_;
 };

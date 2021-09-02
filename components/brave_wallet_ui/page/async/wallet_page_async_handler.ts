@@ -16,6 +16,7 @@ import {
   RemoveImportedAccountPayloadType,
   ViewPrivateKeyPayloadType
 } from '../constants/action_types'
+import { NewUnapprovedTxAdded } from '../../common/constants/action_types'
 
 type Store = MiddlewareAPI<Dispatch<AnyAction>, any>
 
@@ -99,6 +100,11 @@ handler.on(WalletPageActions.viewPrivateKey.getType(), async (store, payload: Vi
   const keyringController = (await getAPIProxy()).keyringController
   const result = await keyringController.getPrivateKeyForImportedAccount(payload.address)
   store.dispatch(WalletPageActions.privateKeyAvailable({ privateKey: result.privateKey }))
+})
+
+handler.on(WalletActions.newUnapprovedTxAdded.getType(), async (store, payload: NewUnapprovedTxAdded) => {
+  const pageHandler = (await getAPIProxy()).pageHandler
+  pageHandler.showPanelUI()
 })
 
 // TODO(bbondy): Remove - Example usage:
