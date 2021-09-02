@@ -182,7 +182,6 @@ export interface PanelState {
   tabId: number
   connectingAccounts: string[]
   showSignTransaction: boolean
-  showAllowSpendERC20Token: boolean
   networkPayload: EthereumChain
 }
 
