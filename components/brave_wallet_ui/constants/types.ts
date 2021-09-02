@@ -170,6 +170,7 @@ export interface WalletState {
   isFetchingPortfolioPriceHistory: boolean
   selectedPortfolioTimeline: AssetPriceTimeframe
   networkList: EthereumChain[]
+  transactionSpotPrices: AssetPriceInfo[]
 }
 
 export interface PanelState {
