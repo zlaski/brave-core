@@ -299,6 +299,11 @@ void BraveBrowserView::CreateWalletBubble() {
   GetWalletButton()->ShowWalletBubble();
 }
 
+void BraveBrowserView::CreateApproveWalletBubble() {
+  DCHECK(GetWalletButton());
+  GetWalletButton()->ShowApproveWalletBubble();
+}
+
 void BraveBrowserView::CloseWalletBubble() {
   if (GetWalletButton())
     GetWalletButton()->CloseWalletBubble();
