@@ -371,7 +371,8 @@ public class BraveRewardsHelper implements LargeIconBridge.LargeIconCallback{
 
   public static Tab currentActiveChromeTabbedActivityTab() {
       ChromeTabbedActivity activity = BraveRewardsHelper.getChromeTabbedActivity();
-      if (activity == null || activity.getTabModelSelector() == null) {
+      if (activity == null || activity.getTabModelOrchestratorSupplier().get() == null
+              || activity.getTabModelSelector() == null) {
           return null;
       }
       return activity.getActivityTab();
