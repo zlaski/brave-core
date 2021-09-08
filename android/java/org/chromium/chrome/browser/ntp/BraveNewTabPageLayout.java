@@ -116,7 +116,7 @@ import org.chromium.chrome.browser.profiles.Profile;
 
 import org.chromium.chrome.browser.settings.BraveNewsPreferences;
 import org.chromium.chrome.browser.settings.SettingsLauncherImpl;
-import org.chromium.chrome.browser.suggestions.tile.SiteSection;
+
 import org.chromium.chrome.browser.suggestions.tile.TileGroup;
 import org.chromium.chrome.browser.sync.settings.BraveManageSyncSettings;
 import org.chromium.chrome.browser.tab.EmptyTabObserver;
@@ -1291,17 +1291,20 @@ public class BraveNewTabPageLayout
                 Log.d("bn", "compositorViewchildren ntplayout nextchild before add:" + nextChild);
             }
 
-            // @TODO type check and null checks for all views added by getChild or similar
+            // @TODO section for settings bar. TO solve getActivityTab() issues
             try {
-                if (UrlUtilities.isNTPUrl(
-                            BraveActivity.getBraveActivity().getActivityTab().getUrlString())) {
-                    if (compositorView.getChildAt(2).getId() == R.id.news_settings_bar) {
-                        settingsBar = (LinearLayout) compositorView.getChildAt(2);
-                        Log.d("bn", "fetched settings bar :" + settingsBar.getId());
-                        Log.d("bn", "fetched settings bar :" + R.id.news_settings_bar);
-                        Log.d("bn",
-                                "fetched settings bar :" + R.layout.brave_news_settings_bar_layout);
-                        settingsBar.setAlpha(0f);
+                if (BraveActivity.getBraveActivity() != null 
+                        && BraveActivity.getBraveActivity().getActivityTab() != null) {
+                    if (UrlUtilities.isNTPUrl(
+                                BraveActivity.getBraveActivity().getActivityTab().getUrl().getSpec())) {
+                        if (compositorView.getChildAt(2).getId() == R.id.news_settings_bar) {
+                            settingsBar = (LinearLayout) compositorView.getChildAt(2);
+                            Log.d("bn", "fetched settings bar :" + settingsBar.getId());
+                            Log.d("bn", "fetched settings bar :" + R.id.news_settings_bar);
+                            Log.d("bn",
+                                    "fetched settings bar :" + R.layout.brave_news_settings_bar_layout);
+                            settingsBar.setAlpha(0f);
+                        }
                     }
                 }
             } catch (Exception e) {

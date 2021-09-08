@@ -3,14 +3,61 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // you can obtain one at http://mozilla.org/MPL/2.0/.
 
+// #include "brave/browser/brave_news/brave_news_controller_factory.h"
+
+// #include "brave/components/brave_today/browser/brave_news_controller.h"
+  // #include "chrome/browser/profiles/incognito_helpers.h"
+  // #include "components/keyed_service/content/browser_context_dependency_manager.h"
+  // #include "components/user_prefs/user_prefs.h"
+  // #include "content/public/browser/browser_context.h"
+  // #include "content/public/browser/storage_partition.h"
+
+// namespace brave_news {
+
+// // static
+// BraveNewsControllerFactory* BraveNewsControllerFactory::GetInstance() {
+//   return base::Singleton<BraveNewsControllerFactory>::get();
+// }
+
+// // static
+// BraveNewsController* BraveNewsControllerFactory::GetForContext(
+//     content::BrowserContext* context) {
+//   return static_cast<BraveNewsController*>(
+//       GetInstance()->GetServiceForBrowserContext(context, true));
+// }
+
+// BraveNewsControllerFactory::BraveNewsControllerFactory()
+//     : BrowserContextKeyedServiceFactory(
+//           "BraveNewsControllerFactory",
+//           BrowserContextDependencyManager::GetInstance()) {}
+
+// BraveNewsControllerFactory::~BraveNewsControllerFactory() = default;
+
+// KeyedService* BraveNewsControllerFactory::BuildServiceInstanceFor(
+//     content::BrowserContext* context) const {
+//   auto* default_storage_partition = context->GetDefaultStoragePartition();
+//   auto shared_url_loader_factory =
+//       default_storage_partition->GetURLLoaderFactoryForBrowserProcess();
+
+//   return new BraveNewsController(
+//       user_prefs::UserPrefs::Get(context), shared_url_loader_factory);
+// }
+
+// content::BrowserContext* BraveNewsControllerFactory::GetBrowserContextToUse(
+//     content::BrowserContext* context) const {
+//   return chrome::GetBrowserContextRedirectedInIncognito(context);
+// }
+
+// }  // namespace brave_news
+
 #include "brave/browser/brave_news/brave_news_controller_factory.h"
 
 #include "brave/components/brave_today/browser/brave_news_controller.h"
 #include "chrome/browser/profiles/incognito_helpers.h"
-#include "components/keyed_service/content/browser_context_dependency_manager.h"
 #include "components/user_prefs/user_prefs.h"
-#include "content/public/browser/browser_context.h"
+#include "components/keyed_service/content/browser_context_dependency_manager.h"
 #include "content/public/browser/storage_partition.h"
+#include "services/network/public/cpp/shared_url_loader_factory.h"
 
 namespace brave_news {
 
@@ -20,18 +67,40 @@ BraveNewsControllerFactory* BraveNewsControllerFactory::GetInstance() {
 }
 
 // static
-BraveNewsController* BraveNewsControllerFactory::GetForContext(
-    content::BrowserContext* context) {
+mojo::PendingRemote<mojom::BraveNewsController>
+BraveNewsControllerFactory::GetForContext(content::BrowserContext* context) {
+  // if (!IsAllowedForContext(context))
+  //   return mojo::PendingRemote<mojom::AssetRatioController>();
+
   return static_cast<BraveNewsController*>(
-      GetInstance()->GetServiceForBrowserContext(context, true));
+             GetInstance()->GetServiceForBrowserContext(context, true))
+      ->MakeRemote();
 }
+
+
+// static
+// BraveNewsController* BraveNewsControllerFactory::GetForContext(
+//     content::BrowserContext* context) {
+//   return static_cast<BraveNewsController*>(
+//       GetInstance()->GetServiceForBrowserContext(context, true));
+// }
+
+// static
+// BraveNewsController* BraveNewsControllerFactory::GetControllerForContext(
+//     content::BrowserContext* context) {
+//   // if (!IsAllowedForContext(context)) {
+//   //   return nullptr;
+//   // }
+//   return static_cast<BraveNewsController*>(
+//       GetInstance()->GetServiceForBrowserContext(context, true));
+// }
 
 BraveNewsControllerFactory::BraveNewsControllerFactory()
     : BrowserContextKeyedServiceFactory(
-          "BraveNewsControllerFactory",
+          "BraveNewsController",
           BrowserContextDependencyManager::GetInstance()) {}
 
-BraveNewsControllerFactory::~BraveNewsControllerFactory() = default;
+BraveNewsControllerFactory::~BraveNewsControllerFactory() {}
 
 KeyedService* BraveNewsControllerFactory::BuildServiceInstanceFor(
     content::BrowserContext* context) const {
@@ -39,7 +108,8 @@ KeyedService* BraveNewsControllerFactory::BuildServiceInstanceFor(
   auto shared_url_loader_factory =
       default_storage_partition->GetURLLoaderFactoryForBrowserProcess();
 
-  return new BraveNewsController(
+  // return new BraveNewsController(shared_url_loader_factory);
+    return new BraveNewsController(
       user_prefs::UserPrefs::Get(context), shared_url_loader_factory);
 }
 
@@ -48,4 +118,4 @@ content::BrowserContext* BraveNewsControllerFactory::GetBrowserContextToUse(
   return chrome::GetBrowserContextRedirectedInIncognito(context);
 }
 
-}  // nanespace brave_news
+}  // namespace brave_news
