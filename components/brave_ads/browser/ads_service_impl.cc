@@ -1133,6 +1133,7 @@ void AdsServiceImpl::OnPromotedContentAdEvent(
 void AdsServiceImpl::GetInlineContentAd(const std::string& dimensions,
                                         OnGetInlineContentAdCallback callback) {
   if (!connected()) {
+    std::move(callback).Run(false, "", base::DictionaryValue());
     return;
   }
 
