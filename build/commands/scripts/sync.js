@@ -71,9 +71,6 @@ async function RunCommand () {
   }
 
   let braveCoreRef = program.args[0]
-  if (!braveCoreRef) {
-    braveCoreRef = program.init ? config.getProjectVersion('brave-core') : null
-  }
 
   if (braveCoreRef || program.init || program.force) {
     // we're doing a reset of brave-core so try to stash any changes
@@ -99,7 +96,7 @@ async function RunCommand () {
   }
 
   Log.progress('Running gclient sync...')
-  const result = util.gclientSync(program.init || program.force, program.init, braveCoreRef)
+  const result = util.gclientSync(program.init || program.force, program.init)
   const postSyncBraveCoreRef = util.getGitReadableLocalRef(config.braveCoreDir)
   Log.status(`Brave Core is now at ${postSyncBraveCoreRef || '[unknown]'}`)
   if (result.didUpdateChromium) {

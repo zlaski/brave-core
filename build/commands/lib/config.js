@@ -41,13 +41,29 @@ var packageConfig = function (key) {
   return obj
 }
 
+var packageBraveConfig = function (key) {
+  let packages = { config: {} }
+  if (fs.existsSync(path.join(rootDir, 'src', 'brave', 'package.json'))) {
+    packages = require(path.join(rootDir, 'src', 'brave', 'package.json'))
+  }
+
+  let obj = Object.assign({}, packages.config)
+  for (var i = 0, len = key.length; i < len; i++) {
+    if (!obj) {
+      return obj
+    }
+    obj = obj[key[i]]
+  }
+  return obj
+}
+
 const getNPMConfig = (key) => {
   if (!NpmConfig) {
     const list = run(npmCommand, ['config', 'list', '--json', '--userconfig=' + path.join(rootDir, '.npmrc')])
     NpmConfig = JSON.parse(list.stdout.toString())
   }
 
-  return NpmConfig[key.join('-').replace(/_/g, '-')] || packageConfig(key)
+  return NpmConfig[key.join('-').replace(/_/g, '-')] || packageConfig(key) || packageBraveConfig(key)
 }
 
 const parseExtraInputs = (inputs, accumulator, callback) => {

@@ -17,6 +17,7 @@ const checkout = (braveCoreRef, options) => {
       braveCoreRef = revParse.stdout.toString()
     }
 
+    // TODO(atuchin): remove braveCoreRef?
     let args = ['sync', '--nohooks', '--force', '--reset', '--upstream', '--revision', 'src/brave@' + braveCoreRef]
 
     util.gclientSync(false, options)

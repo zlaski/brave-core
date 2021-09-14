@@ -629,7 +629,7 @@ const util = {
     return needsUpdate
   },
 
-  gclientSync: (forceReset = false, cleanup = false, braveCoreRef = null, options = {}) => {
+  gclientSync: (forceReset = false, cleanup = false, options = {}) => {
     let reset = forceReset
 
     // base args
@@ -640,7 +640,8 @@ const util = {
     let args = [...initialArgs]
     let didUpdateChromium = false
 
-    if (forceReset || braveCoreRef) {
+    if (forceReset) { // TODO(atuchin) : do we really need to pass something to gclient in case force_reset?
+      braveCoreRef = ''
       if (!braveCoreRef) {
         // Use current branch (sync will then pull latest) or current exact hash
         // if we're not in a branch.
