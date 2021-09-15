@@ -42,6 +42,17 @@
     "type": "git",
     "url": "git+https://github.com/brave/brave-core.git"
   },
+  "config": {
+    "projects": {
+      "chrome": {
+        "dir": "src",
+        "tag": "94.0.4606.41",
+        "repository": {
+          "url": "https://github.com/chromium/chromium"
+        }
+      }
+    }
+  },
   "author": {
     "name": "Brave Software <support@brave.com>"
   },
