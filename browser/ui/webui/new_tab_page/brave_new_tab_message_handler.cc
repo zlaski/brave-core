@@ -582,7 +582,6 @@ void BraveNewTabMessageHandler::HandleCustomizeClicked(
       kNTPCustomizeUsageStatus, g_browser_process->local_state());
 }
 
-<<<<<<< HEAD
 void BraveNewTabMessageHandler::HandleTodayInteractionBegin(
     base::Value::ConstListView args) {
   AllowJavascript();
