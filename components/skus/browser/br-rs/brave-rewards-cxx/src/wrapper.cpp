@@ -1124,9 +1124,9 @@ void brave_rewards$cxxbridge1$shim_set(::rust::Str key, ::rust::Str value) noexc
   shim_set$(key, value);
 }
 
-const ::std::string *brave_rewards$cxxbridge1$shim_get(::rust::Str key) noexcept {
-  const ::std::string &(*shim_get$)(::rust::Str) = ::brave_rewards::shim_get;
-  return &shim_get$(key);
+::std::string *brave_rewards$cxxbridge1$shim_get(::rust::Str key) noexcept {
+  ::std::unique_ptr<::std::string> (*shim_get$)(::rust::Str) = ::brave_rewards::shim_get;
+  return shim_get$(key).release();
 }
 } // extern "C"
 
