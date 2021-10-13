@@ -1,5 +1,6 @@
 use crate::{ffi, NativeClient, LOCAL_POOL};
 use brave_rewards::{errors, KVClient, KVStore};
+use tracing::debug;
 
 impl KVClient<NativeClient> for NativeClient {
     fn get_store() -> Result<Self, errors::InternalError> {
@@ -18,11 +19,10 @@ impl KVStore for NativeClient {
         Ok(())
     }
     fn get(&mut self, key: &str) -> Result<Option<String>, errors::InternalError> {
-        let ret = ffi::shim_get(key).to_string_lossy();
-        Ok(if ret.len() > 0 {
-            Some(ret.to_string())
-        } else {
-            None
-        })
+        let tmp = Ok(ffi::shim_get(key)
+            .as_ref()
+            .map(|v| v.to_string_lossy().to_string()));
+        debug!("{:?}", tmp);
+        tmp
     }
 }

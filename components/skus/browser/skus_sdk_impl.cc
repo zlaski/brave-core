@@ -210,8 +210,7 @@ void shim_set(rust::cxxbridge1::Str key, rust::cxxbridge1::Str value) {
   dictionary->SetString(key_string, value_string);
 }
 
-const std::string& shim_get(rust::cxxbridge1::Str key) {
-  static const std::string empty = "";
+std::unique_ptr<std::string> shim_get(rust::cxxbridge1::Str key) {
   std::string key_string = ruststr_2_stdstring(key);
   LOG(ERROR) << "shim_get: `" << key_string << "`";
 
@@ -221,9 +220,10 @@ const std::string& shim_get(rust::cxxbridge1::Str key) {
   DCHECK(dictionary->is_dict());
   const base::Value* value = dictionary->FindKey(key_string);
   if (value) {
-    return value->GetString();
+    std::string value_str = value->GetString();
+    return std::make_unique<std::string>(value_str.begin(), value_str.end());
   }
-  return empty;
+  return std::make_unique<std::string>("");
 }
 
 void shim_scheduleWakeup(::std::uint64_t delay_ms,
