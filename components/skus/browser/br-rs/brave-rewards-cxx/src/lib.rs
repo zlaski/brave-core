@@ -86,7 +86,7 @@ mod ffi {
 
         fn shim_purge();
         fn shim_set(key: &str, value: &str);
-        fn shim_get(key: &str) -> UniquePtr<CxxString>;
+        fn shim_get<'a>(key: &str) -> &'a CxxString;
 
         type RefreshOrderCallbackState;
         type RefreshOrderCallback = crate::RefreshOrderCallback;

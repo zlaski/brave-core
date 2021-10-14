@@ -28,6 +28,15 @@ class PrefRegistrySyncable;
 
 namespace brave_rewards {
 
+class StupidDictionary {
+  private:
+    StupidDictionary();
+  public:
+    std::map<std::string, std::string> dictionary_;
+    static StupidDictionary* GetInstance();
+    ~StupidDictionary();
+};
+
 class SkusSdkImpl final : public skus::mojom::SkusSdk {
  public:
   static void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry);

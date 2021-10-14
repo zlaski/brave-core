@@ -187,7 +187,20 @@ void OnScheduleWakeup(rust::cxxbridge1::Fn<void()> done) {
 
 }  // namespace
 
+
 namespace brave_rewards {
+
+brave_rewards::StupidDictionary* g_dictionary = NULL;
+
+StupidDictionary::StupidDictionary() {}
+StupidDictionary::~StupidDictionary() {}
+
+//static lol
+StupidDictionary* StupidDictionary::GetInstance() {
+  if (g_dictionary) return g_dictionary;
+  g_dictionary = new StupidDictionary();
+  return g_dictionary;
+}
 
 void shim_purge() {
   LOG(ERROR) << "shim_purge";
@@ -210,9 +223,11 @@ void shim_set(rust::cxxbridge1::Str key, rust::cxxbridge1::Str value) {
   dictionary->SetString(key_string, value_string);
 }
 
-std::unique_ptr<std::string> shim_get(rust::cxxbridge1::Str key) {
+const std::string& shim_get(rust::cxxbridge1::Str key) {
   std::string key_string = ruststr_2_stdstring(key);
   LOG(ERROR) << "shim_get: `" << key_string << "`";
+
+  auto* stupid = StupidDictionary::GetInstance();
 
   const base::Value* dictionary =
       g_SkusSdk->prefs_->GetDictionary(prefs::kSkusDictionary);
@@ -220,10 +235,11 @@ std::unique_ptr<std::string> shim_get(rust::cxxbridge1::Str key) {
   DCHECK(dictionary->is_dict());
   const base::Value* value = dictionary->FindKey(key_string);
   if (value) {
-    std::string value_str = value->GetString();
-    return std::make_unique<std::string>(value_str.begin(), value_str.end());
+    stupid->dictionary_[key_string] = value->GetString();
+    return stupid->dictionary_[key_string];
   }
-  return std::make_unique<std::string>("");
+  stupid->dictionary_[key_string] = "";
+  return stupid->dictionary_[key_string];
 }
 
 void shim_scheduleWakeup(::std::uint64_t delay_ms,
