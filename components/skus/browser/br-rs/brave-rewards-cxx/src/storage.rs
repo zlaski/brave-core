@@ -20,10 +20,13 @@ impl KVStore for NativeClient {
     }
     fn get(&mut self, key: &str) -> Result<Option<String>, errors::InternalError> {
         let ret = ffi::shim_get(key);
+        debug!("KVStore->get finished call to ffi:shim_get. Printing value");
         debug!("{:?}", ret);
         Ok(if ret.len() > 0 {
+            debug!("KVStore->get returning value");
             Some(ret.to_string())
         } else {
+            debug!("KVStore->get returning None");
             None
         })
     }
