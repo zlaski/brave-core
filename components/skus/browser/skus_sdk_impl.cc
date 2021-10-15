@@ -210,21 +210,30 @@ void shim_set(rust::cxxbridge1::Str key, rust::cxxbridge1::Str value) {
 }
 
 static std::string empty = "{}";
-
 const std::string& shim_get(rust::cxxbridge1::Str key) {
-  std::string key_string = ruststr_2_stdstring(key);
-  LOG(ERROR) << "shim_get: `" << key_string << "`";
-
-  const base::Value* dictionary =
-      g_SkusSdk->prefs_->GetDictionary(prefs::kSkusDictionary);
-  DCHECK(dictionary);
-  DCHECK(dictionary->is_dict());
-  const base::Value* value = dictionary->FindKey(key_string);
-  if (value) {
-    // return value->GetString();
-  }
-  return empty;
+    LOG(ERROR) << "shim_get";
+    //std::unique_ptr<std::string> empty(new std::string("{}"));
+  //return empty;
+    //return std::make_unique<std::string>("{}");
+    //return std::move(std::string("{}"));
+    return empty;
 }
+
+// static std::string empty = "{}";
+// const std::string& shim_get(rust::cxxbridge1::Str key) {
+//   std::string key_string = ruststr_2_stdstring(key);
+//   LOG(ERROR) << "shim_get: `" << key_string << "`";
+
+//   const base::Value* dictionary =
+//       g_SkusSdk->prefs_->GetDictionary(prefs::kSkusDictionary);
+//   DCHECK(dictionary);
+//   DCHECK(dictionary->is_dict());
+//   const base::Value* value = dictionary->FindKey(key_string);
+//   if (value) {
+//     // return value->GetString();
+//   }
+//   return empty;
+// }
 
 void shim_scheduleWakeup(::std::uint64_t delay_ms,
                          rust::cxxbridge1::Fn<void()> done) {
@@ -240,6 +249,7 @@ void shim_executeRequest(
         void(rust::cxxbridge1::Box<brave_rewards::HttpRoundtripContext>,
              brave_rewards::HttpResponse)> done,
     rust::cxxbridge1::Box<brave_rewards::HttpRoundtripContext> ctx) {
+  LOG(ERROR) << "shim_executeRequest";
   // TODO: store this in a context (needs to be passed in)
   SkusSdkFetcher* fetcher = new SkusSdkFetcher(g_SkusSdk->url_loader_factory_);
   fetcher->BeginFetch(req, std::move(done), std::move(ctx));
@@ -266,10 +276,10 @@ SkusSdkImpl::~SkusSdkImpl() {
 
 void SkusSdkImpl::RefreshOrder(const std::string& order_id,
                                RefreshOrderCallback callback) {
-  ::rust::Box<CppSDK> sdk = initialize_sdk("development");
+  ::rust::Box<CppSDK> sdk = initialize_sdk("local");
 
   std::unique_ptr<RefreshOrderCallbackState> cbs(new RefreshOrderCallbackState);
-  cbs->cb = std::move(callback);
+  //cbs->cb = std::move(callback);
 
   sdk->refresh_order(OnRefreshOrder, std::move(cbs), order_id.c_str());
 }

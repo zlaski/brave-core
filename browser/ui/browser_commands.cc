@@ -50,6 +50,9 @@
 #include "brave/components/brave_vpn/url_constants.h"
 #endif
 
+#include "brave/components/skus/browser/skus_sdk_impl.h"
+#include "content/public/browser/storage_partition.h"
+
 using content::WebContents;
 
 namespace {
@@ -123,9 +126,23 @@ void MaybeDistillAndShowSpeedreaderBubble(Browser* browser) {
 #endif  // BUILDFLAG(ENABLE_SPEEDREADER)
 }
 
+brave_rewards::SkusSdkImpl* skus_obj = NULL;
+
+void FinishedRefreshOrder(const std::string& response) {
+  LOG(ERROR) << "OK IN HERE\nresponse=" << response;
+}
+
 void ShowBraveVPNBubble(Browser* browser) {
+  if (!skus_obj) {
+    skus_obj = new brave_rewards::SkusSdkImpl(browser->profile()->GetPrefs(),
+      browser->profile()->GetDefaultStoragePartition()->GetURLLoaderFactoryForBrowserProcess());
+  }
+
+  skus_obj->RefreshOrder("b788a168-1136-411f-9546-43a372a2e3ed",
+    base::BindOnce(&FinishedRefreshOrder));
+
   // Ask to browser view.
-  static_cast<BraveBrowserWindow*>(browser->window())->ShowBraveVPNBubble();
+  //static_cast<BraveBrowserWindow*>(browser->window())->ShowBraveVPNBubble();
 }
 
 void ToggleBraveVPNButton(Browser* browser) {

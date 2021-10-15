@@ -157,25 +157,38 @@ unsafe impl ExternType for RefreshOrderCallback {
     type Kind = cxx::kind::Trivial;
 }
 
+
+use brave_rewards::{KVClient, KVStore};
+use tracing::debug;
 async fn refresh_order_task(
     sdk: Rc<brave_rewards::sdk::SDK>,
     callback: RefreshOrderCallback,
     callback_state: UniquePtr<ffi::RefreshOrderCallbackState>,
     order_id: String,
 ) {
-    match sdk.refresh_order::<NativeClient>(&order_id).await {
-        Ok(order) => {
-            let order = serde_json::to_string(&order).unwrap();
-            callback.0(callback_state.into_raw(), ffi::RewardsResult::Ok, &order)
-        }
-        Err(e) => callback.0(
-            callback_state.into_raw(),
-            e.source()
-                .unwrap()
-                .downcast_ref::<brave_rewards::errors::InternalError>()
-                .unwrap()
-                .into(),
-            "",
-        ),
-    }
+    let tmp = NativeClient::get_store().unwrap().get("rewards:local");
+    debug!("tmp: {:?}", tmp);
 }
+
+// async fn refresh_order_task(
+//     sdk: Rc<brave_rewards::sdk::SDK>,
+//     callback: RefreshOrderCallback,
+//     callback_state: UniquePtr<ffi::RefreshOrderCallbackState>,
+//     order_id: String,
+// ) {
+//     match sdk.refresh_order::<NativeClient>(&order_id).await {
+//         Ok(order) => {
+//             let order = serde_json::to_string(&order).unwrap();
+//             callback.0(callback_state.into_raw(), ffi::RewardsResult::Ok, &order)
+//         }
+//         Err(e) => callback.0(
+//             callback_state.into_raw(),
+//             e.source()
+//                 .unwrap()
+//                 .downcast_ref::<brave_rewards::errors::InternalError>()
+//                 .unwrap()
+//                 .into(),
+//             "",
+//         ),
+//     }
+// }
