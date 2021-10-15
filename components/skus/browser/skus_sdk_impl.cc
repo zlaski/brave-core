@@ -27,7 +27,7 @@ namespace {
 // TODO(bsclifton): fix me. I set a completely arbitrary size!
 const int kMaxResponseSize = 1000000;  // 1Mb
 
-brave_rewards::SkusSdkImpl* g_SkusSdk = NULL;
+//brave_rewards::SkusSdkImpl* g_SkusSdk = NULL;
 
 // START: hack code - remove me
 // rust::String's std::string operator gave linker errors :(
@@ -166,10 +166,11 @@ void SkusSdkFetcher::OnFetchComplete(
 void OnRefreshOrder(brave_rewards::RefreshOrderCallbackState* callback_state,
                     brave_rewards::RewardsResult result,
                     rust::cxxbridge1::Str order) {
+  LOG(ERROR) << "OnRefreshOrder";
   std::string order_str = ruststr_2_stdstring(order);
-  if (callback_state->cb) {
-    std::move(callback_state->cb).Run(order_str);
-  }
+  // if (callback_state->cb) {
+  //   std::move(callback_state->cb).Run(order_str);
+  // }
   delete callback_state;
 }
 
@@ -190,11 +191,11 @@ namespace brave_rewards {
 
 void shim_purge() {
   LOG(ERROR) << "shim_purge";
-  ::prefs::ScopedDictionaryPrefUpdate update(g_SkusSdk->prefs_,
-                                             prefs::kSkusDictionary);
-  std::unique_ptr<::prefs::DictionaryValueUpdate> dictionary = update.Get();
-  DCHECK(dictionary);
-  dictionary->Clear();
+  // ::prefs::ScopedDictionaryPrefUpdate update(g_SkusSdk->prefs_,
+  //                                            prefs::kSkusDictionary);
+  // std::unique_ptr<::prefs::DictionaryValueUpdate> dictionary = update.Get();
+  // DCHECK(dictionary);
+  // dictionary->Clear();
 }
 
 void shim_set(rust::cxxbridge1::Str key, rust::cxxbridge1::Str value) {
@@ -202,11 +203,11 @@ void shim_set(rust::cxxbridge1::Str key, rust::cxxbridge1::Str value) {
   std::string value_string = ruststr_2_stdstring(value);
   LOG(ERROR) << "shim_set: `" << key_string << "` = `" << value_string << "`";
 
-  ::prefs::ScopedDictionaryPrefUpdate update(g_SkusSdk->prefs_,
-                                             prefs::kSkusDictionary);
-  std::unique_ptr<::prefs::DictionaryValueUpdate> dictionary = update.Get();
-  DCHECK(dictionary);
-  dictionary->SetString(key_string, value_string);
+  // ::prefs::ScopedDictionaryPrefUpdate update(g_SkusSdk->prefs_,
+  //                                            prefs::kSkusDictionary);
+  // std::unique_ptr<::prefs::DictionaryValueUpdate> dictionary = update.Get();
+  // DCHECK(dictionary);
+  // dictionary->SetString(key_string, value_string);
 }
 
 static std::string empty = "{}";
@@ -251,8 +252,8 @@ void shim_executeRequest(
     rust::cxxbridge1::Box<brave_rewards::HttpRoundtripContext> ctx) {
   LOG(ERROR) << "shim_executeRequest";
   // TODO: store this in a context (needs to be passed in)
-  SkusSdkFetcher* fetcher = new SkusSdkFetcher(g_SkusSdk->url_loader_factory_);
-  fetcher->BeginFetch(req, std::move(done), std::move(ctx));
+  // SkusSdkFetcher* fetcher = new SkusSdkFetcher(g_SkusSdk->url_loader_factory_);
+  // fetcher->BeginFetch(req, std::move(done), std::move(ctx));
 }
 
 // static
@@ -266,7 +267,7 @@ SkusSdkImpl::SkusSdkImpl(
     PrefService* prefs,
     scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory)
     : url_loader_factory_(url_loader_factory), prefs_(prefs) {
-  g_SkusSdk = this;
+  //g_SkusSdk = this;
   LOG(ERROR) << "BSC]] CREATING SkusSdkImpl";
 }
 

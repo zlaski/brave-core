@@ -134,15 +134,15 @@ void FinishedRefreshOrder(const std::string& response) {
 
 void ShowBraveVPNBubble(Browser* browser) {
   if (!skus_obj) {
-    skus_obj = new brave_rewards::SkusSdkImpl(browser->profile()->GetPrefs(),
-      browser->profile()->GetDefaultStoragePartition()->GetURLLoaderFactoryForBrowserProcess());
+    skus_obj = new brave_rewards::SkusSdkImpl(
+        browser->profile()->GetPrefs(),
+        browser->profile()
+            ->GetDefaultStoragePartition()
+            ->GetURLLoaderFactoryForBrowserProcess());
   }
 
   skus_obj->RefreshOrder("b788a168-1136-411f-9546-43a372a2e3ed",
-    base::BindOnce(&FinishedRefreshOrder));
-
-  // Ask to browser view.
-  //static_cast<BraveBrowserWindow*>(browser->window())->ShowBraveVPNBubble();
+                         base::BindOnce(&FinishedRefreshOrder));
 }
 
 void ToggleBraveVPNButton(Browser* browser) {
