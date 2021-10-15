@@ -98,8 +98,6 @@ class SkusSdkFetcher {
       std::unique_ptr<std::string> response_body);
 };
 
-std::unique_ptr<SkusSdkFetcher> fetcher;
-
 SkusSdkFetcher::SkusSdkFetcher(
     scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory)
     : url_loader_factory_(url_loader_factory) {}
@@ -190,18 +188,6 @@ void OnScheduleWakeup(rust::cxxbridge1::Fn<void()> done) {
 
 namespace brave_rewards {
 
-brave_rewards::StupidDictionary* g_dictionary = NULL;
-
-StupidDictionary::StupidDictionary() {}
-StupidDictionary::~StupidDictionary() {}
-
-//static lol
-StupidDictionary* StupidDictionary::GetInstance() {
-  if (g_dictionary) return g_dictionary;
-  g_dictionary = new StupidDictionary();
-  return g_dictionary;
-}
-
 void shim_purge() {
   LOG(ERROR) << "shim_purge";
   ::prefs::ScopedDictionaryPrefUpdate update(g_SkusSdk->prefs_,
@@ -223,11 +209,11 @@ void shim_set(rust::cxxbridge1::Str key, rust::cxxbridge1::Str value) {
   dictionary->SetString(key_string, value_string);
 }
 
+static std::string empty = "{}";
+
 const std::string& shim_get(rust::cxxbridge1::Str key) {
   std::string key_string = ruststr_2_stdstring(key);
   LOG(ERROR) << "shim_get: `" << key_string << "`";
-
-  auto* stupid = StupidDictionary::GetInstance();
 
   const base::Value* dictionary =
       g_SkusSdk->prefs_->GetDictionary(prefs::kSkusDictionary);
@@ -235,11 +221,9 @@ const std::string& shim_get(rust::cxxbridge1::Str key) {
   DCHECK(dictionary->is_dict());
   const base::Value* value = dictionary->FindKey(key_string);
   if (value) {
-    stupid->dictionary_[key_string] = value->GetString();
-    return stupid->dictionary_[key_string];
+    // return value->GetString();
   }
-  stupid->dictionary_[key_string] = "";
-  return stupid->dictionary_[key_string];
+  return empty;
 }
 
 void shim_scheduleWakeup(::std::uint64_t delay_ms,
@@ -256,7 +240,8 @@ void shim_executeRequest(
         void(rust::cxxbridge1::Box<brave_rewards::HttpRoundtripContext>,
              brave_rewards::HttpResponse)> done,
     rust::cxxbridge1::Box<brave_rewards::HttpRoundtripContext> ctx) {
-  fetcher = std::make_unique<SkusSdkFetcher>(g_SkusSdk->url_loader_factory_);
+  // TODO: store this in a context (needs to be passed in)
+  SkusSdkFetcher* fetcher = new SkusSdkFetcher(g_SkusSdk->url_loader_factory_);
   fetcher->BeginFetch(req, std::move(done), std::move(ctx));
 }
 
@@ -272,9 +257,12 @@ SkusSdkImpl::SkusSdkImpl(
     scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory)
     : url_loader_factory_(url_loader_factory), prefs_(prefs) {
   g_SkusSdk = this;
+  LOG(ERROR) << "BSC]] CREATING SkusSdkImpl";
 }
 
-SkusSdkImpl::~SkusSdkImpl() {}
+SkusSdkImpl::~SkusSdkImpl() {
+  LOG(ERROR) << "BSC]] DESTROYING SkusSdkImpl";
+}
 
 void SkusSdkImpl::RefreshOrder(const std::string& order_id,
                                RefreshOrderCallback callback) {

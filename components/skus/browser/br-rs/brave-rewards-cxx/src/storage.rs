@@ -19,8 +19,8 @@ impl KVStore for NativeClient {
         Ok(())
     }
     fn get(&mut self, key: &str) -> Result<Option<String>, errors::InternalError> {
-        let key_copy = key;
-        let ret = ffi::shim_get(key_copy).to_string_lossy();
+        let ret = ffi::shim_get(key);
+        debug!("{:?}", ret);
         Ok(if ret.len() > 0 {
             Some(ret.to_string())
         } else {
