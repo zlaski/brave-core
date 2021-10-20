@@ -5,7 +5,7 @@
 
 #include "cxx.h"
 
-#include "brave/components/skus/common/skus_sdk.mojom.h"
+//#include "brave/components/skus/common/skus_sdk.mojom.h"
 
 namespace brave_rewards {
 
@@ -16,7 +16,7 @@ struct HttpRoundtripContext;
 
 class RefreshOrderCallbackState {
  public:
-  skus::mojom::SkusSdk::RefreshOrderCallback cb;
+  //skus::mojom::SkusSdk::RefreshOrderCallback cb;
   // TODO: possibly store Prefs object here
 };
 
