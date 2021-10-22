@@ -96,6 +96,7 @@ public class CardBuilderFeedCard {
     private boolean isPromo;
     private String creativeInstanceId;
     private String offersCategory;
+    private final int MARGIN_VERTICAL = 10;
 
     public CardBuilderFeedCard(BraveNewsController braveNewsController, LinearLayout layout,
             Activity activity, int position, FeedItemsCard newsItem, int type) {
@@ -174,6 +175,8 @@ public class CardBuilderFeedCard {
                 TableLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         TableLayout.LayoutParams tableParamsRow1 = new TableLayout.LayoutParams(
                 TableLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        TableLayout.LayoutParams rowTableParams = new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);        
         //        RecyclerView.LayoutParams linearLayoutParams = new
         //        RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
         //        RecyclerView.LayoutParams.MATCH_PARENT);
@@ -327,7 +330,7 @@ public class CardBuilderFeedCard {
                     // linearLayout.setBackground(makeRound(CARD_LAYOUT, R.color.card_background, 15));
 
                     linearLayout.setBackground(roundedBackground());
-                    Log.d("bn", "crashinvestigation HEADLINE after setlayout");
+                    // Log.d("bn", "crashinvestigation HEADLINE after setlayout");
                     // linearLayout.setBackgroundColor(
                     //         mActivity.getResources().getColor(R.color.card_background));
                     break;
@@ -414,6 +417,10 @@ public class CardBuilderFeedCard {
                     row2.setPadding(5, 5, 5, 5);
                     addElementsToSingleLayout(row2, 1, type);
 
+
+                    TableRow.LayoutParams row3Params = new TableRow.LayoutParams(
+                        TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
+                    row3Params.bottomMargin = 2 * MARGIN_VERTICAL;
                     row3.setPadding(5, 5, 5, 5);
                     addElementsToSingleLayout(row3, 2, type);
 
@@ -464,10 +471,6 @@ public class CardBuilderFeedCard {
                     Log.d("bn", "firstcard dpheight px:" + dpToPx(mActivity, dpHeight));
                     Log.d("bn", "firstcard dpheight+200:" + (int) (dpHeight + 200));
                     Log.d("bn", "firstcard dptopx 35:" + dpToPx(mActivity, 35));
-                    int topCardMargin =
-                            (int) (BraveActivity.getBraveActivity().getImageCreditLayoutBottom()
-                                    + 20);
-                    Log.d("bn", "firstcard topCardMargin:" + topCardMargin);
 
                     params.setMargins(horizontalMargin, 0, horizontalMargin, 40);
                     int height = mActivity.getResources().getDisplayMetrics().heightPixels;
@@ -486,7 +489,7 @@ public class CardBuilderFeedCard {
                     tableLayoutTopNews.addView(row3);
 
                     linearLayout.setPadding(30, 30, 30, 10);
-                    tableParamsTopNews.setMargins(30, 20, 30, 20);
+                    tableParamsTopNews.setMargins(30, 2 * MARGIN_VERTICAL, 30, 4 * MARGIN_VERTICAL);
                     tableParamsTopNews.weight = 3;
                     rowTop.setLayoutParams(tableParamsTopNews);
                     topText.setText(
@@ -495,6 +498,11 @@ public class CardBuilderFeedCard {
                     topText.setTextColor(
                             mActivity.getResources().getColor(R.color.news_text_color));
                     topText.setTypeface(null, Typeface.BOLD);
+
+                    rowTableParams.bottomMargin = 2 * MARGIN_VERTICAL;
+                    row1.setLayoutParams(rowTableParams);
+                    row2.setLayoutParams(rowTableParams);
+                    row3.setLayoutParams(rowTableParams);
 
                     addElementsToSingleLayout(row1, 0, type);
                     addElementsToSingleLayout(row2, 1, type);
@@ -551,9 +559,9 @@ public class CardBuilderFeedCard {
                     layoutLeft.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
                     layoutRight.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 
-                    Log.d("bn", "HEADLINE_PAIRED height left:"+ layoutLeft.getHeight()+ " right:"+layoutRight.getMeasuredHeight());
-                    Log.d("bn", "HEADLINE_PAIRED height left height:"+ layoutLeft.getMeasuredHeight()+ " width:"+layoutLeft.getMeasuredWidth());
-                    Log.d("bn", "HEADLINE_PAIRED height left height:"+ layoutRight.getMeasuredHeight()+ " width:"+layoutRight.getMeasuredWidth());
+                    // Log.d("bn", "HEADLINE_PAIRED height left:"+ layoutLeft.getHeight()+ " right:"+layoutRight.getMeasuredHeight());
+                    // Log.d("bn", "HEADLINE_PAIRED height left height:"+ layoutLeft.getMeasuredHeight()+ " width:"+layoutLeft.getMeasuredWidth());
+                    // Log.d("bn", "HEADLINE_PAIRED height left height:"+ layoutRight.getMeasuredHeight()+ " width:"+layoutRight.getMeasuredWidth());
                     int maxHeight =  Math.max(layoutLeft.getMeasuredHeight(),layoutRight.getMeasuredHeight());
                     Log.d("bn", "HEADLINE_PAIRED height max height:" + maxHeight);
 
@@ -617,6 +625,7 @@ public class CardBuilderFeedCard {
                 TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
 
         LinearLayout layou1 = new LinearLayout(mActivity);
+        publisher.setLetterSpacing(0.03f);
 
         try {
             LinearLayout layout = (LinearLayout) view;
@@ -633,7 +642,7 @@ public class CardBuilderFeedCard {
 
                     // image.setImageResource(R.drawable.img1);
                     setImage(image, "image", index);
-                    imageParams.height = 250;
+                    imageParams.height = 230;
                     // imageParams.weight = 4;
                     // imageParams.bottomMargin = 20;
                     image.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -659,6 +668,7 @@ public class CardBuilderFeedCard {
                     // descParams.bottomMargin = 60;
                     desc.setLayoutParams(descParams);
 
+                    descParams.bottomMargin = MARGIN_VERTICAL;
                     desc.setPadding(10, 0, 30, 30);
                     layoutDeals.addView(desc);
 
@@ -668,6 +678,7 @@ public class CardBuilderFeedCard {
                     int topPosition = 0;
                     if (mPosition == 0) {
                         topPosition = 200;
+                            // (int) (BraveActivity.getBraveActivity().getImageCreditLayoutBottom() + 20);
                     }
                     linearLayoutParams =
                             new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -729,8 +740,9 @@ public class CardBuilderFeedCard {
                     publisherParams.bottomMargin = 10;
                     publisher.setPadding(40, 0, 40, 0);
 
+                    publisherParams.bottomMargin = 2 * MARGIN_VERTICAL;;
                     publisher.setLayoutParams(publisherParams);
-                    Log.d("bn", "crashinvestigation set LayoutParams");
+                    // Log.d("bn", "crashinvestigation set LayoutParams");
 
                     break;
                 case CardType.DISPLAY_AD:
@@ -824,6 +836,7 @@ public class CardBuilderFeedCard {
                     title.setTextSize(17);
                     title.setTypeface(null, Typeface.BOLD);
                     title.setMaxLines(5);
+                    titleParams.bottomMargin = MARGIN_VERTICAL;
                     title.setEllipsize(TextUtils.TruncateAt.END);
                     title.setPadding(50, 30, 50, 0);
                     title.setLayoutParams(titleParams);
@@ -883,7 +896,7 @@ public class CardBuilderFeedCard {
                     publisherParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
                     publisher.setLayoutParams(publisherParams);
-
+                    publisherParams.bottomMargin = 2 * MARGIN_VERTICAL;
                     promotedLogoLayout.addView(publisher);
                     promotedLogoLayout.addView(promoted);
 
@@ -916,6 +929,7 @@ public class CardBuilderFeedCard {
                     image.setLayoutParams(imageParams);
                     setImage(image, "image", index);
                     image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    imageParams.bottomMargin = MARGIN_VERTICAL;
                     layout.addView(image);
 
                     // titleParams.weight = 4;
@@ -924,6 +938,7 @@ public class CardBuilderFeedCard {
                     title.setTextSize(13);
                     title.setTypeface(null, Typeface.BOLD);
                     title.setMaxLines(5);
+                    titleParams.bottomMargin = MARGIN_VERTICAL;
                     title.setEllipsize(TextUtils.TruncateAt.END);
                     title.setPadding(50, 0, 50, 0);
                     layout.addView(title);
@@ -934,6 +949,7 @@ public class CardBuilderFeedCard {
                     setTextFromFeed(desc, TIME, index);
                     desc.setLayoutParams(descParams);
                     desc.setPadding(50, 0, 50, 0);
+                    descParams.bottomMargin = MARGIN_VERTICAL;
                     layout.addView(desc);
 
                     setTextFromFeed(publisher, PUBLISHER, index);
@@ -944,7 +960,7 @@ public class CardBuilderFeedCard {
 
                     publisherParams.gravity = Gravity.BOTTOM;
                     publisher.setGravity(Gravity.BOTTOM);
-                    publisherParams.setMargins(0, 0, 0, 20);
+                    publisherParams.setMargins(0, 0, 0, 2 * MARGIN_VERTICAL);
                     publisher.setPadding(50, 0, 50, 0);
                     publisher.setLayoutParams(publisherParams);
                     layout.addView(publisher);
@@ -989,7 +1005,7 @@ public class CardBuilderFeedCard {
 
                     layou1.setOrientation(LinearLayout.VERTICAL);
                     layou1Params.width = 0;
-                    layou1Params.weight = 5;
+                    layou1Params.weight = 7;
                     // linearLayoutRowParams.setMargins(0, 0, 0, 40);
 
                     // layou1.setPadding(30, 0, 30, 0);
@@ -1000,6 +1016,7 @@ public class CardBuilderFeedCard {
                     // titleRowParams.weight = 2;
                     // titleRowParams.rightMargin = 20;
                     title.setTextSize(15);
+                    titleRowParams.bottomMargin = MARGIN_VERTICAL;
                     title.setTypeface(null, Typeface.BOLD);
                     title.setLayoutParams(titleRowParams);
                     title.setMaxLines(5);
@@ -1016,10 +1033,10 @@ public class CardBuilderFeedCard {
 
                     layoutRow.addView(layou1);
                     break;
-                case CardType.CATEGORY_GROUP:
+                case CardType.CATEGORY_GROUP:// TOP_NEWS
                     TableRow layoutRowPhotos = (TableRow) view;
 
-                    tableParamsTopNews.setMargins(0, 20, 0, 20);
+                    tableParamsTopNews.setMargins(0, 0, 0, 5 * MARGIN_VERTICAL);
                     tableParamsTopNews.weight = 1;
                     tableParamsTopNews.height = 0;
                     layoutRowPhotos.setPadding(30, 0, 30, 0);
@@ -1038,7 +1055,7 @@ public class CardBuilderFeedCard {
                     sourceRowParams.gravity = Gravity.BOTTOM;
                     source.setPadding(0, 0, 0, 0);
                     sourceRowParams.height = TableRow.LayoutParams.WRAP_CONTENT;
-                    sourceRowParams.setMargins(0, 0, 0, 0);
+                    sourceRowParams.setMargins(0, 0, 0, MARGIN_VERTICAL);
                     source.setLayoutParams(sourceRowParams);
                     source.setTextSize(12);
                     setTextFromFeed(source, PUBLISHER, index);
@@ -1050,6 +1067,7 @@ public class CardBuilderFeedCard {
                     titleRowParams.rightMargin = 20;
                     title.setTextSize(13);
                     title.setTypeface(null, Typeface.BOLD);
+                    titleRowParams.bottomMargin = MARGIN_VERTICAL;
                     title.setLayoutParams(titleRowParams);
                     title.setMaxLines(4);
                     title.setEllipsize(TextUtils.TruncateAt.END);
@@ -1057,7 +1075,7 @@ public class CardBuilderFeedCard {
 
                     descRowParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     // descRowParams.weight = 2;
-                    desc.setPadding(0, 10, 0, 0);
+                    desc.setPadding(0, 0, 0, 0);
                     desc.setTextSize(11);
                     descRowParams.bottomMargin = 0;
                     setTextFromFeed(desc, TIME, index);

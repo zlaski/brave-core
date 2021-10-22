@@ -1187,17 +1187,12 @@ public class BraveNewTabPageLayout
                                             });
                                         }
 
-
-
                                         FeedItemsCard feedItemsCard = new FeedItemsCard();
                                         
                                         feedItemsCard.setCardType(cardData.cardType);
                                         feedItemsCard.setUuid(UUID.randomUUID().toString());
                                         List<FeedItemCard> cardItems = new ArrayList<>();
                                         for (FeedItem item : cardData.items){
-                                            
-                                            // Log.d("bn", "createfeed feed pages item: " + item);
-                                            // newsItemsFeed.add(item);
 
                                             FeedItemMetadata itemMetaData = new FeedItemMetadata();
                                             FeedItemCard feedItemCard = new FeedItemCard();
@@ -2093,11 +2088,11 @@ public class BraveNewTabPageLayout
                             int scrollY = parentScrollView.getScrollY();
                             if (recyclerView.getLayoutManager().findViewByPosition(0) != null) {
                                 if (isScrolled) {
-                                    Log.d("bn", "crashinvestigation parentScrollView onScrollChange");
+                                    // Log.d("bn", "crashinvestigation parentScrollView onScrollChange");
                                     correctPosition();
                                 }
                             }
-                            Log.d("bn", "crashinvestigation parentScrollView after 1");
+                            // Log.d("bn", "crashinvestigation parentScrollView after 1");
                             isScrolled = false;
 
                             float onScrollChangedValue = parentScrollView.getMaxScrollAmount();
@@ -2128,10 +2123,10 @@ public class BraveNewTabPageLayout
                                     settingsBarIsClickable = true;
                                     LinearLayout.LayoutParams imageCreditLayoutParams =
                                         (LinearLayout.LayoutParams) imageCreditLayout.getLayoutParams();
-                                    Log.d("bn", "imageCreditLayoutposition parentviewscroll reached top height" +imageCreditLayoutParams.height );
-                                    Log.d("bn", "imageCreditLayoutposition imageCreditLayout top:" + imageCreditLayout.getTop() + " y:" +imageCreditLayout.getY() );
-                                    Log.d("bn", "imageCreditLayoutposition settingsBar top:" + settingsBar.getTop() + " y:" +settingsBar.getY() );
-                                    Log.d("bn", "imageCreditLayoutposition recyclerView top:" + recyclerView.getTop() + " y:" +recyclerView.getY() );
+                                    // Log.d("bn", "imageCreditLayoutposition parentviewscroll reached top height" +imageCreditLayoutParams.height );
+                                    // Log.d("bn", "imageCreditLayoutposition imageCreditLayout top:" + imageCreditLayout.getTop() + " y:" +imageCreditLayout.getY() );
+                                    // Log.d("bn", "imageCreditLayoutposition settingsBar top:" + settingsBar.getTop() + " y:" +settingsBar.getY() );
+                                    // Log.d("bn", "imageCreditLayoutposition recyclerView top:" + recyclerView.getTop() + " y:" +recyclerView.getY() );
 
                                     // recyclerView.setY(settingsBar.getY());
                                     // imageCreditLayout.setVisibility(View.INVISIBLE);
@@ -2142,13 +2137,13 @@ public class BraveNewTabPageLayout
                                     // }
                                 } else {
                                     settingsBarIsClickable = false;
-                                    Log.d("bn", "reached scrolled down");
+                                    // Log.d("bn", "reached scrolled down");
                                     // settingsBar.setVisibility(View.GONE);
                                     // imageCreditLayout.setVisibility(View.VISIBLE);
                                 }
-                                Log.d("BN",
-                                        "settings bar alpha: " + settingsBar.getAlpha()
-                                                + "isClickable:" + settingsBarIsClickable);
+                                // Log.d("BN",
+                                //         "settings bar alpha: " + settingsBar.getAlpha()
+                                //                 + "isClickable:" + settingsBarIsClickable);
                             }
                             // Log.d("bn", "crashinvestigation parentSc//rollView after 3");
                         } catch (Exception e) {
@@ -2385,7 +2380,7 @@ public class BraveNewTabPageLayout
                             //                 + parentScrollView.getVerticalScrollbarPosition());
                             try {
                                 parentScrollView.scrollBy(0, offset + 20);
-                                Log.d("bn", "imageCreditLayoutposition top:" + imageCreditLayout.getTop() + " y:" +imageCreditLayout.getY() );
+                                // Log.d("bn", "imageCreditLayoutposition top:" + imageCreditLayout.getTop() + " y:" +imageCreditLayout.getY() );
                                 // Log.d("bn", "imageCreditLayoutposition top:" + imageCreditLayout.getTop() + " y:" +imageCreditLayout.getY() );
                                 // imageCreditLayout.scrollBy(0, offset - 50);
 
@@ -2452,7 +2447,7 @@ public class BraveNewTabPageLayout
                 sharedPreferencesEditor.apply();
 
                 getFeed();
-/*
+                /*
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -2657,7 +2652,7 @@ public class BraveNewTabPageLayout
         for (FeedItemsCard feedItemsCard : newsItemsFeedCard){
             // Log.d("BN", "processFeed click after cardtype: "+feedItemsCard.getCardType());
             if (feedItemsCard.getFeedItems() != null){
-                // logFeedItem(feedItemsCard, "processFeed click after " + feedIndex + " : ");
+                logFeedItem(feedItemsCard, "processFeed click after " + feedIndex + " : ");
                 // for (FeedItemCard feedItemCard : feedItemsCard){
 
                 // }

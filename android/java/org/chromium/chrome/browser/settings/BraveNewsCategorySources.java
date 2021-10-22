@@ -64,14 +64,17 @@ public class BraveNewsCategorySources extends PreferenceFragmentCompat implement
         mBraveNewsController.getPublishers((publishers) -> {
             Log.d("bn", "getfeed publishers: " + publishers);
             List<Publisher> allPublishers = new ArrayList<>();
+            List<Publisher> categoryPublishers = new ArrayList<>();
             for (Map.Entry<String,Publisher> entry : publishers.entrySet()) {
                 String key = entry.getKey();
                 Log.d("bn", "category key:"+ key+ " " + categoryArg);
 
                 Publisher publisher = entry.getValue();
                 if (publisher.categoryName.toLowerCase().equals(categoryArg.toLowerCase())){
-                    categsPublishers.computeIfAbsent(publisher.categoryName, k ->new ArrayList<>()).add(publisher);
+                    // categsPublishers.computeIfAbsent(publisher.categoryName, k ->new ArrayList<>()).add(publisher);
+                    categoryPublishers.add(publisher);                    
                 }
+                categsPublishers.put(publisher.categoryName, categoryPublishers);                
                 allPublishers.add(publisher);
 
             }

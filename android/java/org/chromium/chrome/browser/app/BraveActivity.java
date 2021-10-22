@@ -698,7 +698,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
         // get the main compositor view that we'll use to manipulate the views
         compositorView = findViewById(R.id.compositor_view_holder);
         ViewGroup controlContainer = findViewById(R.id.control_container);
-        Log.d("bn", "inflateNewsSettingsBar compositorView: "+compositorView+" controlContainer: "+controlContainer + "already here: "+findViewById(R.id.news_settings_bar));
+        // Log.d("bn", "inflateNewsSettingsBar compositorView: "+compositorView+" controlContainer: "+controlContainer + "already here: "+findViewById(R.id.news_settings_bar));
         if (findViewById(R.id.news_settings_bar) != null) {
             return;
         }

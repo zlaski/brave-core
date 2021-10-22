@@ -25,10 +25,21 @@ BraveNewsControllerFactory* BraveNewsControllerFactory::GetInstance() {
 }
 
 // static
-BraveNewsController* BraveNewsControllerFactory::GetForContext(
-    content::BrowserContext* context) {
+// BraveNewsController* BraveNewsControllerFactory::GetForContext(
+//     content::BrowserContext* context) {
+//   return static_cast<BraveNewsController*>(
+//       GetInstance()->GetServiceForBrowserContext(context, true));
+// }
+
+// static
+mojo::PendingRemote<mojom::BraveNewsController>
+BraveNewsControllerFactory::GetForContext(content::BrowserContext* context) {
+  // if (!IsAllowedForContext(context))
+  //   return mojo::PendingRemote<mojom::AssetRatioController>();
+
   return static_cast<BraveNewsController*>(
-      GetInstance()->GetServiceForBrowserContext(context, true));
+             GetInstance()->GetServiceForBrowserContext(context, true))
+      ->MakeRemote();
 }
 
 BraveNewsControllerFactory::BraveNewsControllerFactory()

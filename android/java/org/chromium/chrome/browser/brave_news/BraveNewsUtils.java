@@ -162,25 +162,30 @@ public class BraveNewsUtils {
     }
 
     public String getPromotionIdItem(FeedItemsCard items) {
-        Log.d("bn", " type " + items.getCardType() + " size: " + items.getFeedItems().size());
+        Log.d("bn", "promotedArticleCrash items:" + items + " type " + items.getCardType());
         String creativeInstanceId = "null";
-        for (FeedItemCard itemCard : items.getFeedItems()) {
-            FeedItem item = itemCard.getFeedItem();
-            FeedItemMetadata itemMetaData = new FeedItemMetadata();
-            switch (item.which()) {
-                case FeedItem.Tag.PromotedArticle:
-                    PromotedArticle promotedArticle = item.getPromotedArticle();
-                    FeedItemMetadata promotedArticleData = promotedArticle.data;
-                    creativeInstanceId = promotedArticle.creativeInstanceId;
-                    // braveNewsItems.add(item.getPromotedArticle());
-                    // braveNewsItems.add(promotedArticle.data);
-                    itemMetaData = promotedArticle.data;
-                    Log.d("bn", " PromotedArticle: " + promotedArticleData.title);
-                    // Log.d("bn", id+" PromotedArticle categoryName: " +
-                    // promotedArticleData.categoryName); Log.d("bn", "getfeed feed pages item type
-                    // PromotedArticle creativeInstanceId: " + creativeInstanceId);
-                    break;
+        if (items.getFeedItems() != null){            
+            Log.d("bn", " promotedArticleCrash size: " + items.getFeedItems().size());
+            for (FeedItemCard itemCard : items.getFeedItems()) {
+                FeedItem item = itemCard.getFeedItem();
+                FeedItemMetadata itemMetaData = new FeedItemMetadata();
+                switch (item.which()) {
+                    case FeedItem.Tag.PromotedArticle:
+                        PromotedArticle promotedArticle = item.getPromotedArticle();
+                        FeedItemMetadata promotedArticleData = promotedArticle.data;
+                        creativeInstanceId = promotedArticle.creativeInstanceId;
+                        // braveNewsItems.add(item.getPromotedArticle());
+                        // braveNewsItems.add(promotedArticle.data);
+                        itemMetaData = promotedArticle.data;
+                        Log.d("bn", " PromotedArticle: " + promotedArticleData.title);
+                        // Log.d("bn", id+" PromotedArticle categoryName: " +
+                        // promotedArticleData.categoryName); Log.d("bn", "getfeed feed pages item type
+                        // PromotedArticle creativeInstanceId: " + creativeInstanceId);
+                        break;
+                }
             }
+        } else {
+            Log.d("bn", "promotedArticleCrash items: null");
         }
 
         return creativeInstanceId;

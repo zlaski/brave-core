@@ -97,10 +97,13 @@ public class BraveNewsPreferences
         mBraveNewsController.getPublishers((publishers) -> {
             Log.d("bn", "getfeed publishers: " + publishers);
             List<Publisher> allPublishers = new ArrayList<>();
+            List<Publisher> categoryPublishers = new ArrayList<>();
             for (Map.Entry<String,Publisher> entry : publishers.entrySet()) {
                 String key = entry.getKey();
                 Publisher publisher = entry.getValue();
-                categsPublishers.computeIfAbsent(publisher.categoryName, k ->new ArrayList<>()).add(publisher);
+                // categsPublishers.computeIfAbsent(publisher.categoryName, k ->new ArrayList<>()).add(publisher);
+                categoryPublishers.add(publisher);
+                categsPublishers.put(publisher.categoryName, categoryPublishers);
             }
             categsPublishers.put("All Sources", allPublishers);
             addCategs(categsPublishers);

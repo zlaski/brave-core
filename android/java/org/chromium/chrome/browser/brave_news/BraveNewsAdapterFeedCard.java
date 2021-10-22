@@ -99,12 +99,15 @@ public class BraveNewsAdapterFeedCard extends RecyclerView.Adapter<BraveNewsAdap
     public void onBindViewHolder(@NonNull BraveNewsAdapterFeedCard.ViewHolder holder, int position) {
         LinearLayout.LayoutParams params1;
         if (mNewsItems != null){
+             if (position == 26) {
+                return;
+            }
             mNewsItem = mNewsItems.get(position);
-            Log.d("bn", "createfeed BraveNewsAdapterFeedCard onBindViewHolder position: -------------");
+            Log.d("bn", "createfeed BraveNewsAdapterFeedCard onBindViewHolder position: ------------- " + position);
             Log.d("bn", "createfeed BraveNewsAdapterFeedCard onBindViewHolder position item:" + mNewsItems.get(position));
             // Log.d("bn", "createfeed BraveNewsAdapterFeedCard  onBindViewHolder mNewsItem:" + mNewsItems.get(position));
             // Log.d("bn", "createfeed BraveNewsAdapterFeedCard  onBindViewHolder mNewsItem which:" + mNewsItems.get(position).getFeedItem().which());
-            Log.d("bn", "createfeed BraveNewsAdapterFeedCard  onBindViewHolder mNewsItem position: "+ position+" type:" + mNewsItems.get(position).getCardType());
+            Log.d("bn", "createfeed BraveNewsAdapterFeedCard onBindViewHolder mNewsItem position: "+ position+" type:" + mNewsItems.get(position).getCardType());
             // Log.d("BN", "onBindViewHolder getItemViewType:" + holder.getItemViewType());
             NTPUtil.showItemInfo(mNewsItems.get(position), "createfeed BraveNewsAdapterFeedCard  onBindViewHolder  position");
             // NTPUtil.showItemInfo(mNewsItems.get(position+1).getFeedItem(), "createfeed BraveNewsAdapterFeedCard  onBindViewHolder  position + 1");
