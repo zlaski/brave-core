@@ -35,6 +35,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
@@ -216,7 +218,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     @Override
     public void onResumeWithNative() {
         super.onResumeWithNative();
-        Log.d("bn", "onResumeWithNative");
+        Log.d("bn", "ondetach onResumeWithNative");
         BraveActivityJni.get().restartStatsUpdater();
         InAppPurchaseWrapper.getInstance().startBillingServiceConnection(BraveActivity.this);
         BraveVpnNativeWorker.getInstance().addObserver(this);
@@ -224,6 +226,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
 
     @Override
     public void onPauseWithNative() {
+        Log.d("bn", "ondetach onPauseWithNative");
         BraveVpnNativeWorker.getInstance().removeObserver(this);
         super.onPauseWithNative();
     }
@@ -330,7 +333,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     @Override
     public void initializeState() {
         super.initializeState();
-
+        Log.d("bn", "ondetach initializeState  ");
         if (isNoRestoreState()) {
             CommandLine.getInstance().appendSwitch(ChromeSwitches.NO_RESTORE_STATE);
         }
@@ -349,7 +352,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
 
         setLoadedFeed(false);
         setNewsItemsFeedCards(null);
-        setNewsFeedScrollPosition(-1);
+        // setNewsFeedScrollPosition(-1);
         BraveSearchEngineUtils.initializeBraveSearchEngineStates(getTabModelSelector());
     }
 
@@ -366,14 +369,14 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     }
 
     public CopyOnWriteArrayList<FeedItemsCard> getNewsItemsFeedCards() {
-        Log.d("bn", "persistencetest getNewsItemsFeedCards:"+newsItemsFeedCards);
+        // Log.d("bn", "persistencetest getNewsItemsFeedCards:"+newsItemsFeedCards);
         return newsItemsFeedCards;
     }
 
     public void setNewsItemsFeedCards(CopyOnWriteArrayList<FeedItemsCard> newsItemsFeedCards) {
-        Log.d("bn", "persistencetest setNewsItemsFeedCards:"+newsItemsFeedCards);
+        // Log.d("bn", "persistencetest setNewsItemsFeedCards:"+newsItemsFeedCards);
         this.newsItemsFeedCards = newsItemsFeedCards;
-        getNewsItemsFeedCards();
+        // getNewsItemsFeedCards();
     }
 
     public int getNewsFeedScrollPosition() {
@@ -399,7 +402,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
 
     @Override
     public void onResume() {
-        Log.d("bn", " onresume  ");
+        Log.d("bn", "ondetach onresume  ");
         super.onResume();
 
         Tab tab = getActivityTab();
@@ -415,7 +418,6 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     @Override
     public void onPause() {
         super.onPause();
-
         Tab tab = getActivityTab();
         if (tab == null)
             return;
@@ -447,7 +449,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     @Override
     public void finishNativeInitialization() {
         super.finishNativeInitialization();
-
+        Log.d("bn", "ondetach finishNativeInitialization  ");
         if (SharedPreferencesManager.getInstance().readBoolean(
                     BravePreferenceKeys.BRAVE_DOUBLE_RESTART, false)) {
             SharedPreferencesManager.getInstance().writeBoolean(
@@ -615,7 +617,8 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
             Log.d("bn", "inflateNewsSettingsBar tab:"+tab);
             Log.d("bn", "inflateNewsSettingsBar tab.getUrl():"+tab.getUrl()+"tab.getUrl().getSpec()"+tab.getUrl().getSpec()+"isntp:"+UrlUtilities.isNTPUrl(tab.getUrl().getSpec()));
             if (tab != null && tab.getUrl().getSpec() != null
-                    && UrlUtilities.isNTPUrl(tab.getUrl().getSpec())) {
+                    && UrlUtilities.isNTPUrl(tab.getUrl().getSpec())
+                    && BravePrefServiceBridge.getInstance().getNewsOptIn()) {
                 inflateNewsSettingsBar();
             } else {
                 Log.d("bn", "inflateNewsSettingsBar else remove move it");
@@ -624,8 +627,6 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
         } else {
             Log.d("bn", "tab is null");
         }
-
-
 
         Log.d("BN", "lifecycle BraveActivity finishNativeInitialization");
 
@@ -723,14 +724,24 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
             LayoutInflater inflater = LayoutInflater.from(this);
             // inflate the settings bar layout
             View inflatedSettingsBarLayout = inflater.inflate(R.layout.brave_news_settings_bar_layout, null);
+            RelativeLayout newContentButtonLayout = (RelativeLayout) inflater.inflate(R.layout.brave_news_load_new_content, null);
             // add the bar to the layout stack
             compositorView.addView(inflatedSettingsBarLayout, 2);
+            compositorView.addView(newContentButtonLayout, 3);
             inflatedSettingsBarLayout.setAlpha(0f);
             FrameLayout.LayoutParams inflatedLayoutParams =
                     new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 100);
-            // position bellow the control_container element (nevigation bar) with 15dp compensation
+
+            FrameLayout.LayoutParams newContentButtonLayoutParams =
+                    new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+
+            // position bellow the control_container element (nevigation bar) with 25dp compensation
             inflatedLayoutParams.setMargins(0, controlContainer.getBottom() - 25, 0, 0);
+            newContentButtonLayoutParams.setMargins(0, 400, 0, 0);
+            newContentButtonLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+            newContentButtonLayout.setGravity(Gravity.CENTER_HORIZONTAL);
             inflatedSettingsBarLayout.setLayoutParams(inflatedLayoutParams);
+            newContentButtonLayout.setLayoutParams(newContentButtonLayoutParams);
 
             inflatedSettingsBarLayout.setVisibility(View.VISIBLE);
 

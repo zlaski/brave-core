@@ -562,5 +562,28 @@ jint JNI_BravePrefServiceBridge_GetENSResolveMethod(JNIEnv* env) {
 #endif
 }
 
+void JNI_BravePrefServiceBridge_SetNewsOptIn(JNIEnv* env,
+    jboolean value) {
+    GetOriginalProfile()->GetPrefs()->SetBoolean(kBraveTodayOptedIn, value);
+  // g_browser_process->local_state()->SetBoolean(kBraveTodayOptedIn, value);
+}
+
+jboolean JNI_BravePrefServiceBridge_GetNewsOptIn(JNIEnv* env) {
+  // return g_browser_process->local_state()->GetBoolean(kBraveTodayOptedIn);
+
+  return GetOriginalProfile()->GetPrefs()->GetBoolean(kBraveTodayOptedIn);  
+}
+
+void JNI_BravePrefServiceBridge_SetShowNews(JNIEnv* env,
+    jboolean value) {
+  GetOriginalProfile()->GetPrefs()->SetBoolean(kNewTabPageShowToday, value);
+  // g_browser_process->local_state()->SetBoolean(kNewTabPageShowToday, value);
+}
+
+jboolean JNI_BravePrefServiceBridge_GetShowNews(JNIEnv* env) {
+  // return g_browser_process->local_state()->GetBoolean(kNewTabPageShowToday);
+  return GetOriginalProfile()->GetPrefs()->GetBoolean(kNewTabPageShowToday); 
+}
+
 }  // namespace android
 }  // namespace chrome

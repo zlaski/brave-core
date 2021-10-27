@@ -54,6 +54,7 @@ import org.chromium.mojo.system.MojoException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BraveNewsAdapterFeedCard extends RecyclerView.Adapter<BraveNewsAdapterFeedCard.ViewHolder> {
 
@@ -83,6 +84,7 @@ public class BraveNewsAdapterFeedCard extends RecyclerView.Adapter<BraveNewsAdap
         this.mActivity = activity;
         this.mNewsItems = newsItems;
         this.mBraveNewsController = braveNewsController;
+        Log.d("bn", " BraveNewsAdapterFeedCard newsItems:" + newsItems);
     }
 
     @NonNull
@@ -99,35 +101,22 @@ public class BraveNewsAdapterFeedCard extends RecyclerView.Adapter<BraveNewsAdap
     public void onBindViewHolder(@NonNull BraveNewsAdapterFeedCard.ViewHolder holder, int position) {
         LinearLayout.LayoutParams params1;
         if (mNewsItems != null){
-             if (position == 26) {
-                return;
-            }
             mNewsItem = mNewsItems.get(position);
             Log.d("bn", "createfeed BraveNewsAdapterFeedCard onBindViewHolder position: ------------- " + position);
             Log.d("bn", "createfeed BraveNewsAdapterFeedCard onBindViewHolder position item:" + mNewsItems.get(position));
-            // Log.d("bn", "createfeed BraveNewsAdapterFeedCard  onBindViewHolder mNewsItem:" + mNewsItems.get(position));
-            // Log.d("bn", "createfeed BraveNewsAdapterFeedCard  onBindViewHolder mNewsItem which:" + mNewsItems.get(position).getFeedItem().which());
-            Log.d("bn", "createfeed BraveNewsAdapterFeedCard onBindViewHolder mNewsItem position: "+ position+" type:" + mNewsItems.get(position).getCardType());
+            Log.d("bn", "createfeed BraveNewsAdapterFeedCard onBindViewHolder mNewsItem position: "+ position+" TYPE:" + mNewsItems.get(position).getCardType());
             // Log.d("BN", "onBindViewHolder getItemViewType:" + holder.getItemViewType());
-            NTPUtil.showItemInfo(mNewsItems.get(position), "createfeed BraveNewsAdapterFeedCard  onBindViewHolder  position");
-            // NTPUtil.showItemInfo(mNewsItems.get(position+1).getFeedItem(), "createfeed BraveNewsAdapterFeedCard  onBindViewHolder  position + 1");
-            // if (position >= getItemCount() - 10) {
-            //     Log.d(TAG, "end");
-            //     return;
-            // }
+            NTPUtil.showItemInfo(mNewsItems.get(position), "createfeed BraveNewsAdapterFeedCard onBindViewHolder position");
 
-            mHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("bn", "cardclicklistener cliked onlinearLayout: "+position);
-                }
-            });
             try {
+                // if (mBraveNewsController != null && mNewsItems.get(position) != null  && mNewsItems.get(position).getFeedItems() != null) {
+                
                 if (mBraveNewsController != null) {
                     new CardBuilderFeedCard(mBraveNewsController, mHolder.linearLayout, mActivity,
                             position, mNewsItems.get(position),
                             mNewsItems.get(position).getCardType());
                 }
+                
             } catch (Exception e) {
                 Log.d("bn", "crashinvestigation onBindViewHolder e: " + e);
             }
@@ -136,10 +125,7 @@ public class BraveNewsAdapterFeedCard extends RecyclerView.Adapter<BraveNewsAdap
 
     @Override
     public int getItemCount() {
-
-            return mNewsItems.size();
-
-        // return mNewsItemsCard.size();
+        return mNewsItems.size();
     }
 
 
@@ -154,72 +140,13 @@ public class BraveNewsAdapterFeedCard extends RecyclerView.Adapter<BraveNewsAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        // LinearLayout layoutRight;
-        // LinearLayout layoutLeft;
-        // TextView testTextView;
-        // LinearLayout testLinear;
-
-        // TableRow rowTop;
-        // TextView topText;
-
-        // ImageView image;
-        // ImageView logo;
-        // TextView title;
-        // TextView source;
-        // TextView desc;
-        // LinearLayout layou1;
-
-        // TableRow layoutRowPhotos;
-        // TableRow layoutRow;
-
-        // TableRow row1;
-        // TableRow row2;
-        // TableRow row3;
-
-        // LinearLayout layout1;
-        // LinearLayout layout2;
-        // LinearLayout layout3;
-
-        // LinearLayout layout;
-
-        // TableLayout tableLayoutTopNews;
-
         LinearLayout linearLayout;
 
         ViewHolder(View itemView) {
             super(itemView);
-            // testTextView = new TextView(mActivity);
-            // testLinear = new LinearLayout(mActivity);
-
-            // layou1 = new LinearLayout(mActivity);
-            // title = new TextView(mActivity);
-            // desc = new TextView(mActivity);
-
-            // image = new ImageView(mActivity);
-            // logo = new ImageView(mActivity);
-            // source = new TextView(mActivity);
-            // layoutRowPhotos = new TableRow(mActivity);
-            // layoutRow = new TableRow(mActivity);
-            // row1 = new TableRow(mActivity);
-            // row2 = new TableRow(mActivity);
-            // row3 = new TableRow(mActivity);
-            // layout1 = new LinearLayout(mActivity);
-            // layout2 = new LinearLayout(mActivity);
-            // layout3 = new LinearLayout(mActivity);
-            // layout = new LinearLayout(mActivity);
-
-            // tableLayoutTopNews = new TableLayout(mActivity);
-
-            // rowTop = new TableRow(mActivity);
-            // topText = new TextView(mActivity);
 
             linearLayout = itemView.findViewById(R.id.card_layout);
             itemView.setOnClickListener(this);
-
-            // linearLayoutParams = new LinearLayout.LayoutParams(
-            //         LinearLayout.LayoutParams.MATCH_PARENT,
-            //         LinearLayout.LayoutParams.WRAP_CONTENT);
-            // linearLayoutParams.setMargins(0, 40, 0, 40);
         }
 
         @Override
@@ -230,27 +157,9 @@ public class BraveNewsAdapterFeedCard extends RecyclerView.Adapter<BraveNewsAdap
     }
 
     public FeedItemsCard getItem(int id) {
-            return mNewsItems.get(id);
+        return mNewsItems.get(id);
     }
 
-    // @Override
-    // public void onConnectionError(MojoException e) {
-    //     mBraveNewsController = null;
-    //     InitBraveNewsController();
-    // }
-
-    // private void InitBraveNewsController() {
-    //     Log.d("bn", "InitBraveNewsController");
-    //     if (mBraveNewsController != null) {
-    //         return;
-    //     }
-
-    //     // generates
-    //     // Caused by: java.lang.Exception: AutocloseableRouter
-    //     // java.lang.IllegalStateException: Warning: Router objects should be explicitly closed
-    //     when no longer required otherwise you may leak handles. mBraveNewsController =
-    //             BraveNewsControllerFactory.getInstance().getBraveNewsController(this);
-    // }
 
     public interface RecycleItemClickListener {
         void onCardClick(View view, int position);

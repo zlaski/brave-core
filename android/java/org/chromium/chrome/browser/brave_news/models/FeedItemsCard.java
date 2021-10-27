@@ -79,6 +79,7 @@ public class FeedItemsCard {
         return "FeedItemsCard{" +
                 "feedItems=" + feedItems +
                 ", cardType=" + cardType +
+                ", displayAd=" + displayAd +
                 ", imageByte=" + Arrays.toString(imageByte) +
                 '}';
     }
