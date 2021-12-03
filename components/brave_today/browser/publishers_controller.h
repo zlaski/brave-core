@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 
+#include "base/memory/raw_ptr.h"
 #include "base/observer_list.h"
 #include "base/observer_list_types.h"
 #include "base/one_shot_event.h"
@@ -46,8 +47,8 @@ class PublishersController {
   void GetOrFetchPublishers(base::OnceClosure callback,
                             bool wait_for_current_update);
 
-  PrefService* prefs_;
-  api_request_helper::APIRequestHelper* api_request_helper_;
+  raw_ptr<PrefService> prefs_ = nullptr;
+  raw_ptr<api_request_helper::APIRequestHelper> api_request_helper_ = nullptr;
 
   std::unique_ptr<base::OneShotEvent> on_current_update_complete_;
   base::ObserverList<Observer> observers_;

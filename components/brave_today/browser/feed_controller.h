@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "base/memory/raw_ptr.h"
 #include "base/one_shot_event.h"
 #include "base/scoped_observation.h"
 #include "brave/components/api_request_helper/api_request_helper.h"
@@ -68,10 +69,10 @@ class FeedController : public PublishersController::Observer {
   void ResetFeed();
   void NotifyUpdateDone();
 
-  PublishersController* publishers_controller_;
-  DirectFeedController* direct_feed_controller_;
-  history::HistoryService* history_service_;
-  api_request_helper::APIRequestHelper* api_request_helper_;
+  raw_ptr<PublishersController> publishers_controller_ = nullptr;
+  raw_ptr<DirectFeedController> direct_feed_controller_ = nullptr;
+  raw_ptr<history::HistoryService> history_service_ = nullptr;
+  raw_ptr<api_request_helper::APIRequestHelper> api_request_helper_ = nullptr;
 
   // The task tracker for the HistoryService callbacks.
   base::CancelableTaskTracker task_tracker_;
