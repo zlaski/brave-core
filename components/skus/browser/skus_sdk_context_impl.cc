@@ -99,7 +99,7 @@ void shim_scheduleWakeup(
   base::SequencedTaskRunnerHandle::Get()->PostDelayedTask(
       FROM_HERE,
       base::BindOnce(&OnScheduleWakeup, std::move(done), std::move(ctx)),
-      base::TimeDelta::FromMilliseconds(delay_ms));
+      base::Milliseconds(delay_ms));
 }
 
 std::unique_ptr<SkusSdkFetcher> shim_executeRequest(
