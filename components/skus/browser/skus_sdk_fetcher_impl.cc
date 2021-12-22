@@ -10,6 +10,8 @@
 
 #include "brave/components/skus/browser/rs/cxx/src/lib.rs.h"
 #include "net/base/load_flags.h"
+#include "net/http/http_status_code.h"
+#include "services/network/public/mojom/url_response_head.mojom.h"
 #include "url/gurl.h"
 
 namespace {
@@ -45,10 +47,10 @@ void SkusSdkFetcherImpl::BeginFetch(
         static_cast<std::string>(req.headers[i]));
   }
 
-  sku_sdk_loader_ = network::SimpleURLLoader::Create(
+  simple_url_loader_ = network::SimpleURLLoader::Create(
       std::move(resource_request), GetNetworkTrafficAnnotationTag());
 
-  sku_sdk_loader_->DownloadToString(
+  simple_url_loader_->DownloadToString(
       url_loader_factory_.get(),
       base::BindOnce(&SkusSdkFetcherImpl::OnFetchComplete,
                      base::Unretained(this), std::move(callback),
@@ -82,23 +84,27 @@ void SkusSdkFetcherImpl::OnFetchComplete(
                               skus::HttpResponse)> callback,
     rust::cxxbridge1::Box<skus::HttpRoundtripContext> ctx,
     std::unique_ptr<std::string> response_body) {
-  if (!response_body) {
-    std::vector<uint8_t> body_bytes;
-    skus::HttpResponse resp = {
-        skus::SkusResult::RequestFailed,
-        500,
-        {},
-        body_bytes,
-    };
-    callback(std::move(ctx), resp);
-    return;
+  uint16_t error_code = simple_url_loader_->NetError();
+  uint16_t response_code = net::HTTP_BAD_REQUEST;
+  if (simple_url_loader_->ResponseInfo() &&
+      simple_url_loader_->ResponseInfo()->headers) {
+    response_code =
+        simple_url_loader_->ResponseInfo()->headers->response_code();
   }
 
-  std::vector<uint8_t> body_bytes(response_body->begin(), response_body->end());
+  bool success = (error_code == net::OK && response_code == net::HTTP_OK);
+
+  std::vector<uint8_t> body_bytes;
+  if (response_body) {
+    const uint8_t* begin =
+        reinterpret_cast<const uint8_t*>(response_body->data());
+    const uint8_t* end = begin + response_body->size();
+    body_bytes.assign(begin, end);
+  }
 
   skus::HttpResponse resp = {
-      skus::SkusResult::Ok,
-      200,
+      success ? skus::SkusResult::Ok : skus::SkusResult::RequestFailed,
+      response_code,
       {},
       body_bytes,
   };

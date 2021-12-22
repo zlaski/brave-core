@@ -36,7 +36,7 @@ class SkusSdkFetcherImpl : public SkusSdkFetcher {
 
  private:
   scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory_;
-  std::unique_ptr<network::SimpleURLLoader> sku_sdk_loader_;
+  std::unique_ptr<network::SimpleURLLoader> simple_url_loader_;
 
   const net::NetworkTrafficAnnotationTag& GetNetworkTrafficAnnotationTag();
 
