@@ -3,7 +3,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // you can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "brave/components/skus/renderer/brave_skus_render_frame_observer.h"
+#include "brave/components/skus/renderer/sdk_render_frame_observer.h"
 
 #include <string>
 #include <vector>
@@ -14,22 +14,22 @@
 #include "content/public/renderer/render_frame.h"
 #include "third_party/blink/public/web/web_local_frame.h"
 
-namespace brave_rewards {
+namespace skus {
 
-BraveSkusRenderFrameObserver::BraveSkusRenderFrameObserver(
+SdkRenderFrameObserver::SdkRenderFrameObserver(
     content::RenderFrame* render_frame,
     int32_t world_id)
     : RenderFrameObserver(render_frame), world_id_(world_id) {}
 
-BraveSkusRenderFrameObserver::~BraveSkusRenderFrameObserver() {}
+SdkRenderFrameObserver::~SdkRenderFrameObserver() {}
 
-void BraveSkusRenderFrameObserver::DidStartNavigation(
+void SdkRenderFrameObserver::DidStartNavigation(
     const GURL& url,
     absl::optional<blink::WebNavigationType> navigation_type) {
   url_ = url;
 }
 
-void BraveSkusRenderFrameObserver::DidCreateScriptContext(
+void SdkRenderFrameObserver::DidCreateScriptContext(
     v8::Local<v8::Context> context,
     int32_t world_id) {
   if (!render_frame()->IsMainFrame() || world_id_ != world_id)
@@ -45,7 +45,7 @@ void BraveSkusRenderFrameObserver::DidCreateScriptContext(
     return;
 
   if (!native_javascript_handle_) {
-    native_javascript_handle_.reset(new BraveSkusJSHandler(render_frame()));
+    native_javascript_handle_.reset(new SdkPageController(render_frame()));
   } else {
     native_javascript_handle_->ResetRemote(render_frame());
   }
@@ -53,15 +53,15 @@ void BraveSkusRenderFrameObserver::DidCreateScriptContext(
   native_javascript_handle_->AddJavaScriptObjectToFrame(context);
 }
 
-bool BraveSkusRenderFrameObserver::IsSkusSdkAllowed() {
+bool SdkRenderFrameObserver::IsSkusSdkAllowed() {
   return base::FeatureList::IsEnabled(skus::features::kSdkFeature) &&
          (url_.host() == "account.brave.com" ||
           url_.host() == "account.bravesoftware.com" ||
           url_.host() == "account.brave.software");
 }
 
-void BraveSkusRenderFrameObserver::OnDestruct() {
+void SdkRenderFrameObserver::OnDestruct() {
   delete this;
 }
 
-}  // namespace brave_rewards
+}  // namespace skus

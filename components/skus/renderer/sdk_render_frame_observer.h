@@ -8,13 +8,13 @@
 
 #include <memory>
 
-#include "brave/components/skus/renderer/brave_skus_js_handler.h"
+#include "brave/components/skus/renderer/sdk_page_controller.h"
 #include "content/public/renderer/render_frame.h"
 #include "content/public/renderer/render_frame_observer.h"
 #include "third_party/blink/public/web/web_navigation_type.h"
 #include "v8/include/v8.h"
 
-namespace brave_rewards {
+namespace skus {
 
 // Used to conditionally inject a handler which exposes JavaScript methods
 // for the SKU SDK. The conditional logic ensures this is a Brave property
@@ -24,14 +24,14 @@ namespace brave_rewards {
 // (non-private / non-guest / non-Tor) context.
 //
 // See `browser/brave_content_browser_client.cc` for more information.
-class BraveSkusRenderFrameObserver : public content::RenderFrameObserver {
+class SdkRenderFrameObserver : public content::RenderFrameObserver {
  public:
-  explicit BraveSkusRenderFrameObserver(content::RenderFrame* render_frame,
-                                        int32_t world_id);
-  BraveSkusRenderFrameObserver(const BraveSkusRenderFrameObserver&) = delete;
-  BraveSkusRenderFrameObserver& operator=(const BraveSkusRenderFrameObserver&) =
+  explicit SdkRenderFrameObserver(content::RenderFrame* render_frame,
+                                      int32_t world_id);
+  SdkRenderFrameObserver(const SdkRenderFrameObserver&) = delete;
+  SdkRenderFrameObserver& operator=(const SdkRenderFrameObserver&) =
       delete;
-  ~BraveSkusRenderFrameObserver() override;
+  ~SdkRenderFrameObserver() override;
 
   // RenderFrameObserver implementation.
   void DidStartNavigation(
@@ -50,10 +50,10 @@ class BraveSkusRenderFrameObserver : public content::RenderFrameObserver {
   GURL url_;
 
   // Handle to "handler" JavaScript object functionality.
-  std::unique_ptr<BraveSkusJSHandler> native_javascript_handle_;
+  std::unique_ptr<SdkPageController> native_javascript_handle_;
   int32_t world_id_;
 };
 
-}  // namespace brave_rewards
+}  // namespace skus
 
 #endif  // BRAVE_COMPONENTS_SKUS_RENDERER_BRAVE_SKUS_RENDER_FRAME_OBSERVER_H_

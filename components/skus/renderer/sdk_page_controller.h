@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_COMPONENTS_SKUS_RENDERER_BRAVE_SKUS_JS_HANDLER_H_
-#define BRAVE_COMPONENTS_SKUS_RENDERER_BRAVE_SKUS_JS_HANDLER_H_
+#ifndef BRAVE_COMPONENTS_SKUS_RENDERER_SDK_PAGE_CONTROLLER_H_
+#define BRAVE_COMPONENTS_SKUS_RENDERER_SDK_PAGE_CONTROLLER_H_
 
 #include <memory>
 #include <string>
@@ -17,7 +17,7 @@
 #include "url/gurl.h"
 #include "v8/include/v8.h"
 
-namespace brave_rewards {
+namespace skus {
 
 // If present, this will inject a few methods (used by SKU SDK)
 // into window.brave.*
@@ -31,12 +31,12 @@ namespace brave_rewards {
 // will be able to purchase VPN from account.brave.com and the browser can
 // detect the purchase and use those credentials during authentication when
 // establishing a connection to our partner providing the VPN service.
-class BraveSkusJSHandler {
+class SdkPageController {
  public:
-  explicit BraveSkusJSHandler(content::RenderFrame* render_frame);
-  BraveSkusJSHandler(const BraveSkusJSHandler&) = delete;
-  BraveSkusJSHandler& operator=(const BraveSkusJSHandler&) = delete;
-  ~BraveSkusJSHandler();
+  explicit SdkPageController(content::RenderFrame* render_frame);
+  SdkPageController(const SdkPageController&) = delete;
+  SdkPageController& operator=(const SdkPageController&) = delete;
+  ~SdkPageController();
 
   void AddJavaScriptObjectToFrame(v8::Local<v8::Context> context);
   void ResetRemote(content::RenderFrame* render_frame);
@@ -90,6 +90,6 @@ class BraveSkusJSHandler {
   mojo::Remote<skus::mojom::SdkController> sdk_controller_;
 };
 
-}  // namespace brave_rewards
+}  // namespace skus
 
-#endif  // BRAVE_COMPONENTS_SKUS_RENDERER_BRAVE_SKUS_JS_HANDLER_H_
+#endif  // BRAVE_COMPONENTS_SKUS_RENDERER_SDK_PAGE_CONTROLLER_H_
