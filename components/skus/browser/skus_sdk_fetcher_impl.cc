@@ -14,13 +14,6 @@
 #include "services/network/public/mojom/url_response_head.mojom.h"
 #include "url/gurl.h"
 
-namespace {
-
-// Maximum accepted size of response from SKU SDK server. 1MB.
-const int kMaxResponseSize = 1024 * 1024;
-
-}  // namespace
-
 namespace skus {
 
 SkusSdkFetcherImpl::SkusSdkFetcherImpl(
@@ -50,12 +43,11 @@ void SkusSdkFetcherImpl::BeginFetch(
   simple_url_loader_ = network::SimpleURLLoader::Create(
       std::move(resource_request), GetNetworkTrafficAnnotationTag());
 
-  simple_url_loader_->DownloadToString(
+  simple_url_loader_->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
       url_loader_factory_.get(),
       base::BindOnce(&SkusSdkFetcherImpl::OnFetchComplete,
                      base::Unretained(this), std::move(callback),
-                     std::move(ctx)),
-      kMaxResponseSize);
+                     std::move(ctx)));
 }
 
 const net::NetworkTrafficAnnotationTag&
