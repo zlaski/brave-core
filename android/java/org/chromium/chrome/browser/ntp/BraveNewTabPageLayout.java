@@ -297,7 +297,8 @@ public class BraveNewTabPageLayout
             SharedPreferences sharedPreferences = ContextUtils.getAppSharedPreferences();
 
             mIsNewsOn = BravePrefServiceBridge.getInstance().getNewsOptIn();
-            mIsShowOptin = sharedPreferences.getBoolean(BraveNewsPreferences.PREF_SHOW_OPTIN, true);
+            mIsShowOptin =
+                    sharedPreferences.getBoolean(BraveNewsPreferences.PREF_SHOW_OPTIN, false);
             mIsShowNewsOn = BravePrefServiceBridge.getInstance().getShowNews();
 
             mFeedHash = "";
@@ -575,7 +576,8 @@ public class BraveNewTabPageLayout
         }
         int appOpenCount = SharedPreferencesManager.getInstance().readInt(
                 BravePreferenceKeys.BRAVE_APP_OPEN_COUNT);
-        if (appOpenCount == 1 && !NTPWidgetManager.getInstance().hasUpdatedUserPrefForBinance()
+        if ((appOpenCount == 0 || appOpenCount == 1)
+                && !NTPWidgetManager.getInstance().hasUpdatedUserPrefForBinance()
                 && !BinanceWidgetManager.getInstance().isUserAuthenticatedForBinance()) {
             NTPWidgetManager.getInstance().setWidget(NTPWidgetManager.PREF_BINANCE, -1);
             NTPWidgetManager.getInstance().setUpdatedUserPrefForBinance();
@@ -887,12 +889,12 @@ public class BraveNewTabPageLayout
         SharedPreferences sharedPreferences = ContextUtils.getAppSharedPreferences();
 
         mIsNewsOn = BravePrefServiceBridge.getInstance().getNewsOptIn();
-        mIsShowOptin = sharedPreferences.getBoolean(BraveNewsPreferences.PREF_SHOW_OPTIN, true);
+        mIsShowOptin = sharedPreferences.getBoolean(BraveNewsPreferences.PREF_SHOW_OPTIN, false);
         mIsShowNewsOn = BravePrefServiceBridge.getInstance().getShowNews();
 
-        if ((!mIsNewsOn && mIsShowOptin)) {
+        if (!mIsNewsOn || (!mIsNewsOn && mIsShowOptin)) {
             mOptinLayout.setVisibility(View.VISIBLE);
-        } else if (mIsShowNewsOn && mIsNewsOn) {
+        } else if (mIsShowNewsOn) {
             if (mOptinLayout != null) {
                 mOptinLayout.setVisibility(View.GONE);
             }
@@ -1060,8 +1062,16 @@ public class BraveNewTabPageLayout
                                             mIsShowNewsOn = true;
                                         }
                                         refreshFeed();
-                                        if (mParentScrollView != null) {
-                                            mParentScrollView.scrollTo(0, 0);
+                                        try {
+                                            mParentScrollView.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    mParentScrollView.fullScroll(
+                                                            ScrollView.FOCUS_UP);
+                                                }
+                                            });
+                                        } catch (Exception e) {
+                                            Log.e("bn", "Exception fullScroll e:" + e);
                                         }
                                         newContentButtonText.setVisibility(View.VISIBLE);
                                         loadingSpinner.setVisibility(View.GONE);
@@ -1232,7 +1242,6 @@ public class BraveNewTabPageLayout
                     correctPosition(false);
                     mParentScrollView.scrollTo(0, 0);
                     mImageCreditLayout.setAlpha(1.0f);
-                    mOptinLayout.setVisibility(View.GONE);
                 }
             });
 
@@ -1265,6 +1274,7 @@ public class BraveNewTabPageLayout
                     }
 
                     getFeed();
+                    mParentScrollView.scrollTo(0, 0);
                 }
             });
         }
@@ -1300,9 +1310,6 @@ public class BraveNewTabPageLayout
         }
 
         isScrolled = false;
-        if (mParentScrollView != null) {
-            mParentScrollView.scrollTo(0, 0);
-        }
     }
 
     @Override
