@@ -75,6 +75,15 @@ const test = (passthroughArgs, suite, buildConfig = config.defaultBuildConfig, o
     util.run('ninja', ['-C', config.outputDir, suite], config.defaultOptions)
   }
 
+  // Filter out upstream tests that are known to fail for Brave
+  let upstreamTestSuites = [
+    'unit_tests',
+    'browser_tests',
+  ]
+  if (upstreamTestSuites.includes(suite)) {
+    braveArgs.push(`--test-launcher-filter-file=${config.braveCoreDir}/test/filters/${suite}.filter`)
+  }
+
   if (config.targetOS === 'ios') {
     util.run(path.join(config.outputDir, "iossim"), [
       path.join(config.outputDir, `${suite}.app`),
