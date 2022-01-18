@@ -38,7 +38,8 @@ bool AddEthereumChain(PrefService* prefs,
   error_message->clear();
   base::JSONReader::ValueWithError value_with_error =
       base::JSONReader::ReadAndReturnValueWithError(
-          payload, base::JSONParserOptions::JSON_PARSE_RFC);
+          payload, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
+                       base::JSONParserOptions::JSON_PARSE_RFC);
   absl::optional<base::Value>& records_v = value_with_error.value;
   if (!records_v) {
     *error_message = l10n_util::GetStringUTF8(
