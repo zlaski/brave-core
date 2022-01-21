@@ -858,10 +858,12 @@ public class BraveNewTabPageLayout
         mItemPosition = 0;
         mVisibleCard = null;
 
-        mRecyclerView.setItemViewCacheSize(250);
+        mRecyclerView.setItemViewCacheSize(260);
         mRecyclerView.setDrawingCacheEnabled(true);
         mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         mRecyclerView.setItemAnimator(null);
+        mRecyclerView.setRecycledViewPool(new RecyclerView.RecycledViewPool());
+
 
         mRecyclerView.setVisibility(View.GONE);
 

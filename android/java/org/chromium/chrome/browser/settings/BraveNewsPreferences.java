@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -17,6 +19,7 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 
+import org.chromium.base.Log;
 import org.chromium.base.ContextUtils;
 import org.chromium.brave_news.mojom.BraveNewsController;
 import org.chromium.brave_news.mojom.Publisher;
@@ -30,7 +33,9 @@ import org.chromium.components.browser_ui.settings.ChromeBasePreference;
 import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
 import org.chromium.components.browser_ui.settings.SettingsUtils;
 import org.chromium.mojo.bindings.ConnectionErrorHandler;
+import org.chromium.mojo.bindings.ConnectionErrorHandler;
 import org.chromium.mojo.system.MojoException;
+import org.chromium.url.mojom.Url;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,9 +50,12 @@ public class BraveNewsPreferences extends BravePreferenceFragment
     public static final String PREF_SHOW_OPTIN = "show_optin";
     public static final String PREF_SOURCES_SECTION = "your_sources_section";
     public static final String PREF_ADD_SOURCES = "add_source_news";
+    public static final String PREF_ADD_RSS_SOURCES = "news_source_1";
+    private static final String PREF_RSS_SOURCES = "rss_sources";
 
     private ChromeSwitchPreference mTurnOnNews;
     private ChromeSwitchPreference mShowNews;
+    private EditTextPreference addSource;
     private PreferenceScreen mMainScreen;
     private PreferenceManager mPreferenceManager;
     private TreeMap<String, List<Publisher>> mCategsPublishers;
@@ -63,6 +71,7 @@ public class BraveNewsPreferences extends BravePreferenceFragment
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         SettingsUtils.addPreferencesFromResource(this, R.xml.brave_news_preferences);
+
         InitBraveNewsController();
         mTurnOnNews = (ChromeSwitchPreference) findPreference(PREF_TURN_ON_NEWS);
         mShowNews = (ChromeSwitchPreference) findPreference(PREF_SHOW_NEWS);
@@ -107,7 +116,7 @@ public class BraveNewsPreferences extends BravePreferenceFragment
             mBraveNewsController.close();
         }
         mBraveNewsController = null;
-        InitBraveNewsController();
+        InitBraveNewsController(); 
     }
 
     private void InitBraveNewsController() {
@@ -126,6 +135,13 @@ public class BraveNewsPreferences extends BravePreferenceFragment
 
         mPreferenceManager = getPreferenceManager();
         mMainScreen = mPreferenceManager.getPreferenceScreen();
+
+        addSource = (EditTextPreference) findPreference(PREF_RSS_SOURCES);
+        if (addSource != null){
+            addSource.setPositiveButtonText(R.string.search_title);
+            addSource.setOnPreferenceChangeListener(this);
+            addSource.setText("");
+        }
 
         boolean isNewsOn = BravePrefServiceBridge.getInstance().getNewsOptIn();
 
@@ -160,6 +176,64 @@ public class BraveNewsPreferences extends BravePreferenceFragment
         } else if (PREF_SHOW_NEWS.equals(key)) {
             BravePrefServiceBridge.getInstance().setShowNews((boolean) newValue);
             setSourcesVisibility((boolean) newValue);
+        } else if (PREF_RSS_SOURCES.equals(key)){
+            Log.d("bn", "going to rss");
+            if (((String) newValue).equals("")) {
+                return true;
+            }
+            PreferenceManager manager = getPreferenceManager();
+            PreferenceScreen sourcesScreen =
+                    manager.createPreferenceScreen(ContextUtils.getApplicationContext());
+            sourcesScreen.setTitle((String) newValue);
+            // fetch results from API
+            Url rssUrl = new Url();
+
+            rssUrl.url = (String) newValue;
+            Log.d("bn", "subscribeToNewDirectFeed rssUrl:"+rssUrl +" url:"+rssUrl.url);
+            mBraveNewsController.subscribeToNewDirectFeed(rssUrl,  (isValidFeed, isDuplicate, result)   -> {
+                Log.d("bn", "subscribeToNewDirectFeed isValidFeed:"+isValidFeed+" isDuplicate:"+isDuplicate+" result:"+result);
+                if (isValidFeed) {
+                //     Log.d("bn", "result is valid feed");
+                //     Log.d("bn", "result is duplicate: "+result.isDuplicate);
+                //     Log.d("bn", "result publishers: "+result.allPublishers);
+                // } else {
+                //     Log.d("bn", "result is not valid feed");
+                }
+            });
+
+            // populate checkboxes
+            // CheckBoxPreference source1 =
+            //         new CheckBoxPreference(ContextUtils.getApplicationContext());
+            // source1.setTitle((String) newValue + " 1");
+            // source1.setChecked(true);
+            // sourcesScreen.addPreference(source1);
+
+            // CheckBoxPreference source2 =
+            //         new CheckBoxPreference(ContextUtils.getApplicationContext());
+            // source2.setTitle((String) newValue + " 2");
+            // source2.setChecked(true);
+            // sourcesScreen.addPreference(source2);
+
+            // // end fetch. finish the layout
+
+            // Preference button = new Preference(ContextUtils.getApplicationContext());
+            // button.setTitle("Add");
+            // button.setKey("add_news_source");
+            // button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            //     @Override
+            //     public boolean onPreferenceClick(Preference preference) {
+            //         setPreferenceScreen(sourcesScreen);
+            //         // setPreferencesFromResource(R.xml.brave_news_preferences, null);
+            //         Log.d("bn", "subscribeToNewDirectFeed add stuff");
+            //         addSource.setText("");
+            //         setPreferenceScreen(mMainScreen);
+            //         return false;
+            //     }
+            // });
+            // sourcesScreen.addPreference(button);
+
+            // setPreferenceScreen(sourcesScreen);
+            return true;
         }
         return true;
     }
@@ -171,6 +245,10 @@ public class BraveNewsPreferences extends BravePreferenceFragment
                 pref.setVisible(isNewsShown);
             }
         }
+    }
+
+    private void createRssDialog(String newValue){
+
     }
 
     @Override

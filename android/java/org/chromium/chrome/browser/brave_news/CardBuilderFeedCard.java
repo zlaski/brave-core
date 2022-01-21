@@ -117,6 +117,7 @@ public class CardBuilderFeedCard {
         mType = type;
         mNewsItem = newsItem;
         mBraveNewsController = braveNewsController;
+        Log.e("bn", "create card position:"+position);
 
         mDeviceWidth = ConfigurationUtils.getDisplayMetrics(activity).get("width");
 
@@ -230,7 +231,7 @@ public class CardBuilderFeedCard {
                     mLinearLayout.setLayoutParams(linearLayoutParams);
 
                     mLinearLayout.setBackground(roundedBackground());
-
+/*
                     try {
                         mBraveNewsController.getDisplayAd(adData -> {
                             if (adData != null) {
@@ -357,6 +358,7 @@ public class CardBuilderFeedCard {
                     } catch (Exception e) {
                         Log.e(TAG, "displayad Exception" + e.getMessage());
                     }
+                    */
                     break;
                 case CardType.DEALS:
 
@@ -690,6 +692,7 @@ public class CardBuilderFeedCard {
             LinearLayout layout = (LinearLayout) view;
             switch (itemType) {
                 case CardType.DEALS:
+                    try {
                     LinearLayout layoutDeals = (LinearLayout) view;
                     layoutDeals.setOrientation(LinearLayout.VERTICAL);
                     linearLayoutRowParams1.width = 0;
@@ -728,9 +731,12 @@ public class CardBuilderFeedCard {
                     descParams.bottomMargin = MARGIN_VERTICAL;
                     desc.setPadding(0, 0, 30, 30);
                     layoutDeals.addView(desc);
-
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception addElementsToSingleLayout Deals: " + e.getMessage());
+                    } 
                     break;
                 case CardType.HEADLINE:
+                    try {                    
                     layout.setOrientation(LinearLayout.VERTICAL);
                     int topPosition = 0;
                     if (mPosition == 0) {
@@ -787,9 +793,12 @@ public class CardBuilderFeedCard {
                     publisherParams.bottomMargin = 4 * MARGIN_VERTICAL;
                     ;
                     publisher.setLayoutParams(publisherParams);
-
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception addElementsToSingleLayout HEADLINE: " + e.getMessage());
+                    } 
                     break;
                 case CardType.PROMOTED_ARTICLE:
+                    try {
                     layout.setOrientation(LinearLayout.VERTICAL);
                     linearLayoutParams =
                             new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -896,10 +905,13 @@ public class CardBuilderFeedCard {
                     publisher.setLayoutParams(publisherParams);
                     promotedLogoLayout.addView(publisher);
                     promotedLogoLayout.addView(promoted);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception addElementsToSingleLayout PROMOTED_ARTICLE: " + e.getMessage());
+                    }                     
 
                     break;
                 case CardType.HEADLINE_PAIRED:
-
+                    try {
                     layout.setOrientation(LinearLayout.VERTICAL);
 
                     imageParams =
@@ -956,11 +968,13 @@ public class CardBuilderFeedCard {
                     layout.addView(publisher);
 
                     layout.setBackground(makeRound(CARD_LAYOUT, R.color.card_background, 30));
-
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception addElementsToSingleLayout HEADLINE_PAIRED: " + e.getMessage());
+                    } 
                     break;
 
                 case CardType.PUBLISHER_GROUP: // 3 numbered rows no photos
-
+                    try {
                     TableLayout.LayoutParams layoutRowParams =
                             new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.MATCH_PARENT);
@@ -1015,8 +1029,13 @@ public class CardBuilderFeedCard {
                     layoutSingleCard.addView(desc);
 
                     layoutRow.addView(layoutSingleCard);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception addElementsToSingleLayout PUBLISHER_GROUP: " + e.getMessage());
+                    }                    
                     break;
                 case CardType.CATEGORY_GROUP: // TOP_NEWS
+
+                    try{
                     TableRow layoutRowPhotos = (TableRow) view;
 
                     tableParamsTopNews.setMargins(0, 0, 0, 5 * MARGIN_VERTICAL);
@@ -1078,15 +1097,20 @@ public class CardBuilderFeedCard {
 
                     image.setLayoutParams(imageRowParams);
                     layoutRowPhotos.addView(image);
-
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception addElementsToSingleLayout CATEGORY_GROUP: " + e.getMessage());
+                    }
                     break;
                 default:
-
+                    try {
                     setTextFromFeed(title, TITLE, index);
                     setTextFromFeed(desc, DESC, index);
                     layout.addView(image);
                     layout.addView(title);
                     layout.addView(desc);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception addElementsToSingleLayout default: " + e.getMessage());
+                    }
                     break;
             }
 

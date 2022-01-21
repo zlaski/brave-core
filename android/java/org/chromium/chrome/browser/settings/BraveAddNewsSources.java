@@ -65,7 +65,7 @@ public class BraveAddNewsSources extends BravePreferenceFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.news_add_source);
-        SettingsUtils.addPreferencesFromResource(this, R.xml.brave_news_sources_default);
+        SettingsUtils.addPreferencesFromResource(this, R.xml.brave_news_sources);
         findPreference(PREF_ADD_SOURCES).setOnPreferenceChangeListener(this);
         InitBraveNewsController();
 
@@ -75,17 +75,17 @@ public class BraveAddNewsSources extends BravePreferenceFragment
         addSource.setPositiveButtonText(R.string.search_title);
         mPublishers = new ArrayList<>();
 
-        mBraveNewsController.getPublishers((publishers) -> {
-            for (Map.Entry<String, Publisher> entry : publishers.entrySet()) {
-                String key = entry.getKey();
-                Publisher publisher = entry.getValue();
-                mPublishers.add(publisher);
-                CheckBoxPreference source =
-                        new CheckBoxPreference(ContextUtils.getApplicationContext());
-                source.setTitle(publisher.publisherName);
-                mainScreen.addPreference(source);
-            }
-        });
+        // mBraveNewsController.getPublishers((publishers) -> {
+        //     for (Map.Entry<String, Publisher> entry : publishers.entrySet()) {
+        //         String key = entry.getKey();
+        //         Publisher publisher = entry.getValue();
+        //         mPublishers.add(publisher);
+        //         CheckBoxPreference source =
+        //                 new CheckBoxPreference(ContextUtils.getApplicationContext());
+        //         source.setTitle(publisher.publisherName);
+        //         mainScreen.addPreference(source);
+        //     }
+        // });
     }
 
     @Override
