@@ -544,10 +544,9 @@ class PrivacySandboxSettingsTestCookiesClearOnExitTurnedOff
     : public PrivacySandboxSettingsTest {
  public:
   void InitializePrefsBeforeStart() override {
-    profile()->GetTestingPrefService()->SetUserPref(
-        prefs::kPrivacySandboxFlocDataAccessibleSince,
-        std::make_unique<base::Value>(
-            ::base::TimeToValue(base::Time::FromTimeT(12345))));
+    prefs()->SetUserPref(prefs::kPrivacySandboxFlocDataAccessibleSince,
+                         std::make_unique<base::Value>(::base::TimeToValue(
+                             base::Time::FromTimeT(12345))));
   }
 };
 
@@ -561,14 +560,13 @@ class PrivacySandboxSettingsTestCookiesClearOnExitTurnedOn
     : public PrivacySandboxSettingsTest {
  public:
   void InitializePrefsBeforeStart() override {
-    auto* map = HostContentSettingsMapFactory::GetForProfile(profile());
-    map->SetDefaultContentSetting(ContentSettingsType::COOKIES,
-                                  ContentSetting::CONTENT_SETTING_SESSION_ONLY);
+    host_content_settings_map()->SetDefaultContentSetting(
+        ContentSettingsType::COOKIES,
+        ContentSetting::CONTENT_SETTING_SESSION_ONLY);
 
-    profile()->GetTestingPrefService()->SetUserPref(
-        prefs::kPrivacySandboxFlocDataAccessibleSince,
-        std::make_unique<base::Value>(
-            ::base::TimeToValue(base::Time::FromTimeT(12345))));
+    prefs()->SetUserPref(prefs::kPrivacySandboxFlocDataAccessibleSince,
+                         std::make_unique<base::Value>(::base::TimeToValue(
+                             base::Time::FromTimeT(12345))));
   }
 };
 
