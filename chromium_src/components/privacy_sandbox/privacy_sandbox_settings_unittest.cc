@@ -6,6 +6,7 @@
 
 #include "base/json/values_util.h"
 #include "base/test/gtest_util.h"
+#include "brave/components/privacy_sandbox/brave_privacy_sandbox_settings.h"
 #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "chrome/test/base/testing_profile.h"
 #include "components/content_settings/core/browser/cookie_settings.h"
@@ -42,7 +43,7 @@ class PrivacySandboxSettingsTest : public testing::Test {
   void SetUp() override {
     InitializePrefsBeforeStart();
 
-    privacy_sandbox_settings_ = std::make_unique<PrivacySandboxSettings>(
+    privacy_sandbox_settings_ = std::make_unique<BravePrivacySandboxSettings>(
         host_content_settings_map(), cookie_settings(), prefs());
   }
 
