@@ -82,6 +82,10 @@ class PrivacySandboxServiceTest : public testing::Test {
   PrivacySandboxService* privacy_sandbox_service() {
     return privacy_sandbox_service_.get();
   }
+  PrivacySandboxSettings* privacy_sandbox_settings() {
+    return PrivacySandboxSettingsFactory::GetForProfile(profile());
+  }
+
   base::test::ScopedFeatureList* feature_list() { return &feature_list_; }
   sync_preferences::TestingPrefServiceSyncable* prefs() {
     return profile()->GetTestingPrefService();
@@ -120,6 +124,10 @@ TEST_F(PrivacySandboxServiceTest, GetFlocIdForDisplay) {
       prefs::kPrivacySandboxFlocEnabled, true);
   profile()->GetTestingPrefService()->SetBoolean(
       prefs::kPrivacySandboxApisEnabled, true);
+
+  // In Brave, we actually don't enable anything here.
+  EXPECT_FALSE(privacy_sandbox_settings()->IsPrivacySandboxAllowed());
+  EXPECT_FALSE(privacy_sandbox_settings()->IsFlocAllowed());
 
   federated_learning::FlocId floc_id = federated_learning::FlocId::CreateValid(
       123456, base::Time(), base::Time::Now(),
@@ -170,6 +178,10 @@ TEST_F(PrivacySandboxServiceTest, GetFlocIdNextUpdateForDisplay) {
   profile()->GetTestingPrefService()->SetBoolean(
       prefs::kPrivacySandboxFlocEnabled, true);
 
+  // In Brave, we actually don't enable anything here.
+  EXPECT_FALSE(privacy_sandbox_settings()->IsPrivacySandboxAllowed());
+  EXPECT_FALSE(privacy_sandbox_settings()->IsFlocAllowed());
+
   std::map<base::TimeDelta, std::u16string> offsets_to_expected_string = {
       {base::Hours(23),
        l10n_util::GetStringUTF16(
@@ -213,6 +225,10 @@ TEST_F(PrivacySandboxServiceTest, GetFlocStatusForDisplay) {
       prefs::kPrivacySandboxFlocEnabled, true);
   profile()->GetTestingPrefService()->SetBoolean(
       prefs::kPrivacySandboxApisEnabled, true);
+
+  // In Brave, we actually don't enable anything here.
+  EXPECT_FALSE(privacy_sandbox_settings()->IsPrivacySandboxAllowed());
+  EXPECT_FALSE(privacy_sandbox_settings()->IsFlocAllowed());
 
   // Will report not active since nothing is actually enabled.
   EXPECT_EQ(
@@ -260,6 +276,11 @@ TEST_F(PrivacySandboxServiceTest, IsFlocIdResettable) {
       prefs::kPrivacySandboxFlocEnabled, true);
   profile()->GetTestingPrefService()->SetBoolean(
       prefs::kPrivacySandboxApisEnabled, true);
+
+  // In Brave, we actually don't enable anything here.
+  EXPECT_FALSE(privacy_sandbox_settings()->IsPrivacySandboxAllowed());
+  EXPECT_FALSE(privacy_sandbox_settings()->IsFlocAllowed());
+  EXPECT_FALSE(privacy_sandbox_service()->IsFlocIdResettable());
 
   feature_list()->Reset();
   feature_list()->InitWithFeatures(
@@ -334,4 +355,44 @@ TEST_F(PrivacySandboxServiceTest, SetFlocPrefEnabled) {
                    "Settings.PrivacySandbox.FlocEnabled"));
   ASSERT_EQ(1, user_action_tester.GetActionCount(
                    "Settings.PrivacySandbox.FlocDisabled"));
+}
+
+TEST_F(PrivacySandboxServiceTest, OnPrivacySandboxPrefChanged) {
+  // When either the main Privacy Sandbox pref, or the FLoC pref, are changed
+  // the FLoC ID should be reset. This will be propagated to the settings
+  // instance, which should then notify observers.
+  privacy_sandbox_test_util::MockPrivacySandboxObserver
+      mock_privacy_sandbox_observer;
+  PrivacySandboxSettingsFactory::GetForProfile(profile())->AddObserver(
+      &mock_privacy_sandbox_observer);
+  EXPECT_CALL(mock_privacy_sandbox_observer,
+              OnFlocDataAccessibleSinceUpdated(/*reset_compute_timer=*/true));
+
+  profile()->GetTestingPrefService()->SetBoolean(
+      prefs::kPrivacySandboxApisEnabled, false);
+  testing::Mock::VerifyAndClearExpectations(&mock_privacy_sandbox_observer);
+
+  EXPECT_CALL(mock_privacy_sandbox_observer,
+              OnFlocDataAccessibleSinceUpdated(/*reset_compute_timer=*/true));
+  profile()->GetTestingPrefService()->SetBoolean(
+      prefs::kPrivacySandboxFlocEnabled, false);
+  testing::Mock::VerifyAndClearExpectations(&mock_privacy_sandbox_observer);
+
+  // OnFlocDataAccessibleSinceUpdated() will be called twice because the attempt
+  // to enable the pref will be immediately followed by setting it to false.
+  EXPECT_CALL(mock_privacy_sandbox_observer,
+              OnFlocDataAccessibleSinceUpdated(/*reset_compute_timer=*/true))
+      .Times(2);
+  profile()->GetTestingPrefService()->SetBoolean(
+      prefs::kPrivacySandboxFlocEnabled, true);
+  testing::Mock::VerifyAndClearExpectations(&mock_privacy_sandbox_observer);
+
+  // OnFlocDataAccessibleSinceUpdated() will be called twice because the attempt
+  // to enable the pref will be immediately followed by setting it to false.
+  EXPECT_CALL(mock_privacy_sandbox_observer,
+              OnFlocDataAccessibleSinceUpdated(/*reset_compute_timer=*/true))
+      .Times(2);
+  profile()->GetTestingPrefService()->SetBoolean(
+      prefs::kPrivacySandboxApisEnabled, true);
+  testing::Mock::VerifyAndClearExpectations(&mock_privacy_sandbox_observer);
 }
