@@ -32,12 +32,12 @@ public class BraveTabSwitcherModeTopToolbarClassAdapter extends BraveClassVisito
         makeProtectedField(sTabSwitcherModeTopToolbarClassName, "mIsIncognito");
 
         makePublicMethod(sTabSwitcherModeTopToolbarClassName, "updateNewTabButtonVisibility");
-        addMethodAnnotation(sBraveTabSwitcherModeTopToolbarClassName, "updateNewTabButtonVisibility",
-                "Ljava/lang/Override;");
+        addMethodAnnotation(sBraveTabSwitcherModeTopToolbarClassName,
+                "updateNewTabButtonVisibility", "Ljava/lang/Override;");
 
         makePublicMethod(sTabSwitcherModeTopToolbarClassName, "getToolbarColorForCurrentState");
-        addMethodAnnotation(sBraveTabSwitcherModeTopToolbarClassName, "getToolbarColorForCurrentState",
-                "Ljava/lang/Override;");
+        addMethodAnnotation(sBraveTabSwitcherModeTopToolbarClassName,
+                "getToolbarColorForCurrentState", "Ljava/lang/Override;");
 
         makePublicMethod(sTabSwitcherModeTopToolbarClassName, "shouldShowIncognitoToggle");
         deleteMethod(sBraveTabSwitcherModeTopToolbarClassName, "shouldShowIncognitoToggle");
