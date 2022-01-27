@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/ui/views/sharing_hub/sharing_hub_bubble_view_impl.cc b/chrome/browser/ui/views/sharing_hub/sharing_hub_bubble_view_impl.cc
+index 1637a2725b471dcf727ecdcfa9aace44a29ea317..a851b476a5361e7297c1d881634f661f1826c144 100644
+--- a/chrome/browser/ui/views/sharing_hub/sharing_hub_bubble_view_impl.cc
++++ b/chrome/browser/ui/views/sharing_hub/sharing_hub_bubble_view_impl.cc
+@@ -148,6 +148,7 @@ void SharingHubBubbleViewImpl::PopulateScrollView(
+         std::make_unique<SharingHubBubbleActionButton>(this, action));
+     view->SetGroup(kActionButtonGroup);
+   }
++  BRAVE_SHARING_HUB_BUBBLE_VIEW_IMPL_POPULATE_SCROLL_VIEW
+ 
+   action_list_view->AddChildView(GetSeparator());
+ 
