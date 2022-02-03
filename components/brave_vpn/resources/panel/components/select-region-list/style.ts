@@ -49,10 +49,26 @@ export const RegionList = styled.div`
   }
 `
 
+export const RegionLabelButton = styled.button`
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  scroll-margin: 5px;
+`
+
 export const RegionLabel = styled.span`
   color: ${(p) => p.theme.color.text01};
   font-family: Poppins;
   font-size: 14px;
+`
+
+export const RegionLabelIcon = styled.span`
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
 `
 
 export const BackButton = styled.button`

@@ -9,6 +9,7 @@ import Toggle from '../toggle'
 import ErrorPanel from '../error-panel'
 import { useSelector, useDispatch } from '../../state/hooks'
 import * as Actions from '../../state/actions'
+const Flag = React.lazy(() => import('../flag'))
 
 function MainPanel () {
   const dispatch = useDispatch()
@@ -44,8 +45,15 @@ function MainPanel () {
           type='button'
           onClick={onSelectRegionButtonClick}
         >
+          <React.Suspense fallback={null}>
+            {currentRegion?.countryIsoCode
+              ? <Flag countryCode={currentRegion.countryIsoCode} />
+              : null}
+          </React.Suspense>
           <S.RegionLabel>{currentRegion?.namePretty}</S.RegionLabel>
-          <CaratStrongRightIcon />
+          <S.RightArrowIcon>
+            <CaratStrongRightIcon />
+          </S.RightArrowIcon>
         </S.RegionSelectorButton>
       </S.PanelContent>
     </PanelBox>
