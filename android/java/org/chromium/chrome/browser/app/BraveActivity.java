@@ -58,6 +58,14 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.wireguard.android.backend.Backend;
+import com.wireguard.android.backend.BackendException;
+import com.wireguard.android.backend.GoBackend;
+import com.wireguard.android.backend.Tunnel;
+import com.wireguard.config.BadConfigException;
+import com.wireguard.config.Config;
+import com.wireguard.config.Interface;
+import com.wireguard.config.Peer;
 
 import org.json.JSONException;
 
@@ -225,6 +233,10 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     private boolean mIsVerification;
     public CompositorViewHolder compositorView;
     public View inflatedSettingsBarLayout;
+
+    private Backend backend;
+    private TunnelManager tunnelManager;
+    private TunnelModel tunnelModel;
 
     @SuppressLint("VisibleForTests")
     public BraveActivity() {
@@ -629,6 +641,13 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
                 OnboardingPrefManager.getInstance().setDormantUsersNotificationsStarted(true);
             }
         }
+
+        try {
+            backend = determineBackend();
+        } catch (Exception e) {
+            Log.e("NTP", e.getMessage());
+        }
+        createConfig();
     }
 
     public void setDormantUsersPrefs() {
@@ -1245,5 +1264,43 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     @NativeMethods
     interface Natives {
         void restartStatsUpdater();
+    }
+
+    private Interface getInterface() throws BadConfigException {
+        Interface.Builder builder = new Interface.Builder();
+        builder.parseAddresses("10.99.72.81/32");
+        builder.parseDnsServers("1.1.1.1, 1.0.0.1");
+        builder.parseListenPort("51821");
+        builder.parsePrivateKey("eOVGdgGOcwfo7dyptSL3BMtHJTxmwdUIS/meDLZUx3g=");
+        return builder.build();
+    }
+
+    private List<Peer> getPeers() throws BadConfigException {
+        List<Peer> peers = new ArrayList<>();
+        Peer.Builder builder = new Peer.Builder();
+        builder.parseAllowedIPs("0.0.0.0/0");
+        builder.parseEndpoint("wg-testing-1-yyz.guardianapp.com:51821");
+        builder.parsePublicKey("T2o1A8pIX+jUEthALK2j+17+KgoNblyUWqUDJT539QU=");
+        peers.add(builder.build());
+        return peers;
+    }
+
+    private Backend determineBackend() {
+        return new GoBackend(BraveActivity.this);
+    }
+
+    private void createConfig() {
+        try {
+            Config newConfig =
+                    new Config.Builder().setInterface(getInterface()).addPeers(getPeers()).build();
+            tunnelManager = new TunnelManager(new FileConfigStore(BraveActivity.this));
+            tunnelModel = tunnelManager.create("deepTest", newConfig);
+            // if (switchCompat != null) {
+            //     switchCompat.setText(tunnelModel.getName());
+            // }
+            Toast.makeText(BraveActivity.this, tunnelModel.getName(), Toast.LENGTH_SHORT).show();
+        } catch (Throwable e) {
+            Toast.makeText(BraveActivity.this, "Config Failed", Toast.LENGTH_SHORT).show();
+        }
     }
 }

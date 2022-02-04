@@ -1,0 +1,10 @@
+import("//build/config/android/rules.gni")
+
+android_library("java") {
+  deps = [
+    "//home/deep/brave/brave_12_17/brave-browser/src/out/android_Release_arm/obj/brave/third_party/android_deps/com_wireguard_android_java/jni/armeabi-v7a/libwg-go.so",
+    "//home/deep/brave/brave_12_17/brave-browser/src/out/android_Release_arm/obj/brave/third_party/android_deps/com_wireguard_android_java/jni/arm64-v8a/libwg-go.so",
+    "//home/deep/brave/brave_12_17/brave-browser/src/out/android_Release_arm/obj/brave/third_party/android_deps/com_wireguard_android_java/jni/x86/libwg-go.so"
+    "//home/deep/brave/brave_12_17/brave-browser/src/out/android_Release_arm/obj/brave/third_party/android_deps/com_wireguard_android_java/jni/x86_64/libwg-go.so"
+  ]
+}
