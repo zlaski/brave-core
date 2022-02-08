@@ -404,8 +404,38 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       </message>
 
       <!-- Onboarding strings -->
+      <message name="IDS_WELCOME_TO_BRAVE" desc="Text for welcome in onboarding">
+        Welcome to Brave!
+      </message>
+      <message name="IDS_PRIVACY_ONBOARDING" desc="Text for privacy in onboarding">
+        Privacy, simplified
+      </message>
+      <message name="IDS_PRIVACY_DESC_ONBOARDING" desc="Text for privacy description in onboarding">
+        You're just a step away from the best privacy online. Ready?
+      </message>
+      <message name="IDS_LETS_GO" desc="Text for lets go button in onboarding">
+        Let's go
+      </message>
+      <message name="IDS_READY_BROWSE" desc="Text for ready to browse in onboarding">
+        You're ready to browse!
+      </message>
+      <message name="IDS_SELECT_POPULAR_SITE" desc="Text for select popular site in onboarding">
+        Select a popular site below or enter your own&#8230;\n\n&#8230;and watch those trackers &amp; ads disappear.
+      </message>
       <message name="IDS_SKIP" desc="Text for skip button in onboarding">
         Skip
+      </message>
+      <message name="IDS_YAHOO" desc="Text for yahoo website in onboarding">
+        Yahoo
+      </message>
+      <message name="IDS_CNN" desc="Text for cnn website in onboarding">
+        CNN
+      </message>
+      <message name="IDS_FOX_NEWS" desc="Text for fox news website in onboarding">
+        Fox News
+      </message>
+      <message name="IDS_ENTER_WEBSITE" desc="Text for enter website in onboarding">
+        Enter a website
       </message>
       <message name="IDS_TROUBLESHOOTING_ONBOARDING" desc="Text for trouble shooting page for onboarding">
         Troubleshooting onboarding
