@@ -27,6 +27,11 @@
     android:screenOrientation="sensorPortrait"
     tools:ignore="LockedOrientationActivity"/>
 <activity
+    android:name="org.chromium.chrome.browser.onboarding.OnboardingActivity2"
+    android:theme="@style/Theme.Chromium.Activity.Fullscreen"
+    android:screenOrientation="sensorPortrait"
+    tools:ignore="LockedOrientationActivity"/>
+<activity
     android:name="org.chromium.chrome.browser.onboarding.SearchActivity"
     android:theme="@style/Theme.Chromium.Activity.Fullscreen"
     android:screenOrientation="sensorPortrait"

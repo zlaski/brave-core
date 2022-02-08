@@ -112,6 +112,7 @@ import org.chromium.chrome.browser.ntp.NewTabPage;
 import org.chromium.chrome.browser.ntp_background_images.util.NewTabPageListener;
 import org.chromium.chrome.browser.onboarding.BraveTalkOptInPopupListener;
 import org.chromium.chrome.browser.onboarding.OnboardingActivity;
+import org.chromium.chrome.browser.onboarding.OnboardingActivity2;
 import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.onboarding.v2.HighlightDialogFragment;
 import org.chromium.chrome.browser.preferences.BravePrefServiceBridge;
@@ -564,6 +565,10 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
             RetentionNotificationUtil.scheduleNotification(this, RetentionNotificationUtil.DEFAULT_BROWSER_3);
             OnboardingPrefManager.getInstance().setOneTimeNotificationStarted(true);
         }
+
+        Intent onboardingIntent = new Intent(this, OnboardingActivity2.class);
+        startActivity(onboardingIntent);
+
         if (!TextUtils.isEmpty(BinanceWidgetManager.getInstance().getBinanceAccountBalance())) {
             try {
                 BinanceWidgetManager.binanceAccountBalance = new BinanceAccountBalance(

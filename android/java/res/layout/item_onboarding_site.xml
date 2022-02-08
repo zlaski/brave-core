@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2022 The Brave Authors. All rights reserved.
+     This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this file,
+     You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="16dp"
+    android:padding="12dp"
+    android:background="@drawable/rounded_white_38_bg">
+
+    <ImageView
+        android:id="@+id/iv_site"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        app:srcCompat="@drawable/ic_brave"
+        android:contentDescription="@null"/>
+
+    <TextView
+        android:id="@+id/tv_site"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:textSize="16sp"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/onboarding_text_color_new"
+        android:text="@string/welcome_to_brave"/>
+
+    <ImageView
+        android:id="@+id/iv_forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:rotation="180"
+        app:srcCompat="@drawable/ic_back"
+        android:contentDescription="@null"/>
+
+</LinearLayout>
