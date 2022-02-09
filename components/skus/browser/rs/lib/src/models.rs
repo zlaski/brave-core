@@ -14,6 +14,7 @@ pub enum Environment {
     Development,
     Staging,
     Production,
+    SearchTorProduction,
 }
 
 impl Display for Environment {
@@ -24,6 +25,7 @@ impl Display for Environment {
             Environment::Development => write!(f, "development"),
             Environment::Staging => write!(f, "staging"),
             Environment::Production => write!(f, "production"),
+            Environment::SearchTorProduction => write!(f, "searchtorproduction"),
         }
     }
 }
@@ -38,6 +40,7 @@ impl FromStr for Environment {
             "development" => Ok(Self::Development),
             "staging" => Ok(Self::Staging),
             "production" => Ok(Self::Production),
+            "searchtorproduction" => Ok(Self::SearchTorProduction),
             _ => Err(InternalError::UnhandledVariant),
         }
     }

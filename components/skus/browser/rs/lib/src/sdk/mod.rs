@@ -44,6 +44,9 @@ where
             Environment::Development => "https://payment.rewards.brave.software",
             Environment::Staging => "https://payment.rewards.bravesoftware.com",
             Environment::Production => "https://payment.rewards.brave.com",
+            Environment::SearchTorProduction => {
+                "https://search.brave4u7jddbv7cyviptqjc7jusxh72uik7zt6adtckl5f4nwy2v72qd.onion"
+            }
         });
 
         let remote_sdk_url = remote_sdk_url.unwrap_or_else(|| match environment {
