@@ -27,7 +27,12 @@ public class OnboardingSitesAdapter extends RecyclerView.Adapter<OnboardingSites
         ENTER_WEBSITE;
     }
 
+    private OnboardingSiteClickListener onboardingSiteClickListener;
     private Context context;
+
+    public OnboardingSitesAdapter(OnboardingSiteClickListener onboardingSiteClickListener) {
+        this.onboardingSiteClickListener = onboardingSiteClickListener;
+    }
 
 	@Override
     public int getItemCount() {
@@ -67,6 +72,15 @@ public class OnboardingSitesAdapter extends RecyclerView.Adapter<OnboardingSites
             holder.tvSite.setText(context.getResources().getString(R.string.enter_website));
             holder.ivSite.setImageResource(R.drawable.ic_search);
         }
+
+        holder.itemView.setOnClickListener(view ->  {
+
+            if(site == Sites.ENTER_WEBSITE) {
+                onboardingSiteClickListener.OnOpenSite("");
+            } else {
+                onboardingSiteClickListener.OnOpenSite("https://www.yahoo.com");
+            }
+        });
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
