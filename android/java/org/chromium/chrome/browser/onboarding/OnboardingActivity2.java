@@ -21,15 +21,19 @@ import android.widget.ImageView;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.app.BraveActivity;
+import org.chromium.chrome.browser.util.TabUtils;
 import org.chromium.chrome.browser.set_default_browser.BraveSetDefaultBrowserUtils;
 
-public class OnboardingActivity2 extends AppCompatActivity {
+import java.util.Locale;
+
+public class OnboardingActivity2 extends AppCompatActivity implements OnboardingSiteClickListener {
 
     private ImageView mIvLeafTop;
     private ImageView mIvLeafBottom;
@@ -123,7 +127,8 @@ public class OnboardingActivity2 extends AppCompatActivity {
             mTvDesc.setText(getResources().getString(R.string.privacy_desc_onboarding));
             mBtnPositive.setText(getResources().getString(R.string.lets_go));
 
-            setLeafView(1, 1.3f, 40);
+            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.3f, 40, true);
+            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.3f, 40, false);
             
         } else if(mCurrentStep == 2) {
 
@@ -135,7 +140,8 @@ public class OnboardingActivity2 extends AppCompatActivity {
             mBtnPositive.setText(getResources().getString(R.string.set_brave_default_browser));
             mBtnNegative.setText(getResources().getString(R.string.not_now));
 
-            setLeafView(1.3f, 1.6f, 80);
+            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.6f, 80, true);
+            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.6f, 80, false);
 
         } else if(mCurrentStep == 3) {
 
@@ -149,45 +155,60 @@ public class OnboardingActivity2 extends AppCompatActivity {
             mTvTitle.setText(getResources().getString(R.string.ready_browse));
             mTvDesc.setText(getResources().getString(R.string.select_popular_site));
 
-            setLeafView(1.6f, 2f, 120);
-
+            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 2f, 120, true);
+            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 2f, 120, false);
             setSitesRecyclerView();
         }
     }
 
     private void setSitesRecyclerView() {
 
+        String countryCode = Locale.getDefault().getCountry();
+        Log.e("tapan","countryCode:"+countryCode);
         RecyclerView rvSites = findViewById(R.id.recyclerview_sites);
         rvSites.setVisibility(View.VISIBLE);
         rvSites.setLayoutManager(new LinearLayoutManager(this));
-        OnboardingSitesAdapter onboardingSitesAdapter = new OnboardingSitesAdapter();
+        OnboardingSitesAdapter onboardingSitesAdapter = new OnboardingSitesAdapter(this);
         rvSites.setAdapter(onboardingSitesAdapter);
     }
 
-    private void setLeafView(float lastScale, float scale, int leafMargin) {
+    private void setLeafAnimation(View leafAlignView, ImageView leafView, float scale, float leafMargin, boolean isTopLeaf) {
 
-        //mIvLeafTop.setScaleX(scale);
-        //mIvLeafTop.setScaleY(scale);
-        //Log.e("tapan","scale:"+mIvLeafTop.getScaleX()+","+mIvLeafTop.getScaleY());
-        Animation anim = new ScaleAnimation(
-            lastScale, scale, // Start and end values for the X axis scaling
-            lastScale, scale, // Start and end values for the Y axis scaling
-            Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-            Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-        anim.setFillAfter(true); // Needed to keep the result of the animation
-        anim.setDuration(50);
-        mIvLeafTop.startAnimation(anim);
+        int margin = (int) dpToPx(this, leafMargin);
+        Animation animation = new Animation() {
 
-        //mIvLeafBottom.setScaleX(scale);
-        //mIvLeafBottom.setScaleY(scale);
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) leafAlignView.getLayoutParams();
+                if(isTopLeaf) {
+                    layoutParams.bottomMargin = margin - (int)((margin - layoutParams.bottomMargin) * interpolatedTime);
+                } else {
+                    layoutParams.topMargin = margin - (int)((margin - layoutParams.topMargin) * interpolatedTime);
+                }
+                leafAlignView.setLayoutParams(layoutParams);
+            }
+        };
+        animation.setDuration(75);
+        leafAlignView.startAnimation(animation);
 
-        ViewGroup.MarginLayoutParams topLeafLayoutParams = (ViewGroup.MarginLayoutParams) mVLeafAlignTop.getLayoutParams();
-        topLeafLayoutParams.bottomMargin = dpToPx(this, leafMargin);
-        mVLeafAlignTop.setLayoutParams(topLeafLayoutParams);
+        leafView.animate().scaleX(scale).scaleY(scale).setDuration(75);
+    }
 
-        /*ViewGroup.MarginLayoutParams bottomLeafLayoutParams = (ViewGroup.MarginLayoutParams) mVLeafAlignBottom.getLayoutParams();
-        bottomLeafLayoutParams.topMargin = dpToPx(this, leafMargin);
-        mVLeafAlignBottom.setLayoutParams(bottomLeafLayoutParams); */   
+    @Override
+    public void OnOpenSite(String url) {
+
+        if(BraveActivity.getBraveActivity()!=null) {
+            Log.e("tapan","BraveActivity not null");
+            BraveActivity.getBraveActivity().openNewOrSelectExistingTab(url);
+        }
+        finish();
+        /*if(url!=null && url.length()>0) {
+            TabUtils.openUrlInSameTab(url);
+        } else {
+            TabUtils.openNewTab();
+        }*/
+
+        //finish();
     }
 
     @Override
@@ -201,6 +222,4 @@ public class OnboardingActivity2 extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {}
-
-
 }

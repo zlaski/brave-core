@@ -22,9 +22,11 @@
 
     <ImageView
         android:id="@+id/iv_leaf_top"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/view_leaf_top_align"
+        app:layout_constraintStart_toEndOf="@id/view_leaf_top_align"
+        app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/onboarding_top_leaf"
         android:adjustViewBounds="true"
         android:contentDescription="@null"/>
