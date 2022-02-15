@@ -4,6 +4,6 @@
  * you can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "components/crx_file/crx_verifier.h"
-#define CRX3_WITH_PUBLISHER_PROOF CRX3
+//#define CRX3_WITH_PUBLISHER_PROOF CRX3
 #include "src/components/component_updater/component_updater_service.cc"
-#undef CRX3_WITH_PUBLISHER_PROOF
+//#undef CRX3_WITH_PUBLISHER_PROOF
