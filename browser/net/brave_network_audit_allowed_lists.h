@@ -39,12 +39,18 @@ constexpr const char* kAllowedUrlPrefixes[] = {
 
     // brave sync v2 production
     "https://sync-v2.brave.com/v2",
+    "https://rewards-backup.brave.com/",
+    "https://rewards-backup.brave.com/v2",
 
     // brave sync v2 staging
     "https://sync-v2.bravesoftware.com/v2",
+    "https://rewards-stg-backup.bravesoftware.com/",
+    "https://rewards-stg-backup.bravesoftware.com/v2",
 
     // brave sync v2 dev
     "https://sync-v2.brave.software/v2",
+    "https://rewards-dev-backup.brave.software/",
+    "https://rewards-dev-backup.brave.software/v2",
 
     // brave A/B testing
     "https://variations.brave.com/seed",
