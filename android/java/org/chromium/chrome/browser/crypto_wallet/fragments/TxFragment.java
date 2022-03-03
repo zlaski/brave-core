@@ -32,6 +32,7 @@ import org.chromium.brave_wallet.mojom.TxData;
 import org.chromium.brave_wallet.mojom.TxData1559;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.crypto_wallet.activities.BraveWalletActivity;
+import org.chromium.chrome.browser.crypto_wallet.activities.BraveWalletBaseActivity;
 import org.chromium.chrome.browser.crypto_wallet.activities.BuySendSwapActivity;
 import org.chromium.chrome.browser.crypto_wallet.util.Utils;
 
@@ -50,34 +51,30 @@ public class TxFragment extends Fragment {
     private double mEthRate;
 
     public static TxFragment newInstance(TransactionInfo txInfo, String asset, int decimals,
-            String chainSymbol, int chainDecimals, double totalPrice) {
+                                         String chainSymbol, int chainDecimals, double totalPrice) {
         return new TxFragment(txInfo, asset, decimals, chainSymbol, chainDecimals, totalPrice);
     }
 
-    private AssetRatioService getAssetRatioService() {
+    protected AssetRatioService getAssetRatioService() {
         Activity activity = getActivity();
-        if (activity instanceof BuySendSwapActivity) {
-            return ((BuySendSwapActivity) activity).getAssetRatioService();
-        } else if (activity instanceof BraveWalletActivity) {
-            return ((BraveWalletActivity) activity).getAssetRatioService();
+        if (activity instanceof BraveWalletBaseActivity) {
+            return ((BraveWalletBaseActivity) activity).getAssetRatioService();
         }
 
         return null;
     }
 
-    private EthTxManagerProxy getEthTxManagerProxy() {
+    protected EthTxManagerProxy getEthTxManagerProxy() {
         Activity activity = getActivity();
-        if (activity instanceof BuySendSwapActivity) {
-            return ((BuySendSwapActivity) activity).getEthTxManagerProxy();
-        } else if (activity instanceof BraveWalletActivity) {
-            return ((BraveWalletActivity) activity).getEthTxManagerProxy();
+        if (activity instanceof BraveWalletBaseActivity) {
+            return ((BraveWalletBaseActivity) activity).getEthTxManagerProxy();
         }
 
         return null;
     }
 
     private TxFragment(TransactionInfo txInfo, String asset, int decimals, String chainSymbol,
-            int chainDecimals, double totalPrice) {
+                       int chainDecimals, double totalPrice) {
         mTxInfo = txInfo;
         mAsset = asset;
         mDecimals = decimals;
@@ -98,7 +95,7 @@ public class TxFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_transaction, container, false);
         mIsEIP1559 = !mTxInfo.txDataUnion.getEthTxData1559().maxPriorityFeePerGas.isEmpty()
                 && !mTxInfo.txDataUnion.getEthTxData1559().maxFeePerGas.isEmpty();
@@ -165,19 +162,19 @@ public class TxFragment extends Fragment {
                                         mTxInfo.txDataUnion.getEthTxData1559()
                                                 .gasEstimation.slowMaxPriorityFeePerGas;
                                 maxFeePerGas = mTxInfo.txDataUnion.getEthTxData1559()
-                                                       .gasEstimation.slowMaxFeePerGas;
+                                        .gasEstimation.slowMaxFeePerGas;
                             } else if (mCheckedPriorityId == R.id.radio_optimal) {
                                 maxPriorityFeePerGas =
                                         mTxInfo.txDataUnion.getEthTxData1559()
                                                 .gasEstimation.avgMaxPriorityFeePerGas;
                                 maxFeePerGas = mTxInfo.txDataUnion.getEthTxData1559()
-                                                       .gasEstimation.avgMaxFeePerGas;
+                                        .gasEstimation.avgMaxFeePerGas;
                             } else if (mCheckedPriorityId == R.id.radio_high) {
                                 maxPriorityFeePerGas =
                                         mTxInfo.txDataUnion.getEthTxData1559()
                                                 .gasEstimation.fastMaxPriorityFeePerGas;
                                 maxFeePerGas = mTxInfo.txDataUnion.getEthTxData1559()
-                                                       .gasEstimation.fastMaxFeePerGas;
+                                        .gasEstimation.fastMaxFeePerGas;
                             } else if (mCheckedPriorityId == R.id.radio_custom) {
                                 currentBaseFeeMsg.setVisibility(View.VISIBLE);
                                 currentBaseFeeMsg.setText(String.format(
@@ -277,19 +274,19 @@ public class TxFragment extends Fragment {
                                         mTxInfo.txDataUnion.getEthTxData1559()
                                                 .gasEstimation.slowMaxPriorityFeePerGas;
                                 maxFeePerGas = mTxInfo.txDataUnion.getEthTxData1559()
-                                                       .gasEstimation.slowMaxFeePerGas;
+                                        .gasEstimation.slowMaxFeePerGas;
                             } else if (mCheckedPriorityId == R.id.radio_optimal) {
                                 maxPriorityFeePerGas =
                                         mTxInfo.txDataUnion.getEthTxData1559()
                                                 .gasEstimation.avgMaxPriorityFeePerGas;
                                 maxFeePerGas = mTxInfo.txDataUnion.getEthTxData1559()
-                                                       .gasEstimation.avgMaxFeePerGas;
+                                        .gasEstimation.avgMaxFeePerGas;
                             } else if (mCheckedPriorityId == R.id.radio_high) {
                                 maxPriorityFeePerGas =
                                         mTxInfo.txDataUnion.getEthTxData1559()
                                                 .gasEstimation.fastMaxPriorityFeePerGas;
                                 maxFeePerGas = mTxInfo.txDataUnion.getEthTxData1559()
-                                                       .gasEstimation.fastMaxFeePerGas;
+                                        .gasEstimation.fastMaxFeePerGas;
                             } else if (mCheckedPriorityId == R.id.radio_custom) {
                                 EditText gasAmountLimitEdit =
                                         dialog.findViewById(R.id.gas_amount_limit_edit);
@@ -387,14 +384,14 @@ public class TxFragment extends Fragment {
         TextView gasFeeAmount = view.findViewById(R.id.gas_fee_amount);
         final double totalGas = mIsEIP1559
                 ? Utils.fromHexWei(Utils.multiplyHexBN(
-                                           mTxInfo.txDataUnion.getEthTxData1559().baseData.gasLimit,
-                                           mTxInfo.txDataUnion.getEthTxData1559().maxFeePerGas),
-                        mChainDecimals)
+                mTxInfo.txDataUnion.getEthTxData1559().baseData.gasLimit,
+                mTxInfo.txDataUnion.getEthTxData1559().maxFeePerGas),
+                mChainDecimals)
                 : Utils.fromHexWei(
-                        Utils.multiplyHexBN(
-                                mTxInfo.txDataUnion.getEthTxData1559().baseData.gasLimit,
-                                mTxInfo.txDataUnion.getEthTxData1559().baseData.gasPrice),
-                        mChainDecimals);
+                Utils.multiplyHexBN(
+                        mTxInfo.txDataUnion.getEthTxData1559().baseData.gasLimit,
+                        mTxInfo.txDataUnion.getEthTxData1559().baseData.gasPrice),
+                mChainDecimals);
         gasFeeAmount.setText(
                 String.format(getResources().getString(R.string.crypto_wallet_gas_fee_amount),
                         String.format(Locale.getDefault(), "%.8f", totalGas), mChainSymbol));

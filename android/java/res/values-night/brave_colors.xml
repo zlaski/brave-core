@@ -13,6 +13,9 @@
     <color name="default_text_color_on_accent1_baseline">@color/default_text_color_on_accent1_light</color>
     <color name="dialog_bg_color_dark">@color/toolbar_background_primary</color>
 
+    <!-- Day/Night colors -->
+    <color name="brave_wallet_day_night_error_border">#E32444</color>
+
     <!-- Theme colors -->
     <color name="brave_tab_view_card_selected_bg">@color/baseline_primary_200</color>
 

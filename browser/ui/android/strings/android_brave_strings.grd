@@ -2869,6 +2869,24 @@ If you don't accept this request, VPN will not reconnect and your internet conne
     <message name="IDS_ACCESSIBILITY_NEW_TAB_PAGE" desc="Accessibility text to read aloud when the user focuses the new tab view.">
       New tab
     </message>
+    <message name="IDS_BRAVE_WALLET_SHEET_APPROVE_RESET_NONCE" desc="Brave wallet reset nonce button action text">
+      Clear and Continue
+    </message>
+    <message name="IDS_BRAVE_WALLET_SHEET_RESET_TX_TITLE" desc="Brave wallet reset transaction nonce dialog title">
+      Transaction backlog
+    </message>
+    <message name="IDS_BRAVE_WALLET_SHEET_RESET_TX_LEARN_MORE" desc="Brave wallet reset transaction nonce dialog learn more link text">
+      Learn more
+    </message>
+    <message name="IDS_BRAVE_WALLET_SHEET_RESET_TX_CLEAR_REPLACE_TITLE" desc="Brave wallet reset backlog transaction nonce dialog action checkbox text">
+      Clear &amp; replace the incomplete transaction(s)
+    </message>
+    <message name="IDS_BRAVE_WALLET_SHEET_RESET_TX_DESC" desc="Brave wallet reset backlog transaction nonce dialog description">
+      You\'re attempting to start a new transaction while you have previously submitted transactions that have not been confirmed. This will block any new ones from being submitted.
+    </message>
+    <message name="IDS_BRAVE_WALLET_SHEET_RESET_TX_NO_ACTION_DESC" desc="Brave wallet reset backlog transaction no action info">
+     For now, no additional action is required. Just wait for the unconfirmed transactions to clear.
+    </message>
     </messages>
   </release>
 </grit>

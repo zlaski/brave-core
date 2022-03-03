@@ -45,6 +45,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.chromium.chrome.browser.crypto_wallet.fragments.ApproveNewTxBottomSheetDialogFragment;
+import org.chromium.mojo_base.mojom.TimeDelta;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,6 +114,7 @@ public class Utils {
 
     private static final String PREF_CRYPTO_ONBOARDING = "crypto_onboarding";
     public static final String DEX_AGGREGATOR_URL = "https://0x.org/";
+    public static final String RESET_BACKLOG_TRANSACTION_NONCE_LEARN_MORE = "https://support.brave.com/hc/en-us/articles/4537540021389";
     public static final String ADDRESS = "address";
     public static final String NAME = "name";
     public static final String ISIMPORTED = "isImported";
@@ -201,7 +204,7 @@ public class Utils {
     }
 
     public static void openBuySendSwapActivity(Activity activity,
-            BuySendSwapActivity.ActivityType activityType, String swapFromAssetSymbol) {
+                                               BuySendSwapActivity.ActivityType activityType, String swapFromAssetSymbol) {
         assert activity != null;
         Intent buySendSwapActivityIntent = new Intent(activity, BuySendSwapActivity.class);
         buySendSwapActivityIntent.putExtra("activityType", activityType.getValue());
@@ -215,8 +218,8 @@ public class Utils {
     }
 
     public static void openAssetDetailsActivity(Activity activity, String chainId,
-            String assetSymbol, String assetName, String contractAddress, String assetLogo,
-            int assetDecimals) {
+                                                String assetSymbol, String assetName, String contractAddress, String assetLogo,
+                                                int assetDecimals) {
         assert activity != null;
         Intent assetDetailIntent = new Intent(activity, AssetDetailActivity.class);
         assetDetailIntent.putExtra(CHAIN_ID, chainId);
@@ -683,8 +686,8 @@ public class Utils {
     }
 
     public static void setBitmapResource(ExecutorService executor, Handler handler, Context context,
-            String iconPath, int iconId, ImageView iconImg, TextView textView,
-            boolean drawCaratDown) {
+                                         String iconPath, int iconId, ImageView iconImg, TextView textView,
+                                         boolean drawCaratDown) {
         if (iconPath == null) {
             if (iconImg != null) {
                 iconImg.setImageResource(iconId);
@@ -702,7 +705,7 @@ public class Utils {
                 resizeFactor = 70;
             }
             try (InputStream inputStream =
-                            context.getContentResolver().openInputStream(logoFileUri)) {
+                         context.getContentResolver().openInputStream(logoFileUri)) {
                 final Bitmap bitmap =
                         Utils.resizeBitmap(BitmapFactory.decodeStream(inputStream), resizeFactor);
                 handler.post(() -> {
@@ -713,7 +716,7 @@ public class Utils {
                                 new BitmapDrawable(context.getResources(), bitmap), null,
                                 drawCaratDown ? ApiCompatibilityUtils.getDrawable(
                                         context.getResources(), R.drawable.ic_carat_down)
-                                              : null,
+                                        : null,
                                 null);
                     }
                 });
@@ -769,8 +772,8 @@ public class Utils {
     }
 
     public static void setBlockiesBitmapCustomAsset(ExecutorService executor, Handler handler,
-            ImageView iconImg, String source, String symbol, float scale, TextView textView,
-            Context context, boolean drawCaratDown, float scaleDown) {
+                                                    ImageView iconImg, String source, String symbol, float scale, TextView textView,
+                                                    Context context, boolean drawCaratDown, float scaleDown) {
         executor.execute(() -> {
             final Bitmap bitmap =
                     drawTextToBitmap(scaleDown(Blockies.createIcon(source, true), scaleDown),
@@ -783,7 +786,7 @@ public class Utils {
                             new BitmapDrawable(context.getResources(), bitmap), null,
                             drawCaratDown ? ApiCompatibilityUtils.getDrawable(
                                     context.getResources(), R.drawable.ic_carat_down)
-                                          : null,
+                                    : null,
                             null);
                 }
             });
@@ -807,7 +810,7 @@ public class Utils {
     }
 
     public static void setBlockiesBitmapResource(ExecutorService executor, Handler handler,
-            ImageView iconImg, String source, boolean makeLowerCase) {
+                                                 ImageView iconImg, String source, boolean makeLowerCase) {
         executor.execute(() -> {
             final Bitmap bitmap = Blockies.createIcon(source, makeLowerCase);
             handler.post(() -> {
@@ -962,8 +965,18 @@ public class Utils {
         return stripAccountAddress(address);
     }
 
+    public static AccountInfo getAccountInfo(AccountInfo[] accounts, String accountName) {
+        for (AccountInfo account : accounts) {
+            if (account.name.equals(accountName)) {
+                return account;
+            }
+        }
+
+        return null;
+    }
+
     public static void openTransaction(TransactionInfo txInfo, JsonRpcService jsonRpcService,
-            AppCompatActivity activity, String accountName) {
+                                       AppCompatActivity activity, String accountName) {
         assert txInfo != null;
         if (txInfo.txStatus == TransactionStatus.UNAPPROVED) {
             if (activity instanceof ApprovedTxObserver) {
@@ -986,7 +999,7 @@ public class Utils {
                         if (blockExplorerUrl.length() > 2) {
                             blockExplorerUrl =
                                     blockExplorerUrl.substring(1, blockExplorerUrl.length() - 1)
-                                    + "/tx/" + txInfo.txHash;
+                                            + "/tx/" + txInfo.txHash;
                             TabUtils.openUrlInNewTab(false, blockExplorerUrl);
                             TabUtils.bringChromeTabbedActivityToTheTop(activity);
                             break;
@@ -998,21 +1011,17 @@ public class Utils {
     }
 
     public static void openTransaction(TransactionInfo txInfo, JsonRpcService jsonRpcService,
-            AppCompatActivity activity, AccountInfo[] accountInfos) {
+                                       AppCompatActivity activity, AccountInfo[] accountInfos) {
         assert txInfo != null;
-        String to = txInfo.txDataUnion.getEthTxData1559().baseData.to;
-        if (txInfo.txType == TransactionType.ERC20_TRANSFER && txInfo.txArgs.length > 1) {
-            to = txInfo.txArgs[0];
-        }
-        openTransaction(txInfo, jsonRpcService, activity, getAccountName(accountInfos, to));
+        openTransaction(txInfo, jsonRpcService, activity, getAccountName(accountInfos, txInfo.fromAddress));
     }
 
     public static void setUpTransactionList(AccountInfo[] accountInfos,
-            AssetRatioService assetRatioService, TxService txService,
-            BlockchainRegistry blockchainRegistry, BraveWalletService braveWalletService,
-            String assetSymbol, String contractAddress, int assetDecimals,
-            RecyclerView rvTransactions, OnWalletListItemClick callback, Context context,
-            String chainId, JsonRpcService jsonRpcService, WalletCoinAdapter walletTxCoinAdapter) {
+                                            AssetRatioService assetRatioService, TxService txService,
+                                            BlockchainRegistry blockchainRegistry, BraveWalletService braveWalletService,
+                                            String assetSymbol, String contractAddress, int assetDecimals,
+                                            RecyclerView rvTransactions, OnWalletListItemClick callback, Context context,
+                                            String chainId, JsonRpcService jsonRpcService, WalletCoinAdapter walletTxCoinAdapter) {
         assert jsonRpcService != null;
         jsonRpcService.getAllNetworks(networks -> {
             String chainSymbol = "ETH";
@@ -1038,8 +1047,8 @@ public class Utils {
                         }
                         if ((assetSymbol == null && assetDecimals == 0)
                                 || assetSymbol.toLowerCase(Locale.getDefault())
-                                           .equals(finalChainSymbol.toLowerCase(
-                                                   Locale.getDefault()))) {
+                                .equals(finalChainSymbol.toLowerCase(
+                                        Locale.getDefault()))) {
                             try {
                                 fetchTransactions(accountInfos, Double.valueOf(tempPrice),
                                         Double.valueOf(tempPrice), txService, blockchainRegistry,
@@ -1078,11 +1087,11 @@ public class Utils {
     }
 
     private static void fetchTransactions(AccountInfo[] accountInfos, double chainSymbolPrice,
-            double assetPrice, TxService txService, BlockchainRegistry blockchainRegistry,
-            String contractAddress, RecyclerView rvTransactions, OnWalletListItemClick callback,
-            Context context, String assetSymbol, int assetDecimals, String chainId,
-            AssetRatioService assetRatioService, BraveWalletService braveWalletService,
-            String chainSymbol, int chainDecimals, WalletCoinAdapter walletTxCoinAdapter) {
+                                          double assetPrice, TxService txService, BlockchainRegistry blockchainRegistry,
+                                          String contractAddress, RecyclerView rvTransactions, OnWalletListItemClick callback,
+                                          Context context, String assetSymbol, int assetDecimals, String chainId,
+                                          AssetRatioService assetRatioService, BraveWalletService braveWalletService,
+                                          String chainSymbol, int chainDecimals, WalletCoinAdapter walletTxCoinAdapter) {
         assert txService != null;
         PendingTxHelper pendingTxHelper =
                 new PendingTxHelper(txService, accountInfos, true, contractAddress);
@@ -1102,11 +1111,11 @@ public class Utils {
     }
 
     private static void fetchAssetsPricesDecimals(AccountInfo[] accountInfos,
-            double chainSymbolPrice, double assetPrice, BlockchainRegistry blockchainRegistry,
-            RecyclerView rvTransactions, OnWalletListItemClick callback, Context context,
-            HashMap<String, TransactionInfo[]> pendingTxInfos, String chainId,
-            AssetRatioService assetRatioService, BraveWalletService braveWalletService,
-            String chainSymbol, int chainDecimals, WalletCoinAdapter walletTxCoinAdapter) {
+                                                  double chainSymbolPrice, double assetPrice, BlockchainRegistry blockchainRegistry,
+                                                  RecyclerView rvTransactions, OnWalletListItemClick callback, Context context,
+                                                  HashMap<String, TransactionInfo[]> pendingTxInfos, String chainId,
+                                                  AssetRatioService assetRatioService, BraveWalletService braveWalletService,
+                                                  String chainSymbol, int chainDecimals, WalletCoinAdapter walletTxCoinAdapter) {
         assert chainId != null;
         assert blockchainRegistry != null;
         TokenUtils.getAllTokensFiltered(braveWalletService, blockchainRegistry, chainId, tokens -> {
@@ -1128,9 +1137,9 @@ public class Utils {
                                 decimals = chainDecimals;
                             }
                             if (token.contractAddress.toLowerCase(Locale.getDefault())
-                                            .equals(txInfo.txDataUnion.getEthTxData1559()
-                                                            .baseData.to.toLowerCase(
-                                                                    Locale.getDefault()))) {
+                                    .equals(txInfo.txDataUnion.getEthTxData1559()
+                                            .baseData.to.toLowerCase(
+                                                    Locale.getDefault()))) {
                                 assets.put(txInfo.id, symbol);
                                 assetsDecimals.put(symbol, decimals);
                                 break;
@@ -1149,11 +1158,11 @@ public class Utils {
     }
 
     private static void fetchAssetsPrices(AccountInfo[] accountInfos, double chainSymbolPrice,
-            double assetPrice, RecyclerView rvTransactions, OnWalletListItemClick callback,
-            Context context, HashMap<String, TransactionInfo[]> pendingTxInfos,
-            HashMap<String, String> assets, HashMap<String, Integer> assetsDecimals,
-            AssetRatioService assetRatioService, String chainSymbol, int chainDecimals,
-            WalletCoinAdapter walletTxCoinAdapter) {
+                                          double assetPrice, RecyclerView rvTransactions, OnWalletListItemClick callback,
+                                          Context context, HashMap<String, TransactionInfo[]> pendingTxInfos,
+                                          HashMap<String, String> assets, HashMap<String, Integer> assetsDecimals,
+                                          AssetRatioService assetRatioService, String chainSymbol, int chainDecimals,
+                                          WalletCoinAdapter walletTxCoinAdapter) {
         AssetsPricesHelper assetsPricesHelper =
                 new AssetsPricesHelper(assetRatioService, new HashSet<String>(assets.values()));
         assetsPricesHelper.fetchPrices(() -> {
@@ -1165,11 +1174,11 @@ public class Utils {
     }
 
     private static void workWithTransactions(AccountInfo[] accountInfos, double chainSymbolPrice,
-            double assetPrice, RecyclerView rvTransactions, OnWalletListItemClick callback,
-            Context context, String assetSymbol, int assetDecimals,
-            HashMap<String, TransactionInfo[]> pendingTxInfos, HashMap<String, String> assets,
-            HashMap<String, Integer> assetsDecimals, HashMap<String, Double> assetsPrices,
-            String chainSymbol, int chainDecimals, WalletCoinAdapter walletTxCoinAdapter) {
+                                             double assetPrice, RecyclerView rvTransactions, OnWalletListItemClick callback,
+                                             Context context, String assetSymbol, int assetDecimals,
+                                             HashMap<String, TransactionInfo[]> pendingTxInfos, HashMap<String, String> assets,
+                                             HashMap<String, Integer> assetsDecimals, HashMap<String, Double> assetsPrices,
+                                             String chainSymbol, int chainDecimals, WalletCoinAdapter walletTxCoinAdapter) {
         walletTxCoinAdapter.setWalletCoinAdapterType(
                 WalletCoinAdapter.AdapterType.VISIBLE_ASSETS_LIST);
         List<WalletListItemModel> walletListItemModelList = new ArrayList<>();
@@ -1190,10 +1199,10 @@ public class Utils {
     }
 
     private static WalletListItemModel makeWalletItem(AccountInfo[] accountInfos,
-            double chainSymbolPrice, double assetPrice, Context context, String assetSymbol,
-            int assetDecimals, HashMap<String, String> assets,
-            HashMap<String, Integer> assetsDecimals, HashMap<String, Double> assetsPrices,
-            String chainSymbol, int chainDecimals, TransactionInfo txInfo, String accountName) {
+                                                      double chainSymbolPrice, double assetPrice, Context context, String assetSymbol,
+                                                      int assetDecimals, HashMap<String, String> assets,
+                                                      HashMap<String, Integer> assetsDecimals, HashMap<String, Double> assetsPrices,
+                                                      String chainSymbol, int chainDecimals, TransactionInfo txInfo, String accountName) {
         if (assets != null) {
             assert assetsDecimals != null;
             assert assetsPrices != null;
@@ -1250,14 +1259,14 @@ public class Utils {
             valueToDisplay = "0.0000 " + assetSymbol;
         }
         if (txInfo.txDataUnion.getEthTxData1559()
-                        .baseData.to.toLowerCase(Locale.getDefault())
-                        .equals(Utils.SWAP_EXCHANGE_PROXY.toLowerCase(Locale.getDefault()))) {
+                .baseData.to.toLowerCase(Locale.getDefault())
+                .equals(Utils.SWAP_EXCHANGE_PROXY.toLowerCase(Locale.getDefault()))) {
             action = String.format(context.getResources().getString(R.string.wallet_tx_info_swap),
                     accountName, strDate);
             detailInfo =
                     String.format(Locale.getDefault(), "%.4f", Utils.fromHexWei(valueAsset, 18))
-                    + " ETH -> "
-                    + "0x Exchange Proxy";
+                            + " ETH -> "
+                            + "0x Exchange Proxy";
             valueToDisplay = "0.0000 ETH";
         }
         WalletListItemModel itemModel =
@@ -1267,13 +1276,13 @@ public class Utils {
                 && !txInfo.txDataUnion.getEthTxData1559().maxFeePerGas.isEmpty();
         double totalGas = isEIP1559
                 ? Utils.fromHexWei(
-                        Utils.multiplyHexBN(txInfo.txDataUnion.getEthTxData1559().baseData.gasLimit,
-                                txInfo.txDataUnion.getEthTxData1559().maxFeePerGas),
-                        18)
+                Utils.multiplyHexBN(txInfo.txDataUnion.getEthTxData1559().baseData.gasLimit,
+                        txInfo.txDataUnion.getEthTxData1559().maxFeePerGas),
+                18)
                 : Utils.fromHexWei(
-                        Utils.multiplyHexBN(txInfo.txDataUnion.getEthTxData1559().baseData.gasLimit,
-                                txInfo.txDataUnion.getEthTxData1559().baseData.gasPrice),
-                        18);
+                Utils.multiplyHexBN(txInfo.txDataUnion.getEthTxData1559().baseData.gasLimit,
+                        txInfo.txDataUnion.getEthTxData1559().baseData.gasPrice),
+                18);
         double totalGasFiat = totalGas * chainSymbolPrice;
         itemModel.setChainSymbol(chainSymbol);
         itemModel.setChainDecimals(chainDecimals);
@@ -1292,9 +1301,9 @@ public class Utils {
     }
 
     private static void showApproveDialog(TransactionInfo txInfo, String accountName,
-            AppCompatActivity activity, ApprovedTxObserver approvedTxObserver) {
-        ApproveTxBottomSheetDialogFragment approveTxBottomSheetDialogFragment =
-                ApproveTxBottomSheetDialogFragment.newInstance(txInfo, accountName);
+                                          AppCompatActivity activity, ApprovedTxObserver approvedTxObserver) {
+        ApproveNewTxBottomSheetDialogFragment approveTxBottomSheetDialogFragment =
+                ApproveNewTxBottomSheetDialogFragment.newInstance(txInfo, accountName);
         approveTxBottomSheetDialogFragment.setApprovedTxObserver(approvedTxObserver);
         approveTxBottomSheetDialogFragment.show(activity.getSupportFragmentManager(),
                 ApproveTxBottomSheetDialogFragment.TAG_FRAGMENT);
@@ -1338,7 +1347,7 @@ public class Utils {
     }
 
     public static AlertDialog showPopUp(Context context, String title, String message,
-            String positiveButtonTitle, int icon, DialogInterface.OnClickListener onClickListener) {
+                                        String positiveButtonTitle, int icon, DialogInterface.OnClickListener onClickListener) {
         assert null != context;
         MaterialAlertDialogBuilder builder =
                 new MaterialAlertDialogBuilder(context, R.style.BraveWalletAlertDialogTheme)
@@ -1421,5 +1430,13 @@ public class Utils {
             return fingerprintManager != null && fingerprintManager.isHardwareDetected()
                     && fingerprintManager.hasEnrolledFingerprints();
         }
+    }
+
+    public static long getTimeDifferenceMillisFromNow(Date date) {
+        return new Date().getTime() - date.getTime();
+    }
+
+    public static Date getDateFromTimeDelta(TimeDelta timeDelta) {
+        return new Date(timeDelta.microseconds / 1000);
     }
 }

@@ -105,7 +105,7 @@ public class PortfolioFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_portfolio, container, false);
 
         view.setOnTouchListener(new View.OnTouchListener() {
@@ -260,7 +260,7 @@ public class PortfolioFragment extends Fragment
     }
 
     private void setUpCoinList(BlockchainToken[] userAssets,
-            HashMap<String, Double> perTokenCryptoSum, HashMap<String, Double> perTokenFiatSum) {
+                               HashMap<String, Double> perTokenCryptoSum, HashMap<String, Double> perTokenFiatSum) {
         View view = getView();
         assert view != null;
 
@@ -473,8 +473,9 @@ public class PortfolioFragment extends Fragment
             if (txInfos.length == 0) {
                 continue;
             }
-            ApproveTxBottomSheetDialogFragment approveTxBottomSheetDialogFragment =
-                    ApproveTxBottomSheetDialogFragment.newInstance(txInfos[0], key);
+
+            ApproveNewTxBottomSheetDialogFragment approveTxBottomSheetDialogFragment =
+                    ApproveNewTxBottomSheetDialogFragment.newInstance(txInfos[0], key);
             approveTxBottomSheetDialogFragment.setApprovedTxObserver(this);
             approveTxBottomSheetDialogFragment.show(
                     getFragmentManager(), ApproveTxBottomSheetDialogFragment.TAG_FRAGMENT);

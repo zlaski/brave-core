@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
@@ -26,12 +25,10 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Pair;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -52,17 +49,12 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import org.chromium.base.Log;
 import org.chromium.brave_wallet.mojom.AccountInfo;
-import org.chromium.brave_wallet.mojom.BlockchainRegistry;
 import org.chromium.brave_wallet.mojom.BlockchainToken;
 import org.chromium.brave_wallet.mojom.BraveWalletConstants;
-import org.chromium.brave_wallet.mojom.BraveWalletService;
 import org.chromium.brave_wallet.mojom.CoinType;
 import org.chromium.brave_wallet.mojom.EthTxManagerProxy;
 import org.chromium.brave_wallet.mojom.EthereumChain;
 import org.chromium.brave_wallet.mojom.GasEstimation1559;
-import org.chromium.brave_wallet.mojom.JsonRpcService;
-import org.chromium.brave_wallet.mojom.KeyringInfo;
-import org.chromium.brave_wallet.mojom.KeyringService;
 import org.chromium.brave_wallet.mojom.ProviderError;
 import org.chromium.brave_wallet.mojom.SwapParams;
 import org.chromium.brave_wallet.mojom.SwapResponse;
@@ -76,34 +68,27 @@ import org.chromium.brave_wallet.mojom.TxService;
 import org.chromium.brave_wallet.mojom.TxServiceObserver;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.crypto_wallet.BlockchainRegistryFactory;
-import org.chromium.chrome.browser.crypto_wallet.BraveWalletServiceFactory;
-import org.chromium.chrome.browser.crypto_wallet.JsonRpcServiceFactory;
-import org.chromium.chrome.browser.crypto_wallet.KeyringServiceFactory;
 import org.chromium.chrome.browser.crypto_wallet.SwapServiceFactory;
 import org.chromium.chrome.browser.crypto_wallet.TxServiceFactory;
 import org.chromium.chrome.browser.crypto_wallet.adapters.AccountSpinnerAdapter;
 import org.chromium.chrome.browser.crypto_wallet.adapters.NetworkSpinnerAdapter;
 import org.chromium.chrome.browser.crypto_wallet.adapters.WalletCoinAdapter;
+import org.chromium.chrome.browser.crypto_wallet.fragments.ApproveNewTxBottomSheetDialogFragment;
 import org.chromium.chrome.browser.crypto_wallet.fragments.ApproveTxBottomSheetDialogFragment;
 import org.chromium.chrome.browser.crypto_wallet.fragments.EditVisibleAssetsBottomSheetDialogFragment;
 import org.chromium.chrome.browser.crypto_wallet.observers.ApprovedTxObserver;
-import org.chromium.chrome.browser.crypto_wallet.observers.KeyringServiceObserver;
 import org.chromium.chrome.browser.crypto_wallet.util.Utils;
 import org.chromium.chrome.browser.crypto_wallet.util.Validations;
-import org.chromium.chrome.browser.init.AsyncInitializationActivity;
 import org.chromium.chrome.browser.qrreader.BarcodeTracker;
 import org.chromium.chrome.browser.qrreader.BarcodeTrackerFactory;
 import org.chromium.chrome.browser.qrreader.CameraSource;
 import org.chromium.chrome.browser.qrreader.CameraSourcePreview;
 import org.chromium.chrome.browser.util.TabUtils;
-import org.chromium.mojo.bindings.ConnectionErrorHandler;
 import org.chromium.mojo.system.MojoException;
 import org.chromium.ui.text.NoUnderlineClickableSpan;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -111,7 +96,7 @@ import java.util.concurrent.Executors;
 
 public class BuySendSwapActivity extends BraveWalletBaseActivity
         implements AdapterView.OnItemSelectedListener, BarcodeTracker.BarcodeGraphicTrackerCallback,
-                   ApprovedTxObserver {
+        ApprovedTxObserver {
     private final static String TAG = "BuySendSwapActivity";
     private static final int RC_HANDLE_CAMERA_PERM = 113;
     // Intent request code to handle updating play services if needed.
@@ -123,6 +108,7 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
 
     private int radioSlippageToleranceCheckedId;
     private TextView mMarketLimitPriceText;
+    private AccountInfo[] mAccountInfos;
 
     public enum ActivityType {
         BUY(0),
@@ -300,13 +286,13 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
                     });
                 }
                 updateBalance(mCustomAccountAdapter.getTitleAtPosition(
-                                      mAccountSpinner.getSelectedItemPosition()),
+                        mAccountSpinner.getSelectedItemPosition()),
                         true);
                 // We have to call that for SWAP, to update both from and to
                 // balance
                 if (mActivityType == ActivityType.SWAP) {
                     updateBalance(mCustomAccountAdapter.getTitleAtPosition(
-                                          mAccountSpinner.getSelectedItemPosition()),
+                            mAccountSpinner.getSelectedItemPosition()),
                             false);
                 }
             });
@@ -349,7 +335,7 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
     }
 
     private SwapParams getSwapParams(String from, Pair<Integer, String> fromInfo,
-            Pair<Integer, String> toInfo, String percent, boolean calculatePerSellAsset) {
+                                     Pair<Integer, String> toInfo, String percent, boolean calculatePerSellAsset) {
         String value = mFromValueText.getText().toString();
         String valueTo = mToValueText.getText().toString();
 
@@ -375,7 +361,7 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
     }
 
     private void workWithSwapQuota(boolean success, SwapResponse response, String errorResponse,
-            boolean calculatePerSellAsset, boolean sendTx, String from) {
+                                   boolean calculatePerSellAsset, boolean sendTx, String from) {
         if (!success) {
             response = new SwapResponse();
             response.sellAmount = "0";
@@ -559,7 +545,7 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
                     warnWhenError(TAG, "getErc20TokenAllowance", error, errorMessage);
                     if (error != ProviderError.SUCCESS
                             || amountToSend <= Utils.fromHexWei(
-                                       allowance, mCurrentBlockchainToken.decimals)) {
+                            allowance, mCurrentBlockchainToken.decimals)) {
                         return;
                     }
                     mBtnBuySendSwap.setText(String.format(
@@ -663,8 +649,8 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
         WalletCoinAdapter.AdapterType fromAdapterType = mActivityType == ActivityType.BUY
                 ? WalletCoinAdapter.AdapterType.BUY_ASSETS_LIST
                 : mActivityType == ActivityType.SEND
-                        ? WalletCoinAdapter.AdapterType.SEND_ASSETS_LIST
-                        : WalletCoinAdapter.AdapterType.SWAP_FROM_ASSETS_LIST;
+                ? WalletCoinAdapter.AdapterType.SEND_ASSETS_LIST
+                : WalletCoinAdapter.AdapterType.SWAP_FROM_ASSETS_LIST;
         mFromAssetText.setOnClickListener(v -> {
             EditVisibleAssetsBottomSheetDialogFragment bottomSheetDialogFragment =
                     EditVisibleAssetsBottomSheetDialogFragment.newInstance(fromAdapterType);
@@ -770,7 +756,7 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
                             }
 
                             if (!(radioSlippageToleranceCheckedId == 0
-                                        || radioSlippageToleranceCheckedId == checkedId)) {
+                                    || radioSlippageToleranceCheckedId == checkedId)) {
                                 updateSlippagePercentage(percent);
                             }
                             if (radioSlippageToleranceCheckedId == -1) {
@@ -817,9 +803,9 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
 
             NoUnderlineClickableSpan span = new NoUnderlineClickableSpan(
                     getResources(), R.color.brave_action_color, (textView) -> {
-                        TabUtils.openUrlInNewTab(false, Utils.DEX_AGGREGATOR_URL);
-                        TabUtils.bringChromeTabbedActivityToTheTop(BuySendSwapActivity.this);
-                    });
+                TabUtils.openUrlInNewTab(false, Utils.DEX_AGGREGATOR_URL);
+                TabUtils.bringChromeTabbedActivityToTheTop(BuySendSwapActivity.this);
+            });
 
             SpannableString dexAggregatorSpanStr = Utils.createSpannableString(
                     degAggregatorText, dexAggregatorSrc, span, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1300,8 +1286,6 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
     }
 
     public void showApproveTransactionDialog(TransactionInfo txInfo) {
-        String accountName =
-                mCustomAccountAdapter.getNameAtPosition(mAccountSpinner.getSelectedItemPosition());
         if (mActivityType == ActivityType.SWAP) {
             mBtnBuySendSwap.setEnabled(true);
             if (mCurrentBlockchainToken != null) {
@@ -1313,8 +1297,9 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
                 }
             }
         }
-        ApproveTxBottomSheetDialogFragment approveTxBottomSheetDialogFragment =
-                ApproveTxBottomSheetDialogFragment.newInstance(txInfo, accountName);
+        ApproveNewTxBottomSheetDialogFragment approveTxBottomSheetDialogFragment =
+                ApproveNewTxBottomSheetDialogFragment.newInstance(
+                        txInfo, mAccountInfos[mAccountSpinner.getSelectedItemPosition()]);
         approveTxBottomSheetDialogFragment.setApprovedTxObserver(this);
         approveTxBottomSheetDialogFragment.show(
                 getSupportFragmentManager(), ApproveTxBottomSheetDialogFragment.TAG_FRAGMENT);
@@ -1334,9 +1319,9 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
     public void updateBuySendSwapAsset(
             String asset, BlockchainToken blockchainToken, boolean buySend) {
         if (!buySend && mCurrentBlockchainToken != null
-                        && mCurrentBlockchainToken.symbol.equals(blockchainToken.symbol)
+                && mCurrentBlockchainToken.symbol.equals(blockchainToken.symbol)
                 || buySend && mCurrentSwapToBlockchainToken != null
-                        && mCurrentSwapToBlockchainToken.symbol.equals(blockchainToken.symbol))
+                && mCurrentSwapToBlockchainToken.symbol.equals(blockchainToken.symbol))
             return;
 
         TextView assetText = buySend ? mFromAssetText : mToAssetText;
@@ -1380,7 +1365,7 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
                 || mCurrentBlockchainToken.contractAddress.isEmpty();
         boolean disable = swapToTokenNullOrEmpty && tokenNullOrEmpty
                 || mCurrentSwapToBlockchainToken.contractAddress.equals(
-                        mCurrentBlockchainToken.contractAddress);
+                mCurrentBlockchainToken.contractAddress);
 
         mBtnBuySendSwap.setEnabled(!disable);
     }
@@ -1447,10 +1432,11 @@ public class BuySendSwapActivity extends BraveWalletBaseActivity
         }
         if (mKeyringService != null) {
             mKeyringService.getKeyringInfo(BraveWalletConstants.DEFAULT_KEYRING_ID, keyring -> {
+                mAccountInfos = keyring.accountInfos;
                 String[] accountNames = new String[keyring.accountInfos.length];
                 String[] accountTitles = new String[keyring.accountInfos.length];
                 int currentPos = 0;
-                for (AccountInfo info : keyring.accountInfos) {
+                for (AccountInfo info : mAccountInfos) {
                     accountNames[currentPos] = info.name;
                     accountTitles[currentPos] = info.address;
                     currentPos++;
