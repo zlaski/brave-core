@@ -21,7 +21,7 @@ namespace {
 
 WebUIConfigList CreateConfigs() {
   WebUIConfigList config_list;
-  [[maybe_unused]] auto register_config =
+  auto register_config =
       [&config_list](std::unique_ptr<ui::WebUIConfig> config) {
         DCHECK_EQ(config->scheme(), content::kChromeUIUntrustedScheme);
         const std::string& host = config->host();
