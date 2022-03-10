@@ -120,19 +120,19 @@ TEST(ValueConversionUtilsUnitTest, EthNetworkInfoToValueTest) {
   EXPECT_EQ(*value.FindStringPath("nativeCurrency.symbol"), chain.symbol);
   EXPECT_EQ(*value.FindIntPath("nativeCurrency.decimals"), chain.decimals);
   EXPECT_EQ(value.FindBoolKey("is_eip1559").value(), true);
-  for (const auto& entry : value.FindListKey("rpcUrls")->GetListDeprecated()) {
+  for (const auto& entry : value.FindListKey("rpcUrls")->GetList()) {
     ASSERT_NE(std::find(chain.rpc_urls.begin(), chain.rpc_urls.end(),
                         entry.GetString()),
               chain.rpc_urls.end());
   }
 
-  for (const auto& entry : value.FindListKey("iconUrls")->GetListDeprecated()) {
+  for (const auto& entry : value.FindListKey("iconUrls")->GetList()) {
     ASSERT_NE(std::find(chain.icon_urls.begin(), chain.icon_urls.end(),
                         entry.GetString()),
               chain.icon_urls.end());
   }
   auto* blocked_urls = value.FindListKey("blockExplorerUrls");
-  for (const auto& entry : blocked_urls->GetListDeprecated()) {
+  for (const auto& entry : blocked_urls->GetList()) {
     ASSERT_NE(std::find(chain.block_explorer_urls.begin(),
                         chain.block_explorer_urls.end(), entry.GetString()),
               chain.block_explorer_urls.end());

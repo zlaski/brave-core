@@ -89,7 +89,7 @@ TEST_F(BatAdsUnblindedTokensTest, GetTokensAsList) {
       get_unblinded_tokens()->GetAllTokens();
   EXPECT_EQ(list_values.GetListDeprecated().size(), unblinded_tokens.size());
 
-  for (auto& value : list_values.GetListDeprecated()) {
+  for (auto& value : list_values.GetList()) {
     base::DictionaryValue* dictionary = nullptr;
     if (!value.GetAsDictionary(&dictionary)) {
       FAIL();

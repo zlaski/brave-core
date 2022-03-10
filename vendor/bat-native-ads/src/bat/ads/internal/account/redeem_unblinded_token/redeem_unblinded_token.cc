@@ -265,7 +265,7 @@ void RedeemUnblindedToken::OnFetchPaymentToken(
   }
 
   std::vector<SignedToken> signed_tokens;
-  for (const auto& value : signed_tokens_list->GetListDeprecated()) {
+  for (const auto& value : signed_tokens_list->GetList()) {
     DCHECK(value.is_string());
     const std::string signed_token_base64 = value.GetString();
     SignedToken signed_token = SignedToken::decode_base64(signed_token_base64);

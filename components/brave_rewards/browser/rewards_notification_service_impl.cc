@@ -169,7 +169,7 @@ void RewardsNotificationServiceImpl::ReadRewardsNotificationsJSON() {
   base::Value* displayed =
       dictionary->FindKeyOfType("displayed", base::Value::Type::LIST);
   if (displayed) {
-    for (const auto& it : displayed->GetListDeprecated()) {
+    for (const auto& it : displayed->GetList()) {
       rewards_notifications_displayed_.push_back(it.GetString());
     }
   }
@@ -204,7 +204,7 @@ void RewardsNotificationServiceImpl::ReadRewardsNotifications(
     const base::Value* args =
         it->FindKeyOfType("args", base::Value::Type::LIST);
     if (args) {
-      for (auto& arg : args->GetListDeprecated()) {
+      for (auto& arg : args->GetList()) {
         std::string arg_string = arg.GetString();
         notification_args.push_back(arg_string);
       }

@@ -182,7 +182,7 @@ void NTPSponsoredImagesData::ParseCampaignsList(
     const base::Value& campaigns_value,
     const base::FilePath& installed_dir) {
   DCHECK(campaigns_value.is_list());
-  for (const auto& campaign_value : campaigns_value.GetListDeprecated()) {
+  for (const auto& campaign_value : campaigns_value.GetList()) {
     const auto campaign = GetCampaignFromValue(campaign_value, installed_dir);
     if (campaign.IsValid())
       campaigns.push_back(campaign);
@@ -251,7 +251,7 @@ void NTPSponsoredImagesData::ParseSRProperties(
   DVLOG(2) << __func__ << ": Theme name: " << theme_name;
 
   if (auto* sites = value.FindListKey(kTopSitesKey)) {
-    for (const auto& top_site_value : sites->GetListDeprecated()) {
+    for (const auto& top_site_value : sites->GetList()) {
       TopSite site;
       if (auto* name = top_site_value.FindStringKey(kTopSiteNameKey))
         site.name = *name;

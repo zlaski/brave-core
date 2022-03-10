@@ -135,7 +135,7 @@ std::vector<base::Value> Eip2930Transaction::AccessListToValue(
 absl::optional<Eip2930Transaction::AccessList>
 Eip2930Transaction::ValueToAccessList(const base::Value& value) {
   AccessList access_list;
-  for (const auto& item_value : value.GetListDeprecated()) {
+  for (const auto& item_value : value.GetList()) {
     AccessListItem item;
     std::vector<uint8_t> address = item_value.GetListDeprecated()[0].GetBlob();
     std::move(address.begin(), address.end(), item.address.begin());

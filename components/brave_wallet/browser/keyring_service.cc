@@ -513,7 +513,7 @@ KeyringService::GetImportedAccountsForKeyring(PrefService* prefs,
       GetPrefForKeyring(prefs, kImportedAccounts, id);
   if (!imported_accounts)
     return result;
-  for (const auto& imported_account : imported_accounts->GetListDeprecated()) {
+  for (const auto& imported_account : imported_accounts->GetList()) {
     const std::string* account_name =
         imported_account.FindStringKey(kAccountName);
     const std::string* account_address =

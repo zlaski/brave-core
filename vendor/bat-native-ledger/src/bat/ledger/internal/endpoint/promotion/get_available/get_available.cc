@@ -97,7 +97,7 @@ type::Result GetAvailable::ParseBody(
   }
 
   const auto promotion_size = promotions->GetListDeprecated().size();
-  for (auto& item : promotions->GetListDeprecated()) {
+  for (auto& item : promotions->GetList()) {
     type::PromotionPtr promotion = type::Promotion::New();
 
     const auto* id = item.FindStringKey("id");

@@ -153,7 +153,7 @@ bool ParseAssetPriceHistory(const std::string& json,
     return false;
   }
 
-  for (const auto& date_price_list_it : list_of_lists->GetListDeprecated()) {
+  for (const auto& date_price_list_it : list_of_lists->GetList()) {
     const base::ListValue* date_price_list;
     if (!date_price_list_it.GetAsList(&date_price_list)) {
       return false;

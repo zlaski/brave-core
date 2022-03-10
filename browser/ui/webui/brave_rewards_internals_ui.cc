@@ -452,7 +452,7 @@ void RewardsInternalsDOMHandler::OnGetAdDiagnostics(const bool success,
 
 #if DCHECK_IS_ON()
   DCHECK(diagnostics.is_list()) << "Diagnostics should be a list";
-  for (const auto& entry : diagnostics.GetListDeprecated()) {
+  for (const auto& entry : diagnostics.GetList()) {
     DCHECK(entry.is_dict()) << "Diagnostics entry should be a dictionary";
     DCHECK(entry.FindKey("key")) << "Diagnostics entry should have 'key' key";
     DCHECK(entry.FindKey("value"))

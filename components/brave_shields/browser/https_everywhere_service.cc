@@ -183,7 +183,7 @@ std::string HTTPSEverywhereService::Engine::ApplyHTTPSRule(
       const base::ListValue* eValues = nullptr;
       exclusion->GetAsList(&eValues);
       if (nullptr != eValues) {
-        for (size_t j = 0; j < eValues->GetListDeprecated().size(); ++j) {
+        for (size_t j = 0; j < eValues->GetList().size(); ++j) {
           const auto& list = eValues->GetListDeprecated();
           if (list.size() <= j) {
             continue;
@@ -219,7 +219,7 @@ std::string HTTPSEverywhereService::Engine::ApplyHTTPSRule(
       return "";
     }
 
-    for (size_t j = 0; j < rValues->GetListDeprecated().size(); ++j) {
+    for (size_t j = 0; j < rValues->GetList().size(); ++j) {
       const auto& list = rValues->GetListDeprecated();
       if (list.size() <= j) {
         continue;

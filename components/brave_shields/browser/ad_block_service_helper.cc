@@ -60,7 +60,7 @@ std::vector<FilterList> RegionalCatalogFromJSON(
     return catalog;
   }
 
-  for (auto i = regional_lists->GetListDeprecated().begin();
+  for (auto i = regional_lists->GetList().begin();
        i < regional_lists->GetListDeprecated().end(); i++) {
     const auto* uuid = i->FindKey("uuid");
     if (!uuid || !uuid->is_string()) {
@@ -79,7 +79,7 @@ std::vector<FilterList> RegionalCatalogFromJSON(
     if (!langs_key || !langs_key->is_list()) {
       continue;
     }
-    for (auto lang = langs_key->GetListDeprecated().begin();
+    for (auto lang = langs_key->GetList().begin();
          lang < langs_key->GetListDeprecated().end(); lang++) {
       if (!lang->is_string()) {
         continue;
@@ -159,7 +159,7 @@ void MergeResourcesInto(base::Value from, base::Value* into, bool force_hide) {
   base::Value* from_resources_hide_selectors =
       from.FindKey("hide_selectors");
   if (resources_hide_selectors && from_resources_hide_selectors) {
-    for (auto i = from_resources_hide_selectors->GetListDeprecated().begin();
+    for (auto i = from_resources_hide_selectors->GetList().begin();
          i < from_resources_hide_selectors->GetListDeprecated().end(); i++) {
       resources_hide_selectors->Append(std::move(*i));
     }
@@ -173,7 +173,7 @@ void MergeResourcesInto(base::Value from, base::Value* into, bool force_hide) {
       base::Value* resources_entry =
           resources_style_selectors->FindKey(i.first);
       if (resources_entry) {
-        for (auto j = i.second.GetListDeprecated().begin();
+        for (auto j = i.second.GetList().begin();
              j < i.second.GetListDeprecated().end(); j++) {
           resources_entry->Append(std::move(*j));
         }
@@ -186,7 +186,7 @@ void MergeResourcesInto(base::Value from, base::Value* into, bool force_hide) {
   base::Value* resources_exceptions = into->FindKey("exceptions");
   base::Value* from_resources_exceptions = from.FindKey("exceptions");
   if (resources_exceptions && from_resources_exceptions) {
-    for (auto i = from_resources_exceptions->GetListDeprecated().begin();
+    for (auto i = from_resources_exceptions->GetList().begin();
          i < from_resources_exceptions->GetListDeprecated().end(); i++) {
       resources_exceptions->Append(std::move(*i));
     }

@@ -18,7 +18,7 @@
 namespace {
 
 base::Value* FindPeerElement(base::Value* root, const std::string& peer_id) {
-  for (base::Value& val : root->GetListDeprecated()) {
+  for (base::Value& val : root->GetList()) {
     base::Value* id = val.FindKey("ID");
     bool has_peer = id && id->is_string();
     if (!has_peer)
@@ -43,7 +43,7 @@ bool RemoveElementFromList(base::Value* root,
 bool RemoveValueFromList(base::Value* root,
                          const std::string& value_to_remove) {
   DCHECK(root);
-  for (base::Value& item : root->GetListDeprecated()) {
+  for (base::Value& item : root->GetList()) {
     auto current = item.GetString();
     if (current != value_to_remove)
       continue;
@@ -91,7 +91,7 @@ bool IPFSJSONParser::GetPeersFromJSON(const std::string& json,
     return false;
   }
 
-  for (const base::Value& val : peers_arr->GetListDeprecated()) {
+  for (const base::Value& val : peers_arr->GetList()) {
     const base::Value* addr = val.FindKey("Addr");
     const base::Value* peer = val.FindKey("Peer");
 
@@ -156,7 +156,7 @@ bool IPFSJSONParser::GetAddressesConfigFromJSON(const std::string& json,
 
   config->api = *api;
   config->gateway = *gateway;
-  for (const base::Value& val : swarm->GetListDeprecated()) {
+  for (const base::Value& val : swarm->GetList()) {
     if (!val.is_string()) {
       continue;
     }
@@ -353,7 +353,7 @@ bool IPFSJSONParser::GetParseKeysFromJSON(
     return false;
   }
   auto& keys = *data;
-  for (const base::Value& val : list->GetListDeprecated()) {
+  for (const base::Value& val : list->GetList()) {
     if (!val.is_dict()) {
       continue;
     }
@@ -476,7 +476,7 @@ bool IPFSJSONParser::GetPeersFromConfigJSON(const std::string& json,
     return false;
   }
 
-  for (const base::Value& val : peers_arr->GetListDeprecated()) {
+  for (const base::Value& val : peers_arr->GetList()) {
     const base::Value* peer = val.FindKey("ID");
     const base::Value* addr = val.FindListKey("Addrs");
 
@@ -489,7 +489,7 @@ bool IPFSJSONParser::GetPeersFromConfigJSON(const std::string& json,
     auto peer_id = peer->GetString();
     std::string value;
     if (has_addr) {
-      for (const base::Value& item : addr->GetListDeprecated()) {
+      for (const base::Value& item : addr->GetList()) {
         auto address = item.GetString();
         if (address.empty())
           continue;

@@ -233,7 +233,7 @@ class JsonRpcServiceUnitTest : public testing::Test {
     if (!custom_networks)
       return false;
 
-    for (const auto& chain : custom_networks->GetListDeprecated()) {
+    for (const auto& chain : custom_networks->GetList()) {
       if (!chain.is_dict())
         continue;
 

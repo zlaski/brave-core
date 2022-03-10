@@ -90,7 +90,7 @@ bool GeminiJSONParser::GetAccountBalancesFromJSON(
     return false;
   }
 
-  for (const base::Value& val : pv_arr->GetListDeprecated()) {
+  for (const base::Value& val : pv_arr->GetList()) {
     const base::Value* currency = val.FindKey("currency");
     const base::Value* available = val.FindKey("available");
 

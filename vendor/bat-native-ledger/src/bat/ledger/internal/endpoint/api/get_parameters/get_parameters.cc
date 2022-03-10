@@ -95,7 +95,7 @@ type::Result GetParameters::ParseBody(
     return type::Result::LEDGER_ERROR;
   }
 
-  for (const auto& choice : ac_choices->GetListDeprecated()) {
+  for (const auto& choice : ac_choices->GetList()) {
     if (!choice.is_double() && !choice.is_int()) {
       continue;
     }
@@ -108,7 +108,7 @@ type::Result GetParameters::ParseBody(
     return type::Result::LEDGER_ERROR;
   }
 
-  for (const auto& choice : tip_choices->GetListDeprecated()) {
+  for (const auto& choice : tip_choices->GetList()) {
     if (!choice.is_double() && !choice.is_int()) {
       continue;
     }
@@ -123,7 +123,7 @@ type::Result GetParameters::ParseBody(
     return type::Result::LEDGER_ERROR;
   }
 
-  for (const auto& choice : monthly_tip_choices->GetListDeprecated()) {
+  for (const auto& choice : monthly_tip_choices->GetList()) {
     if (!choice.is_double() && !choice.is_int()) {
       continue;
     }
