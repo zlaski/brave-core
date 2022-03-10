@@ -161,7 +161,7 @@ absl::optional<model::Linear> ParsePipelineClassifier(
     return absl::nullopt;
   }
 
-  auto biases_list = biases->GetListDeprecated();
+  const auto& biases_list = biases->GetList();
   if (biases_list.size() != classes.size()) {
     return absl::nullopt;
   }

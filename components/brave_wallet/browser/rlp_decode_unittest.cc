@@ -26,7 +26,7 @@ std::string RLPTestValueToString(const base::Value& val) {
     const base::ListValue* list;
     val.GetAsList(&list);
     for (size_t i = 0; i < list->GetList().size(); i++) {
-      const auto& child = list->GetListDeprecated();
+      const auto& child = list->GetList();
       if (child.size() <= i) {
         continue;
       }

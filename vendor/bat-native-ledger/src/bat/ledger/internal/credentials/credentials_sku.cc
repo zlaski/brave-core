@@ -236,6 +236,7 @@ void CredentialsSKU::Claim(
 
 
   DCHECK_EQ(trigger.data.size(), 2ul);
+  DCHECK(blinded_creds.has_value());
   payment_server_->post_credentials()->Request(
       trigger.id,
       trigger.data[0],

@@ -170,9 +170,10 @@ void CredentialsPromotion::Claim(
       trigger,
       callback);
 
+  DCHECK(blinded_creds.has_value());
   promotion_server_->post_creds()->Request(
       trigger.id,
-      std::move(blinded_creds),
+      std::move(blinded_creds.value()),
       url_callback);
 }
 
@@ -382,7 +383,7 @@ void CredentialsPromotion::VerifyPublicKey(
   }
 
   bool valid = false;
-  for (auto& item : promotion_keys->GetList()) {
+  for (auto& item : promotion_keys.value()) {
     if (item.GetString() == creds.public_key) {
       valid = true;
     }

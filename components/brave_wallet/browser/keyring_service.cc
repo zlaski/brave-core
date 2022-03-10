@@ -544,7 +544,7 @@ void KeyringService::RemoveImportedAccountForKeyring(PrefService* prefs,
   if (!value)
     return;
   imported_accounts = value->Clone();
-  const auto imported_accounts_list = imported_accounts.GetListDeprecated();
+  const auto& imported_accounts_list = imported_accounts.GetList();
   for (const auto& imported_account : imported_accounts_list) {
     const std::string* account_address =
         imported_account.FindStringKey(kAccountAddress);
