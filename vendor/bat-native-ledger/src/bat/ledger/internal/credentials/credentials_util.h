@@ -13,6 +13,7 @@
 #include "base/values.h"
 #include "bat/ledger/internal/credentials/credentials_redeem.h"
 #include "bat/ledger/mojom_structs.h"
+#include "third_party/abseil-cpp/absl/types/optional.h"
 
 #include "wrapper.hpp"
 
@@ -31,7 +32,7 @@ std::vector<BlindedToken> GenerateBlindCreds(
 
 std::string GetBlindedCredsJSON(const std::vector<BlindedToken>& blinded);
 
-std::unique_ptr<base::ListValue> ParseStringToBaseList(
+absl::optional<base::Value::List> ParseStringToBaseList(
     const std::string& string_list);
 
 bool UnBlindCreds(

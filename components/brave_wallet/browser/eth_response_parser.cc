@@ -102,7 +102,7 @@ bool ParseEthGetFeeHistory(const std::string& json,
   const base::ListValue* reward_list_list = nullptr;
   if (result_dict->GetList("reward", &reward_list_list)) {
     for (const base::Value& reward_list :
-         reward_list_list->GetListDeprecated()) {
+         reward_list_list->GetList()) {
       // If we have unexpected output, so just return false
       if (!reward_list.is_list())
         return false;

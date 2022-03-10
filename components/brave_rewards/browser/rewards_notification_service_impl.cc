@@ -156,14 +156,14 @@ void RewardsNotificationServiceImpl::ReadRewardsNotificationsJSON() {
       return;
     }
 
-    ReadRewardsNotifications(list->GetListDeprecated());
+    ReadRewardsNotifications(list->GetList());
     return;
   }
 
   base::Value* notifications =
       dictionary->FindKeyOfType("notifications", base::Value::Type::LIST);
   if (notifications) {
-    ReadRewardsNotifications(notifications->GetListDeprecated());
+    ReadRewardsNotifications(notifications->GetList());
   }
 
   base::Value* displayed =

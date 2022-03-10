@@ -83,7 +83,7 @@ TEST_F(BatAdsUnblindedPaymentTokensTest, GetTokensAsList) {
   const base::Value& list = get_unblinded_payment_tokens()->GetTokensAsList();
 
   // Assert
-  base::ListValue list_values(list.GetListDeprecated());
+  base::ListValue list_values(list.GetList());
 
   const UnblindedPaymentTokenList& unblinded_payment_tokens =
       get_unblinded_payment_tokens()->GetAllTokens();
