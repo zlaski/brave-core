@@ -73,12 +73,11 @@ type::Result PostCredentials::CheckStatusCode(const int status_code) {
   return type::Result::LEDGER_OK;
 }
 
-void PostCredentials::Request(
-    const std::string& order_id,
-    const std::string& item_id,
-    const std::string& type,
-    base::Value::List&& blinded_creds,
-    PostCredentialsCallback callback) {
+void PostCredentials::Request(const std::string& order_id,
+                              const std::string& item_id,
+                              const std::string& type,
+                              base::Value::List&& blinded_creds,
+                              PostCredentialsCallback callback) {
   auto url_callback = std::bind(&PostCredentials::OnRequest,
       this,
       _1,

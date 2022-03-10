@@ -172,9 +172,7 @@ void CredentialsPromotion::Claim(
 
   DCHECK(blinded_creds.has_value());
   promotion_server_->post_creds()->Request(
-      trigger.id,
-      std::move(blinded_creds.value()),
-      url_callback);
+      trigger.id, std::move(blinded_creds.value()), url_callback);
 }
 
 void CredentialsPromotion::OnClaim(

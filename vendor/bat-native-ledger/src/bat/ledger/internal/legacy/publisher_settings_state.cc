@@ -126,8 +126,7 @@ bool PublisherSettingsState::FromDict(
   }
 
   const ReportBalanceState report_balance_state;
-  for (const auto& monthly_balance_value :
-       monthly_balances_list->GetList()) {
+  for (const auto& monthly_balance_value : monthly_balances_list->GetList()) {
     if (!monthly_balance_value.is_dict()) {
       NOTREACHED();
       continue;

@@ -173,8 +173,8 @@ void MergeResourcesInto(base::Value from, base::Value* into, bool force_hide) {
       base::Value* resources_entry =
           resources_style_selectors->FindKey(i.first);
       if (resources_entry) {
-        for (auto j = i.second.GetList().begin();
-             j < i.second.GetList().end(); j++) {
+        for (auto j = i.second.GetList().begin(); j < i.second.GetList().end();
+             j++) {
           resources_entry->Append(std::move(*j));
         }
       } else {

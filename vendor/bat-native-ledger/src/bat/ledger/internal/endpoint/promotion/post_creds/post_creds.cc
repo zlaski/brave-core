@@ -35,8 +35,7 @@ std::string PostCreds::GetUrl(const std::string& promotion_id) {
   return GetServerUrl(path);
 }
 
-std::string PostCreds::GeneratePayload(
-    base::Value::List&& blinded_creds) {
+std::string PostCreds::GeneratePayload(base::Value::List&& blinded_creds) {
   const auto wallet = ledger_->wallet()->GetWallet();
   if (!wallet) {
     BLOG(0, "Wallet is null");
@@ -115,10 +114,9 @@ type::Result PostCreds::ParseBody(
   return type::Result::LEDGER_OK;
 }
 
-void PostCreds::Request(
-    const std::string& promotion_id,
-    base::Value::List&& blinded_creds,
-    PostCredsCallback callback) {
+void PostCreds::Request(const std::string& promotion_id,
+                        base::Value::List&& blinded_creds,
+                        PostCredsCallback callback) {
   const auto wallet = ledger_->wallet()->GetWallet();
   if (!wallet) {
     BLOG(0, "Wallet is null");

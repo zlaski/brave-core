@@ -125,8 +125,7 @@ bool GeminiJSONParser::GetDepositInfoFromJSON(
   }
 
   const base::Value* pv_arr = records_v->FindKey("data");
-  if (!pv_arr || !pv_arr->is_list() ||
-      pv_arr->GetList().size() == 0) {
+  if (!pv_arr || !pv_arr->is_list() || pv_arr->GetList().size() == 0) {
     return false;
   }
 

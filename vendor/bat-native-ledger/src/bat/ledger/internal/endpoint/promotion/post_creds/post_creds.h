@@ -53,10 +53,9 @@ class PostCreds {
   explicit PostCreds(LedgerImpl* ledger);
   ~PostCreds();
 
-  void Request(
-    const std::string& promotion_id,
-    base::Value::List&& blinded_creds,
-    PostCredsCallback callback);
+  void Request(const std::string& promotion_id,
+               base::Value::List&& blinded_creds,
+               PostCredsCallback callback);
 
  private:
   std::string GetUrl(const std::string& promotion_id);

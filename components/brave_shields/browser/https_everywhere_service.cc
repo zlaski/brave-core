@@ -224,8 +224,7 @@ std::string HTTPSEverywhereService::Engine::ApplyHTTPSRule(
 
       const base::Value* from_value = pDictionary->Find("f");
       const base::Value* to_value = pDictionary->Find("t");
-      if (!from_value ||
-          !to_value) {
+      if (!from_value || !to_value) {
         continue;
       }
       if (!from_value->is_string() || !to_value->is_string()) {

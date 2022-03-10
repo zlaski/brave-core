@@ -86,8 +86,7 @@ base::CheckedContiguousIterator<T> FindAsset(
   DCHECK(user_assets_list && user_assets_list->is_list());
 
   auto iter = std::find_if(
-      user_assets_list->GetList().begin(),
-      user_assets_list->GetList().end(),
+      user_assets_list->GetList().begin(), user_assets_list->GetList().end(),
       [&](const base::Value& value) {
         if (!value.is_dict()) {
           return false;

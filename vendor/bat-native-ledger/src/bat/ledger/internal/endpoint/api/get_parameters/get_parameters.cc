@@ -117,8 +117,7 @@ type::Result GetParameters::ParseBody(
 
   auto* monthly_tip_choices =
       dictionary->FindListPath("tips.defaultMonthlyChoices");
-  if (!monthly_tip_choices ||
-      monthly_tip_choices->GetList().empty()) {
+  if (!monthly_tip_choices || monthly_tip_choices->GetList().empty()) {
     BLOG(0, "Missing tips default monthly choices");
     return type::Result::LEDGER_ERROR;
   }

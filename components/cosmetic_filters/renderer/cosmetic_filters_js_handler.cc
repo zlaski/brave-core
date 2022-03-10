@@ -379,10 +379,8 @@ void CosmeticFiltersJSHandler::CSSRulesRoutine(
   blink::WebLocalFrame* web_frame = render_frame_->GetWebFrame();
   base::ListValue* cf_exceptions_list;
   if (resources_dict->GetList("exceptions", &cf_exceptions_list)) {
-    for (size_t i = 0; i < cf_exceptions_list->GetList().size();
-         i++) {
-      exceptions_.push_back(
-          cf_exceptions_list->GetList()[i].GetString());
+    for (size_t i = 0; i < cf_exceptions_list->GetList().size(); i++) {
+      exceptions_.push_back(cf_exceptions_list->GetList()[i].GetString());
     }
   }
   // If its a vetted engine AND we're not in aggressive mode, don't apply
@@ -393,8 +391,7 @@ void CosmeticFiltersJSHandler::CSSRulesRoutine(
     hide_selectors_list = nullptr;
   }
 
-  if (hide_selectors_list &&
-      hide_selectors_list->GetList().size() != 0) {
+  if (hide_selectors_list && hide_selectors_list->GetList().size() != 0) {
     std::string json_selectors;
     if (!base::JSONWriter::Write(*hide_selectors_list, &json_selectors) ||
         json_selectors.empty()) {

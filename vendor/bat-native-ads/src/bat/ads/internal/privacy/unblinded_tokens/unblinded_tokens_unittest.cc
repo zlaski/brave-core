@@ -102,8 +102,7 @@ TEST_F(BatAdsUnblindedTokensTest, GetTokensAsList) {
     }
     const std::string unblinded_token_base64 = *unblinded_token_value;
 
-    const std::string* public_key_value =
-        dictionary->FindString("public_key");
+    const std::string* public_key_value = dictionary->FindString("public_key");
     if (!public_key_value) {
       FAIL();
     }

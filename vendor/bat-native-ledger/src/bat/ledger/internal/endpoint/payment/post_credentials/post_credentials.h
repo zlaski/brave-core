@@ -50,20 +50,18 @@ class PostCredentials {
   explicit PostCredentials(LedgerImpl* ledger);
   ~PostCredentials();
 
-  void Request(
-      const std::string& order_id,
-      const std::string& item_id,
-      const std::string& type,
-      base::Value::List&& blinded_creds,
-      PostCredentialsCallback callback);
+  void Request(const std::string& order_id,
+               const std::string& item_id,
+               const std::string& type,
+               base::Value::List&& blinded_creds,
+               PostCredentialsCallback callback);
 
  private:
   std::string GetUrl(const std::string& order_id);
 
-  std::string GeneratePayload(
-      const std::string& item_id,
-      const std::string& type,
-      base::Value::List&& blinded_creds);
+  std::string GeneratePayload(const std::string& item_id,
+                              const std::string& type,
+                              base::Value::List&& blinded_creds);
 
   type::Result CheckStatusCode(const int status_code);
 

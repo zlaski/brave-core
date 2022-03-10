@@ -480,8 +480,7 @@ bool IPFSJSONParser::GetPeersFromConfigJSON(const std::string& json,
     const base::Value* peer = val.FindKey("ID");
     const base::Value* addr = val.FindListKey("Addrs");
 
-    bool has_addr =
-        addr && addr->is_list() && !addr->GetList().empty();
+    bool has_addr = addr && addr->is_list() && !addr->GetList().empty();
     bool has_peer = peer && peer->is_string();
     if (!has_addr && !has_peer) {
       continue;

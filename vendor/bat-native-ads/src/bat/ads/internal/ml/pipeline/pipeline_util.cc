@@ -33,8 +33,7 @@ absl::optional<TransformationVector> ParsePipelineTransformations(
   }
 
   absl::optional<TransformationVector> transformations = TransformationVector();
-  for (const base::Value& transformation :
-       transformations_value->GetList()) {
+  for (const base::Value& transformation : transformations_value->GetList()) {
     const std::string* transformation_type =
         transformation.FindStringKey("transformation_type");
 
