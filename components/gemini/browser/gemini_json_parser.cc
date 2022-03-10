@@ -130,7 +130,7 @@ bool GeminiJSONParser::GetDepositInfoFromJSON(
     return false;
   }
 
-  const base::Value& val = pv_arr->GetListDeprecated()[0];
+  const base::Value& val = pv_arr->GetList()[0];
   const base::Value* asset_address = val.FindKey("address");
 
   if (asset_address && asset_address->is_string()) {

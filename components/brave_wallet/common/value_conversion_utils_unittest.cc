@@ -210,12 +210,12 @@ TEST(ValueConversionUtilsUnitTest, PermissionRequestResponseToValue) {
   ASSERT_TRUE(value.GetAsList(&list_value));
   ASSERT_EQ(list_value->GetList().size(), 1UL);
 
-  base::Value& param0 = list_value->GetListDeprecated()[0];
+  base::Value& param0 = list_value->GetList()[0];
   base::Value* caveats = param0.FindListPath("caveats");
   ASSERT_NE(caveats, nullptr);
   ASSERT_EQ(caveats->GetList().size(), 2UL);
 
-  base::Value& caveats0 = caveats->GetListDeprecated()[0];
+  base::Value& caveats0 = caveats->GetList()[0];
   std::string* name = caveats0.FindStringKey("name");
   ASSERT_NE(name, nullptr);
   EXPECT_EQ(*name, "primaryAccountOnly");
@@ -227,7 +227,7 @@ TEST(ValueConversionUtilsUnitTest, PermissionRequestResponseToValue) {
   ASSERT_NE(primary_accounts_only_value, absl::nullopt);
   EXPECT_EQ(*primary_accounts_only_value, 1);
 
-  base::Value& caveats1 = caveats->GetListDeprecated()[1];
+  base::Value& caveats1 = caveats->GetList()[1];
   name = caveats1.FindStringKey("name");
   ASSERT_NE(name, nullptr);
   EXPECT_EQ(*name, "exposedAccounts");
@@ -237,13 +237,13 @@ TEST(ValueConversionUtilsUnitTest, PermissionRequestResponseToValue) {
   base::Value* exposed_accounts = caveats1.FindListKey("value");
   ASSERT_NE(exposed_accounts, nullptr);
   ASSERT_EQ(exposed_accounts->GetList().size(), 1UL);
-  EXPECT_EQ(exposed_accounts->GetListDeprecated()[0],
+  EXPECT_EQ(exposed_accounts->GetList()[0],
             base::Value("0xA99D71De40D67394eBe68e4D0265cA6C9D421029"));
 
   base::Value* context = param0.FindListPath("context");
   ASSERT_NE(context, nullptr);
   ASSERT_EQ(context->GetList().size(), 1UL);
-  EXPECT_EQ(context->GetListDeprecated()[0],
+  EXPECT_EQ(context->GetList()[0],
             base::Value("https://github.com/MetaMask/rpc-cap"));
 
   absl::optional<double> date = param0.FindDoubleKey("date");

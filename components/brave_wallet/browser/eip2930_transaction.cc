@@ -137,10 +137,10 @@ Eip2930Transaction::ValueToAccessList(const base::Value& value) {
   AccessList access_list;
   for (const auto& item_value : value.GetList()) {
     AccessListItem item;
-    std::vector<uint8_t> address = item_value.GetListDeprecated()[0].GetBlob();
+    std::vector<uint8_t> address = item_value.GetList()[0].GetBlob();
     std::move(address.begin(), address.end(), item.address.begin());
     for (const auto& storage_key_value :
-         item_value.GetListDeprecated()[1].GetListDeprecated()) {
+         item_value.GetList()[1].GetListDeprecated()) {
       std::vector<uint8_t> storage_key_vec = storage_key_value.GetBlob();
       AccessedStorageKey storage_key;
       std::move(storage_key_vec.begin(), storage_key_vec.end(),

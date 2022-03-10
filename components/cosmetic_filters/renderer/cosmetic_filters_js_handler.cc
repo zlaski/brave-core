@@ -382,7 +382,7 @@ void CosmeticFiltersJSHandler::CSSRulesRoutine(
     for (size_t i = 0; i < cf_exceptions_list->GetList().size();
          i++) {
       exceptions_.push_back(
-          cf_exceptions_list->GetListDeprecated()[i].GetString());
+          cf_exceptions_list->GetList()[i].GetString());
     }
   }
   // If its a vetted engine AND we're not in aggressive mode, don't apply
