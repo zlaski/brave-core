@@ -54,7 +54,7 @@ class PostCredentials {
       const std::string& order_id,
       const std::string& item_id,
       const std::string& type,
-      std::unique_ptr<base::ListValue> blinded_creds,
+      base::Value::List&& blinded_creds,
       PostCredentialsCallback callback);
 
  private:
@@ -63,7 +63,7 @@ class PostCredentials {
   std::string GeneratePayload(
       const std::string& item_id,
       const std::string& type,
-      std::unique_ptr<base::ListValue> blinded_creds);
+      base::Value::List&& blinded_creds);
 
   type::Result CheckStatusCode(const int status_code);
 

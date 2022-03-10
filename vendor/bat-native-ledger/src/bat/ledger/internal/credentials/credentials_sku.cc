@@ -240,7 +240,7 @@ void CredentialsSKU::Claim(
       trigger.id,
       trigger.data[0],
       ConvertItemTypeToString(trigger.data[1]),
-      std::move(blinded_creds),
+      std::move(blinded_creds.value()),
       url_callback);
 }
 
