@@ -82,7 +82,7 @@ std::string EthSignTypedDataHelper::EncodeType(
         type.GetListDeprecated()[i].FindStringKey("name");
     DCHECK(type_str && name_str);
     base::StrAppend(&result, {*type_str, " ", *name_str});
-    if (i != type.GetListDeprecated().size() - 1)
+    if (i != type.GetList().size() - 1)
       base::StrAppend(&result, {","});
   }
   base::StrAppend(&result, {")"});

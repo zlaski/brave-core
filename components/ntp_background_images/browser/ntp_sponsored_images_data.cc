@@ -202,7 +202,7 @@ Campaign NTPSponsoredImagesData::GetCampaignFromValue(
   }
 
   if (auto* wallpapers = value.FindListKey(kWallpapersKey)) {
-    const int wallpaper_count = wallpapers->GetListDeprecated().size();
+    const int wallpaper_count = wallpapers->GetList().size();
     for (int i = 0; i < wallpaper_count; ++i) {
       const auto& wallpaper = wallpapers->GetListDeprecated()[i];
       SponsoredBackground background;

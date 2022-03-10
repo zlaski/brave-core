@@ -87,7 +87,7 @@ TEST_F(BatAdsUnblindedPaymentTokensTest, GetTokensAsList) {
 
   const UnblindedPaymentTokenList& unblinded_payment_tokens =
       get_unblinded_payment_tokens()->GetAllTokens();
-  EXPECT_EQ(list_values.GetListDeprecated().size(),
+  EXPECT_EQ(list_values.GetList().size(),
             unblinded_payment_tokens.size());
 
   for (auto& value : list_values.GetList()) {

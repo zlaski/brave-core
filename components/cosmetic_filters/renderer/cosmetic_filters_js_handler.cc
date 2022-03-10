@@ -394,7 +394,7 @@ void CosmeticFiltersJSHandler::CSSRulesRoutine(
   }
 
   if (hide_selectors_list &&
-      hide_selectors_list->GetListDeprecated().size() != 0) {
+      hide_selectors_list->GetList().size() != 0) {
     std::string json_selectors;
     if (!base::JSONWriter::Write(*hide_selectors_list, &json_selectors) ||
         json_selectors.empty()) {
@@ -481,7 +481,7 @@ void CosmeticFiltersJSHandler::OnHiddenClassIdSelectors(base::Value result) {
   // Building a script for stylesheet modifications
   std::string new_selectors_script =
       base::StringPrintf(kHideSelectorsInjectScript, json_selectors.c_str());
-  if (hide_selectors->GetListDeprecated().size() != 0) {
+  if (hide_selectors->GetList().size() != 0) {
     web_frame->ExecuteScriptInIsolatedWorld(
         isolated_world_id_,
         blink::WebScriptSource(

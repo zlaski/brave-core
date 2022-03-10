@@ -258,7 +258,7 @@ void RedeemUnblindedToken::OnFetchPaymentToken(
     return;
   }
 
-  if (signed_tokens_list->GetListDeprecated().size() != 1) {
+  if (signed_tokens_list->GetList().size() != 1) {
     BLOG(0, "Response has too many signedTokens");
     OnFailedToRedeemUnblindedToken(confirmation, /* should_retry */ true);
     return;

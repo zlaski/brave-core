@@ -118,7 +118,7 @@ type::Result PostOrder::ParseBody(
     return type::Result::LEDGER_OK;
   }
 
-  if (items->GetListDeprecated().size() != order_items.size()) {
+  if (items->GetList().size() != order_items.size()) {
     BLOG(0, "Invalid JSON");
     return type::Result::LEDGER_ERROR;
   }

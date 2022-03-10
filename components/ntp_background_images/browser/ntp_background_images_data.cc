@@ -74,7 +74,7 @@ NTPBackgroundImagesData::NTPBackgroundImagesData(
   }
 
   if (auto* images = json_value->FindListKey(kImagesKey)) {
-    const int image_count = images->GetListDeprecated().size();
+    const int image_count = images->GetList().size();
     for (int i = 0; i < image_count; ++i) {
       const auto& image = images->GetListDeprecated()[i];
       Background background;

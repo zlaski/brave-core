@@ -288,7 +288,7 @@ void KeyringService::MigrateObsoleteProfilePrefs(PrefService* prefs) {
     const base::Value* account_names_list =
         prefs->GetList(kBraveWalletAccountNames);
     if (account_names_list &&
-        account_names_list->GetListDeprecated().size() == account_num) {
+        account_names_list->GetList().size() == account_num) {
       base::Value::ConstListView account_names =
           account_names_list->GetListDeprecated();
       for (size_t i = 0; i < account_names.size(); ++i) {

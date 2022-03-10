@@ -96,7 +96,7 @@ type::Result GetAvailable::ParseBody(
     return type::Result::LEDGER_OK;
   }
 
-  const auto promotion_size = promotions->GetListDeprecated().size();
+  const auto promotion_size = promotions->GetList().size();
   for (auto& item : promotions->GetList()) {
     type::PromotionPtr promotion = type::Promotion::New();
 
