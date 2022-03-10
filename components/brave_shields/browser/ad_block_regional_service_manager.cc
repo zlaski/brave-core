@@ -293,7 +293,7 @@ base::Value AdBlockRegionalServiceManager::HiddenClassIdSelectors(
     DCHECK(next_value.is_list());
 
     for (auto i = next_value.GetList().begin();
-         i < next_value.GetListDeprecated().end(); i++) {
+         i < next_value.GetList().end(); i++) {
       first_value.Append(std::move(*i));
     }
   }

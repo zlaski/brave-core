@@ -181,7 +181,7 @@ type::Result GetAvailable::ParseBody(
     }
 
     auto* public_keys = item.FindListKey("publicKeys");
-    if (!public_keys || public_keys->GetListDeprecated().empty()) {
+    if (!public_keys || public_keys->GetList().empty()) {
       corrupted_promotions->push_back(promotion->id);
       continue;
     }

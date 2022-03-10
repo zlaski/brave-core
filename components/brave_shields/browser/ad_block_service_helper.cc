@@ -61,7 +61,7 @@ std::vector<FilterList> RegionalCatalogFromJSON(
   }
 
   for (auto i = regional_lists->GetList().begin();
-       i < regional_lists->GetListDeprecated().end(); i++) {
+       i < regional_lists->GetList().end(); i++) {
     const auto* uuid = i->FindKey("uuid");
     if (!uuid || !uuid->is_string()) {
       continue;
@@ -80,7 +80,7 @@ std::vector<FilterList> RegionalCatalogFromJSON(
       continue;
     }
     for (auto lang = langs_key->GetList().begin();
-         lang < langs_key->GetListDeprecated().end(); lang++) {
+         lang < langs_key->GetList().end(); lang++) {
       if (!lang->is_string()) {
         continue;
       }
@@ -160,7 +160,7 @@ void MergeResourcesInto(base::Value from, base::Value* into, bool force_hide) {
       from.FindKey("hide_selectors");
   if (resources_hide_selectors && from_resources_hide_selectors) {
     for (auto i = from_resources_hide_selectors->GetList().begin();
-         i < from_resources_hide_selectors->GetListDeprecated().end(); i++) {
+         i < from_resources_hide_selectors->GetList().end(); i++) {
       resources_hide_selectors->Append(std::move(*i));
     }
   }
@@ -174,7 +174,7 @@ void MergeResourcesInto(base::Value from, base::Value* into, bool force_hide) {
           resources_style_selectors->FindKey(i.first);
       if (resources_entry) {
         for (auto j = i.second.GetList().begin();
-             j < i.second.GetListDeprecated().end(); j++) {
+             j < i.second.GetList().end(); j++) {
           resources_entry->Append(std::move(*j));
         }
       } else {
@@ -187,7 +187,7 @@ void MergeResourcesInto(base::Value from, base::Value* into, bool force_hide) {
   base::Value* from_resources_exceptions = from.FindKey("exceptions");
   if (resources_exceptions && from_resources_exceptions) {
     for (auto i = from_resources_exceptions->GetList().begin();
-         i < from_resources_exceptions->GetListDeprecated().end(); i++) {
+         i < from_resources_exceptions->GetList().end(); i++) {
       resources_exceptions->Append(std::move(*i));
     }
   }

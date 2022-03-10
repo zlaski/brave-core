@@ -405,7 +405,7 @@ void ChromeImporter::RecursiveReadBookmarksFolder(
         // explicitly add empty folders.
         const base::ListValue* children;
         if (dict->GetList("children", &children) &&
-            children->GetListDeprecated().empty()) {
+            children->GetList().empty()) {
           entry.in_toolbar = is_in_toolbar;
           entry.is_folder = true;
           entry.url = GURL();

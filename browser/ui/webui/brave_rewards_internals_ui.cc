@@ -445,7 +445,7 @@ void RewardsInternalsDOMHandler::OnGetAdDiagnostics(const bool success,
   if (success && !json.empty()) {
     absl::optional<base::Value> serialized_json = base::JSONReader::Read(json);
     if (serialized_json && serialized_json->is_list() &&
-        !serialized_json->GetListDeprecated().empty()) {
+        !serialized_json->GetList().empty()) {
       diagnostics = std::move(*serialized_json);
     }
   }

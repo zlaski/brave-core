@@ -481,7 +481,7 @@ bool IPFSJSONParser::GetPeersFromConfigJSON(const std::string& json,
     const base::Value* addr = val.FindListKey("Addrs");
 
     bool has_addr =
-        addr && addr->is_list() && !addr->GetListDeprecated().empty();
+        addr && addr->is_list() && !addr->GetList().empty();
     bool has_peer = peer && peer->is_string();
     if (!has_addr && !has_peer) {
       continue;
@@ -532,7 +532,7 @@ std::string IPFSJSONParser::RemovePeerFromConfigJSON(
       return json;
     if (!RemoveValueFromList(addresses, peer_address))
       return json;
-    if (addresses->GetListDeprecated().empty())
+    if (addresses->GetList().empty())
       RemoveElementFromList(peers_arr, *peer_to_update);
   } else {
     RemoveElementFromList(peers_arr, *peer_to_update);

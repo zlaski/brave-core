@@ -238,12 +238,12 @@ base::Value AdBlockService::HiddenClassIdSelectors(
   base::Value force_hide_selectors = std::move(regional_selectors);
 
   for (auto i = custom_selectors.GetList().begin();
-       i < custom_selectors.GetListDeprecated().end(); i++) {
+       i < custom_selectors.GetList().end(); i++) {
     force_hide_selectors.Append(std::move(*i));
   }
 
   for (auto i = subscription_selectors.GetList().begin();
-       i < subscription_selectors.GetListDeprecated().end(); i++) {
+       i < subscription_selectors.GetList().end(); i++) {
     force_hide_selectors.Append(std::move(*i));
   }
 
