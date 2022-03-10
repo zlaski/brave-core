@@ -120,7 +120,8 @@ void CookieMonster::SetCanonicalCookieAsync(
         GetOrCreateEphemeralCookieStoreForTopFrameURL(
             options.top_frame_origin()->GetURL());
     ephemeral_monster->SetCanonicalCookieAsync(std::move(cookie), source_url,
-                                               options, std::move(callback));
+                                               options, std::move(callback),
+                                               cookie_access_result);
     return;
   }
 
