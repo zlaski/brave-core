@@ -105,8 +105,10 @@ void BraveActionViewController::TriggerPopup(PopupShowAction show_action,
                                              ShowPopupCallback callback) {
   content::WebContents* const web_contents =
       view_delegate_->GetCurrentWebContents();
-  const int tab_id = sessions::SessionTabHelper::IdForTab(web_contents).id();
+  if (!web_contents)
+    return;
 
+  const int tab_id = sessions::SessionTabHelper::IdForTab(web_contents).id();
   TriggerPopupWithUrl(show_action, extension_action_->GetPopupUrl(tab_id),
                       grant_tab_permissions, std::move(callback));
 }
