@@ -64,7 +64,7 @@ public class BraveSetDefaultBrowserUtils {
 
     public static void checkSetDefaultBrowserModal(AppCompatActivity activity) {
         if (!isBraveSetAsDefaultBrowser(activity) && !isBraveDefaultDontAsk()) {
-            boolean shouldShowDefaultBrowserModalAfterP3A =
+            /*boolean shouldShowDefaultBrowserModalAfterP3A =
                     OnboardingPrefManager.getInstance().shouldShowDefaultBrowserModalAfterP3A();
 
             if (shouldShowDefaultBrowserModalAfterP3A) {
@@ -75,7 +75,7 @@ public class BraveSetDefaultBrowserUtils {
 
                 OnboardingPrefManager.getInstance().setShowDefaultBrowserModalAfterP3A(false);
 
-            } else if (SharedPreferencesManager.getInstance().readInt(
+            } else */if (SharedPreferencesManager.getInstance().readInt(
                                BravePreferenceKeys.BRAVE_APP_OPEN_COUNT)
                     == 5) {
                 showBraveSetDefaultBrowserDialog(activity, false);

@@ -163,9 +163,9 @@ public class OnboardingPrefManager {
         sharedPreferencesEditor.apply();
     }
 
-    public long getPrefNextOnboardingDate() {
+/*    public long getPrefNextOnboardingDate() {
         return mSharedPreferences.getLong(PREF_NEXT_ONBOARDING_DATE, 0);
-    }
+    }*/
 
     public void setOnboardingNotificationShown(boolean isShown) {
         isOnboardingNotificationShown = isShown;
@@ -236,7 +236,7 @@ public class OnboardingPrefManager {
         sharedPreferencesEditor.apply();
     }
 
-    public long getNextSetDefaultBrowserModalDate() {
+    /*public long getNextSetDefaultBrowserModalDate() {
         return mSharedPreferences.getLong(PREF_NEXT_SET_DEFAULT_BROWSER_MODAL_DATE, 0);
     }
 
@@ -254,7 +254,7 @@ public class OnboardingPrefManager {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean(PREF_SHOW_DEFAULT_BROWSER_MODAL_AFTER_P3A, shouldShow);
         sharedPreferencesEditor.apply();
-    };
+    };*/
 
     public void setCrossPromoModalShown(boolean isShown) {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
@@ -332,7 +332,7 @@ public class OnboardingPrefManager {
         sharedPreferencesEditor.apply();
     }
 
-    public boolean isAdsTrackersNotificationStarted() {
+    /*public boolean isAdsTrackersNotificationStarted() {
         return mSharedPreferences.getBoolean(ADS_TRACKERS_NOTIFICATION, false);
     }
 
@@ -360,7 +360,7 @@ public class OnboardingPrefManager {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean(TIME_SAVED_NOTIFICATION, isTimeSavedNotificationStarted);
         sharedPreferencesEditor.apply();
-    }
+    }*/
 
     public boolean shouldShowBadgeAnimation() {
         return mSharedPreferences.getBoolean(SHOW_BADGE_ANIMATION, true);
