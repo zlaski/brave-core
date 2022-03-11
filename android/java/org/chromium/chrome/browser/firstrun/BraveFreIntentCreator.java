@@ -13,12 +13,8 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 
 import org.chromium.base.IntentUtils;
-import org.chromium.chrome.browser.BraveConfig;
 import org.chromium.chrome.browser.browserservices.intents.BrowserServicesIntentDataProvider;
 import org.chromium.chrome.browser.firstrun.P3aOnboardingActivity;
-import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
-import org.chromium.chrome.browser.onboarding.OnboardingActivity2;
-
 
 /**
  * Brave extension of FreIntentCreator.
@@ -28,7 +24,7 @@ public class BraveFreIntentCreator extends FreIntentCreator {
     protected Intent createInternal(Context caller, Intent fromIntent, boolean preferLightweightFre,
             @Nullable String associatedAppName) {
         // Launch P3aOnboardingActivity directly which is the only one enabled
-        Intent p3aOnboardingIntent = new Intent(caller, P3aOnboardingActivity.class);//OnboardingActivity2.class);//
+        Intent p3aOnboardingIntent = new Intent(caller, P3aOnboardingActivity.class);
         p3aOnboardingIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return p3aOnboardingIntent;
     }

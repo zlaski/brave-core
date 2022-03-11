@@ -56,7 +56,7 @@
         android:key="brave_stats"
         android:order="9"
         android:icon="@drawable/ic_privacy_reports"
-        android:title="@string/brave_stats"/>
+        android:title="@string/privacy_report_settings"/>
     <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
         android:key="closing_all_tabs_closes_brave"
         android:order="13"

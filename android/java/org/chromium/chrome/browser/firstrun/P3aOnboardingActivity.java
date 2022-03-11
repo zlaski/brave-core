@@ -73,11 +73,11 @@ public class P3aOnboardingActivity extends FirstRunActivityBase {
             @Override
             public void onClick(View view) {
                 if (PackageUtils.isFirstInstall(P3aOnboardingActivity.this)
-                        && !OnboardingPrefManager.getInstance().isNewOnboardingShown()
+                        /*&& !OnboardingPrefManager.getInstance().isNewOnboardingShown()*/
                         && BraveActivity.getBraveActivity() != null) {
                     BraveActivity.getBraveActivity().showOnboardingV2(false);
                 }
-                OnboardingPrefManager.getInstance().setP3aOnboardingShown(true);
+                // OnboardingPrefManager.getInstance().setP3aOnboardingShown(true);
                 OnboardingPrefManager.getInstance().setShowDefaultBrowserModalAfterP3A(true);
                 accept();
             }

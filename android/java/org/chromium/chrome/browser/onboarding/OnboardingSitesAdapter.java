@@ -6,7 +6,6 @@
 package org.chromium.chrome.browser.onboarding;
 
 import android.content.Context;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,28 +17,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.chromium.chrome.R;
 
-public class OnboardingSitesAdapter extends RecyclerView.Adapter<OnboardingSitesAdapter.ViewHolder> {
+import java.util.List;
 
-	private enum Sites {
-        YAHOO,
-        CNN,
-        FOX_NEWS,
-        ENTER_WEBSITE;
-    }
-
+public class OnboardingSitesAdapter
+        extends RecyclerView.Adapter<OnboardingSitesAdapter.ViewHolder> {
     private OnboardingSiteClickListener onboardingSiteClickListener;
     private Context context;
+    private List<String> sitesNameList;
+    private List<Integer> sitesImageList;
+    private List<String> sitesUrlList;
 
-    public OnboardingSitesAdapter(OnboardingSiteClickListener onboardingSiteClickListener) {
+    public OnboardingSitesAdapter(OnboardingSiteClickListener onboardingSiteClickListener,
+            List<String> sitesNameList, List<Integer> sitesImageList, List<String> sitesUrlList) {
         this.onboardingSiteClickListener = onboardingSiteClickListener;
+        this.sitesNameList = sitesNameList;
+        this.sitesImageList = sitesImageList;
+        this.sitesUrlList = sitesUrlList;
     }
 
-	@Override
+    @Override
     public int getItemCount() {
-        return Sites.values().length;
+        return sitesNameList.size();
     }
 
-	@Override
+    @Override
     public @NonNull OnboardingSitesAdapter.ViewHolder onCreateViewHolder(
             ViewGroup parent, int viewType) {
         context = parent.getContext();
@@ -50,37 +51,11 @@ public class OnboardingSitesAdapter extends RecyclerView.Adapter<OnboardingSites
 
     @Override
     public void onBindViewHolder(@NonNull OnboardingSitesAdapter.ViewHolder holder, int position) {
+        holder.tvSite.setText(sitesNameList.get(position));
+        holder.ivSite.setImageResource(sitesImageList.get(position));
 
-        Sites site = Sites.values()[position];
-        if(site == Sites.YAHOO) {
-
-            holder.tvSite.setText(context.getResources().getString(R.string.yahoo));
-            holder.ivSite.setImageResource(R.drawable.ic_yahoo);
-
-        } else if(site == Sites.CNN) {
-
-            holder.tvSite.setText(context.getResources().getString(R.string.cnn));
-            holder.ivSite.setImageResource(R.drawable.ic_cnn);
-
-        } else if(site == Sites.FOX_NEWS) {
-
-            holder.tvSite.setText(context.getResources().getString(R.string.fox_news));
-            holder.ivSite.setImageResource(R.drawable.ic_fox_news);
-
-        } else if(site == Sites.ENTER_WEBSITE) {
-
-            holder.tvSite.setText(context.getResources().getString(R.string.enter_website));
-            holder.ivSite.setImageResource(R.drawable.ic_search);
-        }
-
-        holder.itemView.setOnClickListener(view ->  {
-
-            if(site == Sites.ENTER_WEBSITE) {
-                onboardingSiteClickListener.OnOpenSite("");
-            } else {
-                onboardingSiteClickListener.OnOpenSite("https://www.yahoo.com");
-            }
-        });
+        holder.itemView.setOnClickListener(
+                view -> { onboardingSiteClickListener.OnOpenSite(sitesUrlList.get(position)); });
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

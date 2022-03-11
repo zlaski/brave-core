@@ -100,19 +100,19 @@ public class OnboardingPrefManager {
     /**
      * Returns the user preference for whether the onboarding is shown.
      */
-    /*public boolean isOnboardingShown() {
+    public boolean isOnboardingShown() {
         return mSharedPreferences.getBoolean(PREF_ONBOARDING, false);
-    }*/
+    }
 
     /**
      * Sets the user preference for whether the onboarding is shown.
      */
-    /*public void setOnboardingShown(boolean isShown) {
+    public void setOnboardingShown(boolean isShown) {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean(PREF_ONBOARDING, isShown);
         sharedPreferencesEditor.apply();
     }
-*/
+
     /**
      * Returns the user preference for whether the privacy tooltip onboarding is shown.
      */

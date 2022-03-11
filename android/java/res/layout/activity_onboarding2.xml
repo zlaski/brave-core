@@ -62,7 +62,22 @@
             android:layout_marginStart="44dp"
             android:layout_marginEnd="44dp"
             android:layout_gravity="center"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_welcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:padding="15dp"
+                android:alpha="0"
+                android:visibility="invisible"
+                android:textColor="@color/onboarding_text_color_new"
+                android:text="@string/welcome_to_brave"
+                android:background="@drawable/rounded_onboarding_text_bg"/>
 
             <ImageView
                 android:id="@+id/iv_brave_top"
@@ -85,21 +100,14 @@
                 android:contentDescription="@null"/>
 
             <LinearLayout
+                android:id="@+id/layout_other_steps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
-                android:layout_gravity="center_horizontal"
+                android:alpha="0"
+                android:visibility="gone"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_onboarding_text_bg">
-
-                <TextView
-                    android:id="@+id/tv_welcome_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/onboarding_text_color_new"
-                    android:text="@string/welcome_to_brave"/>
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -107,8 +115,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@color/onboarding_text_color_new"
-                    android:visibility="gone"/>
+                    android:textColor="@color/onboarding_text_color_new"/>
 
                 <TextView
                     android:id="@+id/tv_desc"
@@ -116,8 +123,32 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:textSize="16sp"
-                    android:textColor="@color/onboarding_text_color_new"
-                    android:visibility="gone"/>
+                    android:textColor="@color/onboarding_text_color_new"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_p3a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <android.widget.CheckBox
+                        android:id="@+id/checkbox_p3a"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/brave_checkbox"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_p3a"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/onboarding_text_color_new"/>
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btn_positive"
@@ -132,8 +163,7 @@
                     android:textSize="14sp"
                     android:padding="4dp"
                     android:minHeight="0dp"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:visibility="gone"/>
+                    style="?android:attr/borderlessButtonStyle"/>
 
                 <Button
                     android:id="@+id/btn_negative"
@@ -154,8 +184,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:alpha="0"
+                android:visibility="invisible"
                 app:srcCompat="@drawable/ic_onboarding_arrow_down"
-                android:visibility="visible"
                 android:contentDescription="@null"/>
 
             <ImageView

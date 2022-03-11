@@ -13,7 +13,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:paddingTop="@dimen/toolbar_height_no_shadow"
-    android:visibility="gone" >
+    android:visibility="gone">
 
     <ImageView
         android:id="@+id/bg_image_view"

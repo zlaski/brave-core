@@ -37,7 +37,7 @@ public class NTPWidgetManager {
             put(PREF_PRIVATE_STATS,
                     new NTPWidgetItem(PREF_PRIVATE_STATS,
                             ContextUtils.getApplicationContext().getResources().getString(
-                                    R.string.privacy_stats),
+                                    R.string.privacy_report),
                             ContextUtils.getApplicationContext().getResources().getString(
                                     R.string.privacy_stats_text)));
             put(PREF_FAVORITES,

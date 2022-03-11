@@ -14,6 +14,8 @@
     <color name="dialog_bg_color_dark">@color/toolbar_background_primary</color>
 
     <color name="onboarding_text_color">#F0F2FF</color>
+    <color name="onboarding_text_color_new">@color/onboarding_text_color</color>
+    <color name="onboarding_site_arrow_color">#C2C4CF</color>
     <color name="onboarding_bg_color">#1E2029</color>
     <color name="onboarding_timer_color">#478AFF</color>
 
@@ -59,19 +61,27 @@
     
     <color name="shield_thank_you_icon_color">#F0F2FF</color>
 
+    <color name="shields_tooltip_bg_color">#1E2029</color>
+    <color name="shields_tooltip_text_color">#F0F2FF</color>
+
     <color name="brave_stats_ads_color">#FF7654</color>
     <color name="brave_stats_data_saved_color">#737ADE</color>
 
     <color name="brave_stats_title_color">#84889C</color>
     <color name="brave_stats_text_color">#F0F2FF</color>
-
+    <color name="brave_stats_divider_color">#3B3E4F</color>
     <color name="brave_stats_bg_color">#1E2029</color>
+    <color name="brave_stats_bg_color_new">#17171F</color>
     <color name="brave_stats_bg_color_20_alpha">#33F0F2FF</color>
     <color name="brave_stats_close_button_color">#F0F2FF</color>
     <color name="brave_stats_radio_group_bg">#17171F</color>
     <color name="brave_stats_radio_button_active">#3B3E4F</color>
+    <color name="brave_stats_all_time_color">#5E6175</color>
+    <color name="brave_stats_all_time_button_bg_color">#1E2029</color>
     <color name="spinner_bg_color">#212529</color>
     <color name="brave_blue_tint_color">#737ADE</color>
+    <color name="brave_stats_shield_text_color">#FFF3F0</color>
+    <color name="brave_stats_shield_bg_color">#FB542B</color>
 
     <color name="wallet_text_color">#F0F2FF</color>
     <color name="wallet_secondary_text_color">#84889C</color>

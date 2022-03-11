@@ -50,7 +50,8 @@ public class RetentionNotificationPublisher extends BroadcastReceiver {
                 case RetentionNotificationUtil.HOUR_3:
                 case RetentionNotificationUtil.HOUR_24:
                 case RetentionNotificationUtil.EVERY_SUNDAY:
-                    braveActivity.checkForBraveStats();
+                    BraveStatsUtil.showBraveStats1();
+                    // braveActivity.checkForBraveStats();
                     break;
                 case RetentionNotificationUtil.DAY_6:
                 case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:

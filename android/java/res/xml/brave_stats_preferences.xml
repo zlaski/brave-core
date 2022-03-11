@@ -9,7 +9,7 @@
 
     <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
         android:key="brave_stats"
-        android:title="@string/brave_stats"
+        android:title="@string/privacy_report_settings"
         android:summary="@string/allows_brave_to_show" />
 
     <org.chromium.components.browser_ui.settings.ChromeSwitchPreference

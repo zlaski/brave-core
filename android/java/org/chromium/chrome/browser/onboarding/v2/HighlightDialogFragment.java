@@ -208,7 +208,7 @@ public class HighlightDialogFragment extends DialogFragment {
     private void checkAndOpenNtpPage() {
         String countryCode = Locale.getDefault().getCountry();
         if (((BraveActivity) getActivity()) != null && countryCode.equals("JP")) {
-            ((BraveActivity) getActivity()).openNewOrSelectExistingTab(NTP_TUTORIAL_PAGE);
+            ((BraveActivity) getActivity()).openNewOrSelectExistingTab(NTP_TUTORIAL_PAGE, false);
         }
     }
 }
