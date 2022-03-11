@@ -66,9 +66,9 @@ public class RetentionNotificationUtil {
             put(DAY_10, new RetentionNotification(10, 10 * 24 * 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
             put(DAY_30, new RetentionNotification(30, 30 * 24 * 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
             put(DAY_35, new RetentionNotification(35, 35 * 24 * 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
-            put(BRAVE_STATS_ADS_TRACKERS, new RetentionNotification(14, 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
-            put(BRAVE_STATS_DATA, new RetentionNotification(15, 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
-            put(BRAVE_STATS_TIME, new RetentionNotification(16, 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
+            //put(BRAVE_STATS_ADS_TRACKERS, new RetentionNotification(14, 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
+            //put(BRAVE_STATS_DATA, new RetentionNotification(15, 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
+            //put(BRAVE_STATS_TIME, new RetentionNotification(16, 60, BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));
             put(DEFAULT_BROWSER_1,
                     new RetentionNotification(17, 3 * 24 * 60,
                             BraveChannelDefinitions.ChannelId.BRAVE_BROWSER, BRAVE_BROWSER));

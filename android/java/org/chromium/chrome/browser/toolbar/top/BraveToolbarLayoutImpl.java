@@ -349,7 +349,7 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                     mBraveShieldsHandler.updateHost(url.getSpec());
                     updateBraveShieldsButtonState(tab);
 
-                    Profile mProfile = Profile.getLastUsedRegularProfile();
+                    /*Profile mProfile = Profile.getLastUsedRegularProfile();
                     long trackersBlockedCount =
                             BravePrefServiceBridge.getInstance().getTrackersBlockedCount(mProfile);
                     long adsBlockedCount =
@@ -379,7 +379,7 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                         RetentionNotificationUtil.scheduleNotification(
                                 getContext(), RetentionNotificationUtil.BRAVE_STATS_TIME);
                         OnboardingPrefManager.getInstance().setTimeSavedNotificationStarted(true);
-                    }
+                    }*/
                     if (mBraveShieldsButton != null && mBraveShieldsButton.isShown()
                             && mBraveShieldsHandler != null && !mBraveShieldsHandler.isShowing()) {
                         checkForTooltip(tab);
