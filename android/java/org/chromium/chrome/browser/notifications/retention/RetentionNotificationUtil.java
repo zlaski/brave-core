@@ -42,9 +42,9 @@ public class RetentionNotificationUtil {
     public static final String DAY_10 = "day_10";
     public static final String DAY_30 = "day_30";
     public static final String DAY_35 = "day_35";
-    public static final String BRAVE_STATS_ADS_TRACKERS = "brave_stats_ads_trackers";
-    public static final String BRAVE_STATS_DATA = "brave_stats_data";
-    public static final String BRAVE_STATS_TIME = "brave_stats_time";
+    //public static final String BRAVE_STATS_ADS_TRACKERS = "brave_stats_ads_trackers";
+    //public static final String BRAVE_STATS_DATA = "brave_stats_data";
+    //public static final String BRAVE_STATS_TIME = "brave_stats_time";
     public static final String DEFAULT_BROWSER_1 = "default_browser_1";
     public static final String DEFAULT_BROWSER_2 = "default_browser_2";
     public static final String DEFAULT_BROWSER_3 = "default_browser_3";
@@ -161,12 +161,12 @@ public class RetentionNotificationUtil {
         case DAY_30:
         case DAY_35:
             return context.getResources().getString(R.string.notification_rewards);
-        case BRAVE_STATS_ADS_TRACKERS:
+        /*case BRAVE_STATS_ADS_TRACKERS:
             return context.getResources().getString(R.string.notification_brave_stats_trackers);
         case BRAVE_STATS_DATA:
             return context.getResources().getString(R.string.notification_brave_stats_data);
         case BRAVE_STATS_TIME:
-            return context.getResources().getString(R.string.notification_brave_stats_time);
+            return context.getResources().getString(R.string.notification_brave_stats_time);*/
         case DEFAULT_BROWSER_1:
         case DEFAULT_BROWSER_2:
         case DEFAULT_BROWSER_3:

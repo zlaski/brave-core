@@ -222,7 +222,109 @@
                 android:textStyle="bold"
                 android:textColor="@color/onboarding_site_arrow_color"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
+                android:id="@+id/layout_last_week"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_last_week_tracker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="24dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="@drawable/rounded_stats_tracker_bg">
+
+                    <ImageView
+                        android:id="@+id/iv_thumbs_down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@null"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:srcCompat="@drawable/ic_thumbs_down"/>
+
+                    <TextView
+                        android:id="@+id/tv_last_week_tracker_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_thumbs_down"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/creepiest_tracker"
+                        android:textSize="12sp"
+                        android:textColor="@color/brave_stats_title_color"/>
+
+                    <TextView
+                        android:id="@+id/tv_last_week_tracker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/tv_last_week_tracker_title"
+                        app:layout_constraintStart_toEndOf="@id/iv_thumbs_down"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constrainedWidth="true"
+                        android:layout_marginStart="16dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/brave_stats_title_color"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_last_week_website"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="24dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="@drawable/rounded_stats_tracker_bg">
+
+                    <ImageView
+                        android:id="@+id/iv_warning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@null"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:srcCompat="@drawable/ic_warning_triangle"/>
+
+                    <TextView
+                        android:id="@+id/tv_last_week_website_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_warning"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/creepiest_website"
+                        android:textSize="12sp"
+                        android:textColor="@color/brave_stats_title_color"/>
+
+                    <TextView
+                        android:id="@+id/tv_last_week_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/tv_last_week_website_title"
+                        app:layout_constraintStart_toEndOf="@id/iv_warning"
+                        android:layout_marginStart="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constrainedWidth="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/brave_stats_title_color"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+            <!-- <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_last_week"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -331,7 +433,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout> -->
 
             <View
                 android:layout_width="match_parent"
@@ -355,78 +457,58 @@
                 android:orientation="horizontal"
                 android:baselineAligned="false">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:id="@+id/layout_tracker"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginEnd="16dp"
                     android:padding="16dp"
+                    android:orientation="vertical"
                     android:background="@drawable/rounded_stats_tracker_bg">
-
-                    <androidx.constraintlayout.helper.widget.Flow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:flow_horizontalAlign="start"
-                        app:flow_horizontalGap="2dp"
-                        app:flow_wrapMode="aligned"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:constraint_referenced_ids="tv_all_time_tracker_title,tv_all_time_tracker" />
 
                     <TextView
                         android:id="@+id/tv_all_time_tracker_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constrainedWidth="true"
                         android:text="@string/tracker_and_ad"
                         android:textSize="12sp"
                         android:textColor="@color/brave_stats_title_color"/>
 
                     <TextView
                         android:id="@+id/tv_all_time_tracker"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constrainedWidth="true"
                         android:textSize="14sp"
                         android:textColor="@color/brave_stats_title_color"/>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:id="@+id/layout_website"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:padding="16dp"
+                    android:orientation="vertical"
                     android:background="@drawable/rounded_stats_tracker_bg">
-
-                    <androidx.constraintlayout.helper.widget.Flow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:flow_horizontalAlign="start"
-                        app:flow_horizontalGap="2dp"
-                        app:flow_wrapMode="aligned"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:constraint_referenced_ids="tv_all_time_website_title,tv_all_time_website" />
 
                     <TextView
                         android:id="@+id/tv_all_time_website_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constrainedWidth="true"
                         android:text="@string/website"
                         android:textSize="12sp"
                         android:textColor="@color/brave_stats_title_color"/>
 
                     <TextView
                         android:id="@+id/tv_all_time_website"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constrainedWidth="true"
                         android:textSize="14sp"
                         android:textColor="@color/brave_stats_title_color"/>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
             </LinearLayout>
 

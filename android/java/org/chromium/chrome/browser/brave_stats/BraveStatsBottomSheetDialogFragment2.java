@@ -5,6 +5,8 @@
 
 package org.chromium.chrome.browser.brave_stats;
 
+import static org.chromium.ui.base.ViewUtils.dpToPx;
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.notifications.retention.RetentionNotificationUtil;
 import org.chromium.chrome.R;
 import org.chromium.base.Log;
+import org.chromium.ui.base.DeviceFormFactor;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -83,9 +86,10 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
     }
 
     @Override
+    @SuppressLint("SourceLockedOrientationActivity")
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
@@ -112,13 +116,44 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
         mBtnAllTime = view.findViewById(R.id.btn_all_time);
         mScrollView = view.findViewById(R.id.scrollview);
         mLayoutTrackerWebsite = view.findViewById(R.id.layout_tracker_website);
+
         mTvTrackerAds = view.findViewById(R.id.tv_tracker_ads);
         mTvWebsite = view.findViewById(R.id.tv_website);
         mTvTrackerWebsiteInfo = view.findViewById(R.id.tv_tracker_website_info);
         mAllTimeRecyclerView = view.findViewById(R.id.all_time_recyclerview);
 
+        handleForTablet(view);
         onClickViews();
         setData();
+    }
+
+    private void handleForTablet(View view) {
+
+        boolean isTablet = DeviceFormFactor.isNonMultiDisplayContextOnTablet(getActivity());
+        if(isTablet) {
+
+            LinearLayout layoutLastWeek = view.findViewById(R.id.layout_last_week);
+            View layoutLastWeekTracker = view.findViewById(R.id.layout_last_week_tracker);
+            View layoutLastWeekWebsite = view.findViewById(R.id.layout_last_week_website);
+            LinearLayout layoutTracker = view.findViewById(R.id.layout_tracker);
+            TextView tvAllTimeTrackerTitle = view.findViewById(R.id.tv_all_time_tracker_title);
+            LinearLayout layoutWebsite = view.findViewById(R.id.layout_website);
+            TextView tvAllTimeWebsiteTitle = view.findViewById(R.id.tv_all_time_website_title);
+            
+            layoutLastWeek.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout.LayoutParams trackerParams = (LinearLayout.LayoutParams)layoutLastWeekTracker.getLayoutParams();
+            trackerParams.setMarginEnd(dpToPx(getActivity(), 16));
+            trackerParams.weight = 1;
+            ((LinearLayout.LayoutParams)layoutLastWeekWebsite.getLayoutParams()).weight = 1;
+
+            layoutTracker.setOrientation(LinearLayout.HORIZONTAL);
+            ((LinearLayout.LayoutParams)tvAllTimeTrackerTitle.getLayoutParams()).weight = 1;
+            ((LinearLayout.LayoutParams)mTvAllTimeTracker.getLayoutParams()).weight = 1;
+
+            layoutWebsite.setOrientation(LinearLayout.HORIZONTAL);
+            ((LinearLayout.LayoutParams)tvAllTimeWebsiteTitle.getLayoutParams()).weight = 1;
+            ((LinearLayout.LayoutParams)mTvAllTimeWebsite.getLayoutParams()).weight = 1;
+        }
     }
 
     private void onClickViews() {
@@ -201,7 +236,6 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
 
     private void setAllTimesRecyclerView(List<Pair<String, Integer>> sitesList, boolean isBlockedInfo) {
 
-        Log.e("tapan","sitesList:"+sitesList.size());
         mAllTimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         BraveStatsAllTimeAdapter braveStatsAllTimeAdapter =
                 new BraveStatsAllTimeAdapter(sitesList, isBlockedInfo);
@@ -312,5 +346,11 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
         if(!OnboardingPrefManager.getInstance().isBraveStatsNotificationShown() && !OnboardingPrefManager.getInstance().isBraveStatsNotificationEnabled()) {
             mLayoutNotification.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        super.onDestroyView();
     }
 }
