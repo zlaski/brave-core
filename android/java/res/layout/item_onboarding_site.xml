@@ -11,14 +11,13 @@
     android:orientation="horizontal"
     android:layout_marginTop="16dp"
     android:padding="12dp"
-    android:background="@drawable/rounded_white_38_bg">
+    android:background="@drawable/rounded_onboarding_site_bg">
 
     <ImageView
         android:id="@+id/iv_site"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        app:srcCompat="@drawable/ic_brave"
         android:contentDescription="@null"/>
 
     <TextView
@@ -39,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:rotation="180"
+        app:tint="@color/onboarding_site_arrow_color"
         app:srcCompat="@drawable/ic_back"
         android:contentDescription="@null"/>
 

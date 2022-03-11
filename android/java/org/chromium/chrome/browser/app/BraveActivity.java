@@ -37,6 +37,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -102,19 +103,24 @@ import org.chromium.chrome.browser.compositor.layouts.LayoutManagerChrome;
 import org.chromium.chrome.browser.compositor.layouts.LayoutManagerImpl;
 import org.chromium.chrome.browser.compositor.layouts.phone.StackLayout;
 import org.chromium.chrome.browser.crypto_wallet.activities.BraveWalletActivity;
+import org.chromium.chrome.browser.custom_layout.popup_window_tooltip.PopupWindowTooltip;
 import org.chromium.chrome.browser.dependency_injection.ChromeActivityComponent;
+import org.chromium.chrome.browser.firstrun.BraveFirstRunUtils;
 import org.chromium.chrome.browser.flags.ChromeFeatureList;
 import org.chromium.chrome.browser.flags.ChromeSwitches;
 import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
 import org.chromium.chrome.browser.informers.BraveAndroidSyncDisabledInformer;
 import org.chromium.chrome.browser.notifications.retention.RetentionNotificationUtil;
 import org.chromium.chrome.browser.ntp.NewTabPage;
+import org.chromium.chrome.browser.ntp.NewTabPageManager;
 import org.chromium.chrome.browser.ntp_background_images.util.NewTabPageListener;
 import org.chromium.chrome.browser.onboarding.BraveTalkOptInPopupListener;
 import org.chromium.chrome.browser.onboarding.OnboardingActivity;
 import org.chromium.chrome.browser.onboarding.OnboardingActivity2;
 import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.onboarding.v2.HighlightDialogFragment;
+import org.chromium.chrome.browser.onboarding.v2.HighlightItem;
+import org.chromium.chrome.browser.onboarding.v2.HighlightView;
 import org.chromium.chrome.browser.preferences.BravePrefServiceBridge;
 import org.chromium.chrome.browser.preferences.BravePreferenceKeys;
 import org.chromium.chrome.browser.preferences.Pref;
@@ -229,6 +235,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
     public boolean mLoadedFeed;
     public boolean mComesFromNewTab;
     public CopyOnWriteArrayList<FeedItemsCard> mNewsItemsFeedCards;
+    private NewTabPageManager mNewTabPageManager;
 
     @SuppressLint("VisibleForTests")
     public BraveActivity() {
@@ -278,7 +285,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         } else if (id == R.id.set_default_browser) {
             BraveSetDefaultBrowserUtils.showBraveSetDefaultBrowserDialog(BraveActivity.this, true);
         } else if (id == R.id.brave_rewards_id) {
-            openNewOrSelectExistingTab(BRAVE_REWARDS_SETTINGS_URL);
+            openNewOrSelectExistingTab(BRAVE_REWARDS_SETTINGS_URL, false);
         } else if (id == R.id.brave_wallet_id) {
             openBraveWallet();
         } else if (id == R.id.brave_news_id) {
@@ -450,14 +457,13 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
     @Override
     public void performPostInflationStartup() {
         super.performPostInflationStartup();
-
         createNotificationChannel();
     }
 
     @Override
     protected void initializeStartupMetrics() {
         super.initializeStartupMetrics();
-
+        BraveFirstRunUtils.firstRunFlowComplete();
         // Disable FRE for arm64 builds where ChromeActivity is the one that
         // triggers FRE instead of ChromeLauncherActivity on arm32 build.
         BraveHelper.DisableFREDRP();
@@ -489,6 +495,11 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
 
         if (PackageUtils.isFirstInstall(this) && appOpenCount == 0) {
             checkForYandexSE();
+        }
+
+        if (appOpenCount == 0) {
+            Intent onboardingIntent = new Intent(this, OnboardingActivity2.class);
+            startActivity(onboardingIntent);
         }
 
         //set bg ads to off for existing and new installations
@@ -565,9 +576,6 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
             RetentionNotificationUtil.scheduleNotification(this, RetentionNotificationUtil.DEFAULT_BROWSER_3);
             OnboardingPrefManager.getInstance().setOneTimeNotificationStarted(true);
         }
-
-        Intent onboardingIntent = new Intent(this, OnboardingActivity2.class);
-        startActivity(onboardingIntent);
 
         if (!TextUtils.isEmpty(BinanceWidgetManager.getInstance().getBinanceAccountBalance())) {
             try {
@@ -823,7 +831,8 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
             case RetentionNotificationUtil.HOUR_3:
             case RetentionNotificationUtil.HOUR_24:
             case RetentionNotificationUtil.EVERY_SUNDAY:
-                checkForBraveStats();
+                BraveStatsUtil.showBraveStats1();
+                // checkForBraveStats();
                 break;
             case RetentionNotificationUtil.DAY_6:
             case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:
@@ -859,7 +868,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         }
     }
 
-    public void checkForBraveStats() {
+    /*public void checkForBraveStats() {
         if (OnboardingPrefManager.getInstance().isBraveStatsEnabled()) {
             BraveStatsUtil.showBraveStats();
         } else {
@@ -874,11 +883,41 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
                 showOnboardingV2(false);
             }
         }
+    }*/
+
+    public void showPrivacyTooltip() {
+        HighlightView highlightView = new HighlightView(this, null);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View anchorView = findViewById(R.id.ntp_widget_cardview_layout);
+
+        PopupWindowTooltip privacyPopupWindowTooltip =
+                new PopupWindowTooltip.Builder(this)
+                        .anchorView(anchorView)
+                        .arrowColor(getResources().getColor(R.color.shields_tooltip_bg_color))
+                        .gravity(Gravity.BOTTOM)
+                        .dismissOnOutsideTouch(true)
+                        .dismissOnInsideTouch(false)
+                        .backgroundDimDisabled(true)
+                        .onDismissListener(tooltip -> {
+                            if (viewGroup != null && highlightView != null) {
+                                viewGroup.removeView(highlightView);
+                            }
+                        })
+                        .modal(true)
+                        .contentView(R.layout.brave_privacy_tooltip_layout)
+                        .build();
+
+        Button btnOpenReport = privacyPopupWindowTooltip.findViewById(R.id.btn_open_report);
+
+        viewGroup.addView(highlightView);
+        HighlightItem item = new HighlightItem(anchorView);
+        highlightView.setHighlightItem(item);
+        privacyPopupWindowTooltip.show();
     }
 
     public void showOnboardingV2(boolean fromStats) {
         try {
-            OnboardingPrefManager.getInstance().setNewOnboardingShown(true);
+            OnboardingPrefManager.getInstance().setPrivacyOnboardingShown(true);
             FragmentManager fm = getSupportFragmentManager();
             HighlightDialogFragment fragment = (HighlightDialogFragment) fm
                                                .findFragmentByTag(HighlightDialogFragment.TAG_FRAGMENT);
@@ -930,6 +969,16 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
 
     private boolean isClearBrowsingDataOnExit() {
         return ContextUtils.getAppSharedPreferences().getBoolean(PREF_CLEAR_ON_EXIT, false);
+    }
+
+    public void setNewTabPageManager(NewTabPageManager manager) {
+        mNewTabPageManager = manager;
+    }
+
+    public void focusSearchBox() {
+        if (mNewTabPageManager != null) {
+            mNewTabPageManager.focusSearchBox(false, null);
+        }
     }
 
     public void OnRewardsPanelDismiss() {
@@ -1008,14 +1057,19 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         }
     }
 
-    public Tab openNewOrSelectExistingTab(String url) {
+    public Tab openNewOrSelectExistingTab(String url, boolean closePreviousTab) {
         TabModel tabModel = getCurrentTabModel();
         int tabRewardsIndex = TabModelUtils.getTabIndexByUrl(tabModel, url);
         Tab tab = selectExistingTab(url);
         if (tab != null) {
             return tab;
         } else { // Open a new tab
-            return getTabCreator(false).launchUrl(url, TabLaunchType.FROM_CHROME_UI);
+            tab = getTabCreator(false).launchUrl(url, TabLaunchType.FROM_CHROME_UI);
+
+            if (closePreviousTab && tabModel.getCount() > 0) {
+                TabModelUtils.closeTabByIndex(tabModel, 0);
+            }
+            return tab;
         }
     }
 
@@ -1080,7 +1134,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
             if (data != null) {
                 String open_url = data.getStringExtra(BraveActivity.OPEN_URL);
                 if (!TextUtils.isEmpty(open_url)) {
-                    openNewOrSelectExistingTab(open_url);
+                    openNewOrSelectExistingTab(open_url, false);
                 }
             }
         } else if (resultCode == RESULT_OK

@@ -51,7 +51,7 @@ public class BraveStatsPreferences extends BravePreferenceFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.brave_stats);
+        getActivity().setTitle(R.string.privacy_report_settings);
         SettingsUtils.addPreferencesFromResource(this, R.xml.brave_stats_preferences);
         findPreference(PREF_CLEAR_BRAVE_STATS).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

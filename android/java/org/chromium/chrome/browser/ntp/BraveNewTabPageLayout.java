@@ -29,6 +29,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.Gravity;
@@ -91,6 +92,7 @@ import org.chromium.chrome.browser.brave_news.models.FeedItemsCard;
 import org.chromium.chrome.browser.brave_stats.BraveStatsUtil;
 import org.chromium.chrome.browser.compositor.CompositorViewHolder;
 import org.chromium.chrome.browser.custom_layout.VerticalViewPager;
+import org.chromium.chrome.browser.custom_layout.popup_window_tooltip.PopupWindowTooltip;
 import org.chromium.chrome.browser.explore_sites.ExploreSitesBridge;
 import org.chromium.chrome.browser.feed.FeedSurfaceScrollDelegate;
 import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -118,6 +120,8 @@ import org.chromium.chrome.browser.offlinepages.DownloadUiActionFlags;
 import org.chromium.chrome.browser.offlinepages.OfflinePageBridge;
 import org.chromium.chrome.browser.offlinepages.RequestCoordinatorBridge;
 import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
+import org.chromium.chrome.browser.onboarding.v2.HighlightItem;
+import org.chromium.chrome.browser.onboarding.v2.HighlightView;
 import org.chromium.chrome.browser.preferences.BravePref;
 import org.chromium.chrome.browser.preferences.BravePrefServiceBridge;
 import org.chromium.chrome.browser.preferences.BravePreferenceKeys;
@@ -374,7 +378,8 @@ public class BraveNewTabPageLayout
             @SuppressLint("SourceLockedOrientationActivity")
             public void onClick(View v) {
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                checkForBraveStats();
+                BraveStatsUtil.showBraveStats1();
+                // checkForBraveStats();
             }
         });
         BraveStatsUtil.updateBraveStatsLayout(mBraveStatsViewFallBackLayout);
@@ -409,7 +414,8 @@ public class BraveNewTabPageLayout
                     @SuppressLint("SourceLockedOrientationActivity")
                     public void onClick(View v) {
                         mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                        checkForBraveStats();
+                        BraveStatsUtil.showBraveStats1();
+                        // checkForBraveStats();
                     }
                 });
                 ntpWidgetItem.setWidgetView(mBraveStatsView);
@@ -540,13 +546,13 @@ public class BraveNewTabPageLayout
         }
     }
 
-    private void checkForBraveStats() {
+    /*private void checkForBraveStats() {
         if (OnboardingPrefManager.getInstance().isBraveStatsEnabled()) {
             BraveStatsUtil.showBraveStats();
         } else {
             ((BraveActivity)mActivity).showOnboardingV2(true);
         }
-    }
+    }*/
 
     @SuppressLint("VisibleForTests")
     protected void insertSiteSectionView() {
@@ -573,11 +579,19 @@ public class BraveNewTabPageLayout
         }
         checkAndShowNTPImage(false);
         mNTPBackgroundImagesBridge.addObserver(mNTPBackgroundImageServiceObserver);
-        if (PackageUtils.isFirstInstall(mActivity)
+        /*if (PackageUtils.isFirstInstall(mActivity)
                 && !OnboardingPrefManager.getInstance().isNewOnboardingShown()
                 && OnboardingPrefManager.getInstance().isP3aOnboardingShown()) {
             ((BraveActivity)mActivity).showOnboardingV2(false);
+        }*/
+
+        if (!OnboardingPrefManager.getInstance().isPrivacyOnboardingShown()
+                && OnboardingPrefManager.getInstance().isOnboardingShown() && isNTPUrl()
+                && isStatsDataAvailable()) {
+            Handler handler = new Handler();
+            handler.post(() -> { ((BraveActivity) mActivity).showPrivacyTooltip(); });
         }
+
         if (OnboardingPrefManager.getInstance().isFromNotification() ) {
             ((BraveActivity)mActivity).showOnboardingV2(false);
             OnboardingPrefManager.getInstance().setFromNotification(false);
@@ -724,6 +738,26 @@ public class BraveNewTabPageLayout
     private ViewGroup getView(int id) {
         ViewGroup view = findViewById(id);
         return findViewById(id);
+    }
+
+    private boolean isNTPUrl() {
+        if (BraveActivity.getBraveActivity() != null) {
+            Tab tab = BraveActivity.getBraveActivity().getActivityTab();
+            return tab != null && tab.getUrl().getSpec() != null
+                    && UrlUtilities.isNTPUrl(tab.getUrl().getSpec());
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isStatsDataAvailable() {
+        List<Pair<String, String>> statsPairs = BraveStatsUtil.getStatsPairs();
+        if (Long.parseLong(statsPairs.get(0).first) > 0) {
+            return true;
+        } else if (Long.parseLong(statsPairs.get(1).first) > 0) {
+            return true;
+        } else
+            return Long.parseLong(statsPairs.get(2).first) > 0;
     }
 
     // corrects position of image credit and for the loading spinner. Used when News is active
@@ -1421,6 +1455,7 @@ public class BraveNewTabPageLayout
         assert (activity instanceof BraveActivity);
         mActivity = activity;
         ((BraveActivity) mActivity).dismissShieldsTooltip();
+        ((BraveActivity) mActivity).setNewTabPageManager(manager);
     }
 
     private void showNTPImage(NTPImage ntpImage) {

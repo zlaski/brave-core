@@ -24,7 +24,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:layout_gravity="center"
-            android:text="@string/brave_stats"
+            android:text="@string/privacy_report"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/brave_stats_text_color"/>

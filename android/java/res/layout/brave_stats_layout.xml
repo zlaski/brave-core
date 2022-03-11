@@ -32,7 +32,7 @@
             android:drawablePadding="4dp"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:text="@string/privacy_stats"
+            android:text="@string/privacy_report"
             android:textColor="@android:color/white"
             android:textSize="12sp"/>
 

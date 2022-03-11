@@ -7,6 +7,11 @@ package org.chromium.chrome.browser.firstrun;
 
 import android.app.Activity;
 
+import org.chromium.base.ApiCompatibilityUtils;
+import org.chromium.base.CommandLine;
+import org.chromium.base.Log;
+import org.chromium.chrome.browser.flags.ChromeSwitches;
+
 public abstract class BraveFirstRunFlowSequencer extends FirstRunFlowSequencer {
     public BraveFirstRunFlowSequencer(Activity activity) {
         super(activity);

@@ -33,6 +33,7 @@ import org.chromium.base.task.AsyncTask;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.app.BraveActivity;
 import org.chromium.chrome.browser.brave_stats.BraveStatsBottomSheetDialogFragment;
+import org.chromium.chrome.browser.brave_stats.BraveStatsBottomSheetDialogFragment2;
 import org.chromium.chrome.browser.local_database.DatabaseHelper;
 import org.chromium.chrome.browser.preferences.BravePref;
 import org.chromium.chrome.browser.preferences.BravePrefServiceBridge;
@@ -115,6 +116,16 @@ public class BraveStatsUtil {
         if (BraveActivity.getBraveActivity() != null) {
             BraveStatsBottomSheetDialogFragment braveStatsBottomSheetDialogFragment =
                     BraveStatsBottomSheetDialogFragment.newInstance();
+            braveStatsBottomSheetDialogFragment.show(
+                    BraveActivity.getBraveActivity().getSupportFragmentManager(),
+                    "brave_stats_bottom_sheet_dialog_fragment");
+        }
+    }
+
+    public static void showBraveStats1() {
+        if (BraveActivity.getBraveActivity() != null) {
+            BraveStatsBottomSheetDialogFragment2 braveStatsBottomSheetDialogFragment =
+                    BraveStatsBottomSheetDialogFragment2.newInstance();
             braveStatsBottomSheetDialogFragment.show(
                     BraveActivity.getBraveActivity().getSupportFragmentManager(),
                     "brave_stats_bottom_sheet_dialog_fragment");
@@ -301,7 +312,7 @@ public class BraveStatsUtil {
         updateBraveShareStatsLayoutAndShare(shareStatsLayout);
     }
 
-    private static List<Pair<String, String>> getStatsPairs() {
+    public static List<Pair<String, String>> getStatsPairs() {
         List<Pair<String, String>> statsPair = new ArrayList<>();
         Profile mProfile = Profile.getLastUsedRegularProfile();
         long trackersBlockedCount =
