@@ -198,17 +198,9 @@ public class OnboardingActivity2 extends AppCompatActivity implements Onboarding
     public void OnOpenSite(String url) {
 
         if(BraveActivity.getBraveActivity()!=null) {
-            Log.e("tapan","BraveActivity not null");
             BraveActivity.getBraveActivity().openNewOrSelectExistingTab(url);
         }
         finish();
-        /*if(url!=null && url.length()>0) {
-            TabUtils.openUrlInSameTab(url);
-        } else {
-            TabUtils.openNewTab();
-        }*/
-
-        //finish();
     }
 
     @Override

@@ -37,9 +37,8 @@ import java.util.Map;
  */
 public class OnboardingPrefManager {
     private static final String PREF_ONBOARDING = "onboarding";
-    private static final String PREF_P3A_ONBOARDING = "p3a_onboarding";
     private static final String PREF_CROSS_PROMO_MODAL = "cross_promo_modal";
-    private static final String PREF_ONBOARDING_V2 = "onboarding_v2";
+    private static final String PREF_PRIVACY_ONBOARDING = "privacy_onboarding";
     private static final String PREF_NEXT_ONBOARDING_DATE = "next_onboarding_date";
     private static final String PREF_NEXT_CROSS_PROMO_MODAL_DATE = "next_cross_promo_modal_date";
     private static final String PREF_NEXT_SET_DEFAULT_BROWSER_MODAL_DATE =
@@ -51,6 +50,7 @@ public class OnboardingPrefManager {
             "show_default_browser_modal_after_p3a";
     public static final String PREF_BRAVE_STATS = "brave_stats";
     public static final String PREF_BRAVE_STATS_NOTIFICATION = "brave_stats_notification";
+    public static final String PREF_BRAVE_STATS_NOTIFICATION_SHOWN = "brave_stats_notification_shown";
     public static final String ONBOARDING_TYPE = "onboarding_type";
     public static final String FROM_NOTIFICATION = "from_notification";
     public static final String FROM_STATS = "from_stats";
@@ -100,48 +100,32 @@ public class OnboardingPrefManager {
     /**
      * Returns the user preference for whether the onboarding is shown.
      */
-    public boolean isOnboardingShown() {
+    /*public boolean isOnboardingShown() {
         return mSharedPreferences.getBoolean(PREF_ONBOARDING, false);
-    }
+    }*/
 
     /**
      * Sets the user preference for whether the onboarding is shown.
      */
-    public void setOnboardingShown(boolean isShown) {
+    /*public void setOnboardingShown(boolean isShown) {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean(PREF_ONBOARDING, isShown);
         sharedPreferencesEditor.apply();
     }
-
+*/
     /**
-     * Returns the user preference for whether the onboarding is shown.
+     * Returns the user preference for whether the privacy tooltip onboarding is shown.
      */
-    public boolean isP3aOnboardingShown() {
-        return mSharedPreferences.getBoolean(PREF_P3A_ONBOARDING, false);
+    public boolean isPrivacyOnboardingShown() {
+        return mSharedPreferences.getBoolean(PREF_PRIVACY_ONBOARDING, false);
     }
 
     /**
-     * Sets the user preference for whether the onboarding is shown.
+     * Sets the user preference for whether the privacy tooltip onboarding is shown.
      */
-    public void setP3aOnboardingShown(boolean isShown) {
+    public void setPrivacyOnboardingShown(boolean isShown) {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putBoolean(PREF_P3A_ONBOARDING, isShown);
-        sharedPreferencesEditor.apply();
-    }
-
-    /**
-     * Returns the user preference for whether the onboarding is shown.
-     */
-    public boolean isNewOnboardingShown() {
-        return mSharedPreferences.getBoolean(PREF_ONBOARDING_V2, false);
-    }
-
-    /**
-     * Sets the user preference for whether the onboarding is shown.
-     */
-    public void setNewOnboardingShown(boolean isShown) {
-        SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putBoolean(PREF_ONBOARDING_V2, isShown);
+        sharedPreferencesEditor.putBoolean(PREF_PRIVACY_ONBOARDING, isShown);
         sharedPreferencesEditor.apply();
     }
 
@@ -166,6 +150,16 @@ public class OnboardingPrefManager {
     public void setBraveStatsNotificationEnabled(boolean enabled) {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean(PREF_BRAVE_STATS_NOTIFICATION, enabled);
+        sharedPreferencesEditor.apply();
+    }
+
+    public boolean isBraveStatsNotificationShown() {
+        return mSharedPreferences.getBoolean(PREF_BRAVE_STATS_NOTIFICATION_SHOWN, true);
+    }
+
+    public void setBraveStatsNotificationShown(boolean enabled) {
+        SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putBoolean(PREF_BRAVE_STATS_NOTIFICATION_SHOWN, enabled);
         sharedPreferencesEditor.apply();
     }
 
