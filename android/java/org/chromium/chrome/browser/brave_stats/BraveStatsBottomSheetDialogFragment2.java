@@ -16,23 +16,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.ScrollView;
-import androidx.core.widget.NestedScrollView;
 import android.util.Pair;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Spanned;
 import android.widget.LinearLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.DividerItemDecoration;
 
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.chromium.chrome.browser.brave_stats.BraveStatsUtil;
-import org.chromium.chrome.browser.local_database.BraveStatsTable;
 import org.chromium.chrome.browser.local_database.DatabaseHelper;
 import org.chromium.chrome.browser.BraveRewardsHelper;
 import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
@@ -116,7 +112,6 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
         mBtnAllTime = view.findViewById(R.id.btn_all_time);
         mScrollView = view.findViewById(R.id.scrollview);
         mLayoutTrackerWebsite = view.findViewById(R.id.layout_tracker_website);
-
         mTvTrackerAds = view.findViewById(R.id.tv_tracker_ads);
         mTvWebsite = view.findViewById(R.id.tv_website);
         mTvTrackerWebsiteInfo = view.findViewById(R.id.tv_tracker_website_info);

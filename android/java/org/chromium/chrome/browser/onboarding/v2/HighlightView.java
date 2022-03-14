@@ -9,7 +9,6 @@ package org.chromium.chrome.browser.onboarding.v2;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,13 +19,11 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Keep;
 
-import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.ui.base.DeviceFormFactor;
 
