@@ -124,6 +124,9 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
 
     private void handleForTablet(View view) {
 
+        if(getActivity()==null)
+            return;
+
         boolean isTablet = DeviceFormFactor.isNonMultiDisplayContextOnTablet(getActivity());
         if(isTablet) {
 
@@ -163,9 +166,12 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
 
         mBtnNotification.setOnClickListener(view -> {
 
-            OnboardingPrefManager.getInstance().setBraveStatsNotificationShown(true);
-            OnboardingPrefManager.getInstance().setBraveStatsNotificationEnabled(true);
-            RetentionNotificationUtil.scheduleNotificationForEverySunday(getActivity(), RetentionNotificationUtil.EVERY_SUNDAY);
+            if(getActivity()!=null) {
+                OnboardingPrefManager.getInstance().setBraveStatsNotificationShown(true);
+                OnboardingPrefManager.getInstance().setBraveStatsNotificationEnabled(true);
+                RetentionNotificationUtil.scheduleNotificationForEverySunday(getActivity(), RetentionNotificationUtil.EVERY_SUNDAY);
+            }
+
             mLayoutNotification.setVisibility(View.GONE);
         });
 
@@ -231,6 +237,9 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
 
     private void setAllTimesRecyclerView(List<Pair<String, Integer>> sitesList, boolean isBlockedInfo) {
 
+        if(getActivity()==null)
+            return;
+
         mAllTimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         BraveStatsAllTimeAdapter braveStatsAllTimeAdapter =
                 new BraveStatsAllTimeAdapter(sitesList, isBlockedInfo);
@@ -251,7 +260,7 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
                             BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", 0));
 
             mAllStatsList = mDatabaseHelper.getStats();
-            mAllSitesList = mDatabaseHelper.getSites();
+            mAllSitesList = mDatabaseHelper.getShieldsSites();
 
             mHandler.post(() -> {
                 updateUI(lastWeekStatsList, lastWeekSitesList);
@@ -261,6 +270,9 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
 
     private void updateUI(List<Pair<String, Integer>> lastWeekStatsList, 
         List<Pair<String, Integer>> lastWeekSitesList) {
+
+        if(getActivity()==null)
+            return;
 
         mScrollView.setVisibility(View.VISIBLE);
 

@@ -910,6 +910,9 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         Button btnOpenReport = privacyPopupWindowTooltip.findViewById(R.id.btn_open_report);
         btnOpenReport.setOnClickListener(view -> {
             privacyPopupWindowTooltip.dismiss();
+            if (!OnboardingPrefManager.getInstance().isBraveStatsEnabled()) {
+                OnboardingPrefManager.getInstance().setBraveStatsEnabled(true);
+            }
             BraveStatsUtil.showBraveStats1();
         });
         viewGroup.addView(highlightView);

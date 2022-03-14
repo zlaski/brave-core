@@ -286,12 +286,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public List<Pair<String, Integer>> getSites() {
+    public List<Pair<String, Integer>> getShieldsSites() {
         List<Pair<String, Integer>> braveStats = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  " + BraveStatsTable.COLUMN_STAT_SITE_DOMAIN
-                + ", COUNT(*) as site_count FROM " + BraveStatsTable.TABLE_NAME + " WHERE "
-                + BraveStatsTable.COLUMN_TIMESTAMP + " GROUP BY "
+                + ", COUNT(*) as site_count FROM " + BraveStatsTable.TABLE_NAME + " WHERE " 
+                + BraveStatsTable.COLUMN_STAT_TYPE + "= 'shieldsAds' "
+                + " AND " + BraveStatsTable.COLUMN_TIMESTAMP + " GROUP BY "
                 + BraveStatsTable.COLUMN_STAT_SITE_DOMAIN + " ORDER BY site_count DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();
