@@ -256,7 +256,7 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                     return;
                 }
                 mBraveShieldsHandler.updateValues(tabId);
-                if (!isIncognito() /*&& OnboardingPrefManager.getInstance().isBraveStatsEnabled()*/
+                if (!isIncognito() && OnboardingPrefManager.getInstance().isBraveStatsEnabled()
                         && (block_type.equals(BraveShieldsContentSettings.RESOURCE_IDENTIFIER_ADS)
                                 || block_type.equals(BraveShieldsContentSettings
                                                              .RESOURCE_IDENTIFIER_TRACKERS))) {
