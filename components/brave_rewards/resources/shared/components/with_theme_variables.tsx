@@ -59,6 +59,12 @@ export function WithThemeVariables (props: { children: React.ReactNode }) {
   const currentTheme = normalizeThemeName(
     themeName || styledComponentsTheme.name || '')
 
+  // Override theme's body font (Muli) with heading font (Poppins)
+  if (styledComponentsTheme.fontFamily) {
+    styledComponentsTheme.fontFamily.body =
+      styledComponentsTheme.fontFamily.heading
+  }
+
   return (
     <Wrapper className={`brave-theme-${currentTheme}`}>
       {props.children}
