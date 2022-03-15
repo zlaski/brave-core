@@ -9,11 +9,14 @@ import { connect } from 'react-redux'
 // Components
 import { AdDiagnostics } from './ad_diagnostics'
 import { Contributions } from './contributions'
-import { Promotions } from './promotions'
 import { General } from './general'
 import { EventLogs } from './event_logs'
 import { Log } from './log'
+import { Promotions } from './promotions'
 import { Tabs } from 'brave-ui/components'
+import { WithThemeVariables } from '../../shared/components/with_theme_variables'
+
+// Style
 import { Wrapper, MainTitle, Disclaimer } from '../style'
 
 // Utils
@@ -122,41 +125,43 @@ export class RewardsInternalsPage extends React.Component<Props, State> {
     } = this.props.rewardsInternalsData
 
     return (
-      <Wrapper id='rewardsInternalsPage'>
-        <MainTitle level={2}>{getLocale('mainTitle')}</MainTitle>
-        <Disclaimer>{getLocale('mainDisclaimer')}</Disclaimer>
-        <Tabs
-          id={'internals-tabs'}
-          activeTabId={this.state.currentTabId}
-          onChange={this.onTabChange}
-        >
-          <div data-key='generalInfo' data-title={getLocale('tabGeneralInfo')}>
-            <General data={this.props.rewardsInternalsData} onGet={this.getGeneralInfo} />
-          </div>
-          <div data-key='logs' data-title={getLocale('tabLogs')}>
-            <Log
-              log={log}
-              fullLog={fullLog}
-              onGet={this.getPartialLog}
-              onFullLog={this.getFullLog}
-              onClear={this.clearLog}
-              onDownloadCompleted={this.downloadCompleted}
-            />
-          </div>
-          <div data-key='promotions' data-title={getLocale('tabPromotions')}>
-            <Promotions items={promotions} onGet={this.getPromotions} />
-          </div>
-          <div data-key='contributions' data-title={getLocale('tabContributions')}>
-            <Contributions items={contributions} onGet={this.getContributions} />
-          </div>
-          <div data-key='eventLogs' data-title={getLocale('tabEventLogs')}>
-            <EventLogs items={eventLogs} />
-          </div>
-          <div data-key='adDiagnostics' data-title={getLocale('tabAdDiagnostics')}>
-            <AdDiagnostics entries={adDiagnostics} onGet={this.getAdDiagnostics}/>
-          </div>
-        </Tabs>
-      </Wrapper>)
+      <WithThemeVariables>
+        <Wrapper id='rewardsInternalsPage'>
+          <MainTitle level={2}>{getLocale('mainTitle')}</MainTitle>
+          <Disclaimer>{getLocale('mainDisclaimer')}</Disclaimer>
+          <Tabs
+            id={'internals-tabs'}
+            activeTabId={this.state.currentTabId}
+            onChange={this.onTabChange}
+          >
+            <div data-key='generalInfo' data-title={getLocale('tabGeneralInfo')}>
+              <General data={this.props.rewardsInternalsData} onGet={this.getGeneralInfo} />
+            </div>
+            <div data-key='logs' data-title={getLocale('tabLogs')}>
+              <Log
+                log={log}
+                fullLog={fullLog}
+                onGet={this.getPartialLog}
+                onFullLog={this.getFullLog}
+                onClear={this.clearLog}
+                onDownloadCompleted={this.downloadCompleted}
+              />
+            </div>
+            <div data-key='promotions' data-title={getLocale('tabPromotions')}>
+              <Promotions items={promotions} onGet={this.getPromotions} />
+            </div>
+            <div data-key='contributions' data-title={getLocale('tabContributions')}>
+              <Contributions items={contributions} onGet={this.getContributions} />
+            </div>
+            <div data-key='eventLogs' data-title={getLocale('tabEventLogs')}>
+              <EventLogs items={eventLogs} />
+            </div>
+            <div data-key='adDiagnostics' data-title={getLocale('tabAdDiagnostics')}>
+              <AdDiagnostics entries={adDiagnostics} onGet={this.getAdDiagnostics} />
+            </div>
+          </Tabs>
+        </Wrapper>
+      </WithThemeVariables>)
   }
 }
 

@@ -10,7 +10,7 @@ export const Wrapper = styled('div')<{}>`
   width: 100%;
   max-width: 1350px;
   margin: 15px auto 0;
-  font-family: ${p => p.theme.fontFamily.body};
+  font-family: var(--brave-font-default);
   font-size: 14px;
 `
 
