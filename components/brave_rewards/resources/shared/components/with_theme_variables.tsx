@@ -22,6 +22,9 @@ function createThemeRules (theme: any) {
   }
   for (const [key, value] of Object.entries(theme.fontFamily)) {
     list.push(`--brave-font-${key}: ${String(value)};`)
+    if (key === 'heading') {
+      list.push(`--brave-font-default: ${String(value)};`)
+    }
   }
 
   return list.join('\n')
