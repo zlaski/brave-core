@@ -6,35 +6,36 @@
 package org.chromium.chrome.browser.brave_stats;
 
 import static org.chromium.ui.base.ViewUtils.dpToPx;
+
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Button;
-import android.widget.ScrollView;
-import android.util.Pair;
-import android.os.Handler;
-import android.os.Looper;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.annotation.Nullable;
-
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.chromium.base.Log;
+import org.chromium.chrome.R;
+import org.chromium.chrome.browser.BraveRewardsHelper;
 import org.chromium.chrome.browser.brave_stats.BraveStatsUtil;
 import org.chromium.chrome.browser.local_database.DatabaseHelper;
-import org.chromium.chrome.browser.BraveRewardsHelper;
-import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.notifications.retention.RetentionNotificationUtil;
-import org.chromium.chrome.R;
-import org.chromium.base.Log;
+import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.ui.base.DeviceFormFactor;
 
 import java.util.List;
@@ -42,7 +43,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragment {
-
     private ImageView mIvBack;
     private ImageView mIvClose;
     private ImageView mIvNotificationClose;
@@ -70,10 +70,7 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private enum ALL_TIMES_TYPES {
-        TRACKERS_ADS,
-        WEBSITE
-    }
+    private enum ALL_TIMES_TYPES { TRACKERS_ADS, WEBSITE }
 
     private ALL_TIMES_TYPES mAllTimesListTypes = ALL_TIMES_TYPES.TRACKERS_ADS;
 
@@ -91,13 +88,11 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(
-                R.layout.fragment_brave_stats_bottom_sheet, container, false);
+        return inflater.inflate(R.layout.fragment_brave_stats_bottom_sheet, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
         mIvBack = view.findViewById(R.id.iv_back);
         mIvClose = view.findViewById(R.id.iv_close);
         mTvTitle = view.findViewById(R.id.tv_title);
@@ -123,13 +118,10 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
     }
 
     private void handleForTablet(View view) {
-
-        if(getActivity()==null)
-            return;
+        if (getActivity() == null) return;
 
         boolean isTablet = DeviceFormFactor.isNonMultiDisplayContextOnTablet(getActivity());
-        if(isTablet) {
-
+        if (isTablet) {
             LinearLayout layoutLastWeek = view.findViewById(R.id.layout_last_week);
             View layoutLastWeekTracker = view.findViewById(R.id.layout_last_week_tracker);
             View layoutLastWeekWebsite = view.findViewById(R.id.layout_last_week_website);
@@ -137,46 +129,47 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
             TextView tvAllTimeTrackerTitle = view.findViewById(R.id.tv_all_time_tracker_title);
             LinearLayout layoutWebsite = view.findViewById(R.id.layout_website);
             TextView tvAllTimeWebsiteTitle = view.findViewById(R.id.tv_all_time_website_title);
-            
+
+            LinearLayout layoutNotificationText = view.findViewById(R.id.layout_notification_text);
+            layoutNotificationText.setOrientation(LinearLayout.HORIZONTAL);
+
             layoutLastWeek.setOrientation(LinearLayout.HORIZONTAL);
-            LinearLayout.LayoutParams trackerParams = (LinearLayout.LayoutParams)layoutLastWeekTracker.getLayoutParams();
+            LinearLayout.LayoutParams trackerParams =
+                    (LinearLayout.LayoutParams) layoutLastWeekTracker.getLayoutParams();
             trackerParams.setMarginEnd(dpToPx(getActivity(), 16));
             trackerParams.weight = 1;
-            ((LinearLayout.LayoutParams)layoutLastWeekWebsite.getLayoutParams()).weight = 1;
+            ((LinearLayout.LayoutParams) layoutLastWeekWebsite.getLayoutParams()).weight = 1;
 
             layoutTracker.setOrientation(LinearLayout.HORIZONTAL);
-            ((LinearLayout.LayoutParams)tvAllTimeTrackerTitle.getLayoutParams()).weight = 1;
-            ((LinearLayout.LayoutParams)mTvAllTimeTracker.getLayoutParams()).weight = 1;
+            ((LinearLayout.LayoutParams) tvAllTimeTrackerTitle.getLayoutParams()).weight = 1;
+            ((LinearLayout.LayoutParams) mTvAllTimeTracker.getLayoutParams()).weight = 1;
 
             layoutWebsite.setOrientation(LinearLayout.HORIZONTAL);
-            ((LinearLayout.LayoutParams)tvAllTimeWebsiteTitle.getLayoutParams()).weight = 1;
-            ((LinearLayout.LayoutParams)mTvAllTimeWebsite.getLayoutParams()).weight = 1;
+            ((LinearLayout.LayoutParams) tvAllTimeWebsiteTitle.getLayoutParams()).weight = 1;
+            ((LinearLayout.LayoutParams) mTvAllTimeWebsite.getLayoutParams()).weight = 1;
         }
     }
 
     private void onClickViews() {
-
         mIvClose.setOnClickListener(view -> { dismiss(); });
-        
-        mIvNotificationClose.setOnClickListener(view -> { 
 
+        mIvNotificationClose.setOnClickListener(view -> {
             OnboardingPrefManager.getInstance().setBraveStatsNotificationShown(true);
             mLayoutNotification.setVisibility(View.GONE);
         });
 
         mBtnNotification.setOnClickListener(view -> {
-
-            if(getActivity()!=null) {
+            if (getActivity() != null) {
                 OnboardingPrefManager.getInstance().setBraveStatsNotificationShown(true);
                 OnboardingPrefManager.getInstance().setBraveStatsNotificationEnabled(true);
-                RetentionNotificationUtil.scheduleNotificationForEverySunday(getActivity(), RetentionNotificationUtil.EVERY_SUNDAY);
+                RetentionNotificationUtil.scheduleNotificationForEverySunday(
+                        getActivity(), RetentionNotificationUtil.EVERY_SUNDAY);
             }
 
             mLayoutNotification.setVisibility(View.GONE);
         });
 
         mIvBack.setOnClickListener(view -> {
-            
             mTvTitle.setText(getResources().getString(R.string.privacy_report));
             mIvBack.setVisibility(View.GONE);
             mScrollView.setVisibility(View.VISIBLE);
@@ -186,7 +179,6 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
         });
 
         mBtnAllTime.setOnClickListener(view -> {
-
             mTvTitle.setText(getResources().getString(R.string.all_time_lists_title));
             mIvBack.setVisibility(View.VISIBLE);
             mScrollView.setVisibility(View.GONE);
@@ -195,50 +187,40 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
             mLayoutTrackerWebsite.setVisibility(View.VISIBLE);
             mTvTrackerWebsiteInfo.setVisibility(View.VISIBLE);
             mAllTimeRecyclerView.setVisibility(View.VISIBLE);
-            
+
             mTvTrackerWebsiteInfo.setText(getResources().getString(R.string.trackers_ads_info));
 
             setAllTimesList(ALL_TIMES_TYPES.TRACKERS_ADS);
-        
         });
 
-        mTvTrackerAds.setOnClickListener(view -> {
+        mTvTrackerAds.setOnClickListener(
+                view -> { setAllTimesList(ALL_TIMES_TYPES.TRACKERS_ADS); });
 
-            setAllTimesList(ALL_TIMES_TYPES.TRACKERS_ADS);
-        });
-
-        mTvWebsite.setOnClickListener(view -> {
-
-            setAllTimesList(ALL_TIMES_TYPES.WEBSITE);
-        });
+        mTvWebsite.setOnClickListener(view -> { setAllTimesList(ALL_TIMES_TYPES.WEBSITE); });
     }
 
     private void setAllTimesList(ALL_TIMES_TYPES allTimesListTypes) {
-
         mAllTimesListTypes = allTimesListTypes;
 
-        if(mAllTimesListTypes == ALL_TIMES_TYPES.TRACKERS_ADS) {
-            
+        if (mAllTimesListTypes == ALL_TIMES_TYPES.TRACKERS_ADS) {
             mTvTrackerWebsiteInfo.setText(getResources().getString(R.string.trackers_ads_info));
             mTvTrackerAds.setBackgroundResource(R.drawable.brave_stats_tracker_website_selected);
             mTvWebsite.setBackgroundResource(0);
 
             setAllTimesRecyclerView(mAllSitesList, true);
 
-        } else if(mAllTimesListTypes == ALL_TIMES_TYPES.WEBSITE) {
-
+        } else if (mAllTimesListTypes == ALL_TIMES_TYPES.WEBSITE) {
             mTvTrackerWebsiteInfo.setText(getResources().getString(R.string.websites_info));
             mTvWebsite.setBackgroundResource(R.drawable.brave_stats_tracker_website_selected);
             mTvTrackerAds.setBackgroundResource(0);
 
-            setAllTimesRecyclerView(mAllStatsList, false);     
+            setAllTimesRecyclerView(mAllStatsList, false);
         }
     }
 
-    private void setAllTimesRecyclerView(List<Pair<String, Integer>> sitesList, boolean isBlockedInfo) {
-
-        if(getActivity()==null)
-            return;
+    private void setAllTimesRecyclerView(
+            List<Pair<String, Integer>> sitesList, boolean isBlockedInfo) {
+        if (getActivity() == null) return;
 
         mAllTimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         BraveStatsAllTimeAdapter braveStatsAllTimeAdapter =
@@ -248,109 +230,102 @@ public class BraveStatsBottomSheetDialogFragment2 extends BottomSheetDialogFragm
     }
 
     private void setData() {
-
         mExecutor.execute(() -> {
+            List<Pair<String, Integer>> lastWeekStatsList = mDatabaseHelper.getStatsWithDate(
+                    BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", LAST_WEEK),
+                    BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", 0));
 
-            List<Pair<String, Integer>> lastWeekStatsList = mDatabaseHelper
-                    .getStatsWithDate(BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", LAST_WEEK),
-                            BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", 0));
-
-            List<Pair<String, Integer>> lastWeekSitesList = mDatabaseHelper
-                    .getSitesWithDate(BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", LAST_WEEK),
-                            BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", 0));
+            List<Pair<String, Integer>> lastWeekSitesList = mDatabaseHelper.getSitesWithDate(
+                    BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", LAST_WEEK),
+                    BraveStatsUtil.getCalculatedDate("yyyy-MM-dd", 0));
 
             mAllStatsList = mDatabaseHelper.getStats();
             mAllSitesList = mDatabaseHelper.getShieldsSites();
 
-            mHandler.post(() -> {
-                updateUI(lastWeekStatsList, lastWeekSitesList);
-            });
+            mHandler.post(() -> { updateUI(lastWeekStatsList, lastWeekSitesList); });
         });
     }
 
-    private void updateUI(List<Pair<String, Integer>> lastWeekStatsList, 
-        List<Pair<String, Integer>> lastWeekSitesList) {
-
-        if(getActivity()==null)
-            return;
+    private void updateUI(List<Pair<String, Integer>> lastWeekStatsList,
+            List<Pair<String, Integer>> lastWeekSitesList) {
+        if (getActivity() == null) return;
 
         mScrollView.setVisibility(View.VISIBLE);
 
-        if(lastWeekSitesList.isEmpty()) {
-
+        if (lastWeekSitesList.isEmpty()) {
             mTvLastWeekTracker.setText(getResources().getString(R.string.no_data_text));
 
         } else {
-
             String lastWeekTracker = "<b>" + lastWeekSitesList.get(0).first + "</b> "
                     + getResources().getString(R.string.creepiest_tracker_data);
 
             lastWeekTracker = lastWeekTracker + " <b>" + lastWeekSitesList.get(0).second + "</b>";
-            
-            if(lastWeekSitesList.get(0).second>1) {
+
+            if (lastWeekSitesList.get(0).second > 1) {
                 lastWeekTracker = lastWeekTracker + " " + getResources().getString(R.string.sites);
             } else {
                 lastWeekTracker = lastWeekTracker + " " + getResources().getString(R.string.site);
             }
 
             mTvLastWeekTracker.setText(BraveRewardsHelper.spannedFromHtmlString(lastWeekTracker));
-            mTvLastWeekTracker.setTextColor(ContextCompat.getColor(getActivity(), R.color.brave_stats_text_color));
+            mTvLastWeekTracker.setTextColor(
+                    ContextCompat.getColor(getActivity(), R.color.brave_stats_text_color));
         }
 
-        if(lastWeekStatsList.isEmpty()) {
-
+        if (lastWeekStatsList.isEmpty()) {
             mTvLastWeekWebsite.setText(getResources().getString(R.string.no_data_text));
 
         } else {
-
             String lastWeekWebsite = "<b>" + lastWeekStatsList.get(0).first + "</b> "
                     + getResources().getString(R.string.creepiest_website_data);
 
             lastWeekWebsite = lastWeekWebsite + " <b>" + lastWeekStatsList.get(0).second + "</b>";
 
-            if(lastWeekStatsList.get(0).second>1) {
-                lastWeekWebsite = lastWeekWebsite + " " + getResources().getString(R.string.creepiest_website_trackers_blocked);
+            if (lastWeekStatsList.get(0).second > 1) {
+                lastWeekWebsite = lastWeekWebsite + " "
+                        + getResources().getString(R.string.creepiest_website_trackers_blocked);
             } else {
-                lastWeekWebsite = lastWeekWebsite + " " + getResources().getString(R.string.creepiest_website_tracker_blocked);
+                lastWeekWebsite = lastWeekWebsite + " "
+                        + getResources().getString(R.string.creepiest_website_tracker_blocked);
             }
 
             mTvLastWeekWebsite.setText(BraveRewardsHelper.spannedFromHtmlString(lastWeekWebsite));
-            mTvLastWeekWebsite.setTextColor(ContextCompat.getColor(getActivity(), R.color.brave_stats_text_color));
+            mTvLastWeekWebsite.setTextColor(
+                    ContextCompat.getColor(getActivity(), R.color.brave_stats_text_color));
         }
 
-        if(mAllSitesList.isEmpty()) {
-
+        if (mAllSitesList.isEmpty()) {
             mTvAllTimeTracker.setText(getResources().getString(R.string.no_data_text));
 
         } else {
-            
-            String allTimeTracker = mAllSitesList.get(0).first + "\n" + getResources().getQuantityString(
-                    R.plurals.site_count, mAllSitesList.get(0).second,
-                    mAllSitesList.get(0).second);
+            String allTimeTracker = mAllSitesList.get(0).first + "\n"
+                    + getResources().getQuantityString(R.plurals.site_count,
+                            mAllSitesList.get(0).second, mAllSitesList.get(0).second);
             mTvAllTimeTracker.setText(allTimeTracker);
-            mTvAllTimeTracker.setTextColor(ContextCompat.getColor(getActivity(), R.color.brave_stats_text_color));
+            mTvAllTimeTracker.setTextColor(
+                    ContextCompat.getColor(getActivity(), R.color.brave_stats_text_color));
         }
 
-        if(mAllStatsList.isEmpty()) {
-
+        if (mAllStatsList.isEmpty()) {
             mTvAllTimeWebsite.setText(getResources().getString(R.string.no_data_text));
 
         } else {
-
-            String allTimeWebsite = mAllStatsList.get(0).first + "\n" + getResources().getQuantityString(
-                    R.plurals.tracker_count, mAllStatsList.get(0).second,
-                    mAllStatsList.get(0).second);
+            String allTimeWebsite = mAllStatsList.get(0).first + "\n"
+                    + getResources().getQuantityString(R.plurals.tracker_count,
+                            mAllStatsList.get(0).second, mAllStatsList.get(0).second);
             mTvAllTimeWebsite.setText(allTimeWebsite);
-            mTvAllTimeWebsite.setTextColor(ContextCompat.getColor(getActivity(), R.color.brave_stats_text_color));
+            mTvAllTimeWebsite.setTextColor(
+                    ContextCompat.getColor(getActivity(), R.color.brave_stats_text_color));
         }
 
-        if(mAllStatsList.isEmpty() && mAllSitesList.isEmpty()) {
+        if (mAllStatsList.isEmpty() && mAllSitesList.isEmpty()) {
             mTvEmpty.setVisibility(View.VISIBLE);
         } else {
             mBtnAllTime.setVisibility(View.VISIBLE);
         }
 
-        if(!OnboardingPrefManager.getInstance().isBraveStatsNotificationShown() && !OnboardingPrefManager.getInstance().isBraveStatsNotificationEnabled()) {
+        if (!OnboardingPrefManager.getInstance().isBraveStatsNotificationShown()
+                && !OnboardingPrefManager.getInstance().isBraveStatsNotificationEnabled()) {
             mLayoutNotification.setVisibility(View.VISIBLE);
         }
     }

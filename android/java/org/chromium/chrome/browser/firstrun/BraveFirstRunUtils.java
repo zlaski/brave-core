@@ -8,8 +8,7 @@
 package org.chromium.chrome.browser.firstrun;
 
 public class BraveFirstRunUtils {
-
-	public static void firstRunFlowComplete() {
+    public static void firstRunFlowComplete() {
         FirstRunStatus.setFirstRunFlowComplete(true);
     }
 }

@@ -13,6 +13,18 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp">
 
+    <ImageView 
+        android:id="@+id/iv_site"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_site"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@null"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/tv_site"
         android:layout_width="0dp"
@@ -20,10 +32,10 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_blocked_by"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_site"
+        app:layout_constraintEnd_toStartOf="@id/tv_stats_count"
         android:textSize="16sp"
-        android:textColor="@color/brave_stats_text_color"
-        android:text="@string/welcome_to_brave"/>
+        android:textColor="@color/brave_stats_text_color"/>
 
     <TextView
         android:id="@+id/tv_blocked_by"
@@ -31,7 +43,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tv_site"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_site"
         android:textSize="12sp"
         android:textColor="@color/brave_stats_title_color"
         android:text="@string/blocked_by"

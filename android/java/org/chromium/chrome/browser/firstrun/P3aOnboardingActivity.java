@@ -78,7 +78,7 @@ public class P3aOnboardingActivity extends FirstRunActivityBase {
                     BraveActivity.getBraveActivity().showOnboardingV2(false);
                 }
                 // OnboardingPrefManager.getInstance().setP3aOnboardingShown(true);
-                //OnboardingPrefManager.getInstance().setShowDefaultBrowserModalAfterP3A(true);
+                // OnboardingPrefManager.getInstance().setShowDefaultBrowserModalAfterP3A(true);
                 accept();
             }
         });

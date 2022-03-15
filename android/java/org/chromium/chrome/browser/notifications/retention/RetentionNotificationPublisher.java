@@ -54,9 +54,9 @@ public class RetentionNotificationPublisher extends BroadcastReceiver {
                     // braveActivity.checkForBraveStats();
                     break;
                 case RetentionNotificationUtil.DAY_6:
-                /*case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:
-                case RetentionNotificationUtil.BRAVE_STATS_DATA:
-                case RetentionNotificationUtil.BRAVE_STATS_TIME:*/
+                    /*case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:
+                    case RetentionNotificationUtil.BRAVE_STATS_DATA:
+                    case RetentionNotificationUtil.BRAVE_STATS_TIME:*/
                     if (braveActivity.getActivityTab() != null
                             && braveActivity.getActivityTab().getUrl().getSpec() != null
                             && !UrlUtilities.isNTPUrl(
@@ -102,9 +102,9 @@ public class RetentionNotificationPublisher extends BroadcastReceiver {
             case RetentionNotificationUtil.HOUR_3:
             case RetentionNotificationUtil.HOUR_24:
             case RetentionNotificationUtil.DAY_6:
-            /*case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:
-            case RetentionNotificationUtil.BRAVE_STATS_DATA:
-            case RetentionNotificationUtil.BRAVE_STATS_TIME:*/
+                /*case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:
+                case RetentionNotificationUtil.BRAVE_STATS_DATA:
+                case RetentionNotificationUtil.BRAVE_STATS_TIME:*/
                 createNotification(context, intent);
                 break;
             case RetentionNotificationUtil.DEFAULT_BROWSER_1:

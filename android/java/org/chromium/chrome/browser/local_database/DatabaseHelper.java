@@ -290,7 +290,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Pair<String, Integer>> braveStats = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  " + BraveStatsTable.COLUMN_STAT_SITE_DOMAIN
-                + ", COUNT(*) as site_count FROM " + BraveStatsTable.TABLE_NAME + " WHERE " 
+                + ", COUNT(*) as site_count FROM " + BraveStatsTable.TABLE_NAME + " WHERE "
                 + BraveStatsTable.COLUMN_STAT_TYPE + "= 'shieldsAds' "
                 + " AND " + BraveStatsTable.COLUMN_TIMESTAMP + " GROUP BY "
                 + BraveStatsTable.COLUMN_STAT_SITE_DOMAIN + " ORDER BY site_count DESC";
