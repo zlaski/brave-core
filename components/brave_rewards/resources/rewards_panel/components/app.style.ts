@@ -8,7 +8,7 @@ export const root = styled.div`
   width: 410px;
   background: #fafcff;
   padding: 13px;
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
 
   .brave-theme-dark & {
     background: #17171f;

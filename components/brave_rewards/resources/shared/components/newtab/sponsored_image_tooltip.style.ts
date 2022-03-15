@@ -9,11 +9,7 @@ import { buttonReset } from '../../lib/css_mixins'
 
 export const root = styled.div`
   ${tooltipMixin}
-  font-family: var(--brave-font-heading);
-
-  button {
-    font-family: var(--brave-font-heading);
-  }
+  font-family: var(--brave-font-default);
 
   a {
     color: inherit;

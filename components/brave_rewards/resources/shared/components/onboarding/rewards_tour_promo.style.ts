@@ -15,7 +15,7 @@ export const root = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 12px;
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   color: var(--brave-palette-white);
   padding: 28px 16px 18px;
 `

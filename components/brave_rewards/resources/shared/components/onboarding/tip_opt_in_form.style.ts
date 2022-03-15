@@ -9,7 +9,7 @@ export const root = styled.div`
   display: flex;
   flex-direction: column;
   background: var(--brave-palette-white);
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   text-align: center;
 `
 

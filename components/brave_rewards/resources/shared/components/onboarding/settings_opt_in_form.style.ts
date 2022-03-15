@@ -15,7 +15,7 @@ export const root = styled.div`
   background-position: 0 0;
   background-size: auto 220px;
   border-radius: 4px;
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   text-align: center;
   padding: 90px 0;
 

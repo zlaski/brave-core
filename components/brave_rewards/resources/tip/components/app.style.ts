@@ -7,7 +7,7 @@ import styled from 'styled-components'
 export const root = styled.div`
   display: flex;
   flex-flow: row wrap;
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   font-size: 14px;
   line-height: 22px;
 

@@ -11,7 +11,6 @@ export const root = styled.div`
   box-shadow: 0px 0px 16px rgba(99, 105, 110, 0.18);
   border-radius: 16px;
   padding: 9px 18px 20px;
-  font-family: var(--brave-font-heading);
 
   strong {
     font-weight: 600;

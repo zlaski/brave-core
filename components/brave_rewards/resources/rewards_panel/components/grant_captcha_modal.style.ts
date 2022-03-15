@@ -13,6 +13,7 @@ export const root = styled.div`
   border-radius: 16px;
   box-shadow: 0px 0px 16px rgba(99, 105, 110, 0.2);
   text-align: center;
+  font-family: var(--brave-font-default);
   font-size: 14px;
   line-height: 18px;
 `

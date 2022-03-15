@@ -8,7 +8,7 @@ import bitflyerVerificationBg from '../assets/bitflyer_verification_bg.png'
 
 export const root = styled.div`
   background: linear-gradient(125.83deg, #392DD1 0%, #22B8CF 99.09%);
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   height: 338px;
   overflow: hidden;
   margin-bottom: 12px;

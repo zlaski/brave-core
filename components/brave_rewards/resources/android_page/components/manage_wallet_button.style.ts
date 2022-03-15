@@ -12,7 +12,6 @@ export const root = styled.div`
   button {
     ${buttonReset}
     width: 100%;
-    font-family: var(--brave-font-heading);
     font-weight: 600;
     font-size: 13px;
     line-height: 20px;

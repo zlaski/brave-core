@@ -8,7 +8,7 @@ export const frameBox = styled.div`
   iframe {
     width: 323px;
     height: 275px;
-    font-family: var(--brave-font-heading);
+    font-family: var(--brave-font-default);
     background: var(--brave-palette-white);
     border: 0;
     margin-right: 4px;
@@ -18,7 +18,7 @@ export const frameBox = styled.div`
 export const root = styled.div`
   width: 332px;
   padding: 30px 16px 30px 25px;
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   background: var(--brave-palette-white);
   color: var(--brave-palette-neutral900);
 `

@@ -10,7 +10,7 @@ export const root = styled.div`
   flex: 0 0 auto;
   width: 335px;
   padding: 17px;
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   text-align: center;
   background-color: var(--brave-palette-white);
   background-image: url(${modalBackground});

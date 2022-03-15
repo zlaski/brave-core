@@ -12,12 +12,8 @@ export const root = styled.div`
   backdrop-filter: blur(27.1828px);
   border-radius: 6px;
   color: var(--brave-palette-white);
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   padding: 8px 20px 14px;
-
-  button {
-    font-family: var(--brave-font-heading);
-  }
 `
 
 export const cardHeader = styled.div`
@@ -26,7 +22,6 @@ export const cardHeader = styled.div`
   font-size: 18px;
   line-height: 22px;
   color: var(--brave-palette-white);
-  font-family: var(--brave-font-heading);
   display: flex;
   align-items: center;
   gap: 8px;

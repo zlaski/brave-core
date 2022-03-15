@@ -8,7 +8,7 @@ import warningCircleImage from '../../shared/assets/warning_circle.svg'
 import greenCheckIcon from '../assets/green_check.svg'
 
 export const root = styled.div`
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   width: 880px;
   min-height: 545px;
   background: var(--brave-palette-white);

@@ -13,7 +13,7 @@ import redeemImage from './assets/tour_redeem.svg'
 import completedImage from './assets/tour_completed.svg'
 
 export const root = styled.div`
-  font-family: var(--brave-font-heading);
+  font-family: var(--brave-font-default);
   min-height: 388px;
   text-align: center;
   display: grid;
