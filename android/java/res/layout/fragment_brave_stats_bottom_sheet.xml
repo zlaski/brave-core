@@ -148,7 +148,7 @@
                 android:background="@drawable/brave_stats_empty_text_bg"
                 android:visibility="gone"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:id="@+id/layout_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -158,60 +158,61 @@
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
                 android:background="@drawable/brave_stats_notification_bg"
+                android:orientation="vertical"
                 android:visibility="gone">
-
+            
                 <ImageView
                     android:id="@+id/iv_notification_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@null"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_gravity="end"
                     app:tint="@color/brave_stats_notification_close"
                     android:src="@drawable/btn_close"/>
 
-                <androidx.constraintlayout.helper.widget.Flow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:flow_horizontalAlign="start"
-                    app:flow_verticalGap="12dp"
-                    app:flow_wrapMode="aligned"
-                    app:layout_constraintTop_toBottomOf="@id/iv_notification_close"
-                    app:constraint_referenced_ids="tv_notification,btn_notification" />
+                    <LinearLayout
+                        android:id="@+id/layout_notification_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="12dp"
-                    app:drawableStartCompat="@drawable/ic_brave_privacy_hub"
-                    android:textSize="16sp"
-                    android:text="@string/get_weekly_updates_new"
-                    android:textColor="@color/brave_stats_empty_text_color_new"/>
+                        <TextView
+                            android:id="@+id/tv_notification"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:drawablePadding="12dp"
+                            app:drawableStartCompat="@drawable/ic_brave_privacy_hub"
+                            android:textSize="16sp"
+                            android:text="@string/get_weekly_updates_new"
+                            android:textColor="@color/brave_stats_empty_text_color_new"/>
 
-                <Button
-                    android:id="@+id/btn_notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center"
-                    android:background="@drawable/white_48_rounded_bg"
-                    app:backgroundTint="@null"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:text="@string/turn_on_notifications"
-                    android:textSize="16sp"
-                    app:icon="@drawable/ic_stats_notification"
-                    app:iconGravity="textStart"
-                    app:iconTint="@android:color/white"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp"
-                    android:paddingStart="50dp"
-                    android:paddingEnd="50dp"
-                    android:minHeight="0dp"
-                    style="?android:attr/borderlessButtonStyle"/>
+                        <Button
+                            android:id="@+id/btn_notification"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginTop="12dp"
+                            android:gravity="center"
+                            android:background="@drawable/white_48_rounded_bg"
+                            app:backgroundTint="@null"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white"
+                            android:text="@string/turn_on_notifications"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_stats_notification"
+                            app:iconGravity="textStart"
+                            app:iconTint="@android:color/white"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:paddingStart="50dp"
+                            android:paddingEnd="50dp"
+                            android:minHeight="0dp"
+                            style="?android:attr/borderlessButtonStyle"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"

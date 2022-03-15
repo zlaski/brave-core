@@ -50,7 +50,8 @@ public class OnboardingPrefManager {
             "show_default_browser_modal_after_p3a";
     public static final String PREF_BRAVE_STATS = "brave_stats";
     public static final String PREF_BRAVE_STATS_NOTIFICATION = "brave_stats_notification";
-    public static final String PREF_BRAVE_STATS_NOTIFICATION_SHOWN = "brave_stats_notification_shown";
+    public static final String PREF_BRAVE_STATS_NOTIFICATION_SHOWN =
+            "brave_stats_notification_shown";
     public static final String ONBOARDING_TYPE = "onboarding_type";
     public static final String FROM_NOTIFICATION = "from_notification";
     public static final String FROM_STATS = "from_stats";
@@ -163,9 +164,9 @@ public class OnboardingPrefManager {
         sharedPreferencesEditor.apply();
     }
 
-/*    public long getPrefNextOnboardingDate() {
-        return mSharedPreferences.getLong(PREF_NEXT_ONBOARDING_DATE, 0);
-    }*/
+    /*    public long getPrefNextOnboardingDate() {
+            return mSharedPreferences.getLong(PREF_NEXT_ONBOARDING_DATE, 0);
+        }*/
 
     public void setOnboardingNotificationShown(boolean isShown) {
         isOnboardingNotificationShown = isShown;
@@ -204,10 +205,11 @@ public class OnboardingPrefManager {
     public boolean showOnboardingForSkip(Context context) {
         boolean shouldShow = PackageUtils.isFirstInstall(context)
                              && !hasOnboardingShownForSkip()
-                             && !BraveAdsNativeHelper.nativeIsBraveAdsEnabled(Profile.getLastUsedRegularProfile())
+                             &&
+    !BraveAdsNativeHelper.nativeIsBraveAdsEnabled(Profile.getLastUsedRegularProfile())
                              && ChromeFeatureList.isEnabled(BraveFeatureList.BRAVE_REWARDS)
-                             && (getNextOnboardingDate() > 0 && System.currentTimeMillis() > getNextOnboardingDate());
-        return shouldShow;
+                             && (getNextOnboardingDate() > 0 && System.currentTimeMillis() >
+    getNextOnboardingDate()); return shouldShow;
     }*/
 
     public boolean isAdsAvailable() {
@@ -338,8 +340,8 @@ public class OnboardingPrefManager {
 
     public void setAdsTrackersNotificationStarted(boolean isAdsTrackersNotificationStarted) {
         SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putBoolean(ADS_TRACKERS_NOTIFICATION, isAdsTrackersNotificationStarted);
-        sharedPreferencesEditor.apply();
+        sharedPreferencesEditor.putBoolean(ADS_TRACKERS_NOTIFICATION,
+    isAdsTrackersNotificationStarted); sharedPreferencesEditor.apply();
     }
 
     public boolean isDataSavedNotificationStarted() {

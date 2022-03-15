@@ -842,9 +842,9 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
                 // checkForBraveStats();
                 break;
             case RetentionNotificationUtil.DAY_6:
-            /*case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:
-            case RetentionNotificationUtil.BRAVE_STATS_DATA:
-            case RetentionNotificationUtil.BRAVE_STATS_TIME:*/
+                /*case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:
+                case RetentionNotificationUtil.BRAVE_STATS_DATA:
+                case RetentionNotificationUtil.BRAVE_STATS_TIME:*/
                 if (getActivityTab() != null && getActivityTab().getUrl().getSpec() != null
                         && !UrlUtilities.isNTPUrl(getActivityTab().getUrl().getSpec())) {
                     getTabCreator(false).launchUrl(

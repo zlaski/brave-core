@@ -17,31 +17,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.chromium.chrome.R;
 
 public class BraveStatsDividerItemDecoration extends RecyclerView.ItemDecoration {
-	
-	private final Drawable mDivider;
+    private final Drawable mDivider;
 
-	public BraveStatsDividerItemDecoration(Context context) {
+    public BraveStatsDividerItemDecoration(Context context) {
+        mDivider = ResourcesCompat.getDrawable(
+                context.getResources(), R.drawable.item_stats_all_time_divider, null);
+    }
 
-		mDivider = ResourcesCompat.getDrawable(context.getResources(), R.drawable.item_stats_all_time_divider, null);
-	}
+    @Override
+    public void onDrawOver(
+            @NonNull Canvas canvas, RecyclerView parent, @NonNull RecyclerView.State state) {
+        int left = parent.getPaddingLeft();
+        int right = parent.getWidth() - parent.getPaddingRight();
 
-	@Override
-	public void onDrawOver(@NonNull Canvas canvas, RecyclerView parent, @NonNull RecyclerView.State state) {
-		
-		int left = parent.getPaddingLeft();
-		int right = parent.getWidth() - parent.getPaddingRight();
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = parent.getChildAt(i);
 
-		int childCount = parent.getChildCount();
-		for(int i=0; i<childCount; i++) {
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+            int top = child.getBottom() + params.bottomMargin;
+            int bottom = top + mDivider.getIntrinsicHeight();
 
-			View child = parent.getChildAt(i);
-
-			RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-			int top = child.getBottom() + params.bottomMargin;
-			int bottom = top + mDivider.getIntrinsicHeight();
-
-			mDivider.setBounds(left, top, right, bottom);
-			mDivider.draw(canvas);
-		}
-	}
+            mDivider.setBounds(left, top, right, bottom);
+            mDivider.draw(canvas);
+        }
+    }
 }
