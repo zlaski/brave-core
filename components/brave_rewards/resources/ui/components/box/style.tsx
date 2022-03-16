@@ -48,7 +48,6 @@ export const StyledContentWrapper = styled('div')<StyleProps>`
 
 export const StyledTitle = styled('div')<StyleProps>`
   display: flex;
-  font-family: ${p => p.theme.fontFamily.heading};
   font-size: 20px;
   font-weight: 600;
   color: ${p => p.type && colors[p.type] || '#4b4c5c'};
@@ -117,7 +116,6 @@ export const StyledSettingsToggleContainer = styled('div')<{}>`
 export const StyledSettingsText = styled('div')<{}>`
   font-size: 20px;
   font-weight: 600;
-  font-family: ${p => p.theme.fontFamily.heading};
   color: ${p => p.theme.color.text};
   display: flex;
   align-items: center;

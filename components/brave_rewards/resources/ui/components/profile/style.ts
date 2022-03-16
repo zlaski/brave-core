@@ -60,7 +60,6 @@ export const StyledWrapper = styled('div')<{}>`
   position: relative;
   display: flex;
   align-items: center;
-  font-family: ${p => p.theme.fontFamily.body};
 `
 
 export const StyledImageWrapper = styled('div')<Partial<Props>>`

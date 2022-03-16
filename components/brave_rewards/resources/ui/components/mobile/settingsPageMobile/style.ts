@@ -9,7 +9,6 @@ export const StyledWrapper = styled('div')<{}>`
   min-height: 100vh;
   width: 100%;
   padding-top: 35px;
-  font-family: ${p => p.theme.fontFamily.body};
 `
 
 export const StyledContent = styled('div')<{}>`

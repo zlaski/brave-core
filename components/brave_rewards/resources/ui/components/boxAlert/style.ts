@@ -31,7 +31,6 @@ export const StyledAlertIcon = styled('div')<{}>`
 
 export const StyledInfo = styled('div')<StyleProps>`
   font-size: 16px;
-  font-family: ${p => p.theme.fontFamily.body};
   color: ${p => p.theme.color.text};
   display: flex;
   align-items: center;

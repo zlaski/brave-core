@@ -7,7 +7,6 @@ import styled from 'styled-components'
 export const StyledDateTH = styled('th')<{}>`
   text-transform: uppercase;
   text-align: left;
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 12px;
   font-weight: 500;
   border-bottom: 2px solid ${p => p.theme.color.separatorLine};
@@ -20,7 +19,6 @@ export const StyledDateTH = styled('th')<{}>`
 export const StyledAdTH = styled('th')<{}>`
   text-transform: uppercase;
   text-align: left;
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 12px;
   font-weight: 500;
   border-bottom: 2px solid ${p => p.theme.color.separatorLine};
@@ -33,7 +31,6 @@ export const StyledAdTH = styled('th')<{}>`
 export const StyledCategoryTH = styled('th')<{}>`
   text-transform: uppercase;
   text-align: left;
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 12px;
   font-weight: 500;
   border-bottom: 2px solid ${p => p.theme.color.separatorLine};
@@ -103,7 +100,6 @@ export const StyledAdInfo = styled('div')<{}>`
 `
 
 export const StyledAdBrand = styled('div')<{}>`
-  font-family: ${p => p.theme.fontFamily.heading};
   font-weight: 600;
   padding-bottom: 2px;
 `

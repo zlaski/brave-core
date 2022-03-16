@@ -14,7 +14,6 @@ export const MainPanel = styled.div<{ showBackground?: boolean }>`
   max-width: 548px;
   background: ${p => p.theme.color.panelBackground};
   font-weight: normal;
-  font-family: ${p => p.theme.fontFamily.heading};
   font-size: 14px;
   color: ${p => p.theme.palette.black};
 
@@ -38,7 +37,6 @@ export const TopBar = styled.div`
 export const TitleContainer = styled.div`
   color: ${p => p.theme.palette.grey600};
   font-weight: 500;
-  font-family: ${p => p.theme.fontFamily.heading};
   font-size: 12px;
   text-transform: uppercase;
   flex-grow: 1;

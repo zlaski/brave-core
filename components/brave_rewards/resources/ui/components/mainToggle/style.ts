@@ -25,7 +25,6 @@ export const ToggleHeading = styled('div')<{}>`
 export const StyledTitle = styled('div')<{}>`
   font-size: 28px;
   font-weight: 600;
-  font-family: ${p => p.theme.fontFamily.heading};
 `
 
 export const StyledLogotypeWrapper = styled('div')`

@@ -28,6 +28,5 @@ export const Header = styled.h2`
 
 export const Text = styled.p`
   margin-top: 12px;
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 16px;
 `

@@ -10,13 +10,11 @@ interface TabProps {
 }
 
 export const StyledWrapper = styled('div')<{}>`
-  font-family: ${p => p.theme.fontFamily.body};
 `
 
 export const StyledTitle = styled('div')<{}>`
   font-weight: 600;
   color: #1B1D2F;
-  font-family: ${p => p.theme.fontFamily.heading};
   font-size: 16px;
   line-height: 2;
 `

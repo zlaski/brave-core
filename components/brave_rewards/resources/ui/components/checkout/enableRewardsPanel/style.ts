@@ -36,7 +36,6 @@ export const EnableRewardsButton = styled(Button as ComponentType<ButtonProps>)`
 `
 
 export const TermsOfService = styled.div`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 13px;
   line-height: 16px;
   max-width: 282px;

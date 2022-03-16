@@ -8,7 +8,6 @@ import { LoaderIcon } from 'brave-ui/components/icons'
 export const Container = styled.div`
   text-align: center;
   padding: 60px 0 50px 0;
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 15px;
 `
 

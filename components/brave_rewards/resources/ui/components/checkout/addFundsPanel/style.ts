@@ -9,7 +9,6 @@ import { ComponentType } from 'react'
 
 export const Subtitle = styled.div`
   text-align: center;
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 15px;
   margin: -10px 0 22px 0;
 `
@@ -94,7 +93,6 @@ export const AmountOptionButton = styled(Button as ComponentType<AmountOptionBut
 `
 
 export const AmountOptionExchange = styled.div`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 11px;
   color: ${p => p.theme.palette.grey600};
 `
@@ -119,7 +117,6 @@ export const ChargeSummaryTotalAmount = styled.div`
 `
 
 export const TermsOfSale = styled.div`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 12px;
   text-align: center;
   padding-top: 20px;

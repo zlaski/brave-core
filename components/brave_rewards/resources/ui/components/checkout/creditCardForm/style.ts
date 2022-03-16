@@ -35,7 +35,6 @@ export const InputBox = styled.span<{ invalid?: boolean }>`
     vertical-align: middle;
     outline: unset;
     font-size: 14px;
-    font-family: ${p => p.theme.fontFamily.body};
     width: 100%;
     border: none;
   }

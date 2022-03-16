@@ -63,7 +63,6 @@ export const ExchangeAmount = styled.span`
 `
 
 export const LastUpdated = styled.div`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 12px;
   color: ${p => p.theme.palette.grey500};
   padding-top: 7px;
@@ -72,14 +71,12 @@ export const LastUpdated = styled.div`
 `
 
 export const NotEnoughFunds = styled.div`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 14px;
   color: ${p => p.theme.palette.grey600};
   padding: 2px 0 0 5px;
 `
 
 export const TermsOfSale = styled.div`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 12px;
   text-align: center;
 

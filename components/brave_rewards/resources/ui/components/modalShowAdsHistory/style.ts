@@ -6,7 +6,6 @@
 import styled from 'styled-components'
 
 export const StyledWrapper = styled('div')<{}>`
-  font-family: ${p => p.theme.fontFamily.heading};
   padding-top: 10px;
   white-space: nowrap;
 `

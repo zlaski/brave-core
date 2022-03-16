@@ -59,7 +59,6 @@ export const StyledWrapper = styled('div')<Props>`
   align-items: center;
   flex-wrap: nowrap;
   padding: 15px 38px 15px 19px;
-  font-family: ${p => p.theme.fontFamily.body};
   width: 100%;
   ${getBgColor};
   background: var(--alert-wrapper-color);
@@ -75,7 +74,6 @@ export const StyledContent = styled('div')<Props>`
   flex-grow: 1;
   flex-basis: 50%;
   padding-left: 19px;
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 16px;
   font-weight: 300;
   letter-spacing: -0.3px;

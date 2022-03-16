@@ -8,7 +8,6 @@ export const StyledWrapper = styled('div')<{}>`
   background: #f2f4f7;
   min-height: 100vh;
   min-width: 1024px;
-  font-family: ${p => p.theme.fontFamily.body};
 `
 
 export const StyledContent = styled('div')<{}>`

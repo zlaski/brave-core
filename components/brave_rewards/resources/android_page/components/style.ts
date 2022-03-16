@@ -48,7 +48,6 @@ export const StyledSitesLink = styled('a')<{}>`
 export const StyledText = styled('p')<{}>`
   color: #838391;
   font-size: 14px;
-  font-family: ${p => p.theme.fontFamily.body};
   font-weight: 300;
   letter-spacing: 0;
   line-height: 28px;

@@ -5,7 +5,6 @@
 import styled from 'styled-components'
 
 export const StyledDateText = styled('div')<{}>`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 14px;
   color: ${p => p.theme.color.text};
   display: inline-block;
@@ -47,7 +46,6 @@ export const StyledCaratIcon = styled('div')<{}>`
 `
 
 export const StyledAdPortionTD = styled('td')<{}>`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 14px;
   font-weight: 500;
   color: ${p => p.theme.color.text};
@@ -57,7 +55,6 @@ export const StyledAdPortionTD = styled('td')<{}>`
 `
 
 export const StyledInnerStartTD = styled('td')<{}>`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 14px;
   font-weight: 500;
   color: ${p => p.theme.color.text};

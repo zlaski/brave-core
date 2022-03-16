@@ -49,7 +49,6 @@ export const ConfirmButton = styled(Button as ComponentType<ConfirmButtonProps>)
 `
 
 export const TermsOfSale = styled.div`
-  font-family: ${p => p.theme.fontFamily.body};
   font-size: 12px;
   text-align: center;
   padding-top: 12px;

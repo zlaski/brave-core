@@ -14,7 +14,6 @@ export const StyledWrapper = styled('div')<Partial<Props>>`
   align-items: baseline;
   align-content: flex-start;
   flex-wrap: nowrap;
-  font-family: ${p => p.theme.fontFamily.body};
 `
 
 export const StyledTitle = styled('div')<{}>`

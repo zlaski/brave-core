@@ -17,7 +17,6 @@ export const Box = styled.div`
 
 export const Header = styled.h2`
   font-weight: 500;
-  font-family: ${p => p.theme.fontFamily.heading};
   font-size: 14px;
   color: ${p => p.theme.palette.blurple600};
   margin: 0 0 5px 0;

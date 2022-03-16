@@ -65,7 +65,6 @@ export const Right = styled('div')<{}>`
 `
 
 export const Title = styled('div')<StyleProps>`
-  font-family: ${p => p.theme.fontFamily.heading};
   font-size: 18px;
   font-weight: 600;
   color: ${p => {

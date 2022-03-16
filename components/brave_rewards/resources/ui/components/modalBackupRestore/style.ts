@@ -76,7 +76,6 @@ export const StyledTitle = styled('span')<{}>`
   font-weight: normal;
   letter-spacing: 0;
   line-height: 40px;
-  font-family: ${p => p.theme.fontFamily.heading};
   text-transform: capitalize;
 `
 
