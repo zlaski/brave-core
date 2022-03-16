@@ -74,7 +74,6 @@ export const StyledClose = styled('button')<{}>`
 
 export const StyledText = styled('div')<{}>`
   width: 100%;
-  font-family: Muli, sans-serif;
   font-size: 16px;
   font-weight: 300;
   line-height: 1.63;

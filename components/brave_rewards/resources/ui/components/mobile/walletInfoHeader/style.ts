@@ -70,7 +70,6 @@ export const StyledBalanceTokens = styled('div')<{}>`
 `
 
 export const StyledBalanceConverted = styled('div')<{}>`
-  font-family: Muli, sans-serif;
   font-size: 12px;
   line-height: 1.17;
   text-align: center;
@@ -81,7 +80,6 @@ export const StyledBalanceConverted = styled('div')<{}>`
 export const StyledBalanceCurrency = styled('span')<{}>`
   text-transform: uppercase;
   opacity: 0.66;
-  font-family: Muli, sans-serif;
   font-size: 16px;
   line-height: 14px;
   color: #fff;

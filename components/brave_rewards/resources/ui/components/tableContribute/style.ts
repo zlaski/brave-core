@@ -5,7 +5,6 @@
 import styled from 'styled-components'
 
 export const StyledText = styled('div')<{}>`
-  font-family: Muli, sans-serif;
   font-size: 14px;
   text-align: right;
   color: #686978;
@@ -35,7 +34,6 @@ export const StyledToggleWrap = styled('div')<{}>`
 `
 
 export const StyledToggle = styled('button')<{}>`
-  font-family: Poppins, sans-serif;
   font-size: 13px;
   color: #4c54d2;
   text-transform: capitalize;

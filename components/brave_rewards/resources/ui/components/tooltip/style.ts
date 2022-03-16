@@ -31,7 +31,6 @@ export const StyledTooltip = styled('div')<StyleProps>`
 `
 export const StyledTooltipText = styled('div')<{}>`
   color: #FFFFFF;
-  font-family: Muli, sans-serif;
   font-weight: 300;
   font-size: 14px;
 `

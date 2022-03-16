@@ -12,7 +12,6 @@ interface StyleProps {
 
 export const StyledContent = styled('div')<{}>`
   font-size: 14px;
-  font-family: Muli, sans-serif;
   letter-spacing: 0;
   color: ${p => p.theme.color.text};
   line-height: 26px;
@@ -94,7 +93,6 @@ export const StyledText = styled('p')<{}>`
   font-size: 15px;
   letter-spacing: 0;
   line-height: 26px;
-  font-family: Muli, sans-serif;
   color: ${p => p.theme.color.text};
 `
 

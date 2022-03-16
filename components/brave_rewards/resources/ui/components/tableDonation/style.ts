@@ -5,7 +5,6 @@
 import styled from 'styled-components'
 
 export const StyledRemove = styled('button')<{}>`
-  font-family: Muli, sans-serif;
   font-size: 14px;
   line-height: 0;
   height: 20px;
@@ -27,14 +26,12 @@ export const StyledRemoveIcon = styled('span')<{}>`
 `
 
 export const StyledType = styled('div')<{}>`
-  font-family: Muli, sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #686978;
 `
 
 export const StyledDate = styled('div')<{}>`
-  font-family: Muli, sans-serif;
   font-size: 14px;
   line-height: 1;
   margin-top: 3px;
@@ -46,7 +43,6 @@ export const StyledTipDate = styled(StyledDate)`
 `
 
 export const StyledToggle = styled('button')<{}>`
-  font-family: Poppins, sans-serif;
   font-size: 13px;
   color: #4c54d2;
   padding: 0;

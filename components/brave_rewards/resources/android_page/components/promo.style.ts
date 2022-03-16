@@ -73,7 +73,6 @@ export const disclaimer = styled.span`
   font-size: 11px;
   font-weight: bold;
   color: var(--brave-palette-grey500)
-  font-family: Muli, sans-serif;
 `
 
 export const learnMoreButton = styled.div`

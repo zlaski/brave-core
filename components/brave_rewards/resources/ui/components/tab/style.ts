@@ -31,7 +31,6 @@ const getMargin = (index?: number, size?: number) => {
 
 export const RewardsTabWrapper = styled('div')<{}>`
   display: flex;
-  font-family: Poppins,sans-serif;
 `
 
 export const StyledSwitch = styled('div')<{}>`

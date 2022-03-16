@@ -21,7 +21,6 @@ export const StyledWrapper = styled('div')<StyleProps>`
 
 export const StyledInner = styled('div')<StyleProps>`
   padding: 25px 14px 14px;
-  font-family: Poppins, sans-serif;
 `
 export const StyledSummary = styled('div')<{}>`
   font-size: 14px;
