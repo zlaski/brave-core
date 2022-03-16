@@ -4,6 +4,10 @@
 
 import styled from 'styled-components'
 
+export const page = styled.div`
+  font-family: var(--brave-font-default);
+`
+
 export const TourPromoWrapper = styled('div')<{}>`
   margin-top: 30px;
 `

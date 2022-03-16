@@ -9,6 +9,9 @@ import { connect } from 'react-redux'
 // Components
 import SettingsPage from './settingsPage'
 
+// Style
+import * as style from './style'
+
 // Utils
 import * as rewardsActions from '../actions/rewards_actions'
 
@@ -34,9 +37,9 @@ export class App extends React.Component<Props> {
 
   render () {
     return (
-      <div id='rewardsPage'>
+      <style.page id='rewardsPage'>
         <SettingsPage />
-      </div>
+      </style.page>
     )
   }
 }
