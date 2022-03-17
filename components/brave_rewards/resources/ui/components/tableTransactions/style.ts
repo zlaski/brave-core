@@ -38,3 +38,9 @@ export const StyledType = styled('div')<StyleProps>`
   ${getColor};
   color: var(--tableTransactions-type-color);
 `
+
+export const TableWrapper = styled.div`
+  [class^='StyledTD'] {
+    font-family: var(--brave-font-default);
+  }
+`

@@ -23,6 +23,10 @@ export const PageWalletWrapper = styled.div`
 
 export const StyledListContent = styled('div')<{}>`
   padding: 0 25px;
+
+  [class^='StyledTD'] {
+    font-family: var(--brave-font-default);
+  }
 `
 
 export const StyledSitesNum = styled('div')<{}>`

@@ -4,45 +4,54 @@
 
 import styled from 'styled-components'
 
-export const StyledText = styled('div')<{}>`
+export const tableContribute = styled.div`
+  [class^='StyledTD'] {
+    font-family: var(--brave-font-default);
+  }
+`
+
+export const text = styled.div`
   font-size: 14px;
   text-align: right;
   color: #686978;
 `
 
-export const StyledRemove = styled('button')<{}>`
-  margin: 0 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-  color: #9E9FAB;
-  padding: 0;
+export const remove = styled.div`
+  button {
+    margin: 0 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    color: #9E9FAB;
+    padding: 0;
+  }
 `
 
-export const StyledTHOther = styled('div')<{}>`
+export const thOther = styled.div`
   text-align: right;
 `
 
-export const StyledTHLast = styled(StyledTHOther)`
+export const thLast = styled.div`
+  text-align: right;
   padding-right: 10px;
 `
 
-export const StyledToggleWrap = styled('div')<{}>`
+export const toggleWrap = styled.div`
   text-align: right;
+
+  button {
+    font-size: 13px;
+    color: #4c54d2;
+    text-transform: capitalize;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
 `
 
-export const StyledToggle = styled('button')<{}>`
-  font-size: 13px;
-  color: #4c54d2;
-  text-transform: capitalize;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-`
-
-export const StyledLink = styled('a')<{}>`
+export const link = styled.div`
   text-decoration: none;
 `

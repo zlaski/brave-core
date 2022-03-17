@@ -4,19 +4,27 @@
 
 import styled from 'styled-components'
 
-export const StyledRemove = styled('button')<{}>`
-  font-size: 14px;
-  line-height: 0;
-  height: 20px;
-  color: #9E9FAB;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-  display: inline-block;
+export const tableDonation = styled.div`
+  [class^='StyledTD'] {
+    font-family: var(--brave-font-default);
+  }
 `
 
-export const StyledRemoveIcon = styled('span')<{}>`
+export const remove = styled.span`
+  button {
+    font-size: 14px;
+    line-height: 0;
+    height: 20px;
+    color: #9E9FAB;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: inline-block;
+  }
+`
+
+export const removeIcon = styled.span`
   vertical-align: middle;
   color: #9E9FAB;
   width: 12px;
@@ -25,36 +33,39 @@ export const StyledRemoveIcon = styled('span')<{}>`
   margin-right: 4px;
 `
 
-export const StyledType = styled('div')<{}>`
+export const type = styled.div`
   font-size: 14px;
   font-weight: 600;
   color: #686978;
 `
 
-export const StyledDate = styled('div')<{}>`
+export const date = styled.div`
   font-size: 14px;
   line-height: 1;
   margin-top: 3px;
   color: #b8b9c4;
 `
 
-export const StyledTipDate = styled(StyledDate)`
+export const tipDate = styled.div`
+  font-size: 14px;
+  line-height: 1;
   margin-top: 0px;
+  color: #b8b9c4;
 `
 
-export const StyledToggle = styled('button')<{}>`
-  font-size: 13px;
-  color: #4c54d2;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-`
-
-export const StyledToggleWrap = styled('div')<{}>`
+export const toggleWrap = styled.div`
   text-align: right;
+
+  button {
+    font-size: 13px;
+    color: #4c54d2;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
 `
 
-export const StyledLink = styled('a')<{}>`
+export const link = styled.div`
   text-decoration: none;
 `

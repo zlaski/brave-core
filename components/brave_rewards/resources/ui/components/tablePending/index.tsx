@@ -3,16 +3,14 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react'
-import {
-  StyledRemove,
-  StyledRemoveIcon,
-  StyledLink
-} from './style'
+
 import Table, { Cell, Row } from 'brave-ui/components/dataTables/table/index'
 import Profile, { Provider } from '../profile/index'
 import Tokens from '../tokens/index'
 import { getLocale } from 'brave-ui/helpers'
 import { TrashOIcon } from 'brave-ui/components/icons'
+
+import * as style from './style'
 
 interface ProfileCell {
   verified: boolean
@@ -52,14 +50,20 @@ export default class TableDonation extends React.PureComponent<Props, {}> {
         content: [
           {
             content: (
-              <StyledLink href={row.url} target={'_blank'}>
-                <Profile
-                  title={row.profile.name}
-                  provider={row.profile.provider}
-                  verified={row.profile.verified}
-                  src={row.profile.src}
-                />
-              </StyledLink>
+              <style.link>
+                <a
+                  href={row.url}
+                  target={'_blank'}
+                  rel='noopener noreferrer'
+                >
+                  <Profile
+                    title={row.profile.name}
+                    provider={row.profile.provider}
+                    verified={row.profile.verified}
+                    src={row.profile.src}
+                  />
+                </a>
+              </style.link>
             )
           },
           {
@@ -88,9 +92,11 @@ export default class TableDonation extends React.PureComponent<Props, {}> {
           },
           {
             content: (
-              <StyledRemove onClick={row.onRemove}>
-                <StyledRemoveIcon><TrashOIcon /></StyledRemoveIcon>
-              </StyledRemove>
+              <style.remove>
+                <button onClick={row.onRemove}>
+                  <style.removeIcon><TrashOIcon /></style.removeIcon>
+                </button>
+              </style.remove>
             )
           }
         ]
@@ -140,13 +146,13 @@ export default class TableDonation extends React.PureComponent<Props, {}> {
   render () {
     const { id, children, rows } = this.props
     return (
-      <div id={id}>
+      <style.tablePending id={id}>
         <Table
           children={children}
           rows={this.getRows(rows)}
           header={this.headers}
         />
-      </div>
+      </style.tablePending>
     )
   }
 }

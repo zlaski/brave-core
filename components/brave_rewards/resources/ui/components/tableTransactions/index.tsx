@@ -5,7 +5,8 @@
 import * as React from 'react'
 import {
   StyledTHLast,
-  StyledProvider
+  StyledProvider,
+  TableWrapper
 } from './style'
 import Table, { Row } from 'brave-ui/components/dataTables/table/index'
 import { getLocale } from 'brave-ui/helpers'
@@ -103,13 +104,13 @@ export default class TableTransactions extends React.PureComponent<Props, {}> {
     const { id, children, rows } = this.props
 
     return (
-      <div id={id}>
+      <TableWrapper id={id}>
         <Table
           header={this.getHeader()}
           children={children}
           rows={this.getRows(rows)}
         />
-      </div>
+      </TableWrapper>
     )
   }
 }

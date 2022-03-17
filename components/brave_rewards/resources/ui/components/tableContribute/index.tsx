@@ -3,20 +3,14 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react'
-import {
-  StyledText,
-  StyledRemove,
-  StyledToggle,
-  StyledTHOther,
-  StyledTHLast,
-  StyledToggleWrap,
-  StyledLink
-} from './style'
+
 import Table, { Row } from 'brave-ui/components/dataTables/table'
 import Profile, { Provider } from '../profile'
 import { getLocale } from 'brave-ui/helpers'
 import { Tokens, Tooltip } from '../'
 import { CloseStrokeIcon, TrashOIcon } from 'brave-ui/components/icons'
+
+import * as style from './style'
 
 interface ProfileCell {
   verified: boolean
@@ -76,8 +70,8 @@ export default class TableContribute extends React.PureComponent<Props, {}> {
         content: i === 0
           ? <div>{item}</div>
           : i === header.length - 1
-            ? <StyledTHLast>{item}</StyledTHLast>
-            : <StyledTHOther>{item}</StyledTHOther>,
+            ? <style.thLast>{item}</style.thLast>
+            : <style.thOther>{item}</style.thOther>,
         customStyle
       }
     })
@@ -95,15 +89,21 @@ export default class TableContribute extends React.PureComponent<Props, {}> {
         content: [
           {
             content: (
-              <StyledLink href={row.url} target={'_blank'} data-test-id={'ac_link_' + row.profile.name}>
-                <Profile
-                  title={row.profile.name}
-                  provider={row.profile.provider}
-                  verified={row.profile.verified}
-                  src={row.profile.src}
-                  tableCell={this.props.isMobile}
-                />
-              </StyledLink>
+              <style.link>
+                <a
+                  href={row.url}
+                  target={'_blank'}
+                  rel='noopener noreferrer'
+                  data-test-id={'ac_link_' + row.profile.name}>
+                  <Profile
+                    title={row.profile.name}
+                    provider={row.profile.provider}
+                    verified={row.profile.verified}
+                    src={row.profile.src}
+                    tableCell={this.props.isMobile}
+                  />
+                </a>
+              </style.link>
             )
           }
         ]
@@ -112,9 +112,9 @@ export default class TableContribute extends React.PureComponent<Props, {}> {
       if (!isExcluded) {
         cell.content.push({
           content: (
-            <StyledText>
+            <style.text>
               {row.attention}%
-            </StyledText>
+            </style.text>
           )
         })
       }
@@ -143,13 +143,15 @@ export default class TableContribute extends React.PureComponent<Props, {}> {
         cell.content.push({
           content: (
             <Tooltip content={actionTooltip}>
-              <StyledRemove onClick={row.onRemove}>
-                {
-                  isExcluded
-                  ? <CloseStrokeIcon />
-                  : <TrashOIcon />
-                }
-              </StyledRemove>
+              <style.remove>
+                <button onClick={row.onRemove}>
+                  {
+                    isExcluded
+                      ? <CloseStrokeIcon />
+                      : <TrashOIcon />
+                  }
+                </button>
+              </style.remove>
             </Tooltip>
           ),
           customStyle: {
@@ -190,7 +192,7 @@ export default class TableContribute extends React.PureComponent<Props, {}> {
     const numExcludedSites = this.props.numExcludedSites || 0
 
     return (
-      <div id={id} data-test-id={testId}>
+      <style.tableContribute id={id} data-test-id={testId}>
         <Table
           header={this.getHeader(header)}
           children={children}
@@ -198,12 +200,12 @@ export default class TableContribute extends React.PureComponent<Props, {}> {
         />
         {
           !allSites && (numSites > 0 || numExcludedSites > 0)
-            ? <StyledToggleWrap>
-              <StyledToggle onClick={onShowAll}>{getLocale('showAll')}</StyledToggle>
-            </StyledToggleWrap>
+            ? <style.toggleWrap>
+              <button onClick={onShowAll}>{getLocale('showAll')}</button>
+            </style.toggleWrap>
             : null
         }
-      </div>
+      </style.tableContribute>
     )
   }
 }

@@ -4,6 +4,12 @@
 
 import styled from 'styled-components'
 
-export const StyledLink = styled('a')<{}>`
+export const link = styled.div`
   text-decoration: none;
+`
+
+export const tableActivity = styled.div`
+  [class^='StyledTD'] {
+    font-family: var(--brave-font-default);
+  }
 `

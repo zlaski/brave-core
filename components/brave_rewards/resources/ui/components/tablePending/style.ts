@@ -5,16 +5,24 @@
 import styled from 'styled-components'
 import palette from 'brave-ui/theme/colors'
 
-export const StyledRemove = styled('button')<{}>`
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-  text-align: center;
-  width: 100%;
+export const tablePending = styled.div`
+  [class^='StyledTD'] {
+    font-family: var(--brave-font-default);
+  }
 `
 
-export const StyledRemoveIcon = styled('span')<{}>`
+export const remove = styled.div`
+  button {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+  }
+`
+
+export const removeIcon = styled.span`
   vertical-align: middle;
   color: ${palette.grey400};
   width: 20px;
@@ -22,6 +30,6 @@ export const StyledRemoveIcon = styled('span')<{}>`
   display: inline-block;
   margin-right: 4px;
 `
-export const StyledLink = styled('a')<{}>`
+export const link = styled.div`
   text-decoration: none;
 `

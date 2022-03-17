@@ -21,6 +21,8 @@ import * as rewardsActions from '../actions/rewards_actions'
 import * as utils from '../utils'
 import { DetailRow } from '../../ui/components/tableDonation'
 
+import * as style from './style'
+
 interface Props extends Rewards.ComponentProps {
 }
 
@@ -117,15 +119,17 @@ class MonthlyTipsBox extends React.Component<Props, State> {
           </NextContribution>
         </List>
 
-        <TableDonation
-          rows={topRows}
-          allItems={allSites}
-          numItems={numRows}
-          headerColor={true}
-          onShowAll={this.onModalToggle}
-        >
-          {getLocale('monthlyTipsEmpty')}
-        </TableDonation>
+        <style.tableDonation>
+          <TableDonation
+            rows={topRows}
+            allItems={allSites}
+            numItems={numRows}
+            headerColor={true}
+            onShowAll={this.onModalToggle}
+          >
+            {getLocale('monthlyTipsEmpty')}
+          </TableDonation>
+        </style.tableDonation>
       </Box>
     )
   }

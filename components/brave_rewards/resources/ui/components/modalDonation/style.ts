@@ -4,7 +4,10 @@
 
 import styled from 'styled-components'
 
-export const StyledWrapper = styled('div')<{}>`
+export const StyledWrapper = styled('div') <{}>`
+  [class^='StyledTD'] {
+    font-family: var(--brave-font-default);
+  }
 `
 
 export const StyledTitle = styled('div')<{}>`

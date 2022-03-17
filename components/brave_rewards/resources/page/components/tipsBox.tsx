@@ -18,6 +18,9 @@ import {
 import { NewTabLink } from '../../shared/components/new_tab_link'
 import { Provider } from '../../ui/components/profile'
 
+// Style
+import * as style from './style'
+
 // Utils
 import { getLocale } from '../../../../common/locale'
 import * as rewardsActions from '../actions/rewards_actions'
@@ -197,16 +200,18 @@ class TipBox extends React.Component<Props, State> {
         <List title={getLocale('donationTotalDonations')}>
           <Tokens id={'tip-box-total'} value={total.toFixed(3)} converted={converted} />
         </List>
-        <TableDonation
-          id={'tips-table'}
-          rows={topRows}
-          allItems={allSites}
-          numItems={numRows}
-          headerColor={true}
-          onShowAll={this.onModalToggle}
-        >
-          {getLocale('donationVisitSome')}
-        </TableDonation>
+        <style.tableDonation>
+          <TableDonation
+            id={'tips-table'}
+            rows={topRows}
+            allItems={allSites}
+            numItems={numRows}
+            headerColor={true}
+            onShowAll={this.onModalToggle}
+          >
+            {getLocale('donationVisitSome')}
+          </TableDonation>
+        </style.tableDonation>
       </Box>
     )
   }

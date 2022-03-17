@@ -3,21 +3,14 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react'
-import {
-  StyledType,
-  StyledDate,
-  StyledRemove,
-  StyledRemoveIcon,
-  StyledToggle,
-  StyledToggleWrap,
-  StyledLink,
-  StyledTipDate
-} from './style'
+
 import Table, { Cell, Row } from 'brave-ui/components/dataTables/table/index'
 import Profile, { Provider } from '../profile/index'
 import Tokens from '../tokens/index'
 import { getLocale } from 'brave-ui/helpers'
 import { TrashIcon } from 'brave-ui/components/icons'
+
+import * as style from './style'
 
 interface ProfileCell {
   verified: boolean
@@ -57,10 +50,12 @@ export default class TableDonation extends React.PureComponent<Props, {}> {
         return {
           content: (
             <>
-              <StyledType>{getLocale('recurring')}</StyledType>
-              <StyledRemove onClick={row.onRemove}>
-                <StyledRemoveIcon><TrashIcon /></StyledRemoveIcon>{getLocale('remove')}
-              </StyledRemove>
+              <style.type>{getLocale('recurring')}</style.type>
+              <style.remove>
+                <button onClick={row.onRemove}>
+                  <style.removeIcon><TrashIcon /></style.removeIcon>{getLocale('remove')}
+                </button>
+              </style.remove>
             </>
           )
         }
@@ -68,7 +63,7 @@ export default class TableDonation extends React.PureComponent<Props, {}> {
         return {
           content: (
             <>
-              <StyledTipDate>{row.text}</StyledTipDate>
+              <style.tipDate>{row.text}</style.tipDate>
             </>
           )
         }
@@ -76,8 +71,8 @@ export default class TableDonation extends React.PureComponent<Props, {}> {
         return {
           content: (
             <>
-              <StyledType>{getLocale('tipOnLike')}</StyledType>
-              <StyledDate>{row.text}</StyledDate>
+              <style.type>{getLocale('tipOnLike')}</style.type>
+              <style.date>{row.text}</style.date>
             </>
           )
         }
@@ -94,14 +89,20 @@ export default class TableDonation extends React.PureComponent<Props, {}> {
         content: [
           {
             content: (
-              <StyledLink href={row.url} target={'_blank'}>
-                <Profile
-                  title={row.profile.name}
-                  provider={row.profile.provider}
-                  verified={row.profile.verified}
-                  src={row.profile.src}
-                />
-              </StyledLink>
+              <style.link>
+                <a
+                  href={row.url}
+                  target={'_blank'}
+                  rel='noopener noreferrer'
+                >
+                  <Profile
+                    title={row.profile.name}
+                    provider={row.profile.provider}
+                    verified={row.profile.verified}
+                    src={row.profile.src}
+                  />
+                </a>
+              </style.link>
             )
           },
           this.getTypeContent(row),
@@ -170,11 +171,11 @@ export default class TableDonation extends React.PureComponent<Props, {}> {
         />
         {
           !allItems && numItems > 0
-            ? <StyledToggleWrap>
-              <StyledToggle onClick={onShowAll}>
+            ? <style.toggleWrap>
+              <button onClick={onShowAll}>
                 {getLocale('seeAllItems', { numItems })}
-              </StyledToggle>
-            </StyledToggleWrap>
+              </button>
+            </style.toggleWrap>
             : null
         }
       </div>
