@@ -1,8 +1,16 @@
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index 7b9ce0172eedf2b55fe7f3de7baee2f2028f4a7b..2782abb40b4b722710de88bbcbf619a47ab0424a 100644
+index 7b9ce0172eedf2b55fe7f3de7baee2f2028f4a7b..2ec432e30bb704f5f19d894fe05b926823356dc5 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -1681,6 +1681,7 @@ config("chromium_code") {
+@@ -735,6 +735,7 @@ config("compiler") {
+     if (current_cpu == "arm") {
+       ldflags += [ "-march=$arm_arch" ]
+     }
++    ldflags -= brave_removed_compiler_thinlto_flags
+   }
+ 
+   if (compiler_timing) {
+@@ -1681,6 +1682,7 @@ config("chromium_code") {
        cflags += [ "-Wextra-semi" ]
      }
    }

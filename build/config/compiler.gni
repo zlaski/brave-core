@@ -8,3 +8,16 @@ brave_removed_chromium_code_cflags = []
 if (is_clang) {
   brave_removed_chromium_code_cflags += [ "-Wunreachable-code-aggressive" ]
 }
+
+# Official builds on Linux fail to link when --thinlto-cache-dir is being used
+# with a "Resource temporarily unavailable" error due to a clang bug[1], so
+# let's disable it in that case (will make incremental builds slower[2])
+#
+# [1] https://github.com/llvm/llvm-project/issues/48833
+# [2] https://clang.llvm.org/docs/ThinLTO.html#incremental
+brave_removed_compiler_thinlto_flags = []
+if (is_official_build && is_linux) {
+  brave_removed_compiler_thinlto_flags +=
+      [ "-Wl,--thinlto-cache-dir=" +
+        rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
+}
