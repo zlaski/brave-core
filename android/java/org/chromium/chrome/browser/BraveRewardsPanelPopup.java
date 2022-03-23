@@ -315,7 +315,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                         String learn_more = BraveRewardsPanelPopup.this.root.getResources().getString(R.string.learn_more);
                         if (BraveRewardsHelper.subtextAtOffset(tvPublisherNotVerifiedSummary.getText().toString(), learn_more, offset) ) {
                             mBraveActivity.openNewOrSelectExistingTab(
-                                    BraveActivity.REWARDS_LEARN_MORE_URL, false);
+                                    BraveActivity.REWARDS_LEARN_MORE_URL);
                             dismiss();
                         }
                     }
@@ -329,7 +329,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                 @Override
                 public void onClick(View v) {
                     mBraveActivity.openNewOrSelectExistingTab(
-                            BraveActivity.BRAVE_REWARDS_SETTINGS_URL, false);
+                            BraveActivity.BRAVE_REWARDS_SETTINGS_URL);
                     dismiss();
                 }
             }));
@@ -423,7 +423,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                         String learn_more = BraveRewardsPanelPopup.this.root.getResources().getString(R.string.learn_more);
                         if (BraveRewardsHelper.subtextAtOffset(tvPublisherNotVerified.getText().toString(), learn_more, offset) ) {
                             mBraveActivity.openNewOrSelectExistingTab(
-                                    BraveActivity.REWARDS_LEARN_MORE_URL, false);
+                                    BraveActivity.REWARDS_LEARN_MORE_URL);
                             dismiss();
                         }
                     }
@@ -530,7 +530,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                 BraveRewardsNativeWorker.getInstance().SetAutoContributeEnabled(true);
                 if (mBraveActivity != null)
                     mBraveActivity.openNewOrSelectExistingTab(
-                            BraveActivity.BRAVE_REWARDS_SETTINGS_URL, false);
+                            BraveActivity.BRAVE_REWARDS_SETTINGS_URL);
             }
         }));
 
@@ -1350,7 +1350,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                     assert (BraveReflectionUtil.EqualTypes(
                             mActivity.getClass(), BraveActivity.class));
                     BraveActivity.class.cast(mActivity).openNewOrSelectExistingTab(
-                            BraveActivity.BRAVE_REWARDS_SETTINGS_URL, false);
+                            BraveActivity.BRAVE_REWARDS_SETTINGS_URL);
                     dismiss();
                 }
             });
@@ -1807,7 +1807,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
             @Override
             public void onClick(View v) {
                 dismiss();
-                mBraveActivity.openNewOrSelectExistingTab(mExternalWallet.getAddUrl(), false);
+                mBraveActivity.openNewOrSelectExistingTab(mExternalWallet.getAddUrl());
             }
         }));
     }
@@ -1850,7 +1850,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
                         if (!TextUtils.isEmpty(mExternalWallet.getVerifyUrl())) {
                             dismiss();
                             mBraveActivity.openNewOrSelectExistingTab(
-                                    mExternalWallet.getVerifyUrl(), false);
+                                    mExternalWallet.getVerifyUrl());
                         }
                     }
                     break;
@@ -2043,7 +2043,7 @@ public class BraveRewardsPanelPopup implements BraveRewardsObserver, BraveReward
             public void onClick(@NonNull View textView) {
                 dismiss();
                 loginPopupWindow.dismiss();
-                mBraveActivity.openNewOrSelectExistingTab(mExternalWallet.getLoginUrl(), false);
+                mBraveActivity.openNewOrSelectExistingTab(mExternalWallet.getLoginUrl());
             }
             @Override
             public void updateDrawState(@NonNull TextPaint ds) {

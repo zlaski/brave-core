@@ -6,6 +6,6 @@
 -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/onboarding_text_bg_color" />
+    <solid android:color="@color/onboarding_p3a_bg_color" />
     <corners android:radius="16dp" />
 </shape>

@@ -281,7 +281,7 @@ public class BraveRewardsPanel
             @Override
             public void onClick(View v) {
                 mBraveActivity.openNewOrSelectExistingTab(
-                        BraveActivity.BRAVE_REWARDS_SETTINGS_URL, false);
+                        BraveActivity.BRAVE_REWARDS_SETTINGS_URL);
                 dismiss();
             }
         }));
@@ -301,7 +301,7 @@ public class BraveRewardsPanel
         mBtnAddFunds = mPopupView.findViewById(R.id.btn_add_funds);
         mBtnAddFunds.setOnClickListener(view -> {
             dismiss();
-            mBraveActivity.openNewOrSelectExistingTab(mExternalWallet.getAddUrl(), false);
+            mBraveActivity.openNewOrSelectExistingTab(mExternalWallet.getAddUrl());
         });
 
         mBtnTip = mPopupView.findViewById(R.id.tip_btn);
@@ -671,7 +671,7 @@ public class BraveRewardsPanel
                     assert (BraveReflectionUtil.EqualTypes(
                             mActivity.getClass(), BraveActivity.class));
                     BraveActivity.class.cast(mActivity).openNewOrSelectExistingTab(
-                            BraveActivity.BRAVE_REWARDS_SETTINGS_URL, false);
+                            BraveActivity.BRAVE_REWARDS_SETTINGS_URL);
                     dismiss();
                 }
             });

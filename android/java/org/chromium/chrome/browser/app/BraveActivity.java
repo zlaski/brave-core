@@ -280,7 +280,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         } else if (id == R.id.set_default_browser) {
             BraveSetDefaultBrowserUtils.showBraveSetDefaultBrowserDialog(BraveActivity.this, true);
         } else if (id == R.id.brave_rewards_id) {
-            openNewOrSelectExistingTab(BRAVE_REWARDS_SETTINGS_URL, false);
+            openNewOrSelectExistingTab(BRAVE_REWARDS_SETTINGS_URL);
         } else if (id == R.id.brave_wallet_id) {
             openBraveWallet();
         } else if (id == R.id.brave_news_id) {
@@ -492,10 +492,10 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
             checkForYandexSE();
         }
 
-        if (appOpenCount == 0) {
+        //if (appOpenCount == 0) {
             Intent onboardingIntent = new Intent(this, OnboardingActivity2.class);
             startActivity(onboardingIntent);
-        }
+        //}
 
         //set bg ads to off for existing and new installations
         setBgBraveAdsDefaultOff();
@@ -1058,19 +1058,14 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         }
     }
 
-    public Tab openNewOrSelectExistingTab(String url, boolean closePreviousTab) {
+    public Tab openNewOrSelectExistingTab(String url) {
         TabModel tabModel = getCurrentTabModel();
         int tabRewardsIndex = TabModelUtils.getTabIndexByUrl(tabModel, url);
         Tab tab = selectExistingTab(url);
         if (tab != null) {
             return tab;
         } else { // Open a new tab
-            tab = getTabCreator(false).launchUrl(url, TabLaunchType.FROM_CHROME_UI);
-
-            if (closePreviousTab && tabModel.getCount() > 0) {
-                TabModelUtils.closeTabByIndex(tabModel, 0);
-            }
-            return tab;
+            return getTabCreator(false).launchUrl(url, TabLaunchType.FROM_CHROME_UI);
         }
     }
 
@@ -1135,7 +1130,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
             if (data != null) {
                 String open_url = data.getStringExtra(BraveActivity.OPEN_URL);
                 if (!TextUtils.isEmpty(open_url)) {
-                    openNewOrSelectExistingTab(open_url, false);
+                    openNewOrSelectExistingTab(open_url);
                 }
             }
         } else if (resultCode == RESULT_OK
