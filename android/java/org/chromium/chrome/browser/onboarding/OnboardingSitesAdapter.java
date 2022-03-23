@@ -21,15 +21,13 @@ import java.util.List;
 
 public class OnboardingSitesAdapter
         extends RecyclerView.Adapter<OnboardingSitesAdapter.ViewHolder> {
-    private OnboardingSiteClickListener onboardingSiteClickListener;
     private Context context;
     private List<String> sitesNameList;
     private List<Integer> sitesImageList;
     private List<String> sitesUrlList;
 
-    public OnboardingSitesAdapter(OnboardingSiteClickListener onboardingSiteClickListener,
+    public OnboardingSitesAdapter(
             List<String> sitesNameList, List<Integer> sitesImageList, List<String> sitesUrlList) {
-        this.onboardingSiteClickListener = onboardingSiteClickListener;
         this.sitesNameList = sitesNameList;
         this.sitesImageList = sitesImageList;
         this.sitesUrlList = sitesUrlList;
@@ -53,10 +51,7 @@ public class OnboardingSitesAdapter
     public void onBindViewHolder(@NonNull OnboardingSitesAdapter.ViewHolder holder, int position) {
         holder.tvSite.setText(sitesNameList.get(position));
         holder.ivSite.setImageResource(sitesImageList.get(position));
-
-        holder.itemView.setOnClickListener(
-                view -> { onboardingSiteClickListener.OnOpenSite(sitesUrlList.get(position)); });
-    }
+ }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivSite;
