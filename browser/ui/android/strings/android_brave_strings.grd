@@ -405,97 +405,16 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
 
       <!-- Onboarding strings -->
       <message name="IDS_WELCOME_TO_BRAVE" desc="Text for welcome in onboarding">
-        Welcome to Brave!
+        Welcome to Brave
       </message>
-      <message name="IDS_PRIVACY_ONBOARDING" desc="Text for privacy in onboarding">
-        Privacy, simplified
+      <message name="IDS_BE_BRAVE" desc="Title Text for set default in onboarding">
+        Be Brave, every day.
       </message>
-      <message name="IDS_PRIVACY_DESC_ONBOARDING" desc="Text for privacy description in onboarding">
-        You're just a step away from the best privacy online. Ready?
+      <message name="IDS_BE_BRAVE_DESC" desc="Description Text for set default in onboarding">
+        Privacy is easy with Brave. Every link opens with Brave\'s privacy protections.
       </message>
-      <message name="IDS_LETS_GO" desc="Text for lets go button in onboarding">
-        Let's go
-      </message>
-      <message name="IDS_READY_BROWSE" desc="Text for ready to browse in onboarding">
-        You're ready to browse!
-      </message>
-      <message name="IDS_SELECT_POPULAR_SITE" desc="Text for select popular site in onboarding">
-        Select a popular site below or enter your own&#8230;\n\n&#8230;and watch those trackers &amp; ads disappear.
-      </message>
-      <message name="IDS_SKIP" desc="Text for skip button in onboarding">
-        Skip
-      </message>
-      <message name="IDS_YAHOO" desc="Text for yahoo website in onboarding">
-        Yahoo
-      </message>
-      <message name="IDS_WIRED" desc="Text for wired website in onboarding">
-        Wired
-      </message>
-      <message name="IDS_ESPN" desc="Text for espn website in onboarding">
-        ESPN
-      </message>
-      <message name="IDS_ENVIRONMENT_CANADA" desc="Text for environment canada website in onboarding">
-        Environment Canada
-      </message>
-      <message name="IDS_CANADIAN_TIRE" desc="Text for canadian tire website in onboarding">
-        Canadian Tire
-      </message>
-      <message name="IDS_BBC" desc="Text for bbc website in onboarding">
-        BBC
-      </message>
-      <message name="IDS_SKY" desc="Text for sky website in onboarding">
-        Sky
-      </message>
-      <message name="IDS_GMX" desc="Text for gmx website in onboarding">
-        GMX
-      </message>
-      <message name="IDS_MOBILE" desc="Text for mobile website in onboarding">
-        Mobile
-      </message>
-      <message name="IDS_LES_JOURNAL" desc="Text for les journal website in onboarding">
-        Les Journal des Femmes
-      </message>
-      <message name="IDS_PROGRAMME_TV" desc="Text for programme tv website in onboarding">
-        Programme TV
-      </message>
-      <message name="IDS_HOTSTAR" desc="Text for hotstar website in onboarding">
-        Hotstar
-      </message>
-      <message name="IDS_CRICBUZZ" desc="Text for cricbuzz website in onboarding">
-        Cricbuzz
-      </message>
-      <message name="IDS_FLIPKART" desc="Text for flipkart website in onboarding">
-        Flipkart
-      </message>
-      <message name="IDS_NEWS" desc="Text for news website in onboarding">
-        News
-      </message>
-      <message name="IDS_GUMTREE" desc="Text for gumtree website in onboarding">
-        Gumtree
-      </message>
-      <message name="IDS_REAL_ESTATE" desc="Text for real estate website in onboarding">
-        Real Estate
-      </message>
-      <message name="IDS_RTE" desc="Text for rte website in onboarding">
-        RTÉ
-      </message>
-      <message name="IDS_IRIS_INDEPENDENT" desc="Text for iris independent website in onboarding">
-        Iris Independent
-      </message>
-      <message name="IDS_DONE_DEAL" desc="Text for done deal website in onboarding">
-        DoneDeal
-      </message>
-      <message name="IDS_YAHOO_JAPAN" desc="Text for yahoo japan website in onboarding">
-        Yahoo! Japan
-      </message>
-      <message name="IDS_WIRED_JAPAN" desc="Text for wired japan website in onboarding">
-        Wired(日本版)
-      </message>
-      <message name="IDS_NUMBER_WEB" desc="Text for number web website in onboarding">
-        Number Web
-      </message>
-      <message name="IDS_ENTER_WEBSITE" desc="Text for enter website in onboarding">
-        Enter a website
+      <message name="IDS_P3A_ONBOARDING_TEXT_NEW" desc="P3a onboarding checkbox text">
+        Improve Brave by sending crash reports and analytics. It\'s completely anonymous and private.
       </message>
       <message name="IDS_TROUBLESHOOTING_ONBOARDING" desc="Text for trouble shooting page for onboarding">
         Troubleshooting onboarding

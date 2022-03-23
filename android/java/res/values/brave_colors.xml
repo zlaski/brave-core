@@ -28,15 +28,17 @@
     <color name="onboarding_orange">#fb542b</color>
     <color name="onboarding_gray">#84889c</color>
     <color name="onboarding_black">#1e2029</color>
-    <color name="onboarding_black_new">#212529</color>
     <color name="onboarding_radio_button_active">#f0f1ff</color>
 
     <color name="onboarding_timer_color">#4f30ab</color>
 
     <color name="onboarding_text_color">@color/onboarding_black</color>
-    <color name="onboarding_text_color_new">@color/onboarding_black_new</color>
+    <color name="onboarding_text_color_new">#F0F2FF</color>
+    <color name="onboarding_button_color">#A0A5EB</color>
     <color name="onboarding_site_arrow_color">#495057</color>
-    <color name="onboarding_bg_color">@android:color/white</color>
+    <color name="onboarding_text_bg_color">#1E2029</color>
+    <color name="onboarding_p3a_bg_color">#212529</color>
+    <color name="onboarding_p3a_checkbox_color">#FF5722</color>
 
     <color name="onboarding_progressbar_secondary_bg">#ced4da</color>
     <color name="onboarding_progress_start_color">#FA7250</color>
