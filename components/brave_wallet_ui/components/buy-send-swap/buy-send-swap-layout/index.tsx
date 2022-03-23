@@ -7,13 +7,18 @@ import { getLocale } from '../../../../common/locale'
 // Styled Components
 import {
   StyledWrapper,
-  MainContainer,
-  MainContainerWrapper,
+  // MainContainer,
+  // MainContainerWrapper
   ButtonRow,
   TabButton,
   TabButtonText,
-  RightDivider,
-  LeftDivider
+  ButtonDivider,
+  BuyButtonIcon,
+  SendButtonIcon,
+  SwapButtonIcon,
+  DepositButtonIcon
+  // RightDivider,
+  // LeftDivider
 } from './style'
 
 export interface Props {
@@ -27,7 +32,7 @@ export interface Props {
 
 function BuySendSwapLayout (props: Props) {
   const {
-    children,
+    // children,
     selectedTab,
     onChangeTab,
     isBuyDisabled,
@@ -47,10 +52,29 @@ function BuySendSwapLayout (props: Props) {
     return ''
   }
 
+  const getButtonIcon = (optionId: string) => {
+    switch (optionId) {
+      case 'buy':
+        return <BuyButtonIcon />
+
+      case 'send':
+        return <SendButtonIcon />
+
+      case 'swap':
+        return <SwapButtonIcon />
+
+      case 'deposit':
+        return <DepositButtonIcon />
+
+      default:
+        return ''
+    }
+  }
+
   return (
     <StyledWrapper>
       <ButtonRow>
-        {BuySendSwapOptions().map((option) =>
+        {BuySendSwapOptions().map((option, index) =>
           <Tooltip
             isDisabled={isBuyDisabled && option.id === 'buy' || isSwapDisabled && option.id === 'swap'}
             key={option.id}
@@ -62,14 +86,7 @@ function BuySendSwapLayout (props: Props) {
               isDisabled={isBuyDisabled && option.id === 'buy' || isSwapDisabled && option.id === 'swap'}
               disabled={isBuyDisabled && option.id === 'buy' || isSwapDisabled && option.id === 'swap'}
             >
-              <RightDivider
-                tabID={option.id}
-                selectedTab={selectedTab}
-              />
-              <LeftDivider
-                tabID={option.id}
-                selectedTab={selectedTab}
-              />
+              {getButtonIcon(option.id)}
               <TabButtonText
                 isSelected={selectedTab === option.id}
                 isDisabled={isBuyDisabled && option.id === 'buy' || isSwapDisabled && option.id === 'swap'}
@@ -77,14 +94,15 @@ function BuySendSwapLayout (props: Props) {
                 {option.name}
               </TabButtonText>
             </TabButton>
+            {index !== BuySendSwapOptions().length - 1 && <ButtonDivider />}
           </Tooltip>
         )}
       </ButtonRow>
-      <MainContainerWrapper>
+      {/* <MainContainerWrapper>
         <MainContainer selectedTab={selectedTab}>
           {children}
         </MainContainer>
-      </MainContainerWrapper>
+      </MainContainerWrapper> */}
     </StyledWrapper>
   )
 }

@@ -1,6 +1,10 @@
 import styled from 'styled-components'
 import { BuySendSwapTypes } from '../../../constants/types'
 import { WalletButton } from '../../shared/style'
+import CoinsIcon from '../../../assets/svg-icons/coins-icon-1.svg'
+import SendIcon from '../../../assets/svg-icons/send-icon.svg'
+import CurrencyExchangeIcon from '../../../assets/svg-icons/currency-exchange.svg'
+import MoneyBagCoinIcon from '../../../assets/svg-icons/money-bag-coins-icon.svg'
 
 interface StyleProps {
   isSelected: boolean
@@ -17,7 +21,6 @@ export const StyledWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 36px;
 `
 
 export const MainContainerWrapper = styled.div<Partial<StyleProps>>`
@@ -47,63 +50,49 @@ export const MainContainer = styled.div<Partial<StyleProps>>`
 
 export const ButtonRow = styled.div`
   display: flex;
-  height: 38px;
   width: 100%;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0px;
+  box-sizing: border-box;
+  background: ${p => p.theme.color.background02};
+  border: ${p => `2px solid ${p.theme.color.divider01}`};
+  /* border-bottom-width: 1px; */
+  border-radius: 8px;
+  overflow: hidden;
 `
 
 export const TabButton = styled(WalletButton) <Partial<StyleProps>>`
   flex: 1;
   display: flex;
-  height: 100%;
+  height: 55px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 10px;
   cursor: ${(p) => p.isDisabled ? 'default' : 'pointer'};
   outline: none;
-  background: ${(p) =>
-    p.isSelected ? p.theme.color.background02 : p.theme.color.background01};
-  border-radius: 12px 12px 0px 0px;
-  border: ${(p) =>
-    p.isSelected ? `2px solid ${p.theme.color.divider01}` : `2px solid ${p.theme.color.background01}`};
-  border-bottom-width: 0px;
-  z-index: ${(p) =>
-    p.isSelected ? '2' : '0'};
+  background: ${(p) => p.isSelected ? p.theme.color.divider01 : p.theme.color.background02};
+  border: none;
+  border-radius: 0px;
+  padding: 18px;
   position: relative;
   pointer-events: ${(p) => p.disabled ? 'none' : 'auto'};
 `
 
 export const TabButtonText = styled.span<Partial<StyleProps>>`
   font-family: Poppins;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px;
+  line-height: 24px;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  background: ${(p) =>
-    p.isDisabled ? p.theme.color.interactive08 : p.isSelected ? p.theme.color.text01 : p.theme.color.text02};
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: ${p => p.theme.color.text02};
 `
 
-export const RightDivider = styled.div<Partial<StyleProps>>`
-  height: 20px;
-  width: 1px;
-  background-color: ${(p) => p.selectedTab === 'buy' && p.tabID === 'send' ? p.theme.color.divider01 : p.selectedTab === 'swap' && p.tabID === 'buy' ? p.theme.color.divider01 : 'none'};
-  position: absolute;
-  right: -2px;
-  bottom: 4px;
-`
-
-export const LeftDivider = styled.div<Partial<StyleProps>>`
-  height: 20px;
-  width: 1px;
-  background-color: ${(p) => p.selectedTab === 'buy' && p.tabID === 'swap' ? p.theme.color.divider01 : p.selectedTab === 'swap' && p.tabID === 'send' ? p.theme.color.divider01 : 'none'};
-  position: absolute;
-  left: -2px;
-  bottom: 4px;
+export const ButtonDivider = styled.div`
+  display: flex;
+  width: 100%;
+  height: 0px;
+  border-bottom: ${(p) => `1px solid ${p.theme.color.divider01}`};
 `
 
 export const ButtonWrapper = styled.div`
@@ -111,4 +100,30 @@ export const ButtonWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+`
+
+export const ButtonIcon = styled.div`
+  width: 20px;
+  height: 20px;
+  background-color: ${(p) => p.theme.color.text02};
+  mask-size: 100%;
+`
+export const BuyButtonIcon = styled(ButtonIcon)`
+  -webkit-mask-image: url(${CoinsIcon});
+  mask-image: url(${CoinsIcon});
+`
+
+export const SendButtonIcon = styled(ButtonIcon)`
+  -webkit-mask-image: url(${SendIcon});
+  mask-image: url(${SendIcon});
+`
+
+export const SwapButtonIcon = styled(ButtonIcon)`
+  -webkit-mask-image: url(${CurrencyExchangeIcon});
+  mask-image: url(${CurrencyExchangeIcon});
+`
+
+export const DepositButtonIcon = styled(ButtonIcon)`
+  -webkit-mask-image: url(${MoneyBagCoinIcon});
+  mask-image: url(${MoneyBagCoinIcon});
 `
