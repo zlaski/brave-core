@@ -18,7 +18,7 @@ config("internal_config") {
 }
 
 group("brave_ios") {
-  public_deps = [ ":brave_core_ios_framework" ]
+  public_deps = [ ":brave_core_ios_framework", ":brave_core_test_app" ]
 }
 
 group("brave_ios_tests") {
@@ -99,4 +99,20 @@ ios_framework_bundle("brave_core_ios_framework") {
 
   public_headers = get_target_outputs(":brave_core_umbrella_header")
   public_headers += brave_core_public_headers
+}
+
+ios_app_bundle("brave_core_test_app") {
+  info_plist = "Info-test.plist"
+  sources = [ "main.m" ]
+  deps = [
+    ":brave_core_ios_framework+link",
+    ":brave_core_ios_framework+bundle",
+    "//ios/third_party/material_components_ios:material_components_ios+link",
+    "//ios/third_party/material_components_ios:material_components_ios+bundle",
+  ]
+  configs += [ "//build/config/compiler:enable_arc" ]
+  frameworks = [
+    "Foundation.framework",
+    "UIKit.framework",
+  ]
 }
