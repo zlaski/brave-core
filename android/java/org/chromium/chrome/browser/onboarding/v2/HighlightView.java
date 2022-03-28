@@ -13,6 +13,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,7 +21,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.graphics.BlurMaskFilter;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
@@ -97,8 +97,9 @@ public class HighlightView extends FrameLayout {
                 this, "innerRadius", mInnerRadius * 0.7f, mInnerRadius * 1.1f);
         scaleXAnimator.setRepeatCount(ValueAnimator.INFINITE);
 
-        ObjectAnimator scaleBigAnimator = ObjectAnimator.ofFloat(
-                this, "outerRadius", mOuterRadius * 0.9f, mOuterRadius * 1.2f);//1.2f, mOuterRadius * 1.4f);
+        ObjectAnimator scaleBigAnimator = ObjectAnimator.ofFloat(this, "outerRadius",
+                mOuterRadius * 0.9f, mOuterRadius * 1.2f); // 1.2f, mOuterRadius * 1.4f);
+
         scaleBigAnimator.setRepeatCount(ValueAnimator.INFINITE);
 
         animatorSet.setDuration(DEFAULT_ANIMATION_DURATION);
@@ -172,7 +173,7 @@ public class HighlightView extends FrameLayout {
             overlayCanvas.drawCircle(
                     cx, cy, mInnerRadius * innerRadiusScaleMultiplier, innerBorderPaint);
 
-            eraserPaint.setAlpha(255);//ALPHA_60_PERCENT);
+            eraserPaint.setAlpha(255); // ALPHA_60_PERCENT);
             float outerRadiusScaleMultiplier = 1.2f;
             overlayCanvas.drawCircle(
                     cx, cy, mOuterRadius * outerRadiusScaleMultiplier, eraserPaint);
@@ -190,28 +191,29 @@ public class HighlightView extends FrameLayout {
             overlayCanvas.drawRoundRect(innerRect, 12, 12, eraserPaint);
             // overlayCanvas.drawRoundRect(innerRect, 12, 12, innerBorderPaint);
 
-            //eraserPaint.setAlpha(ALPHA_60_PERCENT);
+            // eraserPaint.setAlpha(ALPHA_60_PERCENT);
 
             Paint shadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             shadowPaint.setStyle(Paint.Style.FILL);
             shadowPaint.setColor(0x982D98); // Color.parseColor("#FFFFFF")); // set stroke color
-            //shadowPaint.setAntiAlias(true);
+            // shadowPaint.setAntiAlias(true);
 
-            shadowPaint.setMaskFilter(new BlurMaskFilter(
-            22 /* shadowRadius */,
-            BlurMaskFilter.Blur.NORMAL));
+            shadowPaint.setMaskFilter(
+                    new BlurMaskFilter(22 /* shadowRadius */, BlurMaskFilter.Blur.NORMAL));
 
-            RectF outerRect = new RectF((float) item.getScreenLeft(), (float) (item.getScreenTop() - verticalOffset),
-                    (float)item.getScreenRight(),
-                    (float)(item.getScreenBottom() - (isTablet ? 35 : 0) - verticalOffset));
+            RectF outerRect = new RectF(item.getScreenLeft(), item.getScreenTop() - verticalOffset,
+                    item.getScreenRight(),
+                    item.getScreenBottom() - (isTablet ? 35 : 0) - verticalOffset);
 
             // Draw shadow before drawing object
             overlayCanvas.drawRoundRect(outerRect, 22, 22, shadowPaint);
+            eraserPaint.setAlpha(ALPHA_60_PERCENT);
+
             overlayCanvas.drawRoundRect(outerRect, 22, 22, eraserPaint);
             overlayCanvas.drawRoundRect(outerRect, 22, 22, outterBorderPaint);
             shadowPaint.setMaskFilter(null);
-            
-            //overlayCanvas.drawRoundRect(outerRect, 22, 22, outterBorderPaint);
+
+            // overlayCanvas.drawRoundRect(outerRect, 22, 22, outterBorderPaint);
         }
         // mShadow.setShadowLayer(10.0f, 0.0f, 2.0f, 0xFF000000);
         canvas.drawBitmap(overlay, 0, 0, basicPaint);

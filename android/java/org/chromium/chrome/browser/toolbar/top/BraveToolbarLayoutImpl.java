@@ -6,6 +6,7 @@
 package org.chromium.chrome.browser.toolbar.top;
 
 import static org.chromium.ui.base.ViewUtils.dpToPx;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
@@ -646,24 +647,8 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                         .append("  ");
                 shareStringBuilder.setSpan(new ImageSpan(getContext(), R.drawable.ic_share_white),
                         shareStringBuilder.length() - 1, shareStringBuilder.length(), 0);
-
-                /*                btnTooltip.setVisibility(View.VISIBLE);
-
-                                btnTooltip.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        dismissShieldsTooltip();
-                                        if
-                   (BraveStatsUtil.hasWritePermission(BraveActivity.getBraveActivity())) {
-                                            BraveStatsUtil.shareStats(R.layout.brave_stats_share_layout);
-                                        }
-                                    }
-                                });*/
             }
 
-            /*TextView tooltipTitle =
-             * mShieldsPopupWindowTooltip.findViewById(R.id.txt_tooltip_title);
-             */
             SpannableStringBuilder ssb = new SpannableStringBuilder(
                     new StringBuilder("\t\t")
                             .append(getContext().getResources().getString(
@@ -674,7 +659,6 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
 
             TextView tvCount = mShieldsPopupWindowTooltip.findViewById(R.id.tv_count);
             tvCount.setText(String.valueOf(blockerNamesList.size()));
-            // tooltipTitle.setText(titleSpanned);
 
             if (mBraveShieldsButton != null && mBraveShieldsButton.isShown()) {
                 viewGroup.addView(highlightView);

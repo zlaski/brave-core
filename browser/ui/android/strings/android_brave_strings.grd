@@ -404,9 +404,6 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       </message>
 
       <!-- Onboarding strings -->
-      <message name="IDS_SKIP" desc="Text for skip button in onboarding">
-        Skip
-      </message>
       <message name="IDS_WELCOME_TO_BRAVE" desc="Text for welcome in onboarding">
         Welcome to Brave
       </message>
@@ -419,6 +416,7 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       <message name="IDS_P3A_ONBOARDING_TEXT_NEW" desc="P3a onboarding checkbox text">
         Improve Brave by sending crash reports and analytics. It's completely anonymous and private.
       </message>
+
       <message name="IDS_TROUBLESHOOTING_ONBOARDING" desc="Text for trouble shooting page for onboarding">
         Troubleshooting onboarding
       </message>
@@ -463,6 +461,9 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       </message>
       <message name="IDS_EARN_AND_GIVE" desc="Button text for rewards onboarding.">
         Start using Brave Rewards
+      </message>
+      <message name="IDS_SKIP" desc="Text for skip button in onboarding">
+        Skip
       </message>
       <message name="IDS_CONTINUE_TO_WALLET" desc="Text for continue to wallet button">
         Continue to wallet

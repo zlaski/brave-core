@@ -40,6 +40,7 @@
     <color name="onboarding_site_arrow_color">#495057</color>
     <color name="onboarding_text_bg_color">#CC1E2029</color>
     <color name="onboarding_p3a_bg_color">#33212529</color>
+
     <color name="onboarding_p3a_checkbox_color">#FF5722</color>
 
     <color name="onboarding_progressbar_secondary_bg">#ced4da</color>

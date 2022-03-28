@@ -11,6 +11,12 @@ import static org.chromium.ui.base.ViewUtils.dpToPx;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -23,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.chromium.base.Log;
 import org.chromium.chrome.R;
@@ -114,6 +122,9 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
             setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.3f, 80, true);
             setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.3f, 80, false);
 
+            mTvWelcome.setVisibility(View.VISIBLE);
+            // setFadeInAnimation(mTvWelcome, 500);
+
             boolean isP3aEnabled = false;
 
             try {
@@ -146,7 +157,7 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
 
             mLayoutSetDefault.setVisibility(View.VISIBLE);
             mIvArrowDown.setVisibility(View.VISIBLE);
-            //mLayoutP3a.setVisibility(View.VISIBLE);
+            // mLayoutP3a.setVisibility(View.VISIBLE);
             setFadeInAnimation(mLayoutP3a, 2000);
         }
     }
@@ -158,25 +169,25 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
 
     private void setLeafAnimation(View leafAlignView, ImageView leafView, float scale,
             float leafMargin, boolean isTopLeaf) {
-        if(leafMargin > 0) {
-        int margin = (int) dpToPx(this, leafMargin);
-        Animation animation = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                ViewGroup.MarginLayoutParams layoutParams =
-                        (ViewGroup.MarginLayoutParams) leafAlignView.getLayoutParams();
-                if (isTopLeaf) {
-                    layoutParams.bottomMargin = margin
-                            - (int) ((margin - layoutParams.bottomMargin) * interpolatedTime);
-                } else {
-                    layoutParams.topMargin =
-                            margin - (int) ((margin - layoutParams.topMargin) * interpolatedTime);
+        if (leafMargin > 0) {
+            int margin = (int) dpToPx(this, leafMargin);
+            Animation animation = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    ViewGroup.MarginLayoutParams layoutParams =
+                            (ViewGroup.MarginLayoutParams) leafAlignView.getLayoutParams();
+                    if (isTopLeaf) {
+                        layoutParams.bottomMargin = margin
+                                - (int) ((margin - layoutParams.bottomMargin) * interpolatedTime);
+                    } else {
+                        layoutParams.topMargin = margin
+                                - (int) ((margin - layoutParams.topMargin) * interpolatedTime);
+                    }
+                    leafAlignView.setLayoutParams(layoutParams);
                 }
-                leafAlignView.setLayoutParams(layoutParams);
-            }
-        };
-        animation.setDuration(1000);
-        leafAlignView.startAnimation(animation);
+            };
+            animation.setDuration(1000);
+            leafAlignView.startAnimation(animation);
         }
 
         leafView.animate().scaleX(scale).scaleY(scale).setDuration(1000);

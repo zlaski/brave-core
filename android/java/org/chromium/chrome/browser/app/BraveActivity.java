@@ -233,7 +233,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
     public boolean mLoadedFeed;
     public boolean mComesFromNewTab;
     public CopyOnWriteArrayList<FeedItemsCard> mNewsItemsFeedCards;
-    
+
     @SuppressLint("VisibleForTests")
     public BraveActivity() {
         // Disable key checker to avoid asserts on Brave keys in debug
@@ -473,7 +473,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
     @Override
     public void finishNativeInitialization() {
         super.finishNativeInitialization();
-        
+
         if (SharedPreferencesManager.getInstance().readBoolean(
                     BravePreferenceKeys.BRAVE_DOUBLE_RESTART, false)) {
             SharedPreferencesManager.getInstance().writeBoolean(
@@ -493,9 +493,9 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         }
 
         int appOpenCount = SharedPreferencesManager.getInstance().readInt(BravePreferenceKeys.BRAVE_APP_OPEN_COUNT);
-        //if (appOpenCount == 0) {
-            Intent onboardingIntent = new Intent(this, OnboardingActivity2.class);
-            startActivity(onboardingIntent);
+        // if (appOpenCount == 0) {
+        Intent onboardingIntent = new Intent(this, OnboardingActivity2.class);
+        startActivity(onboardingIntent);
         //}
 
         SharedPreferencesManager.getInstance().writeInt(BravePreferenceKeys.BRAVE_APP_OPEN_COUNT, appOpenCount + 1);
@@ -663,8 +663,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
             }
         }
 
-        if(OnboardingPrefManager.getInstance().isOnboardingSearchBoxTooltip()) {
-
+        if (OnboardingPrefManager.getInstance().isOnboardingSearchBoxTooltip()) {
             showSearchBoxTooltip();
         }
     }
@@ -987,8 +986,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
     }
 
     public void onBoardingWelcomeComplete(boolean isDefaultAsk) {
-
-        if(isDefaultAsk) {
+        if (isDefaultAsk) {
             BraveSetDefaultBrowserUtils.showBraveSetDefaultBrowserDialog(this, false);
         } else {
             showSearchBoxTooltip();
@@ -996,15 +994,14 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
     }
 
     private void showSearchBoxTooltip() {
-
         OnboardingPrefManager.getInstance().setOnboardingSearchBoxTooltip(false);
-        
+
         HighlightView highlightView = new HighlightView(this, null);
         highlightView.setColor(ContextCompat.getColor(this, R.color.brave_stats_data_saved_color));
         ViewGroup viewGroup = findViewById(android.R.id.content);
-        View anchorView = (View) findViewById(R.id.url_bar);//location_bar);
+        View anchorView = (View) findViewById(R.id.url_bar); // location_bar);
         float padding = (float) dpToPx(this, 16);
-        
+
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             PopupWindowTooltip popupWindowTooltip =
@@ -1197,8 +1194,8 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
             BraveSetDefaultBrowserUtils.setBraveDefaultSuccess();
         }
 
-        if(requestCode == BraveSetDefaultBrowserUtils.DEFAULT_BROWSER_ROLE_REQUEST_CODE && OnboardingPrefManager.getInstance().isOnboardingSearchBoxTooltip()) {
-
+        if (requestCode == BraveSetDefaultBrowserUtils.DEFAULT_BROWSER_ROLE_REQUEST_CODE
+                && OnboardingPrefManager.getInstance().isOnboardingSearchBoxTooltip()) {
             showSearchBoxTooltip();
         }
         super.onActivityResult(requestCode, resultCode, data);
