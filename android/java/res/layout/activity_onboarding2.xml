@@ -23,13 +23,13 @@
 
     <ImageView
         android:id="@+id/iv_leaf_top"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/view_leaf_top_align"
-        app:layout_constraintStart_toEndOf="@id/view_leaf_top_align"
-        app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/onboarding_top_leaf"
         android:adjustViewBounds="true"
+        android:scaleX="1.3"
+        android:scaleY="1.3"
         android:contentDescription="@null"/>
 
     <ImageView
@@ -39,6 +39,8 @@
         app:layout_constraintBottom_toTopOf="@id/view_leaf_bottom_align"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
+        android:scaleX="1.3"
+        android:scaleY="1.3"
         android:src="@drawable/onboarding_bottom_leaf"/>
 
     <View
@@ -53,12 +55,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/iv_brave"
+        app:layout_constraintBottom_toTopOf="@id/layout_set_default"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:textSize="32sp"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:alpha="0"
         android:visibility="gone"
         android:textColor="@color/onboarding_text_color_new"
         android:text="@string/welcome_to_brave"/>
@@ -67,12 +70,13 @@
         android:id="@+id/layout_set_default"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_welcome"
         app:layout_constraintBottom_toTopOf="@id/iv_arrow_down"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintVertical_chainStyle="packed"
         android:padding="16dp"
         android:visibility="gone"
         android:orientation="vertical"
@@ -82,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/be_brave"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/onboarding_text_color_new"/>
 
         <TextView
@@ -131,6 +135,7 @@
         app:layout_constraintBottom_toTopOf="@id/iv_brave"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_onboarding_arrow_down"
         android:contentDescription="@null"/>
@@ -143,8 +148,9 @@
         app:layout_constraintBottom_toTopOf="@id/layout_p3a"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         android:adjustViewBounds="true"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/ic_brave_onboarding"
         android:contentDescription="@null"/>
@@ -157,9 +163,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="12dp"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="6dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
         android:visibility="gone"
         android:orientation="horizontal"
         android:background="@drawable/rounded_onboarding_p3a_bg">
@@ -168,7 +179,7 @@
             android:id="@+id/checkbox_p3a"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/brave_checkbox"
+            android:button="@drawable/ic_p3a_checkbox"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"/>
 
@@ -177,8 +188,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/p3a_onboarding_text_new"
-            android:textSize="14sp"
-            android:textColor="@color/onboarding_text_color_new"/>
+            android:textSize="15sp"
+            android:textColor="@color/onboarding_p3a_text_color"/>
 
     </LinearLayout>
 

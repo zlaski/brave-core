@@ -280,8 +280,7 @@ public class BraveRewardsPanel
         btnRewardsSettings.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBraveActivity.openNewOrSelectExistingTab(
-                        BraveActivity.BRAVE_REWARDS_SETTINGS_URL);
+                mBraveActivity.openNewOrSelectExistingTab(BraveActivity.BRAVE_REWARDS_SETTINGS_URL);
                 dismiss();
             }
         }));

@@ -5,6 +5,7 @@
 
 package org.chromium.chrome.browser.toolbar.top;
 
+import static org.chromium.ui.base.ViewUtils.dpToPx;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
@@ -601,19 +602,22 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
             ArrayList<String> blockerNamesList) {
         if (BraveActivity.getBraveActivity() != null) {
             HighlightView highlightView = new HighlightView(getContext(), null);
+            highlightView.setColor(
+                    ContextCompat.getColor(getContext(), R.color.brave_stats_data_saved_color));
             ViewGroup viewGroup =
                     BraveActivity.getBraveActivity().getWindow().getDecorView().findViewById(
                             android.R.id.content);
-
+            float padding = (float) dpToPx(getContext(), 16);
             mShieldsPopupWindowTooltip =
                     new PopupWindowTooltip.Builder(getContext())
                             .anchorView(mBraveShieldsButton)
                             .arrowColor(getContext().getResources().getColor(
-                                    R.color.shields_tooltip_bg_color))
+                                    R.color.shield_onboarding_arrow_color))
                             .gravity(Gravity.BOTTOM)
                             .dismissOnOutsideTouch(true)
                             .dismissOnInsideTouch(false)
                             .backgroundDimDisabled(true)
+                            .padding(padding)
                             .onDismissListener(tooltip -> {
                                 if (viewGroup != null && highlightView != null) {
                                     highlightView.stopAnimation();
@@ -635,8 +639,6 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                     }
                 });*/
             } else if (getStatsSharingEnums().contains(shieldsTooltipEnum)) {
-                Button btnTooltip = mShieldsPopupWindowTooltip.findViewById(R.id.btn_tooltip);
-
                 SpannableStringBuilder shareStringBuilder = new SpannableStringBuilder();
                 shareStringBuilder
                         .append(getContext().getResources().getString(
@@ -644,7 +646,6 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                         .append("  ");
                 shareStringBuilder.setSpan(new ImageSpan(getContext(), R.drawable.ic_share_white),
                         shareStringBuilder.length() - 1, shareStringBuilder.length(), 0);
-                btnTooltip.setText(shareStringBuilder, TextView.BufferType.SPANNABLE);
 
                 /*                btnTooltip.setVisibility(View.VISIBLE);
 
@@ -671,34 +672,10 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
             ssb.setSpan(new ImageSpan(getContext(), R.drawable.ic_shield_done_filled_20dp), 0, 1,
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 
-            TextView tooltipTitle = mShieldsPopupWindowTooltip.findViewById(R.id.txt_tooltip_title);
+            TextView tvCount = mShieldsPopupWindowTooltip.findViewById(R.id.tv_count);
+            tvCount.setText(String.valueOf(blockerNamesList.size()));
+            // tooltipTitle.setText(titleSpanned);
 
-            String title = getContext().getResources().getString(R.string.shield_tooltip_text);
-
-            String displayTrackerName = blockerNamesList.get(0);
-            for (String blockerName : blockerNamesList) {
-                String companyName = mBraveShieldsHandler.getBlockerCompanyName(blockerName);
-                if (!companyName.equals(blockerName)) {
-                    displayTrackerName = companyName;
-                    break;
-                }
-            }
-            title = title + " <b>" + displayTrackerName + "</b>";
-
-            if (blockerNamesList.size() > 1) {
-                title = title + " "
-                        + getContext().getResources().getString(R.string.shield_tooltip_and);
-                title = title + " "
-                        + getContext().getResources().getQuantityString(
-                                R.plurals.shield_tooltip_tracker_count, blockerNamesList.size() - 1,
-                                blockerNamesList.size() - 1);
-            }
-
-            title = title + " "
-                    + getContext().getResources().getString(R.string.shield_tooltip_tab_site, host);
-
-            Spanned titleSpanned = BraveRewardsHelper.spannedFromHtmlString(title);
-            tooltipTitle.setText(titleSpanned);
             if (mBraveShieldsButton != null && mBraveShieldsButton.isShown()) {
                 viewGroup.addView(highlightView);
                 HighlightItem item = new HighlightItem(mBraveShieldsButton);

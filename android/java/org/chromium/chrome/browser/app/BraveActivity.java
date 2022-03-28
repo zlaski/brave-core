@@ -27,6 +27,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -40,6 +41,7 @@ import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -231,8 +233,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
     public boolean mLoadedFeed;
     public boolean mComesFromNewTab;
     public CopyOnWriteArrayList<FeedItemsCard> mNewsItemsFeedCards;
-    private NewTabPageManager mNewTabPageManager;
-
+    
     @SuppressLint("VisibleForTests")
     public BraveActivity() {
         // Disable key checker to avoid asserts on Brave keys in debug
@@ -472,6 +473,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
     @Override
     public void finishNativeInitialization() {
         super.finishNativeInitialization();
+        
         if (SharedPreferencesManager.getInstance().readBoolean(
                     BravePreferenceKeys.BRAVE_DOUBLE_RESTART, false)) {
             SharedPreferencesManager.getInstance().writeBoolean(
@@ -491,16 +493,16 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         }
 
         int appOpenCount = SharedPreferencesManager.getInstance().readInt(BravePreferenceKeys.BRAVE_APP_OPEN_COUNT);
+        //if (appOpenCount == 0) {
+            Intent onboardingIntent = new Intent(this, OnboardingActivity2.class);
+            startActivity(onboardingIntent);
+        //}
+
         SharedPreferencesManager.getInstance().writeInt(BravePreferenceKeys.BRAVE_APP_OPEN_COUNT, appOpenCount + 1);
 
         if (PackageUtils.isFirstInstall(this) && appOpenCount == 0) {
             checkForYandexSE();
         }
-
-        //if (appOpenCount == 0) {
-            Intent onboardingIntent = new Intent(this, OnboardingActivity2.class);
-            startActivity(onboardingIntent);
-        //}
 
         //set bg ads to off for existing and new installations
         setBgBraveAdsDefaultOff();
@@ -659,6 +661,11 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
                 RetentionNotificationUtil.scheduleDormantUsersNotifications(this);
                 OnboardingPrefManager.getInstance().setDormantUsersNotificationsStarted(true);
             }
+        }
+
+        if(OnboardingPrefManager.getInstance().isOnboardingSearchBoxTooltip()) {
+
+            showSearchBoxTooltip();
         }
     }
 
@@ -979,14 +986,51 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         return ContextUtils.getAppSharedPreferences().getBoolean(PREF_CLEAR_ON_EXIT, false);
     }
 
-    public void setNewTabPageManager(NewTabPageManager manager) {
-        mNewTabPageManager = manager;
+    public void onBoardingWelcomeComplete(boolean isDefaultAsk) {
+
+        if(isDefaultAsk) {
+            BraveSetDefaultBrowserUtils.showBraveSetDefaultBrowserDialog(this, false);
+        } else {
+            showSearchBoxTooltip();
+        }
     }
 
-    public void focusSearchBox() {
-        if (mNewTabPageManager != null) {
-            mNewTabPageManager.focusSearchBox(false, null);
-        }
+    private void showSearchBoxTooltip() {
+
+        OnboardingPrefManager.getInstance().setOnboardingSearchBoxTooltip(false);
+        
+        HighlightView highlightView = new HighlightView(this, null);
+        highlightView.setColor(ContextCompat.getColor(this, R.color.brave_stats_data_saved_color));
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View anchorView = (View) findViewById(R.id.url_bar);//location_bar);
+        float padding = (float) dpToPx(this, 16);
+        
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            PopupWindowTooltip popupWindowTooltip =
+                    new PopupWindowTooltip.Builder(this)
+                            .anchorView(anchorView)
+                            .arrowColor(
+                                    getResources().getColor(R.color.shield_onboarding_arrow_color))
+                            .gravity(Gravity.BOTTOM)
+                            .dismissOnOutsideTouch(true)
+                            .dismissOnInsideTouch(false)
+                            .backgroundDimDisabled(true)
+                            .padding(padding)
+                            .onDismissListener(tooltip -> {
+                                if (viewGroup != null && highlightView != null) {
+                                    viewGroup.removeView(highlightView);
+                                }
+                            })
+                            .modal(true)
+                            .contentView(R.layout.brave_searchbox_focus_tooltip_layout)
+                            .build();
+
+            viewGroup.addView(highlightView);
+            HighlightItem item = new HighlightItem(anchorView);
+            highlightView.setHighlightItem(item);
+            popupWindowTooltip.show();
+        }, 500);
     }
 
     public void OnRewardsPanelDismiss() {
@@ -1151,6 +1195,11 @@ public abstract class BraveActivity<C extends ChromeActivityComponent>
         } else if (resultCode == RESULT_OK
                 && requestCode == BraveSetDefaultBrowserUtils.DEFAULT_BROWSER_ROLE_REQUEST_CODE) {
             BraveSetDefaultBrowserUtils.setBraveDefaultSuccess();
+        }
+
+        if(requestCode == BraveSetDefaultBrowserUtils.DEFAULT_BROWSER_ROLE_REQUEST_CODE && OnboardingPrefManager.getInstance().isOnboardingSearchBoxTooltip()) {
+
+            showSearchBoxTooltip();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

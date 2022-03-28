@@ -48,6 +48,7 @@ public class OnboardingPrefManager {
     private static final String PREF_SEARCH_ENGINE_ONBOARDING = "search_engine_onboarding";
     private static final String PREF_SHOW_DEFAULT_BROWSER_MODAL_AFTER_P3A =
             "show_default_browser_modal_after_p3a";
+    private static final String PREF_SHOW_SEARCHBOX_TOOLTIP = "show_searchbox_tooltip";
     public static final String PREF_BRAVE_STATS = "brave_stats";
     public static final String PREF_BRAVE_STATS_NOTIFICATION = "brave_stats_notification";
     public static final String PREF_BRAVE_STATS_NOTIFICATION_SHOWN =
@@ -96,6 +97,16 @@ public class OnboardingPrefManager {
             sInstance = new OnboardingPrefManager();
         }
         return sInstance;
+    }
+
+    public boolean isOnboardingSearchBoxTooltip() {
+        return mSharedPreferences.getBoolean(PREF_SHOW_SEARCHBOX_TOOLTIP, false);
+    }
+
+    public void setOnboardingSearchBoxTooltip(boolean shouldTooltipShow) {
+        SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putBoolean(PREF_SHOW_SEARCHBOX_TOOLTIP, shouldTooltipShow);
+        sharedPreferencesEditor.apply();
     }
 
     /**

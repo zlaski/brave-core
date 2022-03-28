@@ -11,12 +11,6 @@ import static org.chromium.ui.base.ViewUtils.dpToPx;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -29,8 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.chromium.base.Log;
 import org.chromium.chrome.R;
@@ -46,7 +38,6 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class OnboardingActivity2 extends AsyncInitializationActivity {
-
     private View mVLeafAlignTop;
     private View mVLeafAlignBottom;
     private ImageView mIvLeafTop;
@@ -71,6 +62,7 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
         startTimer();
 
         onInitialLayoutInflationComplete();
+        OnboardingPrefManager.getInstance().setOnboardingSearchBoxTooltip(true);
         OnboardingPrefManager.getInstance().setOnboardingShown(true);
     }
 
@@ -90,17 +82,15 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
     }
 
     private void onClickViews() {
-
         mBtnPositive.setOnClickListener(view -> {
-
-            if(!BraveSetDefaultBrowserUtils.isBraveSetAsDefaultBrowser(this)) {
-                BraveSetDefaultBrowserUtils.showBraveSetDefaultBrowserDialog(this, false);
+            if (!BraveSetDefaultBrowserUtils.isBraveSetAsDefaultBrowser(this)) {
+                gotoNext(true);
             } else {
-                gotoSearchBox();
+                gotoNext(false);
             }
         });
 
-        mBtnNotNow.setOnClickListener(view -> { gotoSearchBox(); });
+        mBtnNotNow.setOnClickListener(view -> { gotoNext(false); });
     }
 
     private void startTimer() {
@@ -113,13 +103,16 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
         mCurrentStep++;
 
         if (mCurrentStep == 0) {
-            mTvWelcome.setVisibility(View.VISIBLE);
-            //setFadeInAnimation(mTvWelcome, 500);
+            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1f, 0, true);
+            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1f, 0, false);
+            // mTvWelcome.setVisibility(View.VISIBLE);
+            setFadeInAnimation(mTvWelcome, 200);
+            mIvBrave.animate().scaleX(0.8f).scaleY(0.8f).setDuration(1000);
             startTimer();
 
         } else if (mCurrentStep == 1) {
-            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.3f, 40, true);
-            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.3f, 40, false);
+            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.3f, 80, true);
+            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.3f, 80, false);
 
             boolean isP3aEnabled = false;
 
@@ -144,7 +137,7 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
 
             mTvWelcome.setVisibility(View.GONE);
 
-            if(BraveSetDefaultBrowserUtils.isBraveSetAsDefaultBrowser(this)) {
+            if (BraveSetDefaultBrowserUtils.isBraveSetAsDefaultBrowser(this)) {
                 mBtnPositive.setText(getResources().getString(R.string.continue_text));
             } else {
                 mBtnPositive.setText(getResources().getString(R.string.set_default_browser));
@@ -153,7 +146,8 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
 
             mLayoutSetDefault.setVisibility(View.VISIBLE);
             mIvArrowDown.setVisibility(View.VISIBLE);
-            mLayoutP3a.setVisibility(View.VISIBLE);
+            //mLayoutP3a.setVisibility(View.VISIBLE);
+            setFadeInAnimation(mLayoutP3a, 2000);
         }
     }
 
@@ -164,6 +158,7 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
 
     private void setLeafAnimation(View leafAlignView, ImageView leafView, float scale,
             float leafMargin, boolean isTopLeaf) {
+        if(leafMargin > 0) {
         int margin = (int) dpToPx(this, leafMargin);
         Animation animation = new Animation() {
             @Override
@@ -180,27 +175,19 @@ public class OnboardingActivity2 extends AsyncInitializationActivity {
                 leafAlignView.setLayoutParams(layoutParams);
             }
         };
-        animation.setDuration(200);
+        animation.setDuration(1000);
         leafAlignView.startAnimation(animation);
+        }
 
-        leafView.animate().scaleX(scale).scaleY(scale).setDuration(200);
+        leafView.animate().scaleX(scale).scaleY(scale).setDuration(1000);
     }
 
-    public void gotoSearchBox() {
+    public void gotoNext(boolean isDefaultAsk) {
         if (BraveActivity.getBraveActivity() != null) {
-            BraveActivity.getBraveActivity().focusSearchBox();
+            // BraveActivity.getBraveActivity().focusSearchBox();
+            BraveActivity.getBraveActivity().onBoardingWelcomeComplete(isDefaultAsk);
         }
         finish();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK
-                && requestCode == BraveSetDefaultBrowserUtils.DEFAULT_BROWSER_ROLE_REQUEST_CODE) {
-            BraveSetDefaultBrowserUtils.setBraveDefaultSuccess();
-        }
-        gotoSearchBox();
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
