@@ -232,21 +232,21 @@ void JsonRpcService::FirePendingRequestCompleted(const std::string& chain_id,
   }
 }
 
-bool JsonRpcService::HasRequestFromOrigin(const GURL& origin) const {
-  for (const auto& request : add_chain_pending_requests_origins_) {
-    if (request.second == origin)
+bool JsonRpcService::HasRequestFromOrigin(const url::Origin& origin) const {
+  for (const auto& request : add_chain_pending_requests_) {
+    if (request.second->origin_info->origin == origin)
       return true;
   }
   return false;
 }
 
-void JsonRpcService::GetPendingChainRequests(
-    GetPendingChainRequestsCallback callback) {
-  std::vector<mojom::NetworkInfoPtr> all_chains;
+void JsonRpcService::GetPendingAddChainRequests(
+    GetPendingAddChainRequestsCallback callback) {
+  std::vector<mojom::AddChainRequestPtr> all_requests;
   for (const auto& request : add_chain_pending_requests_) {
-    all_chains.push_back(request.second.Clone());
+    all_requests.push_back(request.second.Clone());
   }
-  std::move(callback).Run(std::move(all_chains));
+  std::move(callback).Run(std::move(all_requests));
 }
 
 void JsonRpcService::AddEthereumChain(mojom::NetworkInfoPtr chain,
@@ -290,15 +290,14 @@ void JsonRpcService::OnEthChainIdValidated(mojom::NetworkInfoPtr chain,
   }
 
   auto chain_id = chain->chain_id;
-  AddCustomNetwork(prefs_, std::move(chain));
+  AddCustomNetwork(prefs_, *chain);
   std::move(callback).Run(chain_id, mojom::ProviderError::kSuccess, "");
 }
 
 void JsonRpcService::AddEthereumChainForOrigin(
     mojom::NetworkInfoPtr chain,
-    const GURL& origin,
+    const url::Origin& origin,
     AddEthereumChainForOriginCallback callback) {
-  DCHECK_EQ(origin, url::Origin::Create(origin).GetURL());
   auto chain_id = chain->chain_id;
   if (IsChainExist(prefs_, chain_id)) {
     std::move(callback).Run(
@@ -306,7 +305,7 @@ void JsonRpcService::AddEthereumChainForOrigin(
         l10n_util::GetStringUTF8(IDS_SETTINGS_WALLET_NETWORKS_EXISTS));
     return;
   }
-  if (!origin.is_valid() || add_chain_pending_requests_.contains(chain_id) ||
+  if (origin.host().empty() || add_chain_pending_requests_.contains(chain_id) ||
       HasRequestFromOrigin(origin)) {
     std::move(callback).Run(
         chain_id, mojom::ProviderError::kUserRejectedRequest,
@@ -333,7 +332,7 @@ void JsonRpcService::AddEthereumChainForOrigin(
 
 void JsonRpcService::OnEthChainIdValidatedForOrigin(
     mojom::NetworkInfoPtr chain,
-    const GURL& origin,
+    const url::Origin& origin,
     AddEthereumChainForOriginCallback callback,
     bool success) {
   if (!success) {
@@ -346,8 +345,8 @@ void JsonRpcService::OnEthChainIdValidatedForOrigin(
   }
 
   auto chain_id = chain->chain_id;
-  add_chain_pending_requests_[chain_id] = std::move(chain);
-  add_chain_pending_requests_origins_[chain_id] = origin;
+  add_chain_pending_requests_[chain_id] =
+      mojom::AddChainRequest::New(MakeOriginInfo(origin), std::move(chain));
   std::move(callback).Run(chain_id, mojom::ProviderError::kSuccess, "");
 }
 
@@ -357,7 +356,8 @@ void JsonRpcService::AddEthereumChainRequestCompleted(
   if (!add_chain_pending_requests_.contains(chain_id))
     return;
   if (approved) {
-    AddCustomNetwork(prefs_, add_chain_pending_requests_.at(chain_id).Clone());
+    AddCustomNetwork(prefs_,
+                     *add_chain_pending_requests_.at(chain_id)->network_info);
   }
 
   std::string error =
@@ -365,7 +365,6 @@ void JsonRpcService::AddEthereumChainRequestCompleted(
                : l10n_util::GetStringUTF8(IDS_WALLET_USER_REJECTED_REQUEST);
   FirePendingRequestCompleted(chain_id, error);
   add_chain_pending_requests_.erase(chain_id);
-  add_chain_pending_requests_origins_.erase(chain_id);
 }
 
 void JsonRpcService::RemoveEthereumChain(const std::string& chain_id,
@@ -1498,14 +1497,15 @@ void JsonRpcService::GetPendingSwitchChainRequests(
     GetPendingSwitchChainRequestsCallback callback) {
   std::vector<mojom::SwitchChainRequestPtr> requests;
   for (const auto& request : switch_chain_requests_) {
-    requests.push_back(
-        mojom::SwitchChainRequest::New(request.first, request.second));
+    requests.push_back(mojom::SwitchChainRequest::New(
+        MakeOriginInfo(request.first), request.second));
   }
   std::move(callback).Run(std::move(requests));
 }
 
-void JsonRpcService::NotifySwitchChainRequestProcessed(bool approved,
-                                                       const GURL& origin) {
+void JsonRpcService::NotifySwitchChainRequestProcessed(
+    bool approved,
+    const url::Origin& origin) {
   if (!switch_chain_requests_.contains(origin) ||
       !switch_chain_callbacks_.contains(origin) ||
       !switch_chain_ids_.contains(origin)) {
@@ -1542,7 +1542,7 @@ void JsonRpcService::NotifySwitchChainRequestProcessed(bool approved,
 }
 
 bool JsonRpcService::AddSwitchEthereumChainRequest(const std::string& chain_id,
-                                                   const GURL& origin,
+                                                   const url::Origin& origin,
                                                    RequestCallback callback,
                                                    base::Value id) {
   bool reject = false;
@@ -1589,7 +1589,6 @@ void JsonRpcService::Reset() {
              mojom::CoinType::ETH);
 
   add_chain_pending_requests_.clear();
-  add_chain_pending_requests_origins_.clear();
   switch_chain_requests_.clear();
   // Reject pending suggest token requests when network changed.
   for (auto& callback : switch_chain_callbacks_) {

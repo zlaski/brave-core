@@ -7,6 +7,7 @@ import AsyncActionHandler from '../../../common/AsyncActionHandler'
 import * as WalletActions from '../actions/wallet_actions'
 import {
   ChainChangedEventPayloadType,
+  AddSitePermissionPayloadType,
   RemoveSitePermissionPayloadType,
   SetUserAssetVisiblePayloadType,
   UnlockWalletPayloadType,
@@ -113,8 +114,8 @@ handler.on(WalletActions.refreshBalancesAndPrices.getType(), async (store: Store
 handler.on(WalletActions.initialize.getType(), async (store) => {
   // Initialize active origin state.
   const braveWalletService = getAPIProxy().braveWalletService
-  const origin = await braveWalletService.getActiveOrigin()
-  store.dispatch(WalletActions.activeOriginChanged(origin))
+  const { originInfo } = await braveWalletService.getActiveOrigin()
+  store.dispatch(WalletActions.activeOriginChanged(originInfo))
   await refreshWalletInfo(store)
 })
 
@@ -537,7 +538,7 @@ handler.on(WalletActions.removeSitePermission.getType(), async (store: Store, pa
   await refreshWalletInfo(store)
 })
 
-handler.on(WalletActions.addSitePermission.getType(), async (store: Store, payload: RemoveSitePermissionPayloadType) => {
+handler.on(WalletActions.addSitePermission.getType(), async (store: Store, payload: AddSitePermissionPayloadType) => {
   const braveWalletService = getAPIProxy().braveWalletService
   await braveWalletService.addEthereumPermission(payload.origin, payload.account)
   await refreshWalletInfo(store)

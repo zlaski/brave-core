@@ -7,7 +7,6 @@ import {
   BraveWallet,
   WalletAccountType,
   DefaultCurrencies,
-  OriginInfo,
   WalletState
 } from '../../../constants/types'
 import {
@@ -82,7 +81,7 @@ import AdvancedTransactionSettings from '../advanced-transaction-settings'
 export type confirmPanelTabs = 'transaction' | 'details'
 
 export interface Props {
-  originInfo: OriginInfo
+  originInfo: BraveWallet.OriginInfo
   accounts: WalletAccountType[]
   visibleTokens: BraveWallet.BlockchainToken[]
   fullTokenList: BraveWallet.BlockchainToken[]
@@ -358,10 +357,11 @@ function ConfirmTransactionPanel (props: Props) {
       </TopRow>
       {transactionInfo.txType === BraveWallet.TransactionType.ERC20Approve ? (
         <>
-          <FavIcon src={`chrome://favicon/size/64@1x/${originInfo.origin}`} />
+          <FavIcon src={`chrome://favicon/size/64@1x/${originInfo.originSpec}`} />
           <URLText>
-            <CreateSiteOrigin
-              originInfo={originInfo}
+            <CreateSiteOrigin 
+              originSpec={originInfo.originSpec}
+              eTldPlusOne={originInfo.eTldPlusOne}
             />
           </URLText>
           <PanelTitle>{getLocale('braveWalletAllowSpendTitle').replace('$1', foundTokenInfoByContractAddress?.symbol ?? '')}</PanelTitle>

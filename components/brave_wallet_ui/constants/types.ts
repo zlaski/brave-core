@@ -11,6 +11,7 @@ import { HardwareWalletResponseCodeType } from '../common/hardware/types'
 // path of generated mojom files.
 export { BraveWallet }
 export { Url } from 'gen/url/mojom/url.mojom.m.js'
+export { Origin } from 'gen/url/mojom/origin.mojom.m.js'
 export { TimeDelta }
 
 interface TokenBalanceRegistry {
@@ -215,7 +216,7 @@ export interface WalletState {
   transactionSpotPrices: BraveWallet.AssetPrice[]
   addUserAssetError: boolean
   defaultWallet: BraveWallet.DefaultWallet
-  activeOrigin: OriginInfo
+  activeOrigin: BraveWallet.OriginInfo
   solFeeEstimates?: SolFeeEstimates
   gasEstimates?: BraveWallet.GasEstimation1559
   connectedAccounts: WalletAccountType[]
@@ -229,16 +230,16 @@ export interface WalletState {
 
 export interface PanelState {
   hasInitialized: boolean
-  connectToSiteOrigin: OriginInfo
+  connectToSiteOrigin: BraveWallet.OriginInfo
   selectedPanel: PanelTypes
   panelTitle: string
   connectingAccounts: string[]
-  networkPayload: BraveWallet.NetworkInfo
+  addChainRequest: BraveWallet.AddChainRequest
   signMessageData: BraveWallet.SignMessageRequest[]
   getEncryptionPublicKeyRequest: BraveWallet.GetEncryptionPublicKeyRequest
   switchChainRequest: BraveWallet.SwitchChainRequest
   hardwareWalletCode?: HardwareWalletResponseCodeType
-  suggestedToken?: BraveWallet.BlockchainToken
+  suggestedTokenRequest?: BraveWallet.AddSuggestTokenRequest
 }
 
 export interface PageState {
@@ -632,9 +633,4 @@ export enum CoinTypesMap {
   ETH = BraveWallet.CoinType.ETH,
   FIL = BraveWallet.CoinType.FIL,
   SOL = BraveWallet.CoinType.SOL
-}
-
-export type OriginInfo = {
-  origin: string
-  eTldPlusOne: string
 }

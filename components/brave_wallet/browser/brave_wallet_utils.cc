@@ -335,7 +335,7 @@ void GetAllEthCustomChains(PrefService* prefs,
   for (const auto& it : eth_custom_networks_list->GetList()) {
     mojom::NetworkInfoPtr chain = brave_wallet::ValueToEthNetworkInfo(it);
     if (chain)
-      result->push_back(chain->Clone());
+      result->push_back(std::move(chain));
   }
 }
 
@@ -895,7 +895,7 @@ std::string GetEnsRegistryContractAddress(const std::string& chain_id) {
   return "";
 }
 
-void AddCustomNetwork(PrefService* prefs, mojom::NetworkInfoPtr chain) {
+void AddCustomNetwork(PrefService* prefs, const mojom::NetworkInfo& chain) {
   DCHECK(prefs);
 
   absl::optional<base::Value> value =
@@ -917,7 +917,7 @@ void AddCustomNetwork(PrefService* prefs, mojom::NetworkInfoPtr chain) {
   }
 
   const std::string network_id =
-      GetNetworkId(prefs, mojom::CoinType::ETH, chain->chain_id);
+      GetNetworkId(prefs, mojom::CoinType::ETH, chain.chain_id);
   DCHECK(!network_id.empty());  // Not possible for a custom network.
 
   DictionaryPrefUpdate update(prefs, kBraveWalletUserAssets);
@@ -927,14 +927,14 @@ void AddCustomNetwork(PrefService* prefs, mojom::NetworkInfoPtr chain) {
 
   base::Value native_asset(base::Value::Type::DICTIONARY);
   native_asset.SetStringKey("contract_address", "");
-  native_asset.SetStringKey("name", chain->symbol_name);
-  native_asset.SetStringKey("symbol", chain->symbol);
+  native_asset.SetStringKey("name", chain.symbol_name);
+  native_asset.SetStringKey("symbol", chain.symbol);
   native_asset.SetBoolKey("is_erc20", false);
   native_asset.SetBoolKey("is_erc721", false);
-  native_asset.SetIntKey("decimals", chain->decimals);
+  native_asset.SetIntKey("decimals", chain.decimals);
   native_asset.SetBoolKey("visible", true);
-  native_asset.SetStringKey(
-      "logo", chain->icon_urls.empty() ? "" : chain->icon_urls[0]);
+  native_asset.SetStringKey("logo",
+                            chain.icon_urls.empty() ? "" : chain.icon_urls[0]);
 
   asset_list->Append(std::move(native_asset));
 }
@@ -984,6 +984,17 @@ absl::optional<std::string> GetPrefKeyForCoinType(mojom::CoinType coin) {
 std::string eTLDPlusOne(const GURL& url) {
   return net::registry_controlled_domains::GetDomainAndRegistry(
       url, net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
+}
+
+std::string eTLDPlusOne(const url::Origin& origin) {
+  return net::registry_controlled_domains::GetDomainAndRegistry(
+      origin.host(),
+      net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES);
+}
+
+mojom::OriginInfoPtr MakeOriginInfo(const url::Origin& origin) {
+  return mojom::OriginInfo::New(origin, origin.Serialize(),
+                                eTLDPlusOne(origin));
 }
 
 }  // namespace brave_wallet

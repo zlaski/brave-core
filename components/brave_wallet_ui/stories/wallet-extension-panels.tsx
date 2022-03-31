@@ -410,7 +410,7 @@ export const _ConnectWithSite = () => {
     setSelectedAccounts(newList)
   }
   const onSubmit = () => {
-    alert(`Connecting to ${originInfo.origin} using: ${JSON.stringify(selectedAccounts)}`)
+    alert(`Connecting to ${originInfo.originSpec} using: ${JSON.stringify(selectedAccounts)}`)
   }
   const primaryAction = () => {
     if (!readyToConnect) {

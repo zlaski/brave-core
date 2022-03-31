@@ -38,7 +38,7 @@ export interface Props {
   onCancel: () => void
 }
 
-function EncryptionKeyPanel (props: Props) {
+function EncryptionKeyPanel(props: Props) {
   const {
     panelType,
     accounts,
@@ -62,7 +62,7 @@ function EncryptionKeyPanel (props: Props) {
     setIsDecrypted(true)
   }
 
-  const descriptionString = getLocale('braveWalletProvideEncryptionKeyDescription').replace('$url', encryptionKeyPayload.origin.url)
+  const descriptionString = getLocale('braveWalletProvideEncryptionKeyDescription').replace('$url', encryptionKeyPayload.originInfo.originSpec)
   const { duringTag, afterTag } = splitStringForTag(descriptionString)
 
   return (
@@ -75,12 +75,9 @@ function EncryptionKeyPanel (props: Props) {
       {panelType === 'read' &&
         <URLText>
           <CreateSiteOrigin
-            originInfo={
-              {
-                origin: encryptionKeyPayload.origin.url,
-                eTldPlusOne: eTldPlusOne
-              }
-            }
+            originSpec={encryptionKeyPayload.originInfo.originSpec}
+            // TODO(apaymyshev): why originSpec is coming from payload, but eTldPlusOne from props?
+            eTldPlusOne={eTldPlusOne}
           />
         </URLText>
       }
@@ -109,12 +106,9 @@ function EncryptionKeyPanel (props: Props) {
             {panelType === 'request'
               ? <>
                 <CreateSiteOrigin
-                  originInfo={
-                    {
-                      origin: duringTag ?? '',
-                      eTldPlusOne: eTldPlusOne
-                    }
-                  } />
+                  originSpec={duringTag ?? ''}
+                  eTldPlusOne={eTldPlusOne}
+                />
                 {afterTag}
               </>
               : encryptionKeyPayload.message}
