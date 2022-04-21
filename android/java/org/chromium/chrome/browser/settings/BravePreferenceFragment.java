@@ -6,18 +6,20 @@
 package org.chromium.chrome.browser.settings;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.content.Intent;
 
-import org.chromium.chrome.R;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+
 import org.chromium.base.ContextUtils;
+import org.chromium.base.Log;
+import org.chromium.chrome.R;
 import org.chromium.chrome.browser.BraveFeatureList;
 import org.chromium.chrome.browser.ChromeTabbedActivity;
 import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -42,7 +44,9 @@ public class BravePreferenceFragment extends PreferenceFragmentCompat {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("bn", "onOptionsItemSelected : " + item.getItemId());
         if (item.getItemId() == R.id.close_menu_id) {
+            Log.d("bn", "onOptionsItemSelected  close_menu ");
             Intent intent = new Intent(getActivity(), ChromeTabbedActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);

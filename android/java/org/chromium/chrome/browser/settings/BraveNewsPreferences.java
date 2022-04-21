@@ -8,9 +8,11 @@ package org.chromium.chrome.browser.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -20,7 +22,9 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 
 import org.chromium.base.ContextUtils;
+import org.chromium.base.Log;
 import org.chromium.brave_news.mojom.BraveNewsController;
+import org.chromium.brave_news.mojom.FeedSearchResultItem;
 import org.chromium.brave_news.mojom.Publisher;
 import org.chromium.brave_news.mojom.PublisherType;
 import org.chromium.brave_news.mojom.UserEnabled;
@@ -38,9 +42,13 @@ import org.chromium.components.browser_ui.settings.SettingsLauncher;
 import org.chromium.components.browser_ui.settings.SettingsUtils;
 import org.chromium.mojo.bindings.ConnectionErrorHandler;
 import org.chromium.mojo.system.MojoException;
+import org.chromium.ui.widget.Toast;
 import org.chromium.url.mojom.Url;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +113,27 @@ public class BraveNewsPreferences extends BravePreferenceFragment
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("bn",
+                "option selected in newsprefs:" + item.getItemId()
+                        + " close:" + R.id.close_menu_id);
+
+        Log.d("bn", "option selected back");
+        SettingsLauncher settingsLauncher = new SettingsLauncherImpl();
+        settingsLauncher.launchSettingsActivity(getActivity(), BraveNewsPreferences.class);
+
+        return false;
+    }
+
     private void addRss(List<Publisher> publishers) {
+        Collections.sort(publishers, new Comparator<Publisher>() {
+            @Override
+            public int compare(Publisher o1, Publisher o2) {
+                return o1.publisherName.compareTo(o2.publisherName);
+            }
+        });
+
         for (Publisher publisher : publishers) {
             assert (publisher.type == PublisherType.DIRECT_SOURCE);
             SwitchPreference source = new SwitchPreference(ContextUtils.getApplicationContext());
@@ -246,21 +274,103 @@ public class BraveNewsPreferences extends BravePreferenceFragment
             Url rssUrl = new Url();
 
             rssUrl.url = (String) newValue;
-            mBraveNewsController.subscribeToNewDirectFeed(
-                    rssUrl, (isValidFeed, isDuplicate, result) -> {
-                        if (isValidFeed && !isDuplicate && result != null) {
+
+            Log.d("bn", "urlsverif 1 rssUrl.url :" + rssUrl.url);
+
+            if (!(rssUrl.url.startsWith("https://") || rssUrl.url.startsWith("http://"))) {
+                rssUrl.url = "https://" + rssUrl.url;
+                Log.d("bn", "urlsverif 2 insert rssUrl.url :" + rssUrl.url);
+            }
+
+            mBraveNewsController.findFeeds(rssUrl, (results) -> {
+                Log.d("bn", "urlsverif findFeeds results:" + Arrays.toString(results));
+                if (results.length == 0) {
+                    mAddSource.setText("");
+                    Toast.makeText(getActivity(), R.string.brave_rss_wrong_feed, Toast.LENGTH_LONG)
+                            .show();
+                } else if (results.length == 1) {
+                    Toast.makeText(getActivity(), R.string.vpn_connect_text, Toast.LENGTH_LONG)
+                            .show();
+                    subscribeToFeed(rssUrl);
+                } else {
+                    Log.d("bn", "urlsverif handle multiple sources");
+                    ArrayList<FeedSearchResultItem> urls = new ArrayList<>();
+                    for (int i = 0; i < results.length; i++) {
+                        Log.d("bn",
+                                "urlsverif findFeeds for source #" + i + " title:"
+                                        + results[i].feedTitle + " url:" + results[i].feedUrl.url);
+                        urls.add(results[i]);
+                        // populate checkboxes
+                        CheckBoxPreference source =
+                                new CheckBoxPreference(ContextUtils.getApplicationContext());
+                        source.setTitle(results[i].feedTitle);
+                        source.setChecked(true);
+                        sourcesScreen.addPreference(source);
+                    }
+
+                    // end fetch. finish the layout
+                    Preference button = new Preference(ContextUtils.getApplicationContext());
+                    button.setTitle("Add");
+                    button.setKey("add_news_source");
+                    button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
+                            Log.d("bn",
+                                    "subscribeToNewDirectFeed add stuff sourcesScreen.getPreferenceCount():"
+                                            + sourcesScreen.getPreferenceCount());
+                            for (int i = 0; i < sourcesScreen.getPreferenceCount(); i++) {
+                                Preference pref = sourcesScreen.getPreference(i);
+                                if (pref instanceof CheckBoxPreference) {
+                                    CheckBoxPreference cbPref = (CheckBoxPreference) pref;
+                                    Log.d("bn",
+                                            "subscribeToNewDirectFeed add pref title:"
+                                                    + cbPref.getTitle()
+                                                    + " ischecked:" + cbPref.isChecked()
+                                                    + " feed:" + urls.get(i).feedTitle);
+                                    if (cbPref.isChecked()) {
+                                        subscribeToFeed(urls.get(i).feedUrl);
+                                    }
+                                } else {
+                                    Log.d("bn", "not CB");
+                                }
+                            }
+
+                            mAddSource.setText("");
+                            // setPreferenceScreen(mMainScreen);
+
                             SharedPreferencesManager.getInstance().writeBoolean(
                                     BravePreferenceKeys.BRAVE_NEWS_CHANGE_SOURCE, true);
                             getActivity().finish();
                             SettingsLauncher settingsLauncher = new SettingsLauncherImpl();
                             settingsLauncher.launchSettingsActivity(
                                     getActivity(), BraveNewsPreferences.class);
+                            return true;
                         }
                     });
-            return true;
+                    sourcesScreen.addPreference(button);
+
+                    setPreferenceScreen(sourcesScreen);
+                }
+            });
+            return false;
         }
         setSourcesVisibility((boolean) newValue);
         return true;
+    }
+
+    private void subscribeToFeed(Url feedUrl) {
+        mBraveNewsController.subscribeToNewDirectFeed(
+                feedUrl, (isValidFeed, isDuplicate, result) -> {
+                    if (isValidFeed && !isDuplicate && result != null) {
+                        mAddSource.setText("");
+                        SharedPreferencesManager.getInstance().writeBoolean(
+                                BravePreferenceKeys.BRAVE_NEWS_CHANGE_SOURCE, true);
+                        getActivity().finish();
+                        SettingsLauncher settingsLauncher = new SettingsLauncherImpl();
+                        settingsLauncher.launchSettingsActivity(
+                                getActivity(), BraveNewsPreferences.class);
+                    }
+                });
     }
 
     private void setSourcesVisibility(boolean isNewsShown) {

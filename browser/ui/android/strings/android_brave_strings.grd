@@ -238,7 +238,9 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       <message name="IDS_BRAVE_NEWS_OPTIN_TITLE" desc="Text for opt in card title">
         Today’s top stories in a completely private feed, just for you.
       </message>
-
+      <message name="IDS_BRAVE_RSS_WRONG_FEED" desc="Text to display for a non-valid RSS source">
+        Sorry, we couldn't find a feed at that address.
+      </message>
        <message name="IDS_BRAVE_NEWS_OPTIN_SUBTITLE" desc="Text for opt in card subtitle">
         Brave News is ad-supported with completely private and anonymized ads matched on your device.
       </message>
