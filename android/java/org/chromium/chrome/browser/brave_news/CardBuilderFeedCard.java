@@ -234,6 +234,7 @@ public class CardBuilderFeedCard {
 
                     mLinearLayout.setBackground(roundedBackground());
                     try {
+                        /*
                         mBraveNewsController.getDisplayAd(adData -> {
                             if (adData != null) {
                                 NTPUtil.setsCurrentDisplayAd(adData);
@@ -392,7 +393,7 @@ public class CardBuilderFeedCard {
                                 });
                             }
                         });
-
+                    */
                     } catch (Exception e) {
                         Log.e(TAG, "displayad Exception" + e.getMessage());
                     }
