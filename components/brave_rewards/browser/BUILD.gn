@@ -71,7 +71,7 @@ static_library("browser") {
     deps += [ "//brave/components/ipfs" ]
   }
 
-  public_deps += [ "//brave/vendor/bat-native-ledger:headers" ]
+  public_deps += [ "//brave/vendor/bat-native-ledger" ]
 
   if (is_android) {
     deps += [ "//brave/components/safetynet:android" ]
@@ -84,7 +84,7 @@ source_set("testutil") {
     ":browser",
     "//base",
     "//brave/browser",
-    "//brave/vendor/bat-native-ledger:headers",
+    "//brave/vendor/bat-native-ledger",
     "//chrome/test:test_support",
     "//content/public/browser",
     "//testing/gtest",

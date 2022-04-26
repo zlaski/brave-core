@@ -9,12 +9,11 @@
 #include <cstdint>
 #include <string>
 
-#include "bat/ads/export.h"
 #include "bat/ads/transaction_info_aliases.h"
 
 namespace ads {
 
-struct ADS_EXPORT StatementInfo final {
+struct StatementInfo final {
   StatementInfo();
   StatementInfo(const StatementInfo& info);
   ~StatementInfo();

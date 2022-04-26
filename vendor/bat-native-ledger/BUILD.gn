@@ -51,57 +51,36 @@ buildflag_header("buildflags") {
   ]
 }
 
+bat_native_ledger_friends = [
+  "//brave/components/brave_rewards/test:*",
+  "//brave/test:*",
+  "//brave/vendor/bat-native-ledger/test:*",
+]
+
 config("internal_config") {
-  visibility = [
-    ":*",
-    "//brave/components/brave_rewards/test:*",
-    "//brave/test:*",
-    "//brave/vendor/bat-native-ledger/test:*",
-  ]
+  visibility = [":*"]
+  visibility += bat_native_ledger_friends
   include_dirs = [
     "src",
     "$target_gen_dir/src",
   ]
 }
 
-group("bat-native-ledger") {
-  public_deps = [ ":ledger" ]
-
-  data_deps = [ ":bat-native-ledger-standalone" ]
-}
-
-static_library("bat-native-ledger-standalone") {
-  # TODO(bridiver) - only export symbols from `include`
-  complete_static_lib = true
-
-  output_dir = root_out_dir
-
-  configs -= [ "//build/config/compiler:thin_archive" ]
-
-  defines = [ "STANDALONE_BUILD" ]
-
-  deps = [ ":ledger" ]
-}
-
-source_set("headers") {
-  visibility = [
-    ":*",
-    "//chrome/browser:browser",
-
-    # add this only when ads is in the same process
-    # rebase_path("bat-native-ads", dep_base),
-    "//brave/browser/extensions:extensions",
-    "//brave/browser/ui:ui",
-    "//brave/components/brave_rewards/browser:browser",
-    "//brave/components/brave_rewards/browser:testutil",
-    "//brave/vendor/bat-native-ledger/src/bat/ledger/internal/endpoint/payment",
-    "//brave/vendor/brave-ios:rewards_db",
+proto_library("publishers_proto") {
+  sources = [
+    "src/bat/ledger/internal/publisher/protos/channel_response.proto",
+    "src/bat/ledger/internal/publisher/protos/publisher_prefix_list.proto",
   ]
+}
+
+static_library("bat-native-ledger") {
+  configs += [ ":internal_config" ]
+
+  output_name = "bat_native_ledger"
 
   public_configs = [ ":external_config" ]
 
-  sources = [
-    "include/bat/ledger/export.h",
+  public = [
     "include/bat/ledger/global_constants.h",
     "include/bat/ledger/ledger.h",
     "include/bat/ledger/ledger_client.h",
@@ -114,20 +93,6 @@ source_set("headers") {
     ":buildflags",
     "include/bat/ledger/public/interfaces",
   ]
-}
-
-proto_library("publishers_proto") {
-  sources = [
-    "src/bat/ledger/internal/publisher/protos/channel_response.proto",
-    "src/bat/ledger/internal/publisher/protos/publisher_prefix_list.proto",
-  ]
-}
-
-source_set("ledger") {
-  visibility = [ ":*" ]
-  configs += [ ":internal_config" ]
-
-  output_name = "bat_native_ledger"
 
   sources = [
     "src/bat/ledger/internal/api/api.cc",
@@ -614,8 +579,5 @@ source_set("ledger") {
     rebase_path("brave_base", dep_base),
   ]
 
-  public_deps = [
-    ":buildflags",
-    ":headers",
-  ]
+  friend = bat_native_ledger_friends
 }

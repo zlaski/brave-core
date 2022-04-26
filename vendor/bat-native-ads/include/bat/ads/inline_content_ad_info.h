@@ -9,7 +9,6 @@
 #include <string>
 
 #include "bat/ads/ad_info.h"
-#include "bat/ads/export.h"
 
 namespace base {
 class DictionaryValue;
@@ -18,7 +17,7 @@ class Value;
 
 namespace ads {
 
-struct ADS_EXPORT InlineContentAdInfo final : AdInfo {
+struct InlineContentAdInfo final : AdInfo {
   InlineContentAdInfo();
   InlineContentAdInfo(const InlineContentAdInfo& info);
   ~InlineContentAdInfo();

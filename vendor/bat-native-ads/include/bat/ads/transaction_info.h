@@ -10,7 +10,6 @@
 
 #include "bat/ads/ad_type.h"
 #include "bat/ads/confirmation_type.h"
-#include "bat/ads/export.h"
 
 namespace base {
 class DictionaryValue;
@@ -19,7 +18,7 @@ class Value;
 
 namespace ads {
 
-struct ADS_EXPORT TransactionInfo final {
+struct TransactionInfo final {
   TransactionInfo();
   TransactionInfo(const TransactionInfo& info);
   ~TransactionInfo();

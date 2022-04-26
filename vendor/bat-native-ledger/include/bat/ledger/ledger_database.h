@@ -13,7 +13,7 @@
 
 namespace ledger {
 
-class LEDGER_EXPORT LedgerDatabase {
+class LedgerDatabase {
  public:
   LedgerDatabase() = default;
   virtual ~LedgerDatabase() = default;

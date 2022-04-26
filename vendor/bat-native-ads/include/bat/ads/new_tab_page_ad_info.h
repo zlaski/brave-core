@@ -9,12 +9,11 @@
 #include <string>
 
 #include "bat/ads/ad_info.h"
-#include "bat/ads/export.h"
 #include "bat/ads/new_tab_page_ad_wallpaper_info_aliases.h"
 
 namespace ads {
 
-struct ADS_EXPORT NewTabPageAdInfo final : AdInfo {
+struct NewTabPageAdInfo final : AdInfo {
   NewTabPageAdInfo();
   NewTabPageAdInfo(const NewTabPageAdInfo& info);
   ~NewTabPageAdInfo();

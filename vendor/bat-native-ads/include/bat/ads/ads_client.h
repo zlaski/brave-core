@@ -12,7 +12,6 @@
 
 #include "base/time/time.h"
 #include "bat/ads/ads_client_aliases.h"
-#include "bat/ads/export.h"
 #include "bat/ads/public/interfaces/ads.mojom.h"
 #include "brave/components/brave_federated/public/interfaces/brave_federated.mojom.h"
 
@@ -20,7 +19,7 @@ namespace ads {
 
 struct AdNotificationInfo;
 
-class ADS_EXPORT AdsClient {
+class AdsClient {
  public:
   virtual ~AdsClient() = default;
 

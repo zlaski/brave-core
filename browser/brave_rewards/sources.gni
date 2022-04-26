@@ -23,7 +23,7 @@ brave_browser_brave_rewards_deps = [
   "//brave/components/brave_rewards/browser",
   "//brave/components/brave_rewards/common",
   "//brave/components/ipfs/buildflags",
-  "//brave/vendor/bat-native-ledger:headers",
+  "//brave/vendor/bat-native-ledger",
   "//chrome/browser:browser_process",
   "//chrome/browser/profiles:profile",
   "//chrome/browser/ui",

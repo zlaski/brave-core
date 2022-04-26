@@ -9,7 +9,6 @@
 #include <string>
 
 #include "bat/ads/category_content_action_types.h"
-#include "bat/ads/export.h"
 
 namespace base {
 class DictionaryValue;
@@ -18,7 +17,7 @@ class Value;
 
 namespace ads {
 
-struct ADS_EXPORT CategoryContentInfo final {
+struct CategoryContentInfo final {
   CategoryContentInfo();
   CategoryContentInfo(const CategoryContentInfo& info);
   ~CategoryContentInfo();

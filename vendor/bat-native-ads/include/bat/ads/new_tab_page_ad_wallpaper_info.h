@@ -8,12 +8,11 @@
 
 #include <string>
 
-#include "bat/ads/export.h"
 #include "bat/ads/new_tab_page_ad_wallpaper_focal_point_info.h"
 
 namespace ads {
 
-struct ADS_EXPORT NewTabPageAdWallpaperInfo final {
+struct NewTabPageAdWallpaperInfo final {
   NewTabPageAdWallpaperInfo();
   NewTabPageAdWallpaperInfo(const NewTabPageAdWallpaperInfo& info);
   ~NewTabPageAdWallpaperInfo();

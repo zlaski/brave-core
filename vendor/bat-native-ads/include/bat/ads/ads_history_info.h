@@ -9,13 +9,11 @@
 #include <string>
 #include <vector>
 
-#include "bat/ads/export.h"
-
 namespace ads {
 
 struct AdHistoryInfo;
 
-struct ADS_EXPORT AdsHistoryInfo final {
+struct AdsHistoryInfo final {
   AdsHistoryInfo();
   AdsHistoryInfo(const AdsHistoryInfo& info);
   ~AdsHistoryInfo();

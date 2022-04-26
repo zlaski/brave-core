@@ -11,7 +11,6 @@
 #include "bat/ads/ad_content_action_types.h"
 #include "bat/ads/ad_type.h"
 #include "bat/ads/confirmation_type.h"
-#include "bat/ads/export.h"
 
 namespace base {
 class DictionaryValue;
@@ -20,7 +19,7 @@ class Value;
 
 namespace ads {
 
-struct ADS_EXPORT AdContentInfo final {
+struct AdContentInfo final {
   AdContentInfo();
   AdContentInfo(const AdContentInfo& info);
   ~AdContentInfo();

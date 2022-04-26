@@ -6,11 +6,9 @@
 #ifndef BRAVE_VENDOR_BAT_NATIVE_ADS_INCLUDE_BAT_ADS_NEW_TAB_PAGE_AD_WALLPAPER_FOCAL_POINT_INFO_H_
 #define BRAVE_VENDOR_BAT_NATIVE_ADS_INCLUDE_BAT_ADS_NEW_TAB_PAGE_AD_WALLPAPER_FOCAL_POINT_INFO_H_
 
-#include "bat/ads/export.h"
-
 namespace ads {
 
-struct ADS_EXPORT NewTabPageAdWallpaperFocalPointInfo final {
+struct NewTabPageAdWallpaperFocalPointInfo final {
   NewTabPageAdWallpaperFocalPointInfo();
   NewTabPageAdWallpaperFocalPointInfo(
       const NewTabPageAdWallpaperFocalPointInfo& info);

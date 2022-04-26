@@ -11,8 +11,6 @@
 #include <map>
 #include <utility>
 
-#include "bat/ledger/export.h"
-
 namespace ledger {
 namespace constant {
 

@@ -104,7 +104,7 @@ source_set("common") {
   visibility = brave_common_visibility_targets +
                # These are layering violation and need to be fixed
                [
-                 "//brave/vendor/bat-native-ads:ads",
+                 "//brave/vendor/bat-native-ads",
                  "//brave/components/p3a",
                  "//brave/components/brave_webtorrent/browser",
                  "//brave/components/brave_referrals/browser",

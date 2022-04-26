@@ -12,14 +12,13 @@
 #include "base/files/file_path.h"
 #include "base/memory/memory_pressure_listener.h"
 #include "base/sequence_checker.h"
-#include "bat/ads/export.h"
 #include "bat/ads/public/interfaces/ads.mojom.h"
 #include "sql/database.h"
 #include "sql/meta_table.h"
 
 namespace ads {
 
-class ADS_EXPORT Database final {
+class Database final {
  public:
   explicit Database(const base::FilePath& path);
   ~Database();

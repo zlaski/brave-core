@@ -15,7 +15,6 @@
 #include "bat/ads/ads_history_filter_types.h"
 #include "bat/ads/ads_history_sort_types.h"
 #include "bat/ads/category_content_action_types.h"
-#include "bat/ads/export.h"
 #include "bat/ads/public/interfaces/ads.mojom.h"
 
 namespace base {
@@ -51,7 +50,7 @@ extern const char g_catalog_json_schema_data_resource_name[];
 // Returns |true| if the locale is supported otherwise returns |false|.
 bool IsSupportedLocale(const std::string& locale);
 
-class ADS_EXPORT Ads {
+class Ads {
  public:
   Ads() = default;
   virtual ~Ads() = default;

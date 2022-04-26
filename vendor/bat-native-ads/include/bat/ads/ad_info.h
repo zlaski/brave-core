@@ -9,11 +9,10 @@
 #include <string>
 
 #include "bat/ads/ad_type.h"
-#include "bat/ads/export.h"
 
 namespace ads {
 
-struct ADS_EXPORT AdInfo {
+struct AdInfo {
   AdInfo();
   AdInfo(const AdInfo& info);
   ~AdInfo();

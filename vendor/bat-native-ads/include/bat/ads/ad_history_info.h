@@ -10,11 +10,10 @@
 
 #include "bat/ads/ad_content_info.h"
 #include "bat/ads/category_content_info.h"
-#include "bat/ads/export.h"
 
 namespace ads {
 
-struct ADS_EXPORT AdHistoryInfo final {
+struct AdHistoryInfo final {
   AdHistoryInfo();
   AdHistoryInfo(const AdHistoryInfo& info);
   ~AdHistoryInfo();

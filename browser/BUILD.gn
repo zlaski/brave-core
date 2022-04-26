@@ -33,7 +33,7 @@ group("browser") {
     "//brave:browser_dependencies",
     "//brave/browser/*",
     "//brave/test:*",
-    "//brave/vendor/bat-native-ledger:headers",
+    "//brave/vendor/bat-native-ledger",
 
     # these are layering violation and need to be fixed
     "//brave/components/brave_ads/test:brave_ads_unit_tests",

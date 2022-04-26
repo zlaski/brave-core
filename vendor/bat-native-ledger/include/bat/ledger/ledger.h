@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "base/containers/flat_map.h"
-#include "bat/ledger/export.h"
 #include "bat/ledger/mojom_structs.h"
 #include "bat/ledger/ledger_client.h"
 
@@ -111,7 +110,7 @@ using PostSuggestionsClaimCallback =
 using GetDrainCallback =
     std::function<void(type::Result result, type::DrainStatus status)>;
 
-class LEDGER_EXPORT Ledger {
+class Ledger {
  public:
   static bool IsMediaLink(const std::string& url,
                           const std::string& first_party_url,

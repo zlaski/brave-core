@@ -18,46 +18,26 @@ config("external_config") {
   ]
 }
 
+bat_native_ads_friends = [
+  "//brave/components/brave_ads/browser:testutil",
+  "//brave/components/brave_ads/test:*",
+  "//brave/test:*",
+]
+
 config("internal_config") {
-  visibility = [
-    ":*",
-    "//brave/components/brave_ads/browser:testutil",
-    "//brave/components/brave_ads/test:*",
-    "//brave/test:*",
-  ]
+  visibility = [":*"]
+  visibility += bat_native_ads_friends
   include_dirs = [ "src" ]
 }
 
-group("bat-native-ads") {
-  public_deps = [ ":ads" ]
+static_library("bat-native-ads") {
+  configs += [ ":internal_config" ]
 
-  data_deps = [ ":bat-native-ads-standalone" ]
-}
-
-static_library("bat-native-ads-standalone") {
-  # TODO(bridiver) - only export symbols from `include`
-  complete_static_lib = true
-
-  output_dir = root_out_dir
-
-  configs -= [ "//build/config/compiler:thin_archive" ]
-
-  defines = [ "STANDALONE_BUILD" ]
-
-  deps = [ ":ads" ]
-}
-
-source_set("headers") {
-  visibility = [
-    ":*",
-    "//brave/browser/extensions:extensions",
-    "//brave/components/brave_ads/test:*",
-    "//brave/test:*",
-  ]
+  output_name = "bat_native_ads"
 
   public_configs = [ ":external_config" ]
 
-  sources = [
+  public = [
     "include/bat/ads/ad_content_action_types.h",
     "include/bat/ads/ad_content_info.h",
     "include/bat/ads/ad_event_history.h",
@@ -76,7 +56,6 @@ source_set("headers") {
     "include/bat/ads/category_content_info.h",
     "include/bat/ads/confirmation_type.h",
     "include/bat/ads/database.h",
-    "include/bat/ads/export.h",
     "include/bat/ads/inline_content_ad_info.h",
     "include/bat/ads/new_tab_page_ad_info.h",
     "include/bat/ads/new_tab_page_ad_wallpaper_focal_point_info.h",
@@ -94,12 +73,6 @@ source_set("headers") {
     "//brave/components/brave_federated/public/interfaces",
     "//sql",
   ]
-}
-
-source_set("ads") {
-  configs += [ ":internal_config" ]
-
-  output_name = "bat_native_ads"
 
   sources = [
     "src/bat/ads/ad_content_info.cc",
@@ -1070,5 +1043,5 @@ source_set("ads") {
     rebase_path("brave_base", dep_base),
   ]
 
-  public_deps = [ ":headers" ]
+  friend = bat_native_ads_friends
 }

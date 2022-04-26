@@ -10,7 +10,6 @@
 #include <vector>
 
 #include "base/containers/flat_map.h"
-#include "bat/ads/export.h"
 
 namespace base {
 class Time;
@@ -18,7 +17,7 @@ class Time;
 
 namespace ads {
 
-class ADS_EXPORT AdEventHistory final {
+class AdEventHistory final {
  public:
   AdEventHistory();
   ~AdEventHistory();

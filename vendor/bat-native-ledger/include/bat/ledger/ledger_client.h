@@ -12,7 +12,6 @@
 #include <string>
 #include <map>
 
-#include "bat/ledger/export.h"
 #include "bat/ledger/mojom_structs.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
 
@@ -45,7 +44,7 @@ using GetServerPublisherInfoCallback =
 
 }  // namespace client
 
-class LEDGER_EXPORT LedgerClient {
+class LedgerClient {
  public:
   virtual ~LedgerClient() = default;
 
