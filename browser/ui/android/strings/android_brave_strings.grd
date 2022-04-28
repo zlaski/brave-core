@@ -3007,6 +3007,9 @@ If you don't accept this request, VPN will not reconnect and your internet conne
     <message name="IDS_FRAGMENT_ADD_TOKEN_DESCRIPTION" desc="Add token dialog description.">
       Would you like to import this token?
     </message>
+    <message name="IDS_PROFILE_CREDENTIALS_HAVE_CHANGED" desc="Profile credentials failed toast text">
+      Profile credentials have changed.\nGetting the new One...
+    </message>
   </messages>
   </release>
 </grit>
