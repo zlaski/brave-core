@@ -405,8 +405,47 @@ This file contains all "about" strings.  It is set to NOT be translated, in tran
       </message>
 
       <!-- Onboarding strings -->
+      <message name="IDS_WELCOME_TO_BRAVE" desc="Text for welcome onboarding">
+        Welcome to Brave
+      </message>
+      <message name="IDS_PRIVACY_ONBOARDING" desc="Text for privacy onboarding">
+        Privacy. Made simple.
+      </message>
+      <message name="IDS_ONBOARDING_SET_DEFAULT" desc="Text for set default onboarding">
+        With Brave as default, every link you tap opens with Brave's privacy protections.
+      </message>
+      <message name="IDS_P3A_TITLE" desc="Text for p3a title onboarding">
+        Help make Brave better.
+      </message>
+      <message name="IDS_P3A_CRASH" desc="Text for p3a crash onboarding">
+        Send anonymous diagnostic reports if you experience a crash or freeze.
+      </message>
+      <message name="IDS_P3A_INSIGHTS" desc="Text for p3a insights onboarding">
+        Share completely private and anonymous product insights about what features are being used by Brave's users.
+      </message>
+      <message name="IDS_TYPE_WEBSITE" desc="Text for searhbox tooltip title onboarding">
+        Type a website name or URL
+      </message>
+      <message name="IDS_SEARCHBOX_ONBOARDING" desc="Text for searhbox tooltip onboarding">
+        See the Brave difference: No ads. No trackers. Way faster page load.
+      </message>
+      <message name="IDS_SHIELD_ONBOARDING" desc="Text for shield tooltip onboarding">
+        Tap to view Brave Shields
+      </message>
+      <message name="IDS_SHIELD_TOOLTIP_DESC" desc="Text for shield tooltip description onboarding">
+        See all the bad stuff Brave blocked, on every page, with Shields.
+      </message>
+      <message name="IDS_SHIELD_BIGTECH_TRACKER_BLOCKED" desc="Text for shield tracker big tech blocked tooltip onboarding">
+        <ph name="BIG_TECH">%1$s<ex>google</ex></ph> and <ph name="TRACKER">%2$s<ex>1</ex></ph> other ads &amp; trackers blocked
+      </message>
+      <message name="IDS_SHIELD_TRACKER_BLOCKED" desc="Text for shield tracker blocked tooltip onboarding">
+        <ph name="TRACKER_COUNT">%1$s<ex>1</ex></ph> ads &amp; trackers blocked
+      </message>
       <message name="IDS_SKIP" desc="Text for skip button in onboarding">
         Skip
+      </message>
+      <message name="IDS_LEARN_MORE_ONBOARDING" desc="Text for learn more button onboarding">
+        Learn more
       </message>
       <message name="IDS_TROUBLESHOOTING_ONBOARDING" desc="Text for trouble shooting page for onboarding">
         Troubleshooting onboarding
@@ -1216,9 +1255,6 @@ Are you sure you want to do this?
       <message name="IDS_TOOLTIP_TEXT_1" desc="Shields tootltip text">
         Brave Shields just protected your privacy.
       </message>
-      <message name="IDS_TAKE_A_LOOK" desc="Shields tootltip button text">
-        Take a look
-      </message>
       <message name="IDS_TOOLTIP_TITLE_2" desc="Shields tootltip title">
         Ads are blocked while watching videos on this website.
       </message>
@@ -1387,7 +1423,7 @@ Are you sure you want to do this?
       <message name="IDS_NOTIFICATION_REWARDS" desc="Rewards notification text">
         Earn tokens by viewing privacy-respecting ads and support your favorite websites.
       </message>
-      <message name="IDS_NOTIFICATION_BRAVE_STATS_TRACKERS" desc="Rewards notification text">
+      <!-- <message name="IDS_NOTIFICATION_BRAVE_STATS_TRACKERS" desc="Rewards notification text">
         Nice! You've blocked 250 trackers &amp; ads with Brave browser.🔥
       </message>
       <message name="IDS_NOTIFICATION_BRAVE_STATS_DATA" desc="Rewards notification text">
@@ -1395,7 +1431,7 @@ Are you sure you want to do this?
       </message>
       <message name="IDS_NOTIFICATION_BRAVE_STATS_TIME" desc="Rewards notification text">
         Nice! You've saved 10 Mins of loading time with Brave browser.💨💨
-      </message>
+      </message> -->
       <message name="IDS_START_BROWSING_TO_SEE" desc="Brave stats empty text">
         Start browsing to see privacy reporting
       </message>
