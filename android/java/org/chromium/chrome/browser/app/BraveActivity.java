@@ -21,6 +21,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -29,8 +31,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import android.widget.RelativeLayout;
+import android.graphics.Rect;
+import android.view.Window;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -99,7 +107,9 @@ import org.chromium.chrome.browser.crypto_wallet.activities.BraveWalletActivity;
 import org.chromium.chrome.browser.crypto_wallet.activities.BraveWalletDAppsActivity;
 import org.chromium.chrome.browser.crypto_wallet.activities.NetworkSelectorActivity;
 import org.chromium.chrome.browser.crypto_wallet.util.Utils;
+import org.chromium.chrome.browser.custom_layout.popup_window_tooltip.PopupWindowTooltip;
 import org.chromium.chrome.browser.dependency_injection.ChromeActivityComponent;
+import org.chromium.chrome.browser.firstrun.BraveFirstRunUtils;
 import org.chromium.chrome.browser.flags.ChromeFeatureList;
 import org.chromium.chrome.browser.flags.ChromeSwitches;
 import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
@@ -107,8 +117,11 @@ import org.chromium.chrome.browser.informers.BraveAndroidSyncDisabledInformer;
 import org.chromium.chrome.browser.notifications.retention.RetentionNotificationUtil;
 import org.chromium.chrome.browser.ntp_background_images.util.NewTabPageListener;
 import org.chromium.chrome.browser.onboarding.BraveTalkOptInPopupListener;
+import org.chromium.chrome.browser.onboarding.OnboardingActivity;
 import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.onboarding.v2.HighlightDialogFragment;
+import org.chromium.chrome.browser.onboarding.v2.HighlightItem;
+import org.chromium.chrome.browser.onboarding.v2.HighlightView;
 import org.chromium.chrome.browser.preferences.BravePrefServiceBridge;
 import org.chromium.chrome.browser.preferences.BravePreferenceKeys;
 import org.chromium.chrome.browser.preferences.Pref;
@@ -160,6 +173,7 @@ import org.chromium.content_public.browser.WebContents;
 import org.chromium.mojo.bindings.ConnectionErrorHandler;
 import org.chromium.mojo.system.MojoException;
 import org.chromium.ui.widget.Toast;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -654,7 +668,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     @Override
     protected void initializeStartupMetrics() {
         super.initializeStartupMetrics();
-
+        // BraveFirstRunUtils.firstRunFlowComplete();
         // Disable FRE for arm64 builds where ChromeActivity is the one that
         // triggers FRE instead of ChromeLauncherActivity on arm32 build.
         BraveHelper.DisableFREDRP();
@@ -838,6 +852,45 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
             }
         }
         initNativeServices();
+
+        if (OnboardingPrefManager.getInstance().isOnboardingSearchBoxTooltip()) {
+            showSearchBoxTooltip();
+        }
+    }
+
+    private void showSearchBoxTooltip() {
+        OnboardingPrefManager.getInstance().setOnboardingSearchBoxTooltip(false);
+
+        HighlightView highlightView = new HighlightView(this, null);
+        highlightView.setColor(
+                ContextCompat.getColor(this, R.color.onboarding_search_highlight_color));
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View anchorView = (View) findViewById(R.id.url_bar);//toolbar);
+        float padding = (float) dpToPx(this, 16);
+        new Handler().postDelayed(() -> {
+            PopupWindowTooltip popupWindowTooltip =
+                    new PopupWindowTooltip.Builder(this)
+                            .anchorView(anchorView)
+                            .arrowColor(getResources().getColor(R.color.onboarding_arrow_color))
+                            .gravity(Gravity.BOTTOM)
+                            .dismissOnOutsideTouch(true)
+                            .dismissOnInsideTouch(false)
+                            .backgroundDimDisabled(true)
+                            .padding(padding)
+                            .onDismissListener(tooltip -> {
+                                if (viewGroup != null && highlightView != null) {
+                                    viewGroup.removeView(highlightView);
+                                }
+                            })
+                            .modal(true)
+                            .contentView(R.layout.brave_onboarding_searchbox)
+                            .build();
+
+            viewGroup.addView(highlightView);
+            HighlightItem item = new HighlightItem(anchorView);
+            highlightView.setHighlightItem(item);
+            popupWindowTooltip.show();
+        }, 500);
     }
 
     public void setDormantUsersPrefs() {
@@ -1014,9 +1067,6 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
                     checkForBraveStats();
                     break;
                 case RetentionNotificationUtil.DAY_6:
-                case RetentionNotificationUtil.BRAVE_STATS_ADS_TRACKERS:
-                case RetentionNotificationUtil.BRAVE_STATS_DATA:
-                case RetentionNotificationUtil.BRAVE_STATS_TIME:
                     if (getActivityTab() != null && getActivityTab().getUrl().getSpec() != null
                             && !UrlUtilities.isNTPUrl(getActivityTab().getUrl().getSpec())) {
                         getTabCreator(false).launchUrl(

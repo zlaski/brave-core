@@ -54,6 +54,7 @@ public class PopupWindowTooltip implements PopupWindow.OnDismissListener {
     private final boolean mDismissOnInsideTouch;
     private final boolean mDismissOnOutsideTouch;
     private final boolean mModal;
+    private final boolean mBackgroundDimDisabled;
     private final View mContentView;
     private View mContentLayout;
     private final View mAnchorView;
@@ -86,6 +87,7 @@ public class PopupWindowTooltip implements PopupWindow.OnDismissListener {
         mPadding = builder.padding;
         mOnDismissListener = builder.onDismissListener;
         mOnShowListener = builder.onShowListener;
+        mBackgroundDimDisabled = builder.backgroundDimDisabled;
         mRootView = PopupWindowTooltipUtils.findFrameLayout(mAnchorView);
         this.width = builder.width;
         this.height = builder.height;
@@ -142,7 +144,9 @@ public class PopupWindowTooltip implements PopupWindow.OnDismissListener {
                 if (mRootView.isShown()) {
                     mPopupWindow.showAtLocation(mRootView, Gravity.NO_GRAVITY, mRootView.getWidth(),
                             mRootView.getHeight());
-                    dimBackgroundPopupWindow();
+                    if (!mBackgroundDimDisabled) {
+                        dimBackgroundPopupWindow();
+                    }
                 } else
                     Log.e(TAG, "Tooltip cannot be shown, root view is invalid or has been closed.");
             }
@@ -157,6 +161,11 @@ public class PopupWindowTooltip implements PopupWindow.OnDismissListener {
         p.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         p.dimAmount = 0.4f;
         wm.updateViewLayout(container, p);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                //getWindow().getAttributes().setBlurBehindRadius(50);
+            //mPopupWindow.setBackgroundBlurRadius(150);
+        }
     }
 
     private void verifyDismissed() {
@@ -383,6 +392,7 @@ public class PopupWindowTooltip implements PopupWindow.OnDismissListener {
         private boolean dismissOnInsideTouch = true;
         private boolean dismissOnOutsideTouch = true;
         private boolean modal;
+        private boolean backgroundDimDisabled = false;
         private View contentView;
         private View anchorView;
         private int arrowDirection = ArrowColorDrawable.AUTO;
@@ -454,6 +464,10 @@ public class PopupWindowTooltip implements PopupWindow.OnDismissListener {
         }
         public Builder modal(boolean modal) {
             this.modal = modal;
+            return this;
+        }
+        public Builder backgroundDimDisabled(boolean backgroundDimDisabled) {
+            this.backgroundDimDisabled = backgroundDimDisabled;
             return this;
         }
         public Builder anchorView(View anchorView) {
