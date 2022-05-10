@@ -850,7 +850,6 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
             }
         }
         initNativeServices();
-
         if (OnboardingPrefManager.getInstance().isOnboardingSearchBoxTooltip()) {
             showSearchBoxTooltip();
         }
@@ -863,7 +862,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
         highlightView.setColor(
                 ContextCompat.getColor(this, R.color.onboarding_search_highlight_color));
         ViewGroup viewGroup = findViewById(android.R.id.content);
-        View anchorView = (View) findViewById(R.id.url_bar); // toolbar);
+        View anchorView = (View) findViewById(R.id.url_bar);
         float padding = (float) dpToPx(this, 16);
         new Handler().postDelayed(() -> {
             PopupWindowTooltip popupWindowTooltip =
