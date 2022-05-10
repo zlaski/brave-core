@@ -161,11 +161,6 @@ public class PopupWindowTooltip implements PopupWindow.OnDismissListener {
         p.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         p.dimAmount = 0.4f;
         wm.updateViewLayout(container, p);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // getWindow().getAttributes().setBlurBehindRadius(50);
-            // mPopupWindow.setBackgroundBlurRadius(150);
-        }
     }
 
     private void verifyDismissed() {

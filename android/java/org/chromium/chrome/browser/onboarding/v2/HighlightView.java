@@ -14,11 +14,8 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -34,7 +31,6 @@ import androidx.core.content.ContextCompat;
 
 import org.chromium.base.Log;
 import org.chromium.chrome.R;
-import org.chromium.ui.base.DeviceFormFactor;
 
 public class HighlightView extends FrameLayout {
 
@@ -74,7 +70,6 @@ public class HighlightView extends FrameLayout {
             Window window = ((Activity) context).getWindow();
             window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
             mStatusBarHeight = rectangle.top;
-            Log.e("tapan", "statusBarHeight:" + mStatusBarHeight);
         }
         eraserPaint.setColor(mColor);
         eraserPaint.setAlpha(0);
@@ -193,12 +188,11 @@ public class HighlightView extends FrameLayout {
                     cx, cy, mOuterRadius * outerRadiusScaleMultiplier, outterBorderPaint);
 
         } else {
-            boolean isTablet = DeviceFormFactor.isNonMultiDisplayContextOnTablet(context);
             eraserPaint.setAlpha(0);
             outterBorderPaint.setStrokeWidth(6);
             RectF innerRect = new RectF(item.getScreenLeft() + 10,
                     (item.getScreenTop() - mStatusBarHeight) + 10, item.getScreenRight() - 10,
-                    item.getScreenBottom() - (isTablet ? 45 : 10) - mStatusBarHeight);
+                    item.getScreenBottom() - 10 - mStatusBarHeight);
             overlayCanvas.drawRoundRect(innerRect, 12, 12, eraserPaint);
 
             /*Paint shadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -208,9 +202,9 @@ public class HighlightView extends FrameLayout {
             shadowPaint.setMaskFilter(
                     new BlurMaskFilter(22, BlurMaskFilter.Blur.NORMAL));*/
 
-            RectF outerRect = new RectF(item.getScreenLeft(),
-                    item.getScreenTop() - mStatusBarHeight, item.getScreenRight(),
-                    item.getScreenBottom() - (isTablet ? 35 : 0) - mStatusBarHeight);
+            RectF outerRect =
+                    new RectF(item.getScreenLeft(), item.getScreenTop() - mStatusBarHeight,
+                            item.getScreenRight(), item.getScreenBottom() - mStatusBarHeight);
 
             // Draw shadow before drawing object
             //            overlayCanvas.drawRoundRect(outerRect, 22, 22, shadowPaint);

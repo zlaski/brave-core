@@ -16,6 +16,7 @@ public class HighlightItem {
     private int screenBottom;
 
     public HighlightItem(View highlightView) {
+        
         int[] location = new int[2];
         highlightView.getLocationOnScreen(location);
         screenLeft = location[0];
