@@ -9,10 +9,10 @@ package org.chromium.chrome.browser.onboarding.v2;
 
 import static org.chromium.ui.base.ViewUtils.dpToPx;
 
-import android.app.Activity;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -22,19 +22,19 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.graphics.Rect;
-import android.view.Window;
 
 import androidx.annotation.Keep;
 import androidx.core.content.ContextCompat;
 
+import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.ui.base.DeviceFormFactor;
-import org.chromium.base.Log;
 
 public class HighlightView extends FrameLayout {
 
@@ -69,12 +69,12 @@ public class HighlightView extends FrameLayout {
             mColor = ContextCompat.getColor(context, android.R.color.white);
         }
 
-        if(context instanceof Activity) {
+        if (context instanceof Activity) {
             Rect rectangle = new Rect();
             Window window = ((Activity) context).getWindow();
             window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
             mStatusBarHeight = rectangle.top;
-            Log.e("tapan","statusBarHeight:"+mStatusBarHeight);
+            Log.e("tapan", "statusBarHeight:" + mStatusBarHeight);
         }
         eraserPaint.setColor(mColor);
         eraserPaint.setAlpha(0);
@@ -208,8 +208,8 @@ public class HighlightView extends FrameLayout {
             shadowPaint.setMaskFilter(
                     new BlurMaskFilter(22, BlurMaskFilter.Blur.NORMAL));*/
 
-            RectF outerRect = new RectF(item.getScreenLeft(), item.getScreenTop() - mStatusBarHeight,
-                    item.getScreenRight(),
+            RectF outerRect = new RectF(item.getScreenLeft(),
+                    item.getScreenTop() - mStatusBarHeight, item.getScreenRight(),
                     item.getScreenBottom() - (isTablet ? 35 : 0) - mStatusBarHeight);
 
             // Draw shadow before drawing object

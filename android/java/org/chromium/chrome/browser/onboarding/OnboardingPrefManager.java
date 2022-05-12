@@ -44,12 +44,12 @@ public class OnboardingPrefManager {
     private static final String PREF_NEXT_CROSS_PROMO_MODAL_DATE = "next_cross_promo_modal_date";
     /*private static final String PREF_NEXT_SET_DEFAULT_BROWSER_MODAL_DATE =
             "next_set_default_browser_modal_date";*/
-    //private static final String PREF_ONBOARDING_FOR_SKIP = "onboarding_for_skip";
-    //private static final String PREF_ONBOARDING_SKIP_COUNT = "onboarding_skip_count";
+    // private static final String PREF_ONBOARDING_FOR_SKIP = "onboarding_for_skip";
+    // private static final String PREF_ONBOARDING_SKIP_COUNT = "onboarding_skip_count";
     private static final String PREF_SEARCH_ENGINE_ONBOARDING = "search_engine_onboarding";
     public static final String PREF_BRAVE_STATS = "brave_stats";
     public static final String PREF_BRAVE_STATS_NOTIFICATION = "brave_stats_notification";
-    //public static final String ONBOARDING_TYPE = "onboarding_type";
+    // public static final String ONBOARDING_TYPE = "onboarding_type";
     public static final String FROM_NOTIFICATION = "from_notification";
     public static final String FROM_STATS = "from_stats";
     public static final String ONE_TIME_NOTIFICATION = "one_time_notification";
