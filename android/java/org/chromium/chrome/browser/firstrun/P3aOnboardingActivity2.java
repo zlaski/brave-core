@@ -11,6 +11,7 @@ import static org.chromium.ui.base.ViewUtils.dpToPx;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -18,20 +19,20 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.os.Handler;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+
 import org.chromium.base.Log;
 import org.chromium.base.ThreadUtils;
 import org.chromium.chrome.R;
@@ -43,8 +44,9 @@ import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.preferences.BravePrefServiceBridge;
 import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
 import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
-import org.chromium.chrome.browser.util.PackageUtils;
+import org.chromium.chrome.browser.privacy.settings.PrivacyPreferencesManagerImpl;
 import org.chromium.chrome.browser.set_default_browser.BraveSetDefaultBrowserUtils;
+import org.chromium.chrome.browser.util.PackageUtils;
 
 import java.lang.Math;
 
@@ -64,15 +66,15 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
     private ImageView mIvBrave;
     private ImageView mIvArrowDown;
     private LinearLayout mLayoutCard;
-    private LinearLayout mLayoutP3aCrash;
-    private LinearLayout mLayoutP3aInsights;
+    private LinearLayout mLayoutCrash;
+    private LinearLayout mLayoutP3a;
     private TextView mTvWelcome;
     private TextView mTvCard;
     private TextView mTvDefault;
     private Button mBtnPositive;
     private Button mBtnNegative;
-    private CheckBox mCheckboxP3aCrash;
-    private CheckBox mCheckboxP3aInsights;
+    private CheckBox mCheckboxCrash;
+    private CheckBox mCheckboxP3a;
 
     private int mCurrentStep = -1;
 
@@ -85,9 +87,9 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
         initViews();
         setImages();
         onClickViews();
-        
+
         OnboardingPrefManager.getInstance().setOnboardingSearchBoxTooltip(true);
-        
+
         mInitializeViewsDone = true;
         if (mInvokePostWorkAtInitializeViews) {
             finishNativeInitializationPostWork();
@@ -103,44 +105,35 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
         mIvBrave = findViewById(R.id.iv_brave);
         mIvArrowDown = findViewById(R.id.iv_arrow_down);
         mLayoutCard = findViewById(R.id.layout_card);
-        mLayoutP3aCrash = findViewById(R.id.layout_p3a_crash);
-        mLayoutP3aInsights = findViewById(R.id.layout_p3a_insights);
+        mLayoutCrash = findViewById(R.id.layout_crash);
+        mLayoutP3a = findViewById(R.id.layout_p3a);
         mTvWelcome = findViewById(R.id.tv_welcome);
         mTvCard = findViewById(R.id.tv_card);
         mTvDefault = findViewById(R.id.tv_default);
-        mCheckboxP3aCrash = findViewById(R.id.checkbox_p3a_crash);
-        mCheckboxP3aInsights = findViewById(R.id.checkbox_p3a_insights);
+        mCheckboxCrash = findViewById(R.id.checkbox_crash);
+        mCheckboxP3a = findViewById(R.id.checkbox_p3a);
         mBtnPositive = findViewById(R.id.btn_positive);
         mBtnNegative = findViewById(R.id.btn_negative);
     }
 
     private void setImages() {
-
-        Glide.with(this)
-            .load(R.drawable.ic_onboarding_bg)
-            .centerCrop()
-            .into(mIvBackground);
+        Glide.with(this).load(R.drawable.ic_onboarding_bg).centerCrop().into(mIvBackground);
 
         new Handler().postDelayed(() -> {
-            Glide.with(this)
-                .load(R.drawable.ic_onboarding_top_leaf)
-                .into(mIvLeafTop);
+            Glide.with(this).load(R.drawable.ic_onboarding_top_leaf).into(mIvLeafTop);
 
-            Glide.with(this)
-                .load(R.drawable.ic_onboarding_bottom_leaf)
-                .into(mIvLeafBottom);
+            Glide.with(this).load(R.drawable.ic_onboarding_bottom_leaf).into(mIvLeafBottom);
 
-            Glide.with(this)
-                .load(R.drawable.ic_brave_onboarding)
-                .into(mIvBrave);
+            Glide.with(this).load(R.drawable.ic_brave_onboarding).into(mIvBrave);
         }, 150);
     }
 
     private void onClickViews() {
         mBtnPositive.setOnClickListener(view -> {
-            if (mCurrentStep == 1 && !BraveSetDefaultBrowserUtils.isBraveSetAsDefaultBrowser(this)) {
+            if (mCurrentStep == 1
+                    && !BraveSetDefaultBrowserUtils.isBraveSetAsDefaultBrowser(this)) {
                 BraveSetDefaultBrowserUtils.setDefaultBrowser(this);
-                if(!BraveSetDefaultBrowserUtils.supportsDefaultRoleManager()) {
+                if (!BraveSetDefaultBrowserUtils.supportsDefaultRoleManager()) {
                     nextOnboardingStep();
                 }
             } else {
@@ -149,7 +142,7 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
         });
 
         mBtnNegative.setOnClickListener(view -> {
-            if(mCurrentStep == 2) {
+            if (mCurrentStep == 2) {
                 CustomTabActivity.showInfoPage(this, P3A_URL);
             } else {
                 nextOnboardingStep();
@@ -176,7 +169,7 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
             setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.3f, 30, false);
 
             mTvWelcome.setVisibility(View.VISIBLE);
-            
+
             if (BraveSetDefaultBrowserUtils.isBraveSetAsDefaultBrowser(this)) {
                 mBtnPositive.setText(getResources().getString(R.string.continue_text));
             } else {
@@ -191,8 +184,7 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
             mLayoutCard.setVisibility(View.VISIBLE);
             mIvArrowDown.setVisibility(View.VISIBLE);
 
-        } else if(mCurrentStep == 2) {
-
+        } else if (mCurrentStep == 2) {
             setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.5f, 60, true);
             setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.5f, 60, false);
 
@@ -204,6 +196,23 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
             mBtnPositive.setText(getResources().getString(R.string.continue_text));
             mBtnNegative.setText(getResources().getString(R.string.learn_more_onboarding));
 
+            PrivacyPreferencesManagerImpl privacyPreferenceManager =
+                    PrivacyPreferencesManagerImpl.getInstance();
+            boolean isCrashReportingEnabled =
+                    privacyPreferenceManager.isUsageAndCrashReportingPermittedByUser();
+
+            mCheckboxCrash.setChecked(isCrashReportingEnabled);
+            mCheckboxCrash.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
+                        privacyPreferenceManager.setUsageAndCrashReporting(isChecked);
+                    } catch (Exception e) {
+                        Log.e("CrashReportingOnboarding", e.getMessage());
+                    }
+                }
+            });
+
             boolean isP3aEnabled = false;
 
             try {
@@ -212,21 +221,8 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
                 Log.e("P3aOnboarding", e.getMessage());
             }
 
-            mCheckboxP3aCrash.setChecked(isP3aEnabled);
-            mCheckboxP3aCrash.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    try {
-                        BravePrefServiceBridge.getInstance().setP3AEnabled(isChecked);
-                        BravePrefServiceBridge.getInstance().setP3ANoticeAcknowledged(true);
-                    } catch (Exception e) {
-                        Log.e("P3aOnboarding", e.getMessage());
-                    }
-                }
-            });
-
-            mCheckboxP3aInsights.setChecked(isP3aEnabled);
-            mCheckboxP3aInsights.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            mCheckboxP3a.setChecked(isP3aEnabled);
+            mCheckboxP3a.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
@@ -239,17 +235,16 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
             });
 
             mTvCard.setVisibility(View.VISIBLE);
-            mLayoutP3aCrash.setVisibility(View.VISIBLE);
-            mLayoutP3aInsights.setVisibility(View.VISIBLE);
+            mLayoutCrash.setVisibility(View.VISIBLE);
+            mLayoutP3a.setVisibility(View.VISIBLE);
             mLayoutCard.setVisibility(View.VISIBLE);
             mIvArrowDown.setVisibility(View.VISIBLE);
 
-            //OnboardingPrefManager.getInstance().setP3aOnboardingShown(true);
+            // OnboardingPrefManager.getInstance().setP3aOnboardingShown(true);
         } else {
-            
             FirstRunStatus.setFirstRunFlowComplete(true);
             SharedPreferencesManager.getInstance().writeBoolean(
-                ChromePreferenceKeys.FIRST_RUN_CACHED_TOS_ACCEPTED, true);
+                    ChromePreferenceKeys.FIRST_RUN_CACHED_TOS_ACCEPTED, true);
             FirstRunUtils.setEulaAccepted();
             finish();
             sendFirstRunCompletePendingIntent();
@@ -300,26 +295,6 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
     private void finishNativeInitializationPostWork() {
         assert mInitializeViewsDone;
         startTimer();
-        /*try {
-            mIsP3aEnabled = BravePrefServiceBridge.getInstance().getP3AEnabled();
-        } catch (Exception e) {
-            Log.e("P3aOnboarding", e.getMessage());
-        }
-        mP3aOnboardingCheckbox.setChecked(mIsP3aEnabled);
-        mP3aOnboardingCheckbox.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        try {
-                            BravePrefServiceBridge.getInstance().setP3AEnabled(isChecked);
-                            BravePrefServiceBridge.getInstance().setP3ANoticeAcknowledged(true);
-                        } catch (Exception e) {
-                            Log.e("P3aOnboarding", e.getMessage());
-                        }
-                    }
-                });
-
-        mBtnContinue.setEnabled(true);*/
     }
 
     @Override

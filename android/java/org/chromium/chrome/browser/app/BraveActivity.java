@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -29,11 +30,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import android.widget.RelativeLayout;
-import android.graphics.Rect;
-import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -173,7 +174,6 @@ import org.chromium.content_public.browser.WebContents;
 import org.chromium.mojo.bindings.ConnectionErrorHandler;
 import org.chromium.mojo.system.MojoException;
 import org.chromium.ui.widget.Toast;
-import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -865,7 +865,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
         highlightView.setColor(
                 ContextCompat.getColor(this, R.color.onboarding_search_highlight_color));
         ViewGroup viewGroup = findViewById(android.R.id.content);
-        View anchorView = (View) findViewById(R.id.url_bar);//toolbar);
+        View anchorView = (View) findViewById(R.id.url_bar); // toolbar);
         float padding = (float) dpToPx(this, 16);
         new Handler().postDelayed(() -> {
             PopupWindowTooltip popupWindowTooltip =
@@ -1061,6 +1061,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
         if (notifIntent != null && notifIntent.getStringExtra(RetentionNotificationUtil.NOTIFICATION_TYPE) != null) {
             String notificationType = notifIntent.getStringExtra(RetentionNotificationUtil.NOTIFICATION_TYPE);
             switch (notificationType) {
+
                 case RetentionNotificationUtil.HOUR_3:
                 case RetentionNotificationUtil.HOUR_24:
                 case RetentionNotificationUtil.EVERY_SUNDAY:
