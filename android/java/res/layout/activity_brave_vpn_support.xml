@@ -107,6 +107,7 @@
             android:layout_marginEnd="16dp"
             android:padding="16dp"
             android:textSize="16sp"
+            android:checked="true"
             android:text="@string/vpn_hostname" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -117,6 +118,7 @@
             android:layout_marginEnd="16dp"
             android:padding="16dp"
             android:textSize="16sp"
+            android:checked="true"
             android:text="@string/subscription_type" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -127,6 +129,7 @@
             android:layout_marginEnd="16dp"
             android:padding="16dp"
             android:textSize="16sp"
+            android:checked="true"
             android:text="@string/app_receipt" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -137,6 +140,7 @@
             android:layout_marginEnd="16dp"
             android:padding="16dp"
             android:textSize="16sp"
+            android:checked="true"
             android:text="@string/app_version" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -147,6 +151,7 @@
             android:layout_marginEnd="16dp"
             android:padding="16dp"
             android:textSize="16sp"
+            android:checked="true"
             android:text="@string/timezone" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -157,6 +162,7 @@
             android:layout_marginEnd="16dp"
             android:padding="16dp"
             android:textSize="16sp"
+            android:checked="true"
             android:text="@string/network_type" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -167,6 +173,7 @@
             android:layout_marginEnd="16dp"
             android:padding="16dp"
             android:textSize="16sp"
+            android:checked="true"
             android:text="@string/cellular_carrier" />
 
         <android.widget.Button

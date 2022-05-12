@@ -14,6 +14,7 @@ import android.util.Pair;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.vpn.BraveVpnNativeWorker;
 import org.chromium.chrome.browser.vpn.models.BraveVpnPrefModel;
+import org.chromium.chrome.browser.vpn.models.ErrorMessageModel;
 import org.chromium.chrome.browser.vpn.utils.BraveVpnPrefUtils;
 import org.chromium.chrome.browser.vpn.utils.BraveVpnProfileUtils;
 import org.chromium.chrome.browser.vpn.utils.BraveVpnUtils;
@@ -31,9 +32,9 @@ public class BraveVpnApiResponseUtils {
         if (BraveVpnProfileUtils.getInstance().isBraveVPNConnected(activity)) {
             BraveVpnProfileUtils.getInstance().stopVpn(activity);
         }
-        Toast.makeText(activity, R.string.purchase_token_verification_failed, Toast.LENGTH_LONG)
-                .show();
-        BraveVpnUtils.dismissProgressDialog();
+        handleFailure(activity,
+                activity.getResources().getString(R.string.purchase_token_verification_failed),
+                "Failed to veify purchase token.");
     }
 
     public static void handleOnGetSubscriberCredential(Activity activity, boolean isSuccess) {
@@ -42,9 +43,9 @@ public class BraveVpnApiResponseUtils {
                     activity, InAppPurchaseWrapper.getInstance().queryPurchases());
             BraveVpnNativeWorker.getInstance().getTimezonesForRegions();
         } else {
-            Toast.makeText(activity, R.string.vpn_profile_creation_failed, Toast.LENGTH_SHORT)
-                    .show();
-            BraveVpnUtils.dismissProgressDialog();
+            handleFailure(activity,
+                    activity.getResources().getString(R.string.vpn_profile_creation_failed),
+                    "Failed to get Subscriber credential.");
         }
     }
 
@@ -53,6 +54,13 @@ public class BraveVpnApiResponseUtils {
         if (isSuccess) {
             String region = BraveVpnUtils.getRegionForTimeZone(
                     jsonTimezones, TimeZone.getDefault().getID());
+            if (TextUtils.isEmpty(region)) {
+                handleFailure(activity,
+                        activity.getResources().getString(R.string.vpn_profile_creation_failed),
+                        "Couldn't get matching timezone for : " + TimeZone.getDefault().getID());
+                return;
+            }
+
             if (!TextUtils.isEmpty(BraveVpnUtils.selectedServerRegion)
                     && BraveVpnUtils.selectedServerRegion != null) {
                 region = BraveVpnUtils.selectedServerRegion.equals(
@@ -70,9 +78,16 @@ public class BraveVpnApiResponseUtils {
             BraveVpnNativeWorker.getInstance().getHostnamesForRegion(region);
             braveVpnPrefModel.setServerRegion(region);
         } else {
-            Toast.makeText(activity, R.string.vpn_profile_creation_failed, Toast.LENGTH_LONG)
-                    .show();
-            BraveVpnUtils.dismissProgressDialog();
+            if (!TextUtils.isEmpty(jsonTimezones) || jsonTimezones != null) {
+                ErrorMessageModel errorMessageModel =
+                        BraveVpnUtils.getErrorMessageModel(jsonTimezones);
+                handleFailure(activity, errorMessageModel.getErrorTitle(),
+                        errorMessageModel.getErrorTitle());
+            } else {
+                handleFailure(activity,
+                        activity.getResources().getString(R.string.vpn_profile_creation_failed),
+                        "Failed to get timezones for the region.");
+            }
         }
     }
 
@@ -85,10 +100,22 @@ public class BraveVpnApiResponseUtils {
                     braveVpnPrefModel.getSubscriberCredential(),
                     braveVpnPrefModel.getClientPublicKey(), host.first);
         } else {
-            Toast.makeText(activity, R.string.vpn_profile_creation_failed, Toast.LENGTH_LONG)
-                    .show();
-            BraveVpnUtils.dismissProgressDialog();
+            if (!TextUtils.isEmpty(jsonHostNames) || jsonHostNames != null) {
+                ErrorMessageModel errorMessageModel =
+                        BraveVpnUtils.getErrorMessageModel(jsonHostNames);
+                handleFailure(activity, errorMessageModel.getErrorTitle(),
+                        errorMessageModel.getErrorTitle());
+            } else {
+                handleFailure(activity,
+                        activity.getResources().getString(R.string.vpn_profile_creation_failed),
+                        "Failed to get hostnames for the region.");
+            }
         }
         return host;
+    }
+
+    private static void handleFailure(Activity activity, String errorTitle, String errorMessage) {
+        Toast.makeText(activity, errorTitle + "\n" + errorMessage, Toast.LENGTH_LONG).show();
+        BraveVpnUtils.dismissProgressDialog();
     }
 }
