@@ -34,6 +34,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.graphics.Rect;
+import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -172,6 +174,7 @@ import org.chromium.content_public.browser.WebContents;
 import org.chromium.mojo.bindings.ConnectionErrorHandler;
 import org.chromium.mojo.system.MojoException;
 import org.chromium.ui.widget.Toast;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -666,7 +669,6 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     @Override
     protected void initializeStartupMetrics() {
         super.initializeStartupMetrics();
-        // BraveFirstRunUtils.firstRunFlowComplete();
         // Disable FRE for arm64 builds where ChromeActivity is the one that
         // triggers FRE instead of ChromeLauncherActivity on arm32 build.
         BraveHelper.DisableFREDRP();

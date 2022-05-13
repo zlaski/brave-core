@@ -25,9 +25,13 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
+import android.graphics.Rect;
+import android.view.Window;
+
+import androidx.annotation.Keep;
+import androidx.core.content.ContextCompat;
 
 import androidx.annotation.Keep;
 import androidx.core.content.ContextCompat;
@@ -35,6 +39,7 @@ import androidx.core.content.ContextCompat;
 import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.ui.base.DeviceFormFactor;
+import org.chromium.base.Log;
 
 public class HighlightView extends FrameLayout {
 
@@ -74,7 +79,6 @@ public class HighlightView extends FrameLayout {
             Window window = ((Activity) context).getWindow();
             window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
             mStatusBarHeight = rectangle.top;
-            Log.e("tapan", "statusBarHeight:" + mStatusBarHeight);
         }
         eraserPaint.setColor(mColor);
         eraserPaint.setAlpha(0);
