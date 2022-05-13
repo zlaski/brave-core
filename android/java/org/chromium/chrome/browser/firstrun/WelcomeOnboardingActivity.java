@@ -44,13 +44,14 @@ import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.preferences.BravePrefServiceBridge;
 import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
 import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
-import org.chromium.chrome.browser.privacy.settings.PrivacyPreferencesManagerImpl;
 import org.chromium.chrome.browser.set_default_browser.BraveSetDefaultBrowserUtils;
+import org.chromium.chrome.browser.util.BraveConstants;
 import org.chromium.chrome.browser.util.PackageUtils;
+import org.chromium.chrome.browser.metrics.UmaSessionStats;
 
 import java.lang.Math;
 
-public class P3aOnboardingActivity2 extends FirstRunActivityBase {
+public class WelcomeOnboardingActivity extends FirstRunActivityBase {
     // mInitializeViewsDone and mInvokePostWorkAtInitializeViews are accessed
     // from the same thread, so no need to use extra locks
     private boolean mInitializeViewsDone;
@@ -82,13 +83,11 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
 
     private void initializeViews() {
         assert !mInitializeViewsDone;
-        setContentView(R.layout.activity_onboarding2);
+        setContentView(R.layout.activity_welcome_onboarding);
 
         initViews();
         setImages();
         onClickViews();
-
-        OnboardingPrefManager.getInstance().setOnboardingSearchBoxTooltip(true);
 
         mInitializeViewsDone = true;
         if (mInvokePostWorkAtInitializeViews) {
@@ -196,24 +195,21 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
             mBtnPositive.setText(getResources().getString(R.string.continue_text));
             mBtnNegative.setText(getResources().getString(R.string.learn_more_onboarding));
 
-            PrivacyPreferencesManagerImpl privacyPreferenceManager =
-                    PrivacyPreferencesManagerImpl.getInstance();
-            boolean isCrashReportingEnabled =
-                    privacyPreferenceManager.isUsageAndCrashReportingPermittedByUser();
-
-            mCheckboxCrash.setChecked(isCrashReportingEnabled);
+            mCheckboxCrash.setChecked(true);
+            UmaSessionStats.changeMetricsReportingConsent(true);
             mCheckboxCrash.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
-                        privacyPreferenceManager.setUsageAndCrashReporting(isChecked);
+                        Log.e("tapan","CrashReportingOnboarding:"+isChecked);
+                        UmaSessionStats.changeMetricsReportingConsent(isChecked);
                     } catch (Exception e) {
                         Log.e("CrashReportingOnboarding", e.getMessage());
                     }
                 }
             });
-
-            boolean isP3aEnabled = false;
+            
+            boolean isP3aEnabled = true;
 
             try {
                 isP3aEnabled = BravePrefServiceBridge.getInstance().getP3AEnabled();
@@ -226,6 +222,7 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
+                        Log.e("tapan","P3aOnboarding:"+isChecked);
                         BravePrefServiceBridge.getInstance().setP3AEnabled(isChecked);
                         BravePrefServiceBridge.getInstance().setP3ANoticeAcknowledged(true);
                     } catch (Exception e) {
@@ -239,9 +236,9 @@ public class P3aOnboardingActivity2 extends FirstRunActivityBase {
             mLayoutP3a.setVisibility(View.VISIBLE);
             mLayoutCard.setVisibility(View.VISIBLE);
             mIvArrowDown.setVisibility(View.VISIBLE);
-
-            // OnboardingPrefManager.getInstance().setP3aOnboardingShown(true);
         } else {
+            OnboardingPrefManager.getInstance().setP3aOnboardingShown(true);
+            OnboardingPrefManager.getInstance().setOnboardingSearchBoxTooltip(true);
             FirstRunStatus.setFirstRunFlowComplete(true);
             SharedPreferencesManager.getInstance().writeBoolean(
                     ChromePreferenceKeys.FIRST_RUN_CACHED_TOS_ACCEPTED, true);
