@@ -6,9 +6,7 @@
 #include "brave/components/services/bat_ads/public/cpp/ads_client_mojo_bridge.h"
 
 #include <functional>
-#include <map>
 #include <memory>
-#include <utility>
 
 #include "base/bind.h"
 #include "base/callback.h"
@@ -16,6 +14,7 @@
 #include "base/logging.h"
 #include "bat/ads/ad_notification_info.h"
 #include "bat/ads/ads.h"
+#include "url/gurl.h"
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -148,7 +147,7 @@ void AdsClientMojoBridge::LoadFileResource(const std::string& id,
 // static
 void AdsClientMojoBridge::OnGetBrowsingHistory(
     CallbackHolder<GetBrowsingHistoryCallback>* holder,
-    const std::vector<std::string>& history) {
+    const std::vector<GURL>& history) {
   DCHECK(holder);
 
   if (holder->is_valid()) {

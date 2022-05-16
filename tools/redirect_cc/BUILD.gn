@@ -1,0 +1,62 @@
+# Copyright (c) 2022 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//build/buildflag_header.gni")
+
+if (current_toolchain == host_toolchain) {
+  declare_args() {
+    real_gomacc = ""
+  }
+
+  buildflag_header("buildflags") {
+    header = "buildflags.h"
+    if (is_win) {
+      _real_gomacc = string_replace(real_gomacc, "\\", "/")
+    } else {
+      _real_gomacc = real_gomacc
+    }
+    flags = [ "REAL_GOMACC=\"$_real_gomacc\"" ]
+  }
+
+  executable("executable") {
+    assert(!is_debug)
+
+    sources = [ "redirect_cc.cc" ]
+
+    deps = [
+      ":buildflags",
+      "//base",
+    ]
+
+    output_name = "redirect_cc"
+
+    # Always optimize for speed
+    configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
+    configs += [ "//build/config/compiler:thinlto_optimize_max" ]
+    configs -= [ "//build/config/compiler:default_optimization" ]
+    configs += [ "//build/config/compiler:optimize_speed" ]
+  }
+
+  copy("copy_redirect_cc_to_gomacc") {
+    if (is_win) {
+      sources = [ "$root_out_dir/redirect_cc.exe" ]
+      outputs = [ "$root_out_dir/gomacc.exe" ]
+    } else {
+      sources = [ "$root_out_dir/redirect_cc" ]
+      outputs = [ "$root_out_dir/gomacc" ]
+    }
+
+    deps = [ ":executable" ]
+  }
+}
+
+group("redirect_cc") {
+  if (current_toolchain == host_toolchain) {
+    deps = [
+      ":copy_redirect_cc_to_gomacc",
+      ":executable",
+    ]
+  }
+}

@@ -8,7 +8,8 @@
 #include <cstdint>
 
 #include "base/check_op.h"
-#include "base/containers/flat_map.h"
+#include "base/files/file.h"
+#include "base/files/file_path.h"
 #include "base/files/file_util.h"
 #include "base/strings/string_number_conversions.h"
 #include "base/strings/string_split.h"
@@ -65,14 +66,14 @@ URLEndpointResponses GetUrlEndpointResponsesForPath(
   return iter->second;
 }
 
-bool GetNextUrlEndpointResponse(const std::string& url,
+bool GetNextUrlEndpointResponse(const GURL& url,
                                 const URLEndpoints& endpoints,
                                 URLEndpointResponse* url_endpoint_response) {
-  DCHECK(!url.empty()) << "Empty URL";
+  DCHECK(url.is_valid()) << "Invalid URL: " << url;
   DCHECK(!endpoints.empty()) << "Missing endpoints";
   DCHECK(url_endpoint_response);
 
-  const std::string path = GURL(url).PathForRequest();
+  const std::string path = url.PathForRequest();
 
   const URLEndpointResponses url_endpoint_responses =
       GetUrlEndpointResponsesForPath(endpoints, path);
@@ -381,9 +382,9 @@ void MockPlatformHelper(const std::unique_ptr<PlatformHelperMock>& mock,
 
   ON_CALL(*mock, IsMobile()).WillByDefault(Return(is_mobile));
 
-  ON_CALL(*mock, GetPlatformName()).WillByDefault(Return(platform_name));
+  ON_CALL(*mock, GetName()).WillByDefault(Return(platform_name));
 
-  ON_CALL(*mock, GetPlatform()).WillByDefault(Return(platform_type));
+  ON_CALL(*mock, GetType()).WillByDefault(Return(platform_type));
 }
 
 void MockIsNetworkConnectionAvailable(
@@ -493,11 +494,12 @@ void MockGetBrowsingHistory(const std::unique_ptr<AdsClientMock>& mock) {
   ON_CALL(*mock, GetBrowsingHistory(_, _, _))
       .WillByDefault(Invoke([](const int max_count, const int days_ago,
                                GetBrowsingHistoryCallback callback) {
-        std::vector<std::string> history;
+        std::vector<GURL> history;
+
         for (int i = 0; i < max_count; i++) {
-          const std::string entry =
+          const std::string spec =
               base::StringPrintf("https://www.brave.com/%d", i);
-          history.push_back(entry);
+          history.push_back(GURL(spec));
         }
 
         callback(history);

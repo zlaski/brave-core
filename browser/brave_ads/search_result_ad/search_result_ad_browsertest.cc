@@ -7,7 +7,6 @@
 #include "base/strings/strcat.h"
 #include "base/strings/string_number_conversions.h"
 #include "base/test/scoped_feature_list.h"
-#include "base/time/time.h"
 #include "brave/browser/brave_ads/ads_service_factory.h"
 #include "brave/browser/brave_ads/search_result_ad/search_result_ad_service_factory.h"
 #include "brave/common/brave_paths.h"
@@ -24,6 +23,7 @@
 #include "net/dns/mock_host_resolver.h"
 #include "testing/gmock/include/gmock/gmock.h"
 #include "testing/gtest/include/gtest/gtest.h"
+#include "url/gurl.h"
 
 // npm run test -- brave_browser_tests --filter=SearchResultAdTest*
 
@@ -51,7 +51,7 @@ void CheckSampleSearchAdMetadata(
   EXPECT_EQ(search_result_ad->advertiser_id,
             base::StrCat({"data-advertiser-id", index}));
   EXPECT_EQ(search_result_ad->target_url,
-            base::StrCat({"data-landing-page", index}));
+            GURL(base::StrCat({"https://brave.com/data-landing-page", index})));
   EXPECT_EQ(search_result_ad->headline_text,
             base::StrCat({"data-headline-text", index}));
   EXPECT_EQ(search_result_ad->description,

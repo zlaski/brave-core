@@ -5,11 +5,11 @@
 
 #include "bat/ads/internal/database/tables/creative_new_tab_page_ad_wallpapers_database_table.h"
 
+#include <functional>
 #include <utility>
 
 #include "base/check.h"
 #include "base/strings/stringprintf.h"
-#include "bat/ads/ads_client.h"
 #include "bat/ads/internal/ads_client_helper.h"
 #include "bat/ads/internal/database/database_statement_util.h"
 #include "bat/ads/internal/database/database_table_util.h"
@@ -33,7 +33,7 @@ int BindParameters(mojom::DBCommand* command,
   for (const auto& creative_ad : creative_ads) {
     for (const auto& wallpaper : creative_ad.wallpapers) {
       BindString(command, index++, creative_ad.creative_instance_id);
-      BindString(command, index++, wallpaper.image_url);
+      BindString(command, index++, wallpaper.image_url.spec());
       BindInt(command, index++, wallpaper.focal_point.x);
       BindInt(command, index++, wallpaper.focal_point.y);
     }

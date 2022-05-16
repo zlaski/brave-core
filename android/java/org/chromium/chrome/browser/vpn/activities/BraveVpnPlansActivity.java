@@ -116,6 +116,10 @@ public class BraveVpnPlansActivity extends BraveVpnParentActivity {
                         yearlySkuDetails.getPrice()));
         mIsVerification = true;
         verifySubscription();
+        if (mYearlySelectorLayout != null) {
+            mYearlySelectorLayout.setAlpha(0.4f);
+            mYearlySelectorLayout.setOnClickListener(null);
+        }
     }
 
     @Override

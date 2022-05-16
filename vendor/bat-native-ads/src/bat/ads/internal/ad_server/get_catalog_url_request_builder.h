@@ -6,10 +6,9 @@
 #ifndef BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_AD_SERVER_GET_CATALOG_URL_REQUEST_BUILDER_H_
 #define BRAVE_VENDOR_BAT_NATIVE_ADS_SRC_BAT_ADS_INTERNAL_AD_SERVER_GET_CATALOG_URL_REQUEST_BUILDER_H_
 
-#include <string>
-
 #include "bat/ads/internal/server/url_request_builder_interface.h"
 #include "bat/ads/public/interfaces/ads.mojom.h"
+#include "url/gurl.h"
 
 namespace ads {
 
@@ -21,7 +20,7 @@ class GetCatalogUrlRequestBuilder final : UrlRequestBuilderInterface {
   mojom::UrlRequestPtr Build() override;
 
  private:
-  std::string BuildUrl() const;
+  GURL BuildUrl() const;
 };
 
 }  // namespace ads

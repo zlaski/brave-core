@@ -6,7 +6,6 @@
 #ifndef BRAVE_COMPONENTS_SERVICES_BAT_ADS_PUBLIC_CPP_ADS_CLIENT_MOJO_BRIDGE_H_
 #define BRAVE_COMPONENTS_SERVICES_BAT_ADS_PUBLIC_CPP_ADS_CLIENT_MOJO_BRIDGE_H_
 
-#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -15,6 +14,8 @@
 #include "base/memory/weak_ptr.h"
 #include "bat/ads/ads_client.h"
 #include "brave/components/services/bat_ads/public/interfaces/bat_ads.mojom.h"
+
+class GURL;
 
 namespace bat_ads {
 
@@ -175,7 +176,7 @@ class AdsClientMojoBridge
 
   static void OnGetBrowsingHistory(
       CallbackHolder<GetBrowsingHistoryCallback>* holder,
-      const std::vector<std::string>& history);
+      const std::vector<GURL>& history);
 
   static void OnLoad(CallbackHolder<LoadCallback>* holder,
                      const bool success,

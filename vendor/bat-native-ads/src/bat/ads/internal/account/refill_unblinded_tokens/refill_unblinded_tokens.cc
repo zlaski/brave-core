@@ -10,11 +10,9 @@
 #include <utility>
 
 #include "base/bind.h"
-#include "base/check.h"
 #include "base/json/json_reader.h"
 #include "base/notreached.h"
 #include "base/time/time.h"
-#include "bat/ads/ads_client.h"
 #include "bat/ads/internal/account/confirmations/confirmations_state.h"
 #include "bat/ads/internal/account/issuers/issuer_types.h"
 #include "bat/ads/internal/account/issuers/issuers_util.h"

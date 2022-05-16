@@ -33,6 +33,7 @@ import org.chromium.chrome.browser.vpn.fragments.BraveVpnAlwaysOnErrorDialogFrag
 import org.chromium.chrome.browser.vpn.fragments.BraveVpnConfirmDialogFragment;
 import org.chromium.chrome.browser.vpn.models.BraveVpnServerRegion;
 import org.chromium.chrome.browser.vpn.models.BraveVpnWireguardProfileCredentials;
+import org.chromium.chrome.browser.vpn.models.ErrorMessageModel;
 import org.chromium.chrome.browser.vpn.utils.BraveVpnPrefUtils;
 import org.chromium.chrome.browser.vpn.utils.BraveVpnProfileUtils;
 import org.chromium.chrome.browser.vpn.wireguard.WireguardConfigUtils;
@@ -52,17 +53,11 @@ public class BraveVpnUtils {
     public static String selectedServerRegion;
     private static ProgressDialog mProgressDialog;
 
-    public enum AlwaysOnVpnType {
-        BRAVE_VPN,
-        OTHER_VPN,
-        NONE;
-    }
-
     public static boolean isBraveVpnFeatureEnable() {
-        if (BraveVpnPrefUtils.isBraveVpnFeatureEnabled()) {
-            return true;
-        }
-        return false;
+        // if (BraveVpnPrefUtils.isBraveVpnFeatureEnabled()) {
+        //     return true;
+        // }
+        return true;
     }
 
     public static void openBraveVpnPlansActivity(Activity activity) {
@@ -171,6 +166,21 @@ public class BraveVpnUtils {
                             + e);
         }
         return 0L;
+    }
+
+    public static ErrorMessageModel getErrorMessageModel(String errorJson) {
+        try {
+            JSONObject errorMessageJsonObject = new JSONObject(errorJson);
+            return new ErrorMessageModel(errorMessageJsonObject.has("error-message")
+                            ? errorMessageJsonObject.getString("error-message")
+                            : "",
+                    errorMessageJsonObject.has("error-title")
+                            ? errorMessageJsonObject.getString("error-title")
+                            : "");
+        } catch (JSONException e) {
+            Log.e(TAG, "BraveVpnUtils -> getErrorMessageModel JSONException" + e);
+        }
+        return null;
     }
 
     public static List<BraveVpnServerRegion> getServerLocations(String jsonServerLocations) {

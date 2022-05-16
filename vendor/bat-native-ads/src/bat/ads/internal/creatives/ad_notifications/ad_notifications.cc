@@ -14,7 +14,6 @@
 #include "base/time/time.h"
 #include "base/values.h"
 #include "bat/ads/ad_type.h"
-#include "bat/ads/ads_client.h"
 #include "bat/ads/internal/ad_events/ad_event_info.h"
 #include "bat/ads/internal/ads_client_helper.h"
 #include "bat/ads/internal/client/client.h"
@@ -297,10 +296,11 @@ bool AdNotifications::GetNotificationFromDictionary(
     return false;
   }
 
-  if (!GetTargetUrlFromDictionary(dictionary,
-                                  &new_ad_notification.target_url)) {
+  std::string target_url;
+  if (!GetTargetUrlFromDictionary(dictionary, &target_url)) {
     return false;
   }
+  new_ad_notification.target_url = GURL(target_url);
 
   *ad_notification = new_ad_notification;
 
@@ -502,7 +502,7 @@ base::Value AdNotifications::GetAsList() {
     dictionary.SetStringKey(kNotificationTitleKey, ad_notification.title);
     dictionary.SetStringKey(kNotificationBodyKey, ad_notification.body);
     dictionary.SetStringKey(kNotificationTargetUrlKey,
-                            ad_notification.target_url);
+                            ad_notification.target_url.spec());
 
     list.Append(std::move(dictionary));
   }
