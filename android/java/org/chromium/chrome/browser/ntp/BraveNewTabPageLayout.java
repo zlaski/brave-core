@@ -404,10 +404,6 @@ public class BraveNewTabPageLayout extends NewTabPageLayout implements Connectio
                     Tab tab = BraveActivity.getBraveActivity().getActivityTab();
                     if (tab != null && tab.getUrl().getSpec() != null
                             && UrlUtilities.isNTPUrl(tab.getUrl().getSpec())) {
-                        // purges display ads on tab change
-                        if (BraveActivity.getBraveActivity().getLastTabId() != tab.getId()) {
-                            mBraveNewsController.onDisplayAdPurgeOrphanedEvents();
-                        }
 
                         BraveActivity.getBraveActivity().setLastTabId(tab.getId());
 
@@ -863,6 +859,11 @@ public class BraveNewTabPageLayout extends NewTabPageLayout implements Connectio
             mmViewedNewsCardsCount = (tab != null) ? SharedPreferencesManager.getInstance().readInt(
                                              "mViewedNewsCardsCount_" + tab.getId())
                                                    : 0;
+
+            // purges display ads on tab change
+            if (tab != null && BraveActivity.getBraveActivity().getLastTabId() != tab.getId()) {
+                mBraveNewsController.onDisplayAdPurgeOrphanedEvents();
+            }
 
             if (prevScrollPosition == 0 && prevRecyclerViewPosition == 0
                     && prevRecyclerViewItemPosition == 0) {

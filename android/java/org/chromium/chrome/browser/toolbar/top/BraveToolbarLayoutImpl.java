@@ -136,6 +136,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+
 public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
         implements BraveToolbarLayout, OnClickListener, View.OnLongClickListener,
                    BraveRewardsObserver, BraveRewardsNativeWorker.PublisherObserver {
