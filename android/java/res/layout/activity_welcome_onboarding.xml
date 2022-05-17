@@ -53,163 +53,158 @@
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent"/>
 
-    <TextView
-        android:id="@+id/tv_welcome"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/layout_card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:alpha="0"
-        android:visibility="gone"
-        android:textColor="@color/onboarding_welcome_text_color"
-        android:text="@string/welcome_to_brave"/>
-
-    <LinearLayout
-        android:id="@+id/layout_card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tv_welcome"
-        app:layout_constraintBottom_toTopOf="@id/iv_arrow_down"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:padding="16dp"
-        android:visibility="gone"
-        android:orientation="vertical"
-        android:background="@drawable/rounded_onboarding_welcome_bg">
-
-        <TextView
-            android:id="@+id/tv_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/onboarding_card_text_color"/>
-
-        <TextView
-            android:id="@+id/tv_default"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:lineSpacingMultiplier="1.2"
-            android:text="@string/onboarding_set_default"
-            android:textSize="16sp"
-            android:textColor="@color/onboarding_card_text_color"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
-            android:id="@+id/layout_crash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:visibility="gone"
-            android:orientation="horizontal">
-
-            <android.widget.CheckBox
-                android:id="@+id/checkbox_crash"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/ic_p3a_checkbox"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"/>
-
+            android:gravity="center"
+            android:orientation="vertical">
+    
             <TextView
-                android:id="@+id/tv_crash"
+                android:id="@+id/tv_welcome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/p3a_crash"
-                android:lineSpacingMultiplier="1.2"
-                android:textSize="14sp"
-                android:textColor="@color/onboarding_card_text_color"/>
+                android:gravity="center"
+                android:textSize="24sp"
+                android:alpha="0"
+                android:visibility="gone"
+                android:textColor="@color/onboarding_welcome_text_color"
+                android:text="@string/welcome_to_brave"/>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_p3a"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            android:orientation="horizontal">
-
-            <android.widget.CheckBox
-                android:id="@+id/checkbox_p3a"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/ic_p3a_checkbox"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"/>
-
-            <TextView
-                android:id="@+id/tv_p3a"
+            <LinearLayout
+                android:id="@+id/layout_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lineSpacingMultiplier="1.2"
-                android:text="@string/p3a_insights"
-                android:textSize="14sp"
-                android:textColor="@color/onboarding_card_text_color"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:padding="16dp"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_onboarding_welcome_bg">
+
+                <TextView
+                    android:id="@+id/tv_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/onboarding_card_text_color"/>
+
+                <TextView
+                    android:id="@+id/tv_default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:text="@string/onboarding_set_default"
+                    android:textSize="16sp"
+                    android:textColor="@color/onboarding_card_text_color"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_crash"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <android.widget.CheckBox
+                        android:id="@+id/checkbox_crash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/ic_p3a_checkbox"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_crash"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/p3a_crash"
+                        android:lineSpacingMultiplier="1.2"
+                        android:textSize="14sp"
+                        android:textColor="@color/onboarding_card_text_color"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_p3a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <android.widget.CheckBox
+                        android:id="@+id/checkbox_p3a"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/ic_p3a_checkbox"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_p3a"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingMultiplier="1.2"
+                        android:text="@string/p3a_insights"
+                        android:textSize="14sp"
+                        android:textColor="@color/onboarding_card_text_color"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_positive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/blue_48_rounded_bg"
+                    app:backgroundTint="@null"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:padding="4dp"
+                    android:minHeight="0dp"
+                    style="?android:attr/borderlessButtonStyle"/>
+
+                <Button
+                    android:id="@+id/btn_negative"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:background="@android:color/transparent"
+                    android:textAllCaps="false"
+                    android:textColor="@color/onboarding_negative_button_color"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    style="?android:attr/borderlessButtonStyle"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_arrow_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_gravity="center_horizontal"
+                app:srcCompat="@drawable/ic_onboarding_arrow_down"
+                android:contentDescription="@null"/>
+
+            <ImageView
+                android:id="@+id/iv_brave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@null"/>
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_positive"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/blue_48_rounded_bg"
-            app:backgroundTint="@null"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:padding="4dp"
-            android:minHeight="0dp"
-            style="?android:attr/borderlessButtonStyle"/>
-
-        <Button
-            android:id="@+id/btn_negative"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
-            android:background="@android:color/transparent"
-            android:textAllCaps="false"
-            android:textColor="@color/onboarding_negative_button_color"
-            android:textSize="16sp"
-            android:visibility="gone"
-            style="?android:attr/borderlessButtonStyle"/>
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/iv_arrow_down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/layout_card"
-        app:layout_constraintBottom_toTopOf="@id/iv_brave"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_onboarding_arrow_down"
-        android:contentDescription="@null"/>
-
-    <ImageView
-        android:id="@+id/iv_brave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/iv_arrow_down"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@null"/>
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

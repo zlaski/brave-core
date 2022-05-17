@@ -273,7 +273,6 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
         mBraveShieldsContentSettingsObserver = new BraveShieldsContentSettingsObserver() {
             @Override
             public void blockEvent(int tabId, String block_type, String subresource) {
-                Log.e("tapan", "blockEvent");
                 mBraveShieldsHandler.addStat(tabId, block_type, subresource);
                 Tab currentTab = getToolbarDataProvider().getTab();
                 if (currentTab == null || currentTab.getId() != tabId) {
@@ -461,20 +460,17 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
 
     private void checkForTooltip(Tab tab) {
         if (!BraveShieldsUtils.isTooltipShown) {
-            Log.e("tapan", "checkForTooltip");
             mBraveShieldsHandler.loadDisconnectEntityList();
             if (!BraveShieldsUtils.hasShieldsTooltipShown(BraveShieldsUtils.PREF_SHIELDS_TOOLTIP)
                     && mBraveShieldsHandler.getTrackersBlockedCount(tab.getId())
                                     + mBraveShieldsHandler.getAdsBlockedCount(tab.getId())
                             > 0) {
-                Log.e("tapan", "checkForTooltip 1");
                 showTooltip(ShieldsTooltipEnum.ONE_TIME_ADS_TRACKER_BLOCKED_TOOLTIP,
                         BraveShieldsUtils.PREF_SHIELDS_TOOLTIP,
                         mBraveShieldsHandler.getBlockerNamesList(tab.getId()));
             } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
                                BraveShieldsUtils.PREF_SHIELDS_VIDEO_ADS_BLOCKED_TOOLTIP)
                     && shouldShowVideoTooltip(tab.getUrl().getSpec())) {
-                Log.e("tapan", "checkForTooltip 2");
                 showTooltip(ShieldsTooltipEnum.VIDEO_ADS_BLOCKED_TOOLTIP,
                         BraveShieldsUtils.PREF_SHIELDS_VIDEO_ADS_BLOCKED_TOOLTIP,
                         mBraveShieldsHandler.getBlockerNamesList(tab.getId()));
@@ -483,26 +479,22 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                     && mBraveShieldsHandler.getTrackersBlockedCount(tab.getId())
                                     + mBraveShieldsHandler.getAdsBlockedCount(tab.getId())
                             > 10) {
-                Log.e("tapan", "checkForTooltip 3");
                 showTooltip(ShieldsTooltipEnum.ADS_TRACKER_BLOCKED_TOOLTIP,
                         BraveShieldsUtils.PREF_SHIELDS_ADS_TRACKER_BLOCKED_TOOLTIP,
                         mBraveShieldsHandler.getBlockerNamesList(tab.getId()));
             } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
                                BraveShieldsUtils.PREF_SHIELDS_HTTPS_UPGRADE_TOOLTIP)
                     && mBraveShieldsHandler.getHttpsUpgradeCount(tab.getId()) > 0) {
-                Log.e("tapan", "checkForTooltip 4");
                 showTooltip(ShieldsTooltipEnum.HTTPS_UPGRADE_TOOLTIP,
                         BraveShieldsUtils.PREF_SHIELDS_HTTPS_UPGRADE_TOOLTIP,
                         mBraveShieldsHandler.getBlockerNamesList(tab.getId()));
             } else if (!BraveShieldsUtils.hasShieldsTooltipShown(
                                BraveShieldsUtils.PREF_SHIELDS_HTTPS_UPGRADE_TOOLTIP)
                     && mBraveShieldsHandler.getHttpsUpgradeCount(tab.getId()) > 0) {
-                Log.e("tapan", "checkForTooltip 5");
                 showTooltip(ShieldsTooltipEnum.HTTPS_UPGRADE_TOOLTIP,
                         BraveShieldsUtils.PREF_SHIELDS_HTTPS_UPGRADE_TOOLTIP,
                         mBraveShieldsHandler.getBlockerNamesList(tab.getId()));
             } else {
-                Log.e("tapan", "checkForTooltip 6");
                 int trackersPlusAdsBlocked =
                         mBraveShieldsHandler.getTrackersBlockedCount(tab.getId())
                         + mBraveShieldsHandler.getAdsBlockedCount(tab.getId());
@@ -645,7 +637,6 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
     private void showTooltip(ShieldsTooltipEnum shieldsTooltipEnum, String tooltipPref,
             ArrayList<String> blockerNamesList) {
         if (BraveActivity.getBraveActivity() != null) {
-            Log.e("tapan", "showTooltip");
             HighlightView highlightView = new HighlightView(getContext(), null);
             highlightView.setColor(ContextCompat.getColor(
                     getContext(), R.color.onboarding_search_highlight_color));
