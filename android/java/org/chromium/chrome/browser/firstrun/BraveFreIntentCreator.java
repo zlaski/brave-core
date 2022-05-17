@@ -5,15 +5,11 @@
 
 package org.chromium.chrome.browser.firstrun;
 
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
-import org.chromium.base.IntentUtils;
-import org.chromium.chrome.browser.browserservices.intents.BrowserServicesIntentDataProvider;
 import org.chromium.chrome.browser.firstrun.WelcomeOnboardingActivity;
 
 /**

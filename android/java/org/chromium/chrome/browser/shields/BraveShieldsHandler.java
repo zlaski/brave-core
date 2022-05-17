@@ -266,9 +266,7 @@ public class BraveShieldsHandler implements BraveRewardsHelper.LargeIconReadyCal
             mTabsStat.put(tabId, new BlockersInfo());
         }
         BlockersInfo blockersInfo = mTabsStat.get(tabId);
-        Log.e("tapan", "AddStat:" + block_type);
         String domainName = getDomainName(subresource);
-        Log.e("tapan", "AddStat:domainName:" + domainName);
         if (!blockersInfo.mBlockerNames.contains(domainName)) {
             blockersInfo.mBlockerNames.add(domainName);
         }

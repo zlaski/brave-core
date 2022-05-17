@@ -12,12 +12,6 @@ import static org.chromium.ui.base.ViewUtils.dpToPx;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -29,35 +23,33 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.bumptech.glide.Glide;
 
 import org.chromium.base.Log;
 import org.chromium.base.ThreadUtils;
 import org.chromium.chrome.R;
-import org.chromium.chrome.browser.BraveRewardsHelper;
-import org.chromium.chrome.browser.app.BraveActivity;
 import org.chromium.chrome.browser.customtabs.CustomTabActivity;
-import org.chromium.chrome.browser.night_mode.GlobalNightModeStateProviderHolder;
+import org.chromium.chrome.browser.metrics.UmaSessionStats;
 import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.preferences.BravePrefServiceBridge;
 import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
 import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
 import org.chromium.chrome.browser.set_default_browser.BraveSetDefaultBrowserUtils;
 import org.chromium.chrome.browser.util.BraveConstants;
-import org.chromium.chrome.browser.util.PackageUtils;
-import org.chromium.chrome.browser.metrics.UmaSessionStats;
+import org.chromium.ui.base.DeviceFormFactor;
 
 import java.lang.Math;
 
 public class WelcomeOnboardingActivity extends FirstRunActivityBase {
     // mInitializeViewsDone and mInvokePostWorkAtInitializeViews are accessed
     // from the same thread, so no need to use extra locks
+    private static final String P3A_URL = "https://brave.com/privacy/browser/#how-we-improve-brave";
     private boolean mInitializeViewsDone;
     private boolean mInvokePostWorkAtInitializeViews;
     private boolean mIsP3aEnabled;
+    private boolean isTablet;
     private FirstRunFlowSequencer mFirstRunFlowSequencer;
+    private int mCurrentStep = -1;
 
     private View mVLeafAlignTop;
     private View mVLeafAlignBottom;
@@ -77,13 +69,11 @@ public class WelcomeOnboardingActivity extends FirstRunActivityBase {
     private CheckBox mCheckboxCrash;
     private CheckBox mCheckboxP3a;
 
-    private int mCurrentStep = -1;
-
-    private static final String P3A_URL = "https://brave.com/privacy/browser/#how-we-improve-brave";
-
     private void initializeViews() {
         assert !mInitializeViewsDone;
         setContentView(R.layout.activity_welcome_onboarding);
+
+        isTablet = DeviceFormFactor.isNonMultiDisplayContextOnTablet(this);
 
         initViews();
         setImages();
@@ -113,6 +103,23 @@ public class WelcomeOnboardingActivity extends FirstRunActivityBase {
         mCheckboxP3a = findViewById(R.id.checkbox_p3a);
         mBtnPositive = findViewById(R.id.btn_positive);
         mBtnNegative = findViewById(R.id.btn_negative);
+
+        int margin;
+        if (isTablet) {
+            margin = 200;
+        } else {
+            margin = 50;
+        }
+
+        ViewGroup.MarginLayoutParams topLeafParams =
+                (ViewGroup.MarginLayoutParams) mVLeafAlignTop.getLayoutParams();
+        topLeafParams.bottomMargin = margin;
+        mVLeafAlignTop.setLayoutParams(topLeafParams);
+
+        ViewGroup.MarginLayoutParams bottomLeafParams =
+                (ViewGroup.MarginLayoutParams) mVLeafAlignBottom.getLayoutParams();
+        bottomLeafParams.topMargin = margin;
+        mVLeafAlignBottom.setLayoutParams(bottomLeafParams);
     }
 
     private void setImages() {
@@ -157,15 +164,17 @@ public class WelcomeOnboardingActivity extends FirstRunActivityBase {
         mCurrentStep++;
 
         if (mCurrentStep == 0) {
-            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1f, 0, true);
-            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1f, 0, false);
+            int margin = isTablet ? 100 : 0;
+            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1f, margin, true);
+            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1f, margin, false);
             setFadeInAnimation(mTvWelcome, 200);
             mIvBrave.animate().scaleX(0.8f).scaleY(0.8f).setDuration(1000);
             startTimer();
 
         } else if (mCurrentStep == 1) {
-            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.3f, 30, true);
-            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.3f, 30, false);
+            int margin = isTablet ? 200 : 30;
+            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.3f, margin, true);
+            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.3f, margin, false);
 
             mTvWelcome.setVisibility(View.VISIBLE);
 
@@ -184,8 +193,9 @@ public class WelcomeOnboardingActivity extends FirstRunActivityBase {
             mIvArrowDown.setVisibility(View.VISIBLE);
 
         } else if (mCurrentStep == 2) {
-            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.5f, 60, true);
-            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.5f, 60, false);
+            int margin = isTablet ? 250 : 60;
+            setLeafAnimation(mVLeafAlignTop, mIvLeafTop, 1.5f, margin, true);
+            setLeafAnimation(mVLeafAlignBottom, mIvLeafBottom, 1.5f, margin, false);
 
             mLayoutCard.setVisibility(View.GONE);
             mTvDefault.setVisibility(View.GONE);
@@ -201,14 +211,13 @@ public class WelcomeOnboardingActivity extends FirstRunActivityBase {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
-                        Log.e("tapan","CrashReportingOnboarding:"+isChecked);
                         UmaSessionStats.changeMetricsReportingConsent(isChecked);
                     } catch (Exception e) {
                         Log.e("CrashReportingOnboarding", e.getMessage());
                     }
                 }
             });
-            
+
             boolean isP3aEnabled = true;
 
             try {
@@ -222,7 +231,6 @@ public class WelcomeOnboardingActivity extends FirstRunActivityBase {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
-                        Log.e("tapan","P3aOnboarding:"+isChecked);
                         BravePrefServiceBridge.getInstance().setP3AEnabled(isChecked);
                         BravePrefServiceBridge.getInstance().setP3ANoticeAcknowledged(true);
                     } catch (Exception e) {
