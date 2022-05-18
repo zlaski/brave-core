@@ -59,6 +59,7 @@
 		android:paddingEnd="16dp"
 		android:drawablePadding="10dp"
         	app:drawableStartCompat="@drawable/ic_brave_36"
+        	android:gravity="center_vertical"
 		android:text="@string/shield_tooltip_desc"
 		android:textSize="14sp"
 		android:textColor="@color/onboarding_welcome_text_color"
