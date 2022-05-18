@@ -106,7 +106,6 @@ import org.chromium.chrome.browser.crypto_wallet.activities.NetworkSelectorActiv
 import org.chromium.chrome.browser.crypto_wallet.util.Utils;
 import org.chromium.chrome.browser.custom_layout.popup_window_tooltip.PopupWindowTooltip;
 import org.chromium.chrome.browser.dependency_injection.ChromeActivityComponent;
-import org.chromium.chrome.browser.firstrun.BraveFirstRunUtils;
 import org.chromium.chrome.browser.flags.ChromeFeatureList;
 import org.chromium.chrome.browser.flags.ChromeSwitches;
 import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
@@ -115,7 +114,6 @@ import org.chromium.chrome.browser.notifications.retention.RetentionNotification
 import org.chromium.chrome.browser.ntp_background_images.util.NewTabPageListener;
 import org.chromium.chrome.browser.onboarding.BraveTalkOptInPopupListener;
 import org.chromium.chrome.browser.onboarding.OnboardingActivity;
-import org.chromium.chrome.browser.onboarding.OnboardingActivity2;
 import org.chromium.chrome.browser.onboarding.OnboardingPrefManager;
 import org.chromium.chrome.browser.onboarding.v2.HighlightDialogFragment;
 import org.chromium.chrome.browser.onboarding.v2.HighlightItem;
@@ -135,8 +133,8 @@ import org.chromium.chrome.browser.set_default_browser.BraveSetDefaultBrowserUti
 import org.chromium.chrome.browser.set_default_browser.OnBraveSetDefaultBrowserListener;
 import org.chromium.chrome.browser.settings.BraveNewsPreferences;
 import org.chromium.chrome.browser.settings.BraveRewardsPreferences;
-import org.chromium.chrome.browser.settings.BraveWalletPreferences;
 import org.chromium.chrome.browser.settings.BraveSearchEngineUtils;
+import org.chromium.chrome.browser.settings.BraveWalletPreferences;
 import org.chromium.chrome.browser.settings.SettingsLauncherImpl;
 import org.chromium.chrome.browser.share.ShareDelegate;
 import org.chromium.chrome.browser.share.ShareDelegate.ShareOrigin;
@@ -666,7 +664,6 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     @Override
     protected void initializeStartupMetrics() {
         super.initializeStartupMetrics();
-        // BraveFirstRunUtils.firstRunFlowComplete();
         // Disable FRE for arm64 builds where ChromeActivity is the one that
         // triggers FRE instead of ChromeLauncherActivity on arm32 build.
         BraveHelper.DisableFREDRP();

@@ -217,6 +217,7 @@ public class WelcomeOnboardingActivity extends FirstRunActivityBase {
                     }
                 }
             });
+
             boolean isP3aEnabled = true;
 
             try {

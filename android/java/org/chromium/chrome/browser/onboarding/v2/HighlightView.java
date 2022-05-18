@@ -25,7 +25,7 @@ import android.util.AttributeSet;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
-
+import android.view.Window;
 import androidx.annotation.Keep;
 import androidx.core.content.ContextCompat;
 

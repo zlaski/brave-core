@@ -266,15 +266,13 @@ public class BraveShieldsHandler implements BraveRewardsHelper.LargeIconReadyCal
             mTabsStat.put(tabId, new BlockersInfo());
         }
         BlockersInfo blockersInfo = mTabsStat.get(tabId);
-        String domainName = getDomainName(subresource);
-        if (!blockersInfo.mBlockerNames.contains(domainName)) {
-            blockersInfo.mBlockerNames.add(domainName);
-        }
 
         if (block_type.equals(BraveShieldsContentSettings.RESOURCE_IDENTIFIER_ADS)) {
             blockersInfo.mAdsBlocked++;
+            blockersInfo = addBlockerNames(blockersInfo, subresource);            
         } else if (block_type.equals(BraveShieldsContentSettings.RESOURCE_IDENTIFIER_TRACKERS)) {
             blockersInfo.mTrackersBlocked++;
+            blockersInfo = addBlockerNames(blockersInfo, subresource);
         } else if (block_type.equals(BraveShieldsContentSettings.RESOURCE_IDENTIFIER_HTTP_UPGRADABLE_RESOURCES)) {
             blockersInfo.mHTTPSUpgrades++;
         } else if (block_type.equals(BraveShieldsContentSettings.RESOURCE_IDENTIFIER_JAVASCRIPTS)) {
@@ -282,6 +280,14 @@ public class BraveShieldsHandler implements BraveRewardsHelper.LargeIconReadyCal
         } else if (block_type.equals(BraveShieldsContentSettings.RESOURCE_IDENTIFIER_FINGERPRINTING)) {
             blockersInfo.mFingerprintsBlocked++;
         }
+    }
+
+    private BlockersInfo addBlockerNames(BlockersInfo blockersInfo, String subresource) {
+        String domainName = getDomainName(subresource);
+        if (!blockersInfo.mBlockerNames.contains(domainName)) {
+            blockersInfo.mBlockerNames.add(domainName);
+        }
+        return blockersInfo;
     }
 
     public void removeStat(int tabId) {

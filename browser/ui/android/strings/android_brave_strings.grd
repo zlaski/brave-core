@@ -1249,80 +1249,8 @@ Are you sure you want to do this?
       <message name="IDS_UPDATE_NOTIFICATION_TEXT" desc="Text of notification on application update.">
         Browse faster and block ads with Brave
       </message>
-      <message name="IDS_TOOLTIP_TITLE_1" desc="Shields tootltip title">
-        Trackers &amp; ads blocked on this page.
-      </message>
-      <message name="IDS_TOOLTIP_TEXT_1" desc="Shields tootltip text">
-        Brave Shields just protected your privacy.
-      </message>
-      <message name="IDS_TOOLTIP_TITLE_2" desc="Shields tootltip title">
-        Ads are blocked while watching videos on this website.
-      </message>
-      <message name="IDS_TOOLTIP_TEXT_2" desc="Shields tootltip text">
-        Videos without ads use less data.
-      </message>
-      <message name="IDS_TOOLTIP_TITLE_3" desc="Shields tootltip title">
-        10+ trackers &amp; ads blocked on this page.
-      </message>
-      <message name="IDS_TOOLTIP_TEXT_3" desc="Shields tootltip text">
-        Brave Shields protects your online privacy on every site.
-      </message>
-      <message name="IDS_TOOLTIP_TITLE_4" desc="Shields tootltip title">
-        Your connection is now encrypted.
-      </message>
-      <message name="IDS_TOOLTIP_TEXT_4" desc="Shields tootltip text">
-        If available, Brave upgrades you to a secure connection automatically.
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_BUTTON" desc="Shields tootltip button text">
-        Share the news
-      </message>
       <message name="IDS_BRAVE_STATS_SHARE_TEXT" desc="Text sent when sharing the stats">
         Every day I save data by browsing the Web with Brave.
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER1_TITLE" desc="Shields tootltip title">
-        1000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER2_TITLE" desc="Shields tootltip title">
-        5000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER3_TITLE" desc="Shields tootltip title">
-        10,000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER4_TITLE" desc="Shields tootltip title">
-        25,000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER5_TITLE" desc="Shields tootltip title">
-        75,000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER6_TITLE" desc="Shields tootltip title">
-        100,000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER7_TITLE" desc="Shields tootltip title">
-        250,000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER8_TITLE" desc="Shields tootltip title">
-        500,000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_TIER9_TITLE" desc="Shields tootltip title">
-        1,000,000 trackers &amp; ads blocked!
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_SPECIAL_TEXT" desc="Shields tootltip text">
-        Congratulations, you're pretty special.
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_EXCLUSIVE_TEXT" desc="Shields tootltip text">
-        Congratulations. You’re part of an exclusive club.
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_PRO_TEXT" desc="Shields tootltip text">
-        Congratulations. You joined the pros.
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_MASTER_TEXT" desc="Shields tootltip text">
-        Congratulations. You’ve become a master.
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_GRANDMASTER_TEXT" desc="Shields tootltip text">
-        Congratulations. You’ve become a Grand Master.
-      </message>
-      <message name="IDS_BRAVE_STATS_SHARE_TOOLTIP_LEGENDARY_TEXT" desc="Shields tootltip text">
-        Congratulations. You are legendary.
       </message>
       <message name="IDS_BRAVE_WORKS_EVERYWHERE" desc="Cross promotional modal title text">
         Brave works everywhere
