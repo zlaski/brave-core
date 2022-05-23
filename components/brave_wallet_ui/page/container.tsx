@@ -37,7 +37,6 @@ import { SweepstakesBanner } from '../components/desktop/sweepstakes-banner'
 import { Skeleton } from '../components/shared/loading-skeleton/styles'
 
 // Hooks
-import { useAssets, useLib } from '../common/hooks'
 import ProtectedRoute from '../components/shared/protected-routing/protected-route'
 
 export const Container = () => {
@@ -53,8 +52,6 @@ export const Container = () => {
     isWalletLocked,
     isWalletBackedUp,
     hasIncorrectPassword,
-    selectedNetwork,
-    selectedAccount,
     hasInitialized,
     defaultWallet,
     isMetaMaskInstalled
@@ -65,13 +62,7 @@ export const Container = () => {
   // state
   const [sessionRoute, setSessionRoute] = React.useState<string | undefined>(undefined)
   const [inputValue, setInputValue] = React.useState<string>('')
-  const [buyAmount, setBuyAmount] = React.useState('')
   const [selectedWidgetTab, setSelectedWidgetTab] = React.useState<BuySendSwapTypes>('buy')
-  const [selectedBuyOption, setSelectedBuyOption] = React.useState<BraveWallet.OnRampProvider>(BraveWallet.OnRampProvider.kRamp)
-
-  // custom hooks
-  const { buyAssetOptions, wyreAssetOptions, rampAssetOptions } = useAssets()
-  const { getBuyAssetUrl } = useLib()
 
   // methods
   const onToggleShowRestore = React.useCallback(() => {
@@ -91,10 +82,6 @@ export const Container = () => {
       history.push(WalletRoutes.Restore)
     }
   }, [walletLocation])
-
-  const onSetBuyAmount = (value: string) => {
-    setBuyAmount(value)
-  }
 
   const onSelectAccount = (account: WalletAccountType) => {
     dispatch(WalletActions.selectAccount(account))
@@ -121,18 +108,6 @@ export const Container = () => {
       dispatch(WalletActions.hasIncorrectPassword(false))
     }
   }, [hasIncorrectPassword])
-
-  const onSubmitBuy = React.useCallback((asset: BraveWallet.BlockchainToken) => {
-    getBuyAssetUrl({
-      asset,
-      onRampProvider: selectedBuyOption,
-      chainId: selectedNetwork.chainId,
-      address: selectedAccount.address,
-      amount: buyAmount
-    })
-    .then(url => window.open(url, '_blank'))
-    .catch(e => console.error(e))
-  }, [getBuyAssetUrl, selectedBuyOption, selectedNetwork, selectedAccount, buyAmount])
 
   const onUpdateAccountName = React.useCallback((payload: UpdateAccountNamePayloadType): { success: boolean } => {
     const result = dispatch(WalletPageActions.updateAccountName(payload))
@@ -273,16 +248,8 @@ export const Container = () => {
         <WalletWidgetStandIn>
           <BuySendSwap
             selectedTab={selectedWidgetTab}
-            buyAmount={buyAmount}
-            buyAssetOptions={buyAssetOptions}
-            onSetBuyAmount={onSetBuyAmount}
-            onSubmitBuy={onSubmitBuy}
             onSelectAccount={onSelectAccount}
             onSelectTab={setSelectedWidgetTab}
-            selectedBuyOption={selectedBuyOption}
-            onSelectBuyOption={setSelectedBuyOption}
-            wyreAssetOptions={wyreAssetOptions}
-            rampAssetOptions={rampAssetOptions}
           />
           <SweepstakesBanner />
         </WalletWidgetStandIn>

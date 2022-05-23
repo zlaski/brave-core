@@ -67,7 +67,6 @@ import { getNetworkInfo } from '../utils/network-utils'
 import { isHardwareAccount } from '../utils/address-utils'
 import { useAssets, useSwap, useSend, useHasAccount, usePrevNetwork } from '../common/hooks'
 import { getUniqueAssets } from '../utils/asset-utils'
-import { getBuyAssetUrl } from '../common/async/lib'
 
 type Props = {
   panel: PanelState
@@ -132,14 +131,10 @@ function Container (props: Props) {
   const [selectedAccounts, setSelectedAccounts] = React.useState<WalletAccountType[]>([])
   const [filteredAppsList, setFilteredAppsList] = React.useState<AppsListType[]>(AppsList)
   const [showSelectAsset, setShowSelectAsset] = React.useState<boolean>(false)
-  const [buyAmount, setBuyAmount] = React.useState('')
-  const [selectedBuyOption, setSelectedBuyOption] = React.useState<BraveWallet.OnRampProvider>(BraveWallet.OnRampProvider.kRamp)
 
   const {
     sendAssetOptions,
     buyAssetOptions,
-    wyreAssetOptions,
-    rampAssetOptions,
     panelUserAssetList
   } = useAssets()
 
@@ -178,28 +173,6 @@ function Container (props: Props) {
       setInputValue('')
     }
   }, [hasIncorrectPassword])
-
-  const onSetBuyAmount = (value: string) => {
-    setBuyAmount(value)
-  }
-
-  const onSubmitBuy = () => {
-    getBuyAssetUrl({
-      asset: selectedBuyAsset,
-      onRampProvider: selectedBuyOption,
-      chainId: selectedNetwork.chainId,
-      address: selectedAccount.address,
-      amount: buyAmount
-    })
-      .then((url: string) => {
-        chrome.tabs.create({ url }, () => {
-          if (chrome.runtime.lastError) {
-            console.error('tabs.create failed: ' + chrome.runtime.lastError.message)
-          }
-        })
-      })
-      .catch(e => console.error(e))
-  }
 
   const onChangeSendView = (view: BuySendSwapViewTypes) => {
     if (view === 'assets') {
@@ -818,18 +791,8 @@ function Container (props: Props) {
           >
             <SendWrapper>
               <Buy
-                defaultCurrencies={defaultCurrencies}
                 onChangeBuyView={onChangeSendView}
-                onInputChange={onSetBuyAmount}
-                onSubmit={onSubmitBuy}
                 selectedAsset={selectedBuyAsset}
-                buyAmount={buyAmount}
-                selectedNetwork={getNetworkInfo(selectedNetwork.chainId, selectedNetwork.coin, networkList)}
-                networkList={networkList}
-                selectedBuyOption={selectedBuyOption}
-                onSelectBuyOption={setSelectedBuyOption}
-                rampAssetOptions={rampAssetOptions}
-                wyreAssetOptions={wyreAssetOptions}
               />
             </SendWrapper>
           </Panel>
