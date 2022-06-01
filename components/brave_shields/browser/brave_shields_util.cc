@@ -14,7 +14,6 @@
 #include "brave/components/brave_shields/common/brave_shield_utils.h"
 #include "brave/components/brave_shields/common/features.h"
 #include "brave/components/brave_shields/common/pref_names.h"
-#include "brave/components/content_settings/core/common/content_settings_util.h"
 #include "brave/components/debounce/common/features.h"
 #include "components/content_settings/core/browser/host_content_settings_map.h"
 #include "components/content_settings/core/common/content_settings_types.h"
@@ -41,6 +40,18 @@ void RecordShieldsToggled(PrefService* local_state) {
 void RecordShieldsSettingChanged(PrefService* local_state) {
   ::brave_shields::MaybeRecordShieldsUsageP3A(
       ::brave_shields::kChangedPerSiteShields, local_state);
+}
+
+ControlType ControlTypeForContentSetting(ContentSetting setting) {
+  switch(setting) {
+    case ContentSetting::CONTENT_SETTING_BLOCK:
+      return ControlType::BLOCK;
+    case ContentSetting::CONTENT_SETTING_ALLOW:
+      return ControlType::ALLOW;
+    default:
+      NOTREACHED();
+      return ControlType::DEFAULT;
+  }
 }
 
 ContentSetting GetDefaultAllowFromControlType(ControlType type) {
@@ -174,11 +185,8 @@ void SetAdControlType(HostContentSettingsMap* map,
 }
 
 ControlType GetAdControlType(HostContentSettingsMap* map, const GURL& url) {
-  ContentSetting setting =
-      map->GetContentSetting(url, GURL(), ContentSettingsType::BRAVE_ADS);
-
-  return setting == CONTENT_SETTING_ALLOW ? ControlType::ALLOW
-                                          : ControlType::BLOCK;
+  return ControlTypeForContentSetting(
+      map->GetContentSetting(url, GURL(), ContentSettingsType::BRAVE_ADS));
 }
 
 void SetCosmeticFilteringControlType(HostContentSettingsMap* map,
@@ -472,20 +480,6 @@ void SetHTTPSEverywhereEnabled(HostContentSettingsMap* map,
       enable ? CONTENT_SETTING_BLOCK : CONTENT_SETTING_ALLOW);
 
   RecordShieldsSettingChanged(local_state);
-}
-
-void ResetHTTPSEverywhereEnabled(HostContentSettingsMap* map,
-                                 bool enable,
-                                 const GURL& url) {
-  auto primary_pattern = GetPatternFromURL(url);
-
-  if (!primary_pattern.IsValid())
-    return;
-
-  map->SetContentSettingCustomScope(
-      primary_pattern, ContentSettingsPattern::Wildcard(),
-      ContentSettingsType::BRAVE_HTTP_UPGRADABLE_RESOURCES,
-      CONTENT_SETTING_DEFAULT);
 }
 
 bool GetHTTPSEverywhereEnabled(HostContentSettingsMap* map, const GURL& url) {

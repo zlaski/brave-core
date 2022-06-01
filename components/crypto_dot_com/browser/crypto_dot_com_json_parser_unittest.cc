@@ -4,10 +4,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "brave/components/crypto_dot_com/browser/crypto_dot_com_json_parser.h"
-
-#include "brave/components/crypto_dot_com/browser/crypto_dot_com_service.h"
-#include "brave/components/content_settings/core/common/content_settings_util.h"
-#include "chrome/test/base/chrome_render_view_host_test_harness.h"
+#include "testing/gtest/include/gtest/gtest.h"
 
 // npm run test -- brave_unit_tests --filter=CryptoDotComJSONParserTest.*
 

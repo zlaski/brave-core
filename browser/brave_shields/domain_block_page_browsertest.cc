@@ -26,7 +26,6 @@
 #include "url/gurl.h"
 
 using brave_shields::ControlType;
-using brave_shields::ResetBraveShieldsEnabled;
 using brave_shields::SetBraveShieldsEnabled;
 using brave_shields::SetCosmeticFilteringControlType;
 using brave_shields::features::kBraveDomainBlock;
