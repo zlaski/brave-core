@@ -1,0 +1,30 @@
+diff --git a/third_party/blink/renderer/core/script/script_loader.cc b/third_party/blink/renderer/core/script/script_loader.cc
+index 00d86fafc05a95c330f36a1be846ee5dc997d121..1eaf0664da4614359e905a4a7f23608f258d46da 100644
+--- a/third_party/blink/renderer/core/script/script_loader.cc
++++ b/third_party/blink/renderer/core/script/script_loader.cc
+@@ -548,6 +548,7 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+   ScriptFetchOptions options(nonce, integrity_metadata, integrity_attr,
+                              parser_state, credentials_mode, referrer_policy,
+                              fetch_priority_hint, render_blocking_behavior);
++  BRAVE_SCRIPT_LOADER_PREPARE_SCRIPT
+ 
+   // <spec step="23">Let settings object be the element's node document's
+   // relevant settings object.</spec>
+@@ -732,6 +733,8 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+       // depending on the conditions in Step 25 of "prepare a script".
+       break;
+     }
++    DCHECK(prepared_pending_script_);
++    BRAVE_SCRIPT_LOADER_PREPARE_SCRIPT_IF_HAS_SRC_ATTRIBUTE
+   }
+ 
+   // <spec step="25">If the element does not have a src content attribute, run
+@@ -914,6 +917,8 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+         break;
+       }
+     }
++    DCHECK(prepared_pending_script_);
++    BRAVE_SCRIPT_LOADER_PREPARE_SCRIPT_IF_NO_SRC_ATTRIBUTE
+   }
+ 
+   DCHECK_NE(GetScriptType(), ScriptLoader::ScriptTypeAtPrepare::kImportMap);

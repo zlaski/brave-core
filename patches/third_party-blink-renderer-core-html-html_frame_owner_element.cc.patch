@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/core/html/html_frame_owner_element.cc b/third_party/blink/renderer/core/html/html_frame_owner_element.cc
+index 71bae267673a88c38c64e18f7299f200f6cfa797..e98cd45132d046a14588e97292887745f157ee53 100644
+--- a/third_party/blink/renderer/core/html/html_frame_owner_element.cc
++++ b/third_party/blink/renderer/core/html/html_frame_owner_element.cc
+@@ -344,6 +344,7 @@ void HTMLFrameOwnerElement::SetContentFrame(Frame& frame) {
+ 
+   for (ContainerNode* node = this; node; node = node->ParentOrShadowHostNode())
+     node->IncrementConnectedSubframeCount();
++  BRAVE_HTML_FRAME_OWNER_ELEMENT_SET_UP_CONTENT_FRAME
+ }
+ 
+ void HTMLFrameOwnerElement::ClearContentFrame() {
