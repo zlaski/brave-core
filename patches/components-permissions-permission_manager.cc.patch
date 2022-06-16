@@ -1,20 +1,44 @@
 diff --git a/components/permissions/permission_manager.cc b/components/permissions/permission_manager.cc
-index 698d7a5daf3dabff32fabd74660273294fce1563..b17829597a65171bc5f2aaaf98a1b29427cb1531 100644
+index 442050e3d1609e2ff58f5a29a2970495bf4cb83e..fcdaa8f786397f17f2fa65d7ece1d3ebd06764f8 100644
 --- a/components/permissions/permission_manager.cc
 +++ b/components/permissions/permission_manager.cc
-@@ -396,6 +396,7 @@ void PermissionManager::RequestPermissionsFromCurrentDocument(
+@@ -436,6 +436,12 @@ void PermissionManager::RequestPermissions(
+       request_local_id);
  
    const PermissionRequestID request_id(render_frame_host, request_local_id);
-   const GURL requesting_origin =
++<<<<<<< ours
++=======
++  const GURL requesting_origin =
 +      BRAVE_FORCED_REQUESTING_ORIGIN
-       PermissionUtil::GetLastCommittedOriginAsURL(render_frame_host);
++      PermissionUtil::GetLastCommittedOriginAsURL(render_frame_host);
++>>>>>>> theirs
    const GURL embedding_origin =
        GetEmbeddingOrigin(render_frame_host, requesting_origin);
-@@ -456,6 +457,7 @@ PermissionStatus PermissionManager::GetPermissionStatusForCurrentDocument(
-       PermissionUtil::PermissionTypeToContentSetting(permission);
  
-   const GURL requesting_origin =
+@@ -643,9 +649,26 @@ PermissionStatus PermissionManager::GetPermissionStatusForFrame(
+   // TODO(benwells): split this into two functions, GetPermissionStatus and
+   // GetPermissionStatusForPermissionsAPI.
+   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
++<<<<<<< ours
+   ContentSettingsType type = PermissionTypeToContentSetting(permission);
+   PermissionResult result =
+       GetPermissionStatusForFrame(type, render_frame_host, requesting_origin);
++=======
++  ContentSettingsType type =
++      PermissionUtil::PermissionTypeToContentSetting(permission);
++
++  const GURL requesting_origin =
 +      BRAVE_FORCED_REQUESTING_ORIGIN
-       PermissionUtil::GetLastCommittedOriginAsURL(render_frame_host);
-   const GURL embedding_origin =
-       GetEmbeddingOrigin(render_frame_host, requesting_origin);
++      PermissionUtil::GetLastCommittedOriginAsURL(render_frame_host);
++  const GURL embedding_origin =
++      GetEmbeddingOrigin(render_frame_host, requesting_origin);
++
++  PermissionResult result = GetPermissionStatusHelper(
++      type,
++      /*render_process_host=*/nullptr, render_frame_host, requesting_origin,
++      embedding_origin);
++
++>>>>>>> theirs
+   return ContentSettingToPermissionStatus(result.content_setting);
+ }
+ 

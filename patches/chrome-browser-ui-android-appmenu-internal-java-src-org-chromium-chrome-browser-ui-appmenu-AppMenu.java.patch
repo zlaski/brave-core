@@ -1,12 +1,20 @@
 diff --git a/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/chrome/browser/ui/appmenu/AppMenu.java b/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/chrome/browser/ui/appmenu/AppMenu.java
-index 22eca15a5bc74f2f62d00bfe8ce085f86c28949d..c6800957f260e93a1da7f352c7b39d3218eaf67a 100644
+index d284e045a72b59938c67b9ef8e17bf03b3be78c1..14ae74ad3b7ba84c64086b0d37831c02a13f4770 100644
 --- a/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/chrome/browser/ui/appmenu/AppMenu.java
 +++ b/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/chrome/browser/ui/appmenu/AppMenu.java
-@@ -225,6 +225,7 @@ class AppMenu implements OnItemClickListener, OnKeyListener, AppMenuClickHandler
-             mPopup.setAnimationStyle(
-                     isMenuIconAtStart ? R.style.StartIconMenuAnim : R.style.EndIconMenuAnim);
-         }
+@@ -219,7 +219,15 @@ class AppMenu implements OnItemClickListener, OnKeyListener, AppMenuClickHandler
+         // Make sure that the popup window will be closed when touch outside of it.
+         mPopup.setOutsideTouchable(true);
+ 
++<<<<<<< ours
+         if (!isByPermanentButton) mPopup.setAnimationStyle(R.style.EndIconMenuAnim);
++=======
++        if (!isByPermanentButton) {
++            mPopup.setAnimationStyle(
++                    isMenuIconAtStart ? R.style.StartIconMenuAnim : R.style.EndIconMenuAnim);
++        }
 +        if (!isByPermanentButton) mPopup.setAnimationStyle(BraveAppMenu.getAnimationStyle());
++>>>>>>> theirs
  
          // Turn off window animations for low end devices.
          if (SysUtils.isLowEndDevice()) mPopup.setAnimationStyle(0);
