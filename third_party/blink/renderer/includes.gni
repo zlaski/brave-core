@@ -1,5 +1,8 @@
 # common includes which can help minimize patches for
 # src/third_party/blink/renderer/core/BUILD.gn
+
+import("//brave/third_party/blink/brave_page_graph/sources.gni")
+
 brave_blink_renderer_core_visibility =
     [ "//brave/third_party/blink/renderer/*" ]
 
@@ -9,6 +12,8 @@ brave_blink_renderer_core_sources = [
   "//brave/third_party/blink/renderer/core/resource_pool_limiter/resource_pool_limiter.cc",
   "//brave/third_party/blink/renderer/core/resource_pool_limiter/resource_pool_limiter.h",
 ]
+
+brave_blink_renderer_core_sources += brave_page_graph_sources
 
 brave_blink_renderer_core_deps = []
 

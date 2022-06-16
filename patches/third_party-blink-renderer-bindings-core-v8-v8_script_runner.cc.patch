@@ -1,0 +1,37 @@
+diff --git a/third_party/blink/renderer/bindings/core/v8/v8_script_runner.cc b/third_party/blink/renderer/bindings/core/v8/v8_script_runner.cc
+index cd152a7e8cc15bced2ef025d3f936d45ab5f21c9..7460c9f1b725ef794dc187485829b7766c0da2e3 100644
+--- a/third_party/blink/renderer/bindings/core/v8/v8_script_runner.cc
++++ b/third_party/blink/renderer/bindings/core/v8/v8_script_runner.cc
+@@ -133,6 +133,7 @@ v8::MaybeLocal<v8::Script> CompileScriptInternal(
+     DCHECK(!streamer->IsStreamingSuppressed());
+     return v8::ScriptCompiler::Compile(
+         script_state->GetContext(), streamer->Source(v8::ScriptType::kClassic),
++        classic_script.ParentScriptId(),
+         code, origin);
+   }
+ 
+@@ -145,7 +146,7 @@ v8::MaybeLocal<v8::Script> CompileScriptInternal(
+                                       classic_script, &inspector_data,
+                                       &compile_options);
+   if (inspector_data) {
+-    v8::ScriptCompiler::Source source(code, origin, inspector_data);
++    v8::ScriptCompiler::Source source(code, origin, classic_script.ParentScriptId(), inspector_data);
+     v8::MaybeLocal<v8::Script> script =
+         v8::ScriptCompiler::Compile(script_state->GetContext(), &source,
+                                     v8::ScriptCompiler::kConsumeCodeCache);
+@@ -169,6 +170,7 @@ v8::MaybeLocal<v8::Script> CompileScriptInternal(
+           V8CodeCache::GetCachedMetadata(cache_handler);
+       v8::ScriptCompiler::Source source(
+           code, origin,
++          classic_script.ParentScriptId(),
+           V8CodeCache::CreateCachedData(cached_metadata).release(),
+           cache_consumer
+               ? cache_consumer->TakeV8ConsumeTask(cached_metadata.get())
+@@ -342,6 +344,7 @@ v8::MaybeLocal<v8::Module> V8ScriptRunner::CompileModule(
+         // TODO(leszeks): Add support for passing in ScriptCacheConsumer.
+         v8::ScriptCompiler::Source source(
+             code, origin,
++            0,
+             V8CodeCache::CreateCachedData(cache_handler).release());
+         const v8::ScriptCompiler::CachedData* cached_data =
+             source.GetCachedData();

@@ -1,0 +1,14 @@
+diff --git a/include/v8-function.h b/include/v8-function.h
+index 897e6ed617593140b3a2b4d04c3f555284bebb75..804a8d3688ee0181fb3c4b05e8a92bd51f448962 100644
+--- a/include/v8-function.h
++++ b/include/v8-function.h
+@@ -97,6 +97,9 @@ class V8_EXPORT Function : public Object {
+    */
+   Local<Value> GetBoundFunction() const;
+ 
++  // Unwrap any bindings to the innermost function, including nested bindings.
++  Local<Function> GetInnermostFunction() const;
++
+   /**
+    * Calls builtin Function.prototype.toString on this function.
+    * This is different from Value::ToString() that may call a user-defined
