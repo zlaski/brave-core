@@ -14,6 +14,12 @@ brave_android_manifest_includes = [
 ]
 
 brave_chrome_java_deps = [
+  "//brave/third_party/okio:okio_java",
+  "//brave/third_party/okhttp:okhttp_java",
+  "//brave/third_party/google_gson:google_gson_java",
+  "//brave/third_party/retrofit:retrofit_java",
+  "//brave/third_party/gson_converter:gson_converter_java",
+  "//brave/third_party/android_deps:com_example_jetpackcomposeassignment_java",
   "//brave/android/java/org/chromium/chrome/browser/search_engines/settings:java",
   "//brave/browser/notifications/android:brave_java",
   "//brave/browser/notifications/android:java",

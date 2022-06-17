@@ -6,7 +6,7 @@
 package org.chromium.chrome.browser.app;
 
 import static org.chromium.ui.base.ViewUtils.dpToPx;
-
+import com.example.jetpackcomposeassignment.btcassetlist.view.WithoutComposeActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -1054,9 +1054,9 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     }
 
     public void openBraveWallet(boolean fromDapp) {
-        Intent braveWalletIntent = new Intent(this, BraveWalletActivity.class);
-        braveWalletIntent.putExtra(Utils.IS_FROM_DAPPS, fromDapp);
-        braveWalletIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent braveWalletIntent = new Intent(this, WithoutComposeActivity.class);
+       // braveWalletIntent.putExtra(Utils.IS_FROM_DAPPS, fromDapp);
+       // braveWalletIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(braveWalletIntent);
     }
 
