@@ -13,7 +13,6 @@
 #include "third_party/blink/renderer/core/dom/dom_node_ids.h"
 #include "third_party/blink/renderer/platform/weborigin/kurl.h"
 
-using ::blink::ClassicScript;
 using ::blink::DOMNodeId;
 using ::blink::KURL;
 using ::std::map;
@@ -39,10 +38,9 @@ void ScriptTracker::AddScriptUrlForElm(const KURL& url,
   script_src_hash_to_node_ids_.at(url_hash).push_back(node_id);
 }
 
-void ScriptTracker::AddScriptSourceForElm(const ClassicScript& code,
+void ScriptTracker::AddScriptSourceForElm(const WTF::String& code,
                                           const DOMNodeId node_id) {
-  const SourceCodeHash code_hash(
-      code.SourceText().ToString().Impl()->GetHash());
+  const SourceCodeHash code_hash(code.Impl()->GetHash());
   if (node_id_to_source_hashes_.count(node_id) == 0) {
     node_id_to_source_hashes_.emplace(node_id, vector<SourceCodeHash>());
   }
@@ -137,10 +135,9 @@ void ScriptTracker::AddDescendantUrlForParent(
   }
 }
 
-void ScriptTracker::AddCodeFetchedFromUrl(const ClassicScript& code,
+void ScriptTracker::AddCodeFetchedFromUrl(const WTF::String& code,
                                           const KURL& url) {
-  const SourceCodeHash code_hash(
-      code.SourceText().ToString().Impl()->GetHash());
+  const SourceCodeHash code_hash(code.Impl()->GetHash());
   const UrlHash url_hash(url.GetString().Impl()->GetHash());
 
   // There should be no situations where we're receiving script code
@@ -151,18 +148,16 @@ void ScriptTracker::AddCodeFetchedFromUrl(const ClassicScript& code,
   url_hashes_to_urls_.emplace(url_hash, url);
 }
 
-void ScriptTracker::AddExtensionCodeFetchedFromUrl(const ClassicScript& code,
+void ScriptTracker::AddExtensionCodeFetchedFromUrl(const WTF::String& code,
                                                    const UrlHash url_hash) {
-  const SourceCodeHash code_hash(
-      code.SourceText().ToString().Impl()->GetHash());
+  const SourceCodeHash code_hash(code.Impl()->GetHash());
   extension_script_url_hash_to_source_hash_.emplace(url_hash, code_hash);
   extension_source_hash_to_script_url_hash_.emplace(code_hash, url_hash);
 }
 
 void ScriptTracker::SetScriptIdForCode(const ScriptId script_id,
-                                       const ClassicScript& code) {
-  const SourceCodeHash code_hash(
-      code.SourceText().ToString().Impl()->GetHash());
+                                       const WTF::String& code) {
+  const SourceCodeHash code_hash(code.Impl()->GetHash());
   // There should be no situtions where V8 has compiled source code that
   // we don't know about (TODO: handle cases of partial compilation,
   // eval, and similar).

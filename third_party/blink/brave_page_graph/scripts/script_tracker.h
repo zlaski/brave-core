@@ -10,7 +10,6 @@
 #include <vector>
 
 #include "brave/third_party/blink/brave_page_graph/types.h"
-#include "third_party/blink/renderer/core/script/classic_script.h"
 
 // Tracking <script> elements to compiled V8 code units.
 //
@@ -47,49 +46,54 @@ class ScriptTracker {
 
   // Public methods used for step 1 above.
   void AddScriptUrlForElm(const blink::KURL& url,
-    const blink::DOMNodeId node_id);
-  void AddScriptSourceForElm(const blink::ClassicScript& code,
-    const blink::DOMNodeId node_id);
+                          const blink::DOMNodeId node_id);
+  void AddScriptSourceForElm(const WTF::String& code,
+                             const blink::DOMNodeId node_id);
   void AddDescendantUrlForParent(const blink::KURL& descendant_location,
-    const blink::KURL& parent_location_norm);
+                                 const blink::KURL& parent_location_norm);
   void AddDescendantUrlForParent(const blink::KURL& descendant_location,
-    const ScriptId parent_id);
+                                 const ScriptId parent_id);
 
   // Method used for step 2 above.
-  void AddCodeFetchedFromUrl(const blink::ClassicScript& code,
-    const blink::KURL& url);
-  void AddExtensionCodeFetchedFromUrl(const blink::ClassicScript& code,
-    const UrlHash url_hash);
+  void AddCodeFetchedFromUrl(const WTF::String& code,
+                             const blink::KURL& url);
+  void AddExtensionCodeFetchedFromUrl(const WTF::String& code,
+                                      const UrlHash url_hash);
 
   // Method used for step 3 above.
   void SetScriptIdForCode(const ScriptId script_id,
-    const blink::ClassicScript& code);
+                          const WTF::String& code);
 
   ScriptTrackerScriptSource GetSourceOfScript(const ScriptId script_id) const;
 
   DOMNodeIdList GetElmsForScriptId(const ScriptId script_id) const;
   ScriptIdList GetScriptIdsForElm(const blink::DOMNodeId node_id) const;
 
-  std::vector<ScriptId> GetModuleScriptParentsForScriptId(const ScriptId script_id) const;
+  std::vector<ScriptId> GetModuleScriptParentsForScriptId(
+      const ScriptId script_id) const;
 
   void AddScriptId(const ScriptId script_id, const SourceCodeHash hash);
 
   blink::KURL GetModuleScriptSourceUrl(const ScriptId script_id) const;
- private:
 
+ private:
   // Data structures used for step 1 above (note that values are vectors
   // since the same script element can be made to multiple URLs and / or
   // change in-place code over time).  Similarly, there can be multiple
   // <script> nodes on the page that point to the same URL (unlikely, but
   // valid).
-  std::map<blink::DOMNodeId, std::vector<UrlHash>> node_id_to_script_url_hashes_;
+  std::map<blink::DOMNodeId, std::vector<UrlHash>>
+      node_id_to_script_url_hashes_;
   std::map<UrlHash, DOMNodeIdList> script_src_hash_to_node_ids_;
-  std::map<blink::DOMNodeId, std::vector<SourceCodeHash>> node_id_to_source_hashes_;
+  std::map<blink::DOMNodeId, std::vector<SourceCodeHash>>
+      node_id_to_source_hashes_;
   std::map<SourceCodeHash, DOMNodeIdList> source_hash_to_node_ids_;
 
-  std::map<UrlHash, std::vector<blink::KURL>> script_url_to_descendant_module_urls_;
+  std::map<UrlHash, std::vector<blink::KURL>>
+      script_url_to_descendant_module_urls_;
   std::map<UrlHash, std::vector<blink::KURL>> script_url_to_parent_module_urls_;
-  std::map<ScriptId, std::vector<blink::KURL>> script_id_to_descendant_module_urls_;
+  std::map<ScriptId, std::vector<blink::KURL>>
+      script_id_to_descendant_module_urls_;
   std::map<UrlHash, std::vector<ScriptId>> script_url_to_parent_module_ids_;
 
   // We only need to *retrieve* the url for scripts that we are associating as

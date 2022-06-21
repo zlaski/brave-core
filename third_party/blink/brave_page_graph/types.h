@@ -11,13 +11,14 @@
 #include <utility>
 #include <vector>
 
+#include "third_party/blink/renderer/core/core_export.h"
+
 class GURL;
 
 namespace blink {
 using DOMNodeId = int;
 class KURL;
 enum class ResourceType : uint8_t;
-class ScriptSourceCode;
 class WebString;
 }  // namespace blink
 
@@ -99,14 +100,14 @@ typedef enum {
   kGraphMLAttrTypeDouble,
   kGraphMLAttrTypeUnknown
 } GraphMLAttrType;
-std::string GraphMLAttrTypeToString(const GraphMLAttrType type) noexcept;
+CORE_EXPORT std::string GraphMLAttrTypeToString(const GraphMLAttrType type) noexcept;
 
 typedef enum {
   kGraphMLAttrForTypeNode = 0,
   kGraphMLAttrForTypeEdge,
   kGraphMLAttrForTypeUnknown
 } GraphMLAttrForType;
-std::string GraphMLForTypeToString(const GraphMLAttrForType type) noexcept;
+CORE_EXPORT std::string GraphMLForTypeToString(const GraphMLAttrForType type) noexcept;
 
 typedef enum {
   kRequestTypeAJAX = 0,
@@ -122,9 +123,9 @@ typedef enum {
   kRequestTypeVideo,
   kRequestTypeUnknown
 } RequestType;
-std::string RequestTypeToString(const RequestType type) noexcept;
+CORE_EXPORT std::string RequestTypeToString(const RequestType type) noexcept;
 
-std::string ResourceTypeToString(const blink::ResourceType type) noexcept;
+CORE_EXPORT std::string ResourceTypeToString(const blink::ResourceType type) noexcept;
 
 typedef enum {
   kScriptTypeClassic = 0,
@@ -141,7 +142,7 @@ typedef enum {
   kInspector,
   kScriptTypeUnknown
 } ScriptType;
-std::string ScriptTypeToString(const ScriptType type) noexcept;
+CORE_EXPORT std::string ScriptTypeToString(const ScriptType type) noexcept;
 
 typedef enum {
   kElementTypeDefault = 0,
@@ -154,14 +155,14 @@ typedef enum {
   kRequestStatusError,
   kRequestStatusBlocked
 } RequestStatus;
-std::string RequestStatusToString(const RequestStatus status) noexcept;
+CORE_EXPORT std::string RequestStatusToString(const RequestStatus status) noexcept;
 
 typedef enum {
   kStorageLocationCookie = 0,
   kStorageLocationLocalStorage,
   kStorageLocationSessionStorage
 } StorageLocation;
-std::string StorageLocationToString(const StorageLocation location) noexcept;
+CORE_EXPORT std::string StorageLocationToString(const StorageLocation location) noexcept;
 
 typedef enum {
   kJSBuiltInDateNow = 0,
@@ -197,8 +198,8 @@ typedef enum {
   kJSBuiltInJSONParse,
   kJSBuiltInJSONStringify,
 } JSBuiltIn;
-JSBuiltIn JSBuiltInFromString(const std::string& built_in_str) noexcept;
-const std::string& JSBuiltInToSting(const JSBuiltIn built_in) noexcept;
+CORE_EXPORT JSBuiltIn JSBuiltInFromString(const std::string& built_in_str) noexcept;
+CORE_EXPORT const std::string& JSBuiltInToSting(const JSBuiltIn built_in) noexcept;
 
 typedef enum {
   kWebAPIDocumentReferrer = 0,
@@ -217,21 +218,21 @@ typedef enum {
   kWebAPILocationSearch,
   kWebAPIConsoleLog,
 } WebAPI;
-WebAPI WebAPIFromString(const std::string& web_api_str) noexcept;
-const std::string& WebAPIToString(const WebAPI web_api) noexcept;
+CORE_EXPORT WebAPI WebAPIFromString(const std::string& web_api_str) noexcept;
+CORE_EXPORT const std::string& WebAPIToString(const WebAPI web_api) noexcept;
 
 typedef const char* BindingType;
-extern const BindingType kBindingTypeAttribute;
-extern const BindingType kBindingTypeConstant;
-extern const BindingType kBindingTypeConstructor;
-extern const BindingType kBindingTypeMethod;
+CORE_EXPORT extern const BindingType kBindingTypeAttribute;
+CORE_EXPORT extern const BindingType kBindingTypeConstant;
+CORE_EXPORT extern const BindingType kBindingTypeConstructor;
+CORE_EXPORT extern const BindingType kBindingTypeMethod;
 
 typedef const char* BindingEvent;
-extern const BindingEvent kBindingEventAttributeGet;
-extern const BindingEvent kBindingEventAttributeSet;
-extern const BindingEvent kBindingEventConstantGet;
-extern const BindingEvent kBindingEventConstructorCall;
-extern const BindingEvent kBindingEventMethodCall;
+CORE_EXPORT extern const BindingEvent kBindingEventAttributeGet;
+CORE_EXPORT extern const BindingEvent kBindingEventAttributeSet;
+CORE_EXPORT extern const BindingEvent kBindingEventConstantGet;
+CORE_EXPORT extern const BindingEvent kBindingEventConstructorCall;
+CORE_EXPORT extern const BindingEvent kBindingEventMethodCall;
 
 typedef const char* Binding;
 
@@ -245,7 +246,7 @@ typedef std::string MethodName;
 typedef std::string RequestURL;
 typedef uint64_t InspectorId;
 
-struct FingerprintingRule {
+struct CORE_EXPORT FingerprintingRule {
   const std::string& primary_pattern;
   const std::string& secondary_pattern;
   const std::string& source;
@@ -262,7 +263,7 @@ struct FingerprintingRule {
   std::string ToString() const;
 };
 
-struct EventListener {
+struct CORE_EXPORT EventListener {
   const std::string& event_type;
   const ScriptId listener_script_id;
 

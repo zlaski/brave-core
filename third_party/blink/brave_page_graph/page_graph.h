@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 
+#include "third_party/blink/renderer/core/core_export.h"
 #include "third_party/blink/renderer/core/inspector/protocol/Protocol.h"
 
 #include "brave/third_party/blink/brave_page_graph/types.h"
@@ -70,7 +71,7 @@ struct TrackedRequestRecord;
 
 ::std::chrono::milliseconds NowInMs();
 
-class PageGraph {
+class CORE_EXPORT PageGraph {
 // Needed so that graph items can assign themself the next graph id.
 friend GraphItem;
 // Needed so that edges between HTML nodes can find their siblings and parents.
@@ -184,20 +185,19 @@ friend NodeHTMLElement;
 
   // Local scripts are scripts that define their code inline.
   void RegisterElmForLocalScript(const blink::DOMNodeId node_id,
-    const blink::ClassicScript& code);
+    const WTF::String& code);
   // Remote scripts are scripts that reference remote code (eg src=...).
   void RegisterElmForRemoteScript(const blink::DOMNodeId node_id,
     const blink::KURL& url);
   // JavaScript URLs ("javascript:" schemes).
-  void RegisterJavaScriptURL(const blink::ClassicScript& code);
-  void RegisterUrlForScriptSource(const blink::KURL& url,
-    const blink::ClassicScript& code);
-  void RegisterUrlForExtensionScriptSource(const blink::WebString& url,
-    const blink::ClassicScript& code);
-  void RegisterScriptCompilation(const blink::ClassicScript& code,
+  void RegisterJavaScriptURL(const WTF::String& code);
+  void RegisterUrlForScriptSource(const blink::KURL& url, const WTF::String& code);
+  void RegisterUrlForExtensionScriptSource(const WTF::String& url,
+                                           const WTF::String& code);
+  void RegisterScriptCompilation(const WTF::String& code,
     const ScriptId script_id, const ScriptType type);
   void RegisterScriptCompilationFromAttr(const blink::DOMNodeId node_id,
-    const WTF::String& attr_name, const WTF::String& attr_value,
+    const String& attr_name, const String& attr_value,
     const ScriptId script_id);
   void RegisterScriptCompilationFromEval(const ScriptId parent_script_id,
       const ScriptId script_id, const String& source);

@@ -225,9 +225,7 @@ PageGraph* PageGraph::GetFromExecutionContext(ExecutionContext& exec_context) {
     return nullptr;
   }
 
-  return nullptr;
-  // TODO: uncomment
-  // return document->GetPageGraph();
+  return document->GetPageGraph();
 }
 
 static void OnEvalScriptCompiled(v8::Isolate& isolate,
@@ -849,9 +847,9 @@ void PageGraph::RegisterResourceBlockFingerprinting(const GURL& url,
 }
 
 void PageGraph::RegisterElmForLocalScript(const DOMNodeId node_id,
-    const ClassicScript& code) {
+    const WTF::String& code) {
   Log("RegisterElmForLocalScript) node_id: " + to_string(node_id));
-  Log("Script: " + string(code.SourceText().ToString().Utf8().data()));
+  Log("Script: " + code.Utf8());
   script_tracker_.AddScriptSourceForElm(code, node_id);
 }
 
@@ -863,43 +861,41 @@ void PageGraph::RegisterElmForRemoteScript(const DOMNodeId node_id,
   script_tracker_.AddScriptUrlForElm(normalized_url, node_id);
 }
 
-void PageGraph::RegisterJavaScriptURL(const blink::ClassicScript& code) {
-  Log("RegisterJavaScriptURL) script: "
-      + string(code.SourceText().ToString().Utf8().data()));
+void PageGraph::RegisterJavaScriptURL(const WTF::String& code) {
+  Log("RegisterJavaScriptURL) script: " + code.Utf8());
 
   // Use the document node as the "owning element" of JavaScript URLs for now.
   script_tracker_.AddScriptSourceForElm(code, html_root_node_->GetNodeId());
 }
 
 void PageGraph::RegisterUrlForScriptSource(const KURL& url,
-    const ClassicScript& code) {
+                                           const WTF::String& code) {
   const KURL normalized_url = NormalizeUrl(url);
   Log("RegisterUrlForScriptSource) url: " + URLToString(normalized_url));
   script_tracker_.AddCodeFetchedFromUrl(code, normalized_url);
 }
 
-void PageGraph::RegisterUrlForExtensionScriptSource(const blink::WebString& url,
-    const ClassicScript& code) {
+void PageGraph::RegisterUrlForExtensionScriptSource(const WTF::String& url,
+    const WTF::String& code) {
   const String url_string(url.Latin1().c_str(), url.length());
   Log("RegisterUrlForExtensionScriptSource) url: "
       + string(url_string.Utf8().data()));
   script_tracker_.AddExtensionCodeFetchedFromUrl(code,
-    url_string.Impl()->GetHash());
+                                                 url_string.Impl()->GetHash());
 }
 
 void PageGraph::RegisterScriptCompilation(
-    const ClassicScript& code, const ScriptId script_id,
+    const WTF::String& code, const ScriptId script_id,
     const ScriptType type) {
   Log("RegisterScriptCompilation) script id: " + to_string(script_id));
-  Log("code: " + string(code.SourceText().ToString().Utf8().data()));
+  Log("code: " + code.Utf8());
 
   if (type == ScriptType::kScriptTypeModule) {
-    script_tracker_.AddScriptId(script_id,
-      code.SourceText().ToString().Impl()->GetHash());
+    script_tracker_.AddScriptId(script_id, code.Impl()->GetHash());
     script_tracker_.SetScriptIdForCode(script_id, code);
 
-    NodeScript* const code_node = new NodeScript(this, script_id, type,
-        string(code.SourceText().ToString().Utf8().data()));
+    NodeScript* const code_node =
+        new NodeScript(this, script_id, type, code.Utf8());
     AddNode(code_node);
     script_nodes_.emplace(script_id, code_node);
 
@@ -931,14 +927,13 @@ void PageGraph::RegisterScriptCompilation(
     return;
   }
 
-  script_tracker_.AddScriptId(script_id,
-    code.SourceText().ToString().Impl()->GetHash());
+  script_tracker_.AddScriptId(script_id, code.Impl()->GetHash());
   script_tracker_.SetScriptIdForCode(script_id, code);
 
   // Note that at the end of this method, the script node exists in the
   // graph, but isn't connected to anything.  That association
-  NodeScript* const code_node = new NodeScript(this, script_id, type,
-      string(code.SourceText().ToString().Utf8().data()));
+  NodeScript* const code_node =
+      new NodeScript(this, script_id, type, code.Utf8());
   AddNode(code_node);
   script_nodes_.emplace(script_id, code_node);
 

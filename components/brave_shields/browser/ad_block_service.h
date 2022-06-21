@@ -50,6 +50,7 @@ class AdBlockRegionalServiceManager;
 class AdBlockCustomFiltersProvider;
 class AdBlockRegionalCatalogProvider;
 class AdBlockSubscriptionServiceManager;
+class BlockDecision;
 
 // The brave shields service in charge of ad-block checking and init.
 class AdBlockService {
