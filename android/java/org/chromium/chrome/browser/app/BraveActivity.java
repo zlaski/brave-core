@@ -44,6 +44,7 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.jetpackcomposeassignment.btcassetlist.view.WithoutComposeActivity;
 import com.wireguard.android.backend.GoBackend;
 import com.wireguard.android.backend.Tunnel;
 import com.wireguard.crypto.KeyPair;
@@ -1080,7 +1081,7 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
     }
 
     public void openBraveWallet(boolean fromDapp) {
-        Intent braveWalletIntent = new Intent(this, BraveWalletActivity.class);
+        Intent braveWalletIntent = new Intent(this, WithoutComposeActivity.class);
         braveWalletIntent.putExtra(Utils.IS_FROM_DAPPS, fromDapp);
         braveWalletIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(braveWalletIntent);
