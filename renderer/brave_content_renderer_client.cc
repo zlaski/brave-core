@@ -11,7 +11,7 @@
 #include "brave/components/brave_search/common/brave_search_utils.h"
 #include "brave/components/brave_search/renderer/brave_search_render_frame_observer.h"
 #include "brave/components/brave_shields/common/features.h"
-#include "brave/components/brave_vpn/features.h"
+#include "brave/components/brave_vpn/brave_vpn_utils.h"
 #include "brave/components/brave_vpn/renderer/vpn_render_frame_observer.h"
 #include "brave/components/brave_wallet/common/features.h"
 #include "brave/components/cosmetic_filters/renderer/cosmetic_filters_js_render_frame_observer.h"
@@ -97,8 +97,7 @@ void BraveContentRendererClient::RenderFrameCreated(
                                       content::ISOLATED_WORLD_ID_GLOBAL);
   }
 
-  // TODO(bsclifton): also ensure user is Android
-  if (base::FeatureList::IsEnabled(brave_vpn::features::kBraveVPN)) {
+  if (brave_vpn::IsBraveVPNEnabled()) {
     new brave_vpn::VpnRenderFrameObserver(render_frame,
                                           content::ISOLATED_WORLD_ID_GLOBAL);
   }

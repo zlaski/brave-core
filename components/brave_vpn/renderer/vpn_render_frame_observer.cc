@@ -10,7 +10,7 @@
 
 #include "base/feature_list.h"
 #include "base/no_destructor.h"
-#include "brave/components/brave_vpn/features.h"
+#include "brave/components/brave_vpn/brave_vpn_utils.h"
 #include "content/public/renderer/render_frame.h"
 #include "third_party/blink/public/platform/web_security_origin.h"
 #include "third_party/blink/public/web/web_local_frame.h"
@@ -42,8 +42,7 @@ void VpnRenderFrameObserver::DidCreateScriptContext(
 }
 
 bool VpnRenderFrameObserver::IsAllowed() {
-  // TODO: move this to a common place
-  DCHECK(base::FeatureList::IsEnabled(brave_vpn::features::kBraveVPN));
+  DCHECK(brave_vpn::IsBraveVPNEnabled());
   // NOTE: please open a security review when appending to this list.
   static base::NoDestructor<std::vector<blink::WebSecurityOrigin>> safe_origins{
       {{blink::WebSecurityOrigin::Create(GURL("https://account.brave.com"))},
