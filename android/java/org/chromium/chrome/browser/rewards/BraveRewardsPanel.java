@@ -510,8 +510,9 @@ public class BraveRewardsPanel
                                 R.string.brave_ui_notification_desc_no_funds);
                         break;
                     case AUTO_CONTRIBUTE_TIPPING_ERROR:
-                        title = "";
-                        notificationIcon = R.drawable.ic_error_notification;
+                        title = mPopupView.getResources().getString(
+                                R.string.brave_ui_notification_title_tip_error);
+                        notificationIcon = R.drawable.ic_info_rewards;
                         description = mPopupView.getResources().getString(
                                 R.string.brave_ui_notification_desc_tip_error);
                         break;

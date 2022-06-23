@@ -662,6 +662,9 @@ month...
       <message name="IDS_BRAVE_UI_NOTIFICATION_DESC_NO_FUNDS" desc="A notification about not enough funds">
         Your scheduled monthly payment for Auto-Contribute and monthly tips could not be completed due to insufficient funds. We'll try again in 30 days.
       </message>
+      <message name="IDS_BRAVE_UI_NOTIFICATION_TITLE_TIP_ERROR" desc="A notification title about tip processing problem">
+        Monthly tip failed
+      </message>
       <message name="IDS_BRAVE_UI_NOTIFICATION_DESC_TIP_ERROR" desc="A notification about tip processing problem">
         There was a problem processing your tip, please try again.
       </message>
