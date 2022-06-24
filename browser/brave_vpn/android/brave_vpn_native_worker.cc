@@ -245,6 +245,16 @@ void BraveVpnNativeWorker::OnVerifyPurchaseToken(
       base::android::ConvertUTF8ToJavaString(env, json_response), success);
 }
 
+void BraveVpnNativeWorker::SetPurchaseToken(
+    JNIEnv* env,
+    const base::android::JavaParamRef<jstring>& purchase_token) {
+  BraveVpnService* brave_vpn_service = GetBraveVpnService();
+  if (brave_vpn_service) {
+    brave_vpn_service->SetPurchaseTokenAndroid(
+        base::android::ConvertJavaStringToUTF8(env, purchase_token));
+  }
+}
+
 static void JNI_BraveVpnNativeWorker_Init(
     JNIEnv* env,
     const base::android::JavaParamRef<jobject>& jcaller) {

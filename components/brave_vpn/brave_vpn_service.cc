@@ -11,7 +11,10 @@
 #include "base/json/json_reader.h"
 #include "base/json/json_writer.h"
 #include "base/strings/utf_string_conversions.h"
+#include "brave/components/brave_vpn/pref_names.h"
 #include "brave/components/skus/browser/skus_utils.h"
+#include "components/prefs/pref_service.h"
+#include "components/prefs/scoped_user_pref_update.h"
 #include "net/base/network_change_notifier.h"
 #include "net/cookies/cookie_inclusion_status.h"
 #include "net/cookies/parsed_cookie.h"
@@ -29,11 +32,8 @@
 #include "brave/components/brave_vpn/brave_vpn_constants.h"
 #include "brave/components/brave_vpn/brave_vpn_service_helper.h"
 #include "brave/components/brave_vpn/brave_vpn_utils.h"
-#include "brave/components/brave_vpn/pref_names.h"
 #include "brave/components/brave_vpn/switches.h"
 #include "brave/components/version_info/version_info.h"
-#include "components/prefs/pref_service.h"
-#include "components/prefs/scoped_user_pref_update.h"
 #include "components/version_info/version_info.h"
 #include "third_party/icu/source/i18n/unicode/timezone.h"
 #endif  // !BUILDFLAG(IS_ANDROID)
@@ -120,9 +120,11 @@ using PurchasedState = mojom::PurchasedState;
 #if BUILDFLAG(IS_ANDROID)
 BraveVpnService::BraveVpnService(
     scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
+    PrefService* prefs,
     base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
         skus_service_getter)
-    : skus_service_getter_(skus_service_getter),
+    : prefs_(prefs),
+      skus_service_getter_(skus_service_getter),
       api_request_helper_(GetNetworkTrafficAnnotationTag(), url_loader_factory),
       weak_ptr_factory_(this) {}
 #else
@@ -878,6 +880,25 @@ void BraveVpnService::OnCreateSupportTicket(
   std::move(callback).Run(success, body);
 }
 #endif  // !BUILDFLAG(IS_ANDROID)
+
+void BraveVpnService::SetPurchaseTokenAndroid(
+    const std::string& purchase_token) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+  LOG(ERROR) << "NTP"
+             << "Purchase token : vpn service : " << purchase_token;
+  prefs_->SetString(prefs::kBraveVPNPurchaseTokenAndroid, purchase_token);
+}
+
+std::string BraveVpnService::GetPurchaseTokenAndroid() const {
+  LOG(ERROR) << "NTP"
+             << "Purchase token : vpn service 1 : "
+             << prefs_->GetString(prefs::kBraveVPNPurchaseTokenAndroid);
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+  LOG(ERROR) << "NTP"
+             << "Purchase token : vpn service 2 : "
+             << prefs_->GetString(prefs::kBraveVPNPurchaseTokenAndroid);
+  return prefs_->GetString(prefs::kBraveVPNPurchaseTokenAndroid);
+}
 
 void BraveVpnService::AddObserver(
     mojo::PendingRemote<mojom::ServiceObserver> observer) {

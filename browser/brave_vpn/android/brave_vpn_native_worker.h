@@ -90,6 +90,10 @@ class BraveVpnNativeWorker {
 
   void OnVerifyPurchaseToken(const std::string& json_response, bool success);
 
+  void SetPurchaseToken(
+      JNIEnv* env,
+      const base::android::JavaParamRef<jstring>& purchase_token);
+
  private:
   JavaObjectWeakGlobalRef weak_java_brave_vpn_native_worker_;
   base::WeakPtrFactory<BraveVpnNativeWorker> weak_factory_;

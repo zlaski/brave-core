@@ -84,7 +84,8 @@ KeyedService* BraveVpnServiceFactory::BuildServiceInstanceFor(
 #endif
   return vpn_service;
 #elif BUILDFLAG(IS_ANDROID)
-  return new BraveVpnService(shared_url_loader_factory, callback);
+  return new BraveVpnService(shared_url_loader_factory,
+                             user_prefs::UserPrefs::Get(context), callback);
 #endif
 }
 

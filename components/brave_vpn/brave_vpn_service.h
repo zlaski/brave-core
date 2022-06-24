@@ -41,12 +41,13 @@ namespace network {
 class SharedURLLoaderFactory;
 }  // namespace network
 
+class PrefService;
+
 #if !BUILDFLAG(IS_ANDROID)
 namespace base {
 class Value;
 }  // namespace base
 
-class PrefService;
 class BraveAppMenuBrowserTest;
 class BraveBrowserCommandControllerTest;
 
@@ -67,6 +68,7 @@ class BraveVpnService :
 #if BUILDFLAG(IS_ANDROID)
   BraveVpnService(
       scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
+      PrefService* prefs,
       base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
           skus_service_getter);
 #else
@@ -158,6 +160,8 @@ class BraveVpnService :
   void GetSubscriberCredentialV12(ResponseCallback callback,
                                   const std::string& payments_environment,
                                   const std::string& monthly_pass);
+  void SetPurchaseTokenAndroid(const std::string& purchase_token);
+  std::string GetPurchaseTokenAndroid() const;
 
  private:
 #if !BUILDFLAG(IS_ANDROID)
@@ -254,8 +258,9 @@ class BraveVpnService :
   void OnPrepareCredentialsPresentation(
       const std::string& credential_as_cookie);
 
-#if !BUILDFLAG(IS_ANDROID)
   raw_ptr<PrefService> prefs_ = nullptr;
+
+#if !BUILDFLAG(IS_ANDROID)
   std::vector<mojom::Region> regions_;
   std::unique_ptr<Hostname> hostname_;
   BraveVPNConnectionInfo connection_info_;

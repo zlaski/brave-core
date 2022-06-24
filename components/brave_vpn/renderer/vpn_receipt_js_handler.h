@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-//#include "brave/components/skus/common/skus_sdk.mojom.h"
+// #include "brave/components/skus/common/skus_sdk.mojom.h"
 #include "content/public/renderer/render_frame.h"
 #include "content/public/renderer/render_frame_observer.h"
 #include "mojo/public/cpp/bindings/remote.h"
@@ -45,11 +45,10 @@ class VpnReceiptJSHandler {
   void BindFunctionsToObject(v8::Isolate* isolate,
                              v8::Local<v8::Context> context);
 
-  //content::RenderFrame* render_frame_;
-  //mojo::Remote<skus::mojom::SkusService> skus_service_;
+  // content::RenderFrame* render_frame_;
+  // mojo::Remote<skus::mojom::SkusService> skus_service_;
 };
 
 }  // namespace brave_vpn
 
 #endif  // BRAVE_COMPONENTS_BRAVE_VPN_RENDERER_VPN_RECEIPT_JS_HANDLER_H_
-

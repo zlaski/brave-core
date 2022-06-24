@@ -23,4 +23,3 @@ source_set("renderer") {
     "//v8",
   ]
 }
-

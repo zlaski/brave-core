@@ -29,7 +29,7 @@ namespace brave_vpn {
 class VpnRenderFrameObserver : public content::RenderFrameObserver {
  public:
   explicit VpnRenderFrameObserver(content::RenderFrame* render_frame,
-                                   int32_t world_id);
+                                  int32_t world_id);
   VpnRenderFrameObserver(const VpnRenderFrameObserver&) = delete;
   VpnRenderFrameObserver& operator=(const VpnRenderFrameObserver&) = delete;
   ~VpnRenderFrameObserver() override;
@@ -52,4 +52,3 @@ class VpnRenderFrameObserver : public content::RenderFrameObserver {
 }  // namespace brave_vpn
 
 #endif  // BRAVE_COMPONENTS_BRAVE_VPN_RENDERER_VPN_RENDER_FRAME_OBSERVER_H_
-

@@ -34,8 +34,7 @@ void VpnRenderFrameObserver::DidCreateScriptContext(
     return;
 
   if (!native_javascript_handle_) {
-    native_javascript_handle_ =
-        std::make_unique<VpnReceiptJSHandler>();
+    native_javascript_handle_ = std::make_unique<VpnReceiptJSHandler>();
   }
 
   native_javascript_handle_->AddJavaScriptObjectToFrame(context);
@@ -67,4 +66,3 @@ void VpnRenderFrameObserver::OnDestruct() {
 }
 
 }  // namespace brave_vpn
-

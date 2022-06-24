@@ -24,6 +24,15 @@
 #include "third_party/blink/public/web/web_local_frame.h"
 #include "third_party/blink/public/web/web_script_source.h"
 
+#include "brave/browser/brave_vpn/brave_vpn_service_factory.h"
+#include "brave/components/brave_vpn/brave_vpn_service.h"
+#include "brave/components/brave_vpn/pref_names.h"
+#include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/profiles/profile_manager.h"
+#include "components/prefs/pref_service.h"
+
+using brave_vpn::BraveVpnService;
+
 namespace {
 std::string FormatReceipt(std::string purchase_token) {
   std::string type = "android";
@@ -33,6 +42,22 @@ std::string FormatReceipt(std::string purchase_token) {
   base::Base64Encode(response, &response);
   return response;
 }
+
+PrefService* GetPrefs() {
+  return ProfileManager::GetActiveUserProfile()->GetPrefs();
+}
+
+// BraveVpnService* GetBraveVpnService() {
+//   LOG(ERROR) << "NTP" <<
+//   "ProfileManager::GetActiveUserProfile()->GetOriginalProfile() 1 :  ";
+//   if (ProfileManager::GetActiveUserProfile()->GetOriginalProfile()) {
+//     LOG(ERROR) << "NTP" <<
+//     "ProfileManager::GetActiveUserProfile()->GetOriginalProfile() 2 :  ";
+//   }
+//   return brave_vpn::BraveVpnServiceFactory::GetForProfile(
+//       ProfileManager::GetActiveUserProfile()->GetOriginalProfile());
+// }
+
 }  // namespace
 
 namespace brave_vpn {
@@ -85,10 +110,35 @@ void VpnReceiptJSHandler::BindFunctionsToObject(
   }
 
   // window.chrome.braveVpn.receipt
+  LOG(ERROR) << "NTP"
+             << "Purchase token 1";
+  if (GetPrefs()) {
+    LOG(ERROR) << "NTP"
+               << "Purchase token 2 : "
+               << GetPrefs()->GetString(prefs::kBraveVPNPurchaseTokenAndroid);
+  }
   std::string purchase_token =
-      "oohdhbmbebmciddpbcicgnko.AO-J1OxJGS6-"
-      "tNYvzofx7RO2hJSEgQmi6tOrLHEB4zJ2OhsyhX3mhEe4QKS0MVxtJCBNIAlBP5jAgDPqdXDN"
-      "z15JhIXt5QYcIExIxe5H5ifbhAsHILlUXlE";
+      GetPrefs()->GetString(prefs::kBraveVPNPurchaseTokenAndroid);
+
+  // BraveVpnService* brave_vpn_service = GetBraveVpnService();
+  // LOG(ERROR) << "NTP" << "Purchase token 2";
+  // std::string purchase_token;
+  // if (brave_vpn_service) {
+  //   LOG(ERROR) << "NTP" << "Purchase token 3";
+  //   purchase_token = brave_vpn_service->GetPurchaseTokenAndroid();
+  //   LOG(ERROR) << "NTP" << "Purchase token : vpn receipt : " <<
+  //   purchase_token;
+  // } else {
+  //   purchase_token =
+  //     "oohdhbmbebmciddpbcicgnko.AO-J1OxJGS6-"
+  //     "tNYvzofx7RO2hJSEgQmi6tOrLHEB4zJ2OhsyhX3mhEe4QKS0MVxtJCBNIAlBP5jAgDPqdXDN"
+  //     "z15JhIXt5QYcIExIxe5H5ifbhAsHILlUXlE";
+  // }
+
+  // std::string purchase_token = "oohdhbmbebmciddpbcicgnko.AO-J1OxJGS6-"
+  //     "tNYvzofx7RO2hJSEgQmi6tOrLHEB4zJ2OhsyhX3mhEe4QKS0MVxtJCBNIAlBP5jAgDPqdXDN"
+  //     "z15JhIXt5QYcIExIxe5H5ifbhAsHILlUXlE";
+
   // TODO(bsclifton): get actual purchase token from device
   vpn_obj
       ->Set(context, gin::StringToSymbol(isolate, "receipt"),
@@ -97,4 +147,3 @@ void VpnReceiptJSHandler::BindFunctionsToObject(
 }
 
 }  // namespace brave_vpn
-
