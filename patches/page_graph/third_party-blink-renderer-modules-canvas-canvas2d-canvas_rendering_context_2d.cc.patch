@@ -1,0 +1,63 @@
+diff --git a/third_party/blink/renderer/modules/canvas/canvas2d/canvas_rendering_context_2d.cc b/third_party/blink/renderer/modules/canvas/canvas2d/canvas_rendering_context_2d.cc
+index 78fe811af2a902b4571c057560db76eb55d66016..7555d8437950259ca161d9b1d042f0bee40052cb 100644
+--- a/third_party/blink/renderer/modules/canvas/canvas2d/canvas_rendering_context_2d.cc
++++ b/third_party/blink/renderer/modules/canvas/canvas2d/canvas_rendering_context_2d.cc
+@@ -77,6 +77,8 @@
+ #include "third_party/blink/renderer/platform/text/bidi_text_run.h"
+ #include "third_party/blink/renderer/platform/wtf/math_extras.h"
+ #include "third_party/blink/renderer/platform/wtf/text/string_builder.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#include <sstream>
+ 
+ namespace blink {
+ 
+@@ -976,6 +978,7 @@ TextMetrics* CanvasRenderingContext2D::measureText(const String& text) {
+   if (!canvas()->GetDocument().GetFrame())
+     return MakeGarbageCollected<TextMetrics>();
+ 
++  BRAVE_CANVAS_RENDERING_CONTEXT_2D_MEASURE_TEXT
+   canvas()->GetDocument().UpdateStyleAndLayoutTreeForNode(canvas());
+ 
+   const Font& font = AccessFont();
+@@ -983,6 +986,41 @@ TextMetrics* CanvasRenderingContext2D::measureText(const String& text) {
+   TextDirection direction =
+       ToTextDirection(GetState().GetDirection(), canvas());
+ 
++  {
++    TextMetrics* result = MakeGarbageCollected<TextMetrics>(font, direction,
++        GetState().GetTextBaseline(), GetState().GetTextAlign(), text);
++
++    brave_page_graph::PageGraph* page_graph =
++      canvas()->GetDocument().GetPageGraph();
++    if (page_graph != nullptr) {
++      std::vector<const String> args;
++      args.push_back(text);
++      page_graph->RegisterWebAPICall("CanvasRenderingContext2D.measureText",
++        args);
++
++      std::stringstream result_buffer;
++      result_buffer << "width: " << result->width()
++        << ", actualBoundingBoxLeft: " << result->actualBoundingBoxLeft()
++        << ", actualBoundingBoxRight: " << result->actualBoundingBoxRight()
++        << ", fontBoundingBoxAscent: " << result->fontBoundingBoxAscent()
++        << ", fontBoundingBoxDescent: " << result->fontBoundingBoxDescent()
++        << ", actualBoundingBoxAscent: " << result->actualBoundingBoxAscent()
++        << ", actualBoundingBoxDescent: " << result->actualBoundingBoxDescent()
++        << ", emHeightAscent: " << result->emHeightAscent()
++        << ", emHeightDescent: " << result->emHeightDescent();
++
++      Baselines* baselines = result->getBaselines();
++      result_buffer << ", hangingBaseline: " << baselines->hanging()
++        << ", alphabeticBaseline: " << baselines->alphabetic()
++        << ", ideographicBaseline: " << baselines->ideographic();
++
++      String page_graph_result(result_buffer.str().c_str());
++      page_graph->RegisterWebAPIResult("CanvasRenderingContext2D.measureText",
++        page_graph_result);
++    }
++
++    return result;
++  }
+   return MakeGarbageCollected<TextMetrics>(font, direction,
+                                            GetState().GetTextBaseline(),
+                                            GetState().GetTextAlign(), text);

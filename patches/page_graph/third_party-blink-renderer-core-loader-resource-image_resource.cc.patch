@@ -1,0 +1,42 @@
+diff --git a/third_party/blink/renderer/core/loader/resource/image_resource.cc b/third_party/blink/renderer/core/loader/resource/image_resource.cc
+index 8c35036da161f5a4fd0599340ce39a46d66ac4d5..5d0a3c76e33ec76f5d3a54570e228b10fea37903 100644
+--- a/third_party/blink/renderer/core/loader/resource/image_resource.cc
++++ b/third_party/blink/renderer/core/loader/resource/image_resource.cc
+@@ -56,6 +56,15 @@
+ 
+ #include "v8/include/v8.h"
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED
++#include "brave/third_party/blink/brave_page_graph/logging.h"
++
++#include "third_party/blink/renderer/platform/crypto.h"
++
++#include "third_party/blink/renderer/platform/wtf/text/base64.h"
++#include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
++// #endif
++
+ namespace blink {
+ 
+ namespace {
+@@ -541,4 +550,21 @@ void ImageResource::FlagAsUserAgentResource() {
+   is_referenced_from_ua_stylesheet_ = true;
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++std::string ImageDigest(Image* image) {
++  DigestValue digest;
++
++  const size_t size = image->Data()->size();
++  auto data = std::make_unique<char[]>(size);
++  if (image->Data()->GetBytes(data.get(), size)) {
++    const bool digest_succeeded = ComputeDigest(kHashAlgorithmSha256,
++        data.get(), size, digest);
++    PG_LOG_ASSERT(digest_succeeded);
++    return std::string(WTF::Base64Encode(digest).Utf8().data());
++  }
++
++  return std::string("");
++}
++// #endif
++
+ }  // namespace blink

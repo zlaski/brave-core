@@ -1,0 +1,24 @@
+diff --git a/third_party/blink/renderer/core/frame/location.h b/third_party/blink/renderer/core/frame/location.h
+index 2ecf4774617abc25f43a0cbb5e78e25b425e895f..00b9250f6e038d1e15b980b737da1d1d58b2349a 100644
+--- a/third_party/blink/renderer/core/frame/location.h
++++ b/third_party/blink/renderer/core/frame/location.h
+@@ -36,6 +36,8 @@
+ #include "third_party/blink/renderer/platform/bindings/script_wrappable.h"
+ #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/types.h"
++#include "base/json/json_string_value_serializer.h"
+ namespace blink {
+ 
+ class Document;
+@@ -111,6 +113,10 @@ class CORE_EXPORT Location final : public ScriptWrappable {
+   const KURL& Url() const;
+ 
+   const Member<DOMWindow> dom_window_;
++  // Internal helper method for PageGraph WebAPI recording
++  void PageGraphLogWebAPI(const brave_page_graph::WebAPI web_api,
++                          const String& value,
++                          bool is_set) const;
+ };
+ 
+ }  // namespace blink

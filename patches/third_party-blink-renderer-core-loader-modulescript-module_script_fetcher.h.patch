@@ -1,0 +1,28 @@
+diff --git a/third_party/blink/renderer/core/loader/modulescript/module_script_fetcher.h b/third_party/blink/renderer/core/loader/modulescript/module_script_fetcher.h
+index 4ad96cb90734d5b2af67c14d740a32a68937b8ed..d39f7c8d57ba3d436013a3ea826e7f8c5a7bd6d4 100644
+--- a/third_party/blink/renderer/core/loader/modulescript/module_script_fetcher.h
++++ b/third_party/blink/renderer/core/loader/modulescript/module_script_fetcher.h
+@@ -13,6 +13,7 @@
+ #include "third_party/blink/renderer/platform/loader/fetch/fetch_parameters.h"
+ #include "third_party/blink/renderer/platform/loader/fetch/resource_fetcher.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ class ConsoleMessage;
+@@ -47,6 +48,7 @@ class CORE_EXPORT ModuleScriptFetcher : public ResourceClient {
+   virtual void Fetch(FetchParameters&,
+                      ModuleType,
+                      ResourceFetcher*,
++                     const Modulator*,
+                      ModuleGraphLevel,
+                      Client*) = 0;
+ 
+@@ -57,6 +59,7 @@ class CORE_EXPORT ModuleScriptFetcher : public ResourceClient {
+       ScriptResource* resource,
+       ModuleType expected_module_type,
+       HeapVector<Member<ConsoleMessage>>* error_messages);
++  Member<::brave_page_graph::PageGraph> page_graph_;
+ };
+ 
+ }  // namespace blink

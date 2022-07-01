@@ -1,0 +1,18 @@
+diff --git a/content/browser/devtools/protocol/page_handler.cc b/content/browser/devtools/protocol/page_handler.cc
+index e008215c400db50a8f190b424739215dafc9bb14..4f9891f564a1812bde768bda64eba02e069f868d 100644
+--- a/content/browser/devtools/protocol/page_handler.cc
++++ b/content/browser/devtools/protocol/page_handler.cc
+@@ -577,6 +577,13 @@ void PageHandler::DownloadWillBegin(FrameTreeNode* ftn,
+   pending_downloads_.insert(item);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void PageHandler::FinalPageGraph(const std::string& frame_id,
++                                 const std::string& data) {
++  frontend_->FinalPageGraph(frame_id, data);
++}
++// #endif
++
+ void PageHandler::OnDownloadDestroyed(download::DownloadItem* item) {
+   pending_downloads_.erase(item);
+ }

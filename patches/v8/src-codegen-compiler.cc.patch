@@ -1,54 +1,28 @@
 diff --git a/src/codegen/compiler.cc b/src/codegen/compiler.cc
-index 071cfa8e613d0345439434b682be981a7be778e5..e39d79cfb7b0d1d518b3bcc95da363af751275ce 100644
+index 071cfa8e613d0345439434b682be981a7be778e5..2f5584cf639077e6d6ca6ffb65165f2e3c133e3e 100644
 --- a/src/codegen/compiler.cc
 +++ b/src/codegen/compiler.cc
-@@ -2301,6 +2301,9 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
+@@ -2301,7 +2301,6 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
      int eval_scope_position, int eval_position,
      ParsingWhileDebugging parsing_while_debugging) {
    Isolate* isolate = context->GetIsolate();
-+// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  const int parent_script_id = isolate->GetExecutingScriptId();
-+// #endif
- 
+-
    // The cache lookup key needs to be aware of the separation between the
    // parameters and the body to prevent this valid invocation:
-@@ -2319,7 +2322,11 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
+   //   Function("", "function anonymous(\n/**/) {\n}");
+@@ -2317,6 +2316,11 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
+     DCHECK_EQ(eval_scope_position, 0);
+     eval_scope_position = -parameters_end_pos;
    }
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  const int parent_script_id = isolate->GetExecutingScriptId();
++  eval_scope_position ^= (parent_script_id & 0xFFFF) << 15;  // Keep sign bit.
++// #endif
++
    CompilationCache* compilation_cache = isolate->compilation_cache();
    InfoCellPair eval_result = compilation_cache->LookupEval(
--      source, outer_info, context, language_mode, eval_scope_position);
-+      source, outer_info, context, language_mode, eval_scope_position
-+// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+      , parent_script_id
-+// #endif
-+      );
-   Handle<FeedbackCell> feedback_cell;
-   if (eval_result.has_feedback_cell()) {
-     feedback_cell = handle(eval_result.feedback_cell(), isolate);
-@@ -2405,7 +2412,11 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
-         Handle<FeedbackCell> new_feedback_cell(result->raw_feedback_cell(),
-                                                isolate);
-         compilation_cache->PutEval(source, outer_info, context, shared_info,
--                                   new_feedback_cell, eval_scope_position);
-+                                   new_feedback_cell, eval_scope_position
-+// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+                                   , parent_script_id
-+// #endif
-+                                   );
-       }
-     }
-   } else {
-@@ -2421,11 +2432,30 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
-       Handle<FeedbackCell> new_feedback_cell(result->raw_feedback_cell(),
-                                              isolate);
-       compilation_cache->PutEval(source, outer_info, context, shared_info,
--                                 new_feedback_cell, eval_scope_position);
-+                                 new_feedback_cell, eval_scope_position
-+// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+                                 , parent_script_id
-+// #endif
-+                                 );
-     }
+       source, outer_info, context, language_mode, eval_scope_position);
+@@ -2426,6 +2430,21 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
    }
    DCHECK(is_compiled_scope.is_compiled());
  
@@ -69,31 +43,4 @@ index 071cfa8e613d0345439434b682be981a7be778e5..e39d79cfb7b0d1d518b3bcc95da363af
 +
    return result;
  }
- 
-@@ -3048,7 +3078,7 @@ MaybeHandle<SharedFunctionInfo> GetSharedFunctionInfoForScriptImpl(
-         if (is_compiled_scope.is_compiled()) {
-           consuming_code_cache_succeeded = true;
-           // Promote to per-isolate compilation cache.
--          compilation_cache->PutScript(source, language_mode, result);
-+          compilation_cache->PutScript(source, language_mode, result, script_details.parent_script_id);
-         }
-       }
-       if (!consuming_code_cache_succeeded) {
-@@ -3087,7 +3117,7 @@ MaybeHandle<SharedFunctionInfo> GetSharedFunctionInfoForScriptImpl(
-     Handle<SharedFunctionInfo> result;
-     if (use_compilation_cache && maybe_result.ToHandle(&result)) {
-       DCHECK(is_compiled_scope.is_compiled());
--      compilation_cache->PutScript(source, language_mode, result);
-+      compilation_cache->PutScript(source, language_mode, result, script_details.parent_script_id);
-     } else if (maybe_result.is_null() && natives != EXTENSION_CODE) {
-       isolate->ReportPendingMessages();
-     }
-@@ -3276,7 +3306,7 @@ Compiler::GetSharedFunctionInfoForStreamedScript(
-       TRACE_EVENT0(TRACE_DISABLED_BY_DEFAULT("v8.compile"),
-                    "V8.StreamingFinalization.AddToCache");
-       compilation_cache->PutScript(source, task->flags().outer_language_mode(),
--                                   result);
-+                                   result, script_details.parent_script_id);
-     }
-   }
  

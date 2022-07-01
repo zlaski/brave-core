@@ -1,0 +1,25 @@
+diff --git a/third_party/blink/renderer/core/loader/resource/image_resource_content.h b/third_party/blink/renderer/core/loader/resource/image_resource_content.h
+index 33d033ad69d0fb9553bb87d5afb80342f8988bd9..3b832d2cf4c91e33e837c89d4e99c60ea031dbb9 100644
+--- a/third_party/blink/renderer/core/loader/resource/image_resource_content.h
++++ b/third_party/blink/renderer/core/loader/resource/image_resource_content.h
+@@ -26,6 +26,9 @@ namespace base {
+ class TimeTicks;
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "brave/third_party/blink/brave_page_graph/types.h"
++// #endif
+ namespace blink {
+ 
+ class ExecutionContext;
+@@ -62,6 +65,10 @@ class CORE_EXPORT ImageResourceContent final
+   static ImageResourceContent* CreateLoaded(scoped_refptr<blink::Image>);
+ 
+   static ImageResourceContent* Fetch(FetchParameters&, ResourceFetcher*);
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  static ImageResourceContent* Fetch(FetchParameters&, ResourceFetcher*,
++    brave_page_graph::InspectorId* identifier);
++// #endif
+ 
+   explicit ImageResourceContent(scoped_refptr<blink::Image> = nullptr);
+ 

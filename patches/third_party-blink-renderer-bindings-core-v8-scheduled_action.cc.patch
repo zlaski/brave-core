@@ -1,0 +1,20 @@
+diff --git a/third_party/blink/renderer/bindings/core/v8/scheduled_action.cc b/third_party/blink/renderer/bindings/core/v8/scheduled_action.cc
+index 233e664eb0369934110d3600d4c3818801926134..2e0e3a2415595d019e5567d87222967bca38c05f 100644
+--- a/third_party/blink/renderer/bindings/core/v8/scheduled_action.cc
++++ b/third_party/blink/renderer/bindings/core/v8/scheduled_action.cc
+@@ -71,6 +71,7 @@ ScheduledAction::ScheduledAction(ScriptState* script_state,
+                                  const String& handler)
+     : script_state_(
+           MakeGarbageCollected<ScriptStateProtectingContext>(script_state)) {
++  parent_script_id_ = script_state->GetIsolate()->GetExecutingScriptId();
+   if (script_state->World().IsWorkerWorld() ||
+       BindingSecurity::ShouldAllowAccessTo(
+           EnteredDOMWindow(script_state->GetIsolate()),
+@@ -151,6 +152,7 @@ void ScheduledAction::Execute(ExecutionContext* context) {
+       ClassicScript::Create(code_, KURL(), KURL(), ScriptFetchOptions(),
+                             ScriptSourceLocationType::kEvalForScheduledAction,
+                             SanitizeScriptErrors::kDoNotSanitize);
++  script->SetParentScriptId(parent_script_id_);
+   script->RunScriptOnScriptState(script_state_->Get());
+ }
+ 

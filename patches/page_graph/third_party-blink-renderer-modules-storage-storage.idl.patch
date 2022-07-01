@@ -1,0 +1,14 @@
+diff --git a/third_party/blink/renderer/modules/storage/storage.idl b/third_party/blink/renderer/modules/storage/storage.idl
+index 9ed1da4099aac5f2b84e745e356c5eb3d190d044..58314d7d8064b92b781807af839a2a5fca100882 100644
+--- a/third_party/blink/renderer/modules/storage/storage.idl
++++ b/third_party/blink/renderer/modules/storage/storage.idl
+@@ -27,7 +27,8 @@
+ 
+ [
+     Exposed=Window,
+-    ImplementedAs=StorageArea
++    ImplementedAs=StorageArea,
++    TrackInPageGraph
+ ] interface Storage {
+     [RaisesException=Getter] readonly attribute unsigned long length;
+     [RaisesException, MeasureAs=DOMStorageRead] DOMString? key(unsigned long index);

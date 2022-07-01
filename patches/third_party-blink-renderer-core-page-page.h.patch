@@ -1,0 +1,14 @@
+diff --git a/third_party/blink/renderer/core/page/page.h b/third_party/blink/renderer/core/page/page.h
+index 2b131c53d77464d404646c34c06390760dbeaf0a..878be08a515033766267f657795049b776fcd9d1 100644
+--- a/third_party/blink/renderer/core/page/page.h
++++ b/third_party/blink/renderer/core/page/page.h
+@@ -176,6 +176,9 @@ class CORE_EXPORT Page final : public GarbageCollected<Page>,
+   void DocumentDetached(Document*);
+ 
+   void Animate(base::TimeTicks monotonic_frame_begin_time);
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void FinalPageGraph(Document*);
++// #endif
+ 
+   // The |root| argument indicates a root LocalFrame from which to start
+   // performing the operation. See comment on WebWidget::UpdateLifecycle.

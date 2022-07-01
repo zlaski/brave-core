@@ -1,0 +1,37 @@
+diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
+index 43f05607cdabb90c8975340eb5f763bf396db731..e3c01fc8c9a4c6e418efded8427d1ada01748cce 100644
+--- a/content/browser/renderer_host/render_process_host_impl.cc
++++ b/content/browser/renderer_host/render_process_host_impl.cc
+@@ -271,6 +271,10 @@
+ #define MAYBEVLOG DVLOG
+ #endif
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "content/browser/devtools/devtools_instrumentation.h"
++#include "content/browser/renderer_host/frame_tree_node.h"
++// #endif
+ namespace content {
+ 
+ namespace {
+@@ -5045,6 +5049,21 @@ void RenderProcessHostImpl::OnProcessLaunchFailed(int error_code) {
+   ProcessDied(info);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void RenderProcessHostImpl::OnFinalPageGraph(
++    const base::UnguessableToken& devtools_main_frame_token,
++    const std::string& frame_id,
++    const std::string& data) {
++  FrameTreeNode* const main_frame_tree_node =
++      FrameTreeNode::GloballyFindByDevToolsFrameToken(
++          devtools_main_frame_token);
++  if (main_frame_tree_node) {
++    devtools_instrumentation::FinalPageGraph(main_frame_tree_node, frame_id,
++                                             data);
++  }
++}
++// #endif
++
+ // static
+ RenderProcessHost*
+ RenderProcessHostImpl::FindReusableProcessHostForSiteInstance(

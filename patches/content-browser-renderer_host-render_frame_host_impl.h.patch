@@ -1,0 +1,27 @@
+diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/browser/renderer_host/render_frame_host_impl.h
+index 0aed7844ac291ebdad5f942f99fbebf8680bdf8f..a882d30685f2a28c5db54247ebb51290a3d1a423 100644
+--- a/content/browser/renderer_host/render_frame_host_impl.h
++++ b/content/browser/renderer_host/render_frame_host_impl.h
+@@ -365,6 +365,12 @@ class CONTENT_EXPORT RenderFrameHostImpl
+   gfx::NativeView GetNativeView() override;
+   void AddMessageToConsole(blink::mojom::ConsoleMessageLevel level,
+                            const std::string& message) override;
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void RegisterResourceBlockAd(const GURL& url,
++                               const std::string& rule) override;
++  void RegisterResourceBlockTracker(const GURL& url,
++                                   const std::string& host) override;
++// #endif
+   void ExecuteJavaScriptMethod(const std::u16string& object_name,
+                                const std::u16string& method_name,
+                                base::Value::List arguments,
+@@ -2060,6 +2066,9 @@ class CONTENT_EXPORT RenderFrameHostImpl
+                                   bool has_user_gesture) override;
+   void UpdateTitle(const absl::optional<::std::u16string>& title,
+                    base::i18n::TextDirection title_direction) override;
++  void FinalPageGraph(const ::base::UnguessableToken& devtools_main_frame_token,
++                      const std::string& frame_id,
++                      const std::string& data) override;
+   void UpdateUserActivationState(
+       blink::mojom::UserActivationUpdateType update_type,
+       blink::mojom::UserActivationNotificationType notification_type) override;

@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/core/loader/modulescript/module_script_fetcher.cc b/third_party/blink/renderer/core/loader/modulescript/module_script_fetcher.cc
+index 6f88b78383357b872d13cccd31c8abe15c5cc19c..11ec2e544dd7980042c947220993bb5f63689013 100644
+--- a/third_party/blink/renderer/core/loader/modulescript/module_script_fetcher.cc
++++ b/third_party/blink/renderer/core/loader/modulescript/module_script_fetcher.cc
+@@ -30,6 +30,7 @@ void ModuleScriptFetcher::Client::OnFailed() {
+ }
+ 
+ void ModuleScriptFetcher::Trace(Visitor* visitor) const {
++  visitor->Trace(page_graph_);
+   ResourceClient::Trace(visitor);
+ }
+ 

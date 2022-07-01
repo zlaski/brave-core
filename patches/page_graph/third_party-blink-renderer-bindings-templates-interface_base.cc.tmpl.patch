@@ -1,0 +1,16 @@
+diff --git a/third_party/blink/renderer/bindings/templates/interface_base.cc.tmpl b/third_party/blink/renderer/bindings/templates/interface_base.cc.tmpl
+index 8d5021280953d283d0eca35e934afe9469e35525..2b3de680f9ed3810f9294492c56b509f828a6f89 100644
+--- a/third_party/blink/renderer/bindings/templates/interface_base.cc.tmpl
++++ b/third_party/blink/renderer/bindings/templates/interface_base.cc.tmpl
+@@ -201,6 +201,11 @@ static const struct {
+ {% from 'attributes.cc.tmpl' import constructor_getter_callback,
+        attribute_getter_callback, attribute_setter_callback with context %}
+ {% for attribute in attributes %}
++{% if attribute.track_in_page_graph_as %}
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++static const ::brave_page_graph::Binding kBinding_{{v8_class_or_partial}}_{{attribute.name}} = "{{attribute.track_in_page_graph_as}}";
++// #endif
++{% endif %}
+ {% for world_suffix in attribute.world_suffixes %}
+ {% if not attribute.constructor_type %}
+ {{attribute_getter_callback(attribute, world_suffix)}}

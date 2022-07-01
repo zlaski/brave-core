@@ -1,0 +1,87 @@
+diff --git a/third_party/blink/renderer/core/script/script_loader.cc b/third_party/blink/renderer/core/script/script_loader.cc
+index 00d86fafc05a95c330f36a1be846ee5dc997d121..bb476af29703c1506037a2b0fefd006bd7050225 100644
+--- a/third_party/blink/renderer/core/script/script_loader.cc
++++ b/third_party/blink/renderer/core/script/script_loader.cc
+@@ -82,6 +82,7 @@
+ #include "third_party/blink/renderer/platform/wtf/text/string_hash.h"
+ #include "third_party/blink/renderer/platform/wtf/text/string_view.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ ScriptLoader::ScriptLoader(ScriptElementBase* element,
+@@ -562,7 +563,7 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+   // If the script’s type is "importmap": [spec text]
+   if (GetScriptType() == ScriptTypeAtPrepare::kImportMap) {
+     Modulator* modulator =
+-        Modulator::From(ToScriptStateForMainWorld(context_window->GetFrame()));
++        Modulator::From(ToScriptStateForMainWorld(context_window->GetFrame()), context_window->GetFrame()->GetDocument()->GetPageGraph(), element_->GetDOMNodeId());
+     auto aquiring_state = modulator->GetAcquiringImportMapsState();
+     switch (aquiring_state) {
+       case Modulator::AcquiringImportMapsState::kAfterModuleScriptLoad:
+@@ -701,6 +702,14 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+         // script CORS setting, and encoding.</spec>
+         FetchClassicScript(url, element_document, options, cross_origin,
+                            encoding);
++        {
++          ::brave_page_graph::PageGraph* page_graph =
++              context_window->GetFrame()->GetDocument()->GetPageGraph();
++          if (page_graph != nullptr) {
++            page_graph->RegisterElmForRemoteScript(element_->GetDOMNodeId(),
++                                                   url);
++          }
++        }
+         break;
+       }
+       case ScriptTypeAtPrepare::kModule: {
+@@ -714,10 +723,17 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+         // Fetch an external module script graph given url, settings object, and
+         // options.</spec>
+         Modulator* modulator = Modulator::From(
+-            ToScriptStateForMainWorld(context_window->GetFrame()));
++            ToScriptStateForMainWorld(context_window->GetFrame()), context_window->GetFrame()->GetDocument()->GetPageGraph(), element_->GetDOMNodeId());
+         FetchModuleScriptTree(url, fetch_client_settings_object_fetcher,
+                               modulator, options);
+       }
++      {
++        ::brave_page_graph::PageGraph* page_graph = context_window
++          ->GetFrame()->GetDocument()->GetPageGraph();
++        if (page_graph != nullptr) {
++          page_graph->RegisterElmForRemoteScript(element_->GetDOMNodeId(), url);
++        }
++      }
+       // <spec step="24.6">When the chosen algorithm asynchronously completes,
+       // set the script's script to the result. At that time, the script is
+       // ready.
+@@ -865,6 +881,14 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+         // <spec step="25.2.A.3">The script is ready.</spec>
+         //
+         // Implemented by ClassicPendingScript.
++        {
++          ::brave_page_graph::PageGraph* const page_graph =
++              context_window->GetFrame()->GetDocument()->GetPageGraph();
++          if (page_graph != nullptr) {
++            page_graph->RegisterElmForLocalScript(element_->GetDOMNodeId(),
++                                                  source_text);
++          }
++        }
+         break;
+       }
+ 
+@@ -879,7 +903,15 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+         // href="https://html.spec.whatwg.org/C/#fetch-an-inline-module-script-graph">
+         const KURL& source_url = element_document.Url();
+         Modulator* modulator = Modulator::From(
+-            ToScriptStateForMainWorld(context_window->GetFrame()));
++            ToScriptStateForMainWorld(context_window->GetFrame()), context_window->GetFrame()->GetDocument()->GetPageGraph(), element_->GetDOMNodeId());
++        {
++          ::brave_page_graph::PageGraph* const page_graph = context_window
++            ->GetFrame()->GetDocument()->GetPageGraph();
++          if (page_graph != nullptr) {
++            page_graph->RegisterElmForLocalScript(element_->GetDOMNodeId(),
++                                                  source_text);
++          }
++        }
+ 
+         // <spec label="fetch-an-inline-module-script-graph" step="1">Let script
+         // be the result of creating a JavaScript module script using source

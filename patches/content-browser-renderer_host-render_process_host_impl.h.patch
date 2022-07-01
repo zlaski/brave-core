@@ -1,0 +1,17 @@
+diff --git a/content/browser/renderer_host/render_process_host_impl.h b/content/browser/renderer_host/render_process_host_impl.h
+index c68041163f1a0ce7f5121980539417a330e1ee65..9898ce7f8d87a52dddc4f11df626fde321007113 100644
+--- a/content/browser/renderer_host/render_process_host_impl.h
++++ b/content/browser/renderer_host/render_process_host_impl.h
+@@ -884,6 +884,12 @@ class CONTENT_EXPORT RenderProcessHostImpl
+   FRIEND_TEST_ALL_PREFIXES(RenderProcessHostUnitTest,
+                            GuestsAreNotSuitableHosts);
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void OnFinalPageGraph(const base::UnguessableToken& devtools_main_frame_token,
++                        const std::string& frame_id,
++                        const std::string& data) override;
++// #endif
++
+   // Returns a RenderProcessHost that is rendering a URL corresponding to
+   // |site_instance| in one of its frames, or that is expecting a navigation to
+   // that SiteInstance.

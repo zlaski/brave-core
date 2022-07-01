@@ -1,0 +1,15 @@
+diff --git a/third_party/blink/renderer/core/probe/core_probes.pidl b/third_party/blink/renderer/core/probe/core_probes.pidl
+index 00c3a260189a48c98845d4da30a73893fd5679a6..02bd9e58b43fd79d0863b79b3dd226231c266b55 100644
+--- a/third_party/blink/renderer/core/probe/core_probes.pidl
++++ b/third_party/blink/renderer/core/probe/core_probes.pidl
+@@ -63,6 +63,10 @@ interface CoreProbes {
+   class HTMLPortalElement;
+   class PerformanceEntry;
+ 
++  void RegisterPageGraphBindingEvent(ExecutionContext*, const char* name, const char* type, const char* event);
++  void RegisterPageGraphWebAPICallWithResult(ExecutionContext*, const char* name, const PageGraphBlinkReceiverData& receiver_data, const PageGraphBlinkArgs& args, const ExceptionState* exception_state, const absl::optional<String>& result);
++  void RegisterPageGraphNodeConstructed([Keep] Node* node);
++
+   void DidClearDocumentOfWindowObject([Keep] LocalFrame*);
+   void WillInsertDOMNode([Keep] Node* parent);
+   void DidInsertDOMNode([Keep] Node*);

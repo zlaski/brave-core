@@ -1,0 +1,34 @@
+diff --git a/third_party/blink/renderer/core/frame/local_frame.h b/third_party/blink/renderer/core/frame/local_frame.h
+index 725d5f89ebfa979e6b5ac90aae269b2aae89a71d..654b66a4117e7f7e91edeeca3e3a2266647ebb23 100644
+--- a/third_party/blink/renderer/core/frame/local_frame.h
++++ b/third_party/blink/renderer/core/frame/local_frame.h
+@@ -88,6 +88,10 @@ namespace base {
+ class SingleThreadTaskRunner;
+ }
+ 
++namespace brave_page_graph {
++class PageGraph;
++}
++
+ namespace gfx {
+ class Point;
+ class Range;
+@@ -502,6 +506,10 @@ class CORE_EXPORT LocalFrame final
+     should_send_resource_timing_info_to_parent_ = value;
+   }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void ExpectToSendFinalPageGraphOnUnload();
++  brave_page_graph::PageGraph* GetPageGraph() const;
++// #endif
+   // Called when certain event listeners are added for the first time/last time,
+   // making it possible/not possible to terminate the frame suddenly.
+   void UpdateSuddenTerminationStatus(
+@@ -872,6 +880,7 @@ class CORE_EXPORT LocalFrame final
+   scoped_refptr<InspectorTaskRunner> inspector_task_runner_;
+   Member<PerformanceMonitor> performance_monitor_;
+   Member<AdTracker> ad_tracker_;
++  Member<brave_page_graph::PageGraph> page_graph_;
+   Member<IdlenessDetector> idleness_detector_;
+   Member<AttributionSrcLoader> attribution_src_loader_;
+   Member<InspectorIssueReporter> inspector_issue_reporter_;

@@ -1,0 +1,34 @@
+diff --git a/third_party/blink/renderer/core/dom/document.h b/third_party/blink/renderer/core/dom/document.h
+index 91d04ee9f5714ac82e12dfb09977c334095c4bc4..1b66a8aeb42c56e760835473ca6dd48c7c09b013 100644
+--- a/third_party/blink/renderer/core/dom/document.h
++++ b/third_party/blink/renderer/core/dom/document.h
+@@ -82,6 +82,10 @@
+ #include "third_party/blink/renderer/platform/wtf/hash_set.h"
+ #include "third_party/perfetto/include/perfetto/tracing/traced_value_forward.h"
+ 
++namespace brave_page_graph {
++class PageGraph;
++}
++
+ namespace base {
+ class SingleThreadTaskRunner;
+ }
+@@ -1514,7 +1518,7 @@ class CORE_EXPORT Document : public ContainerNode,
+   // EnsureTemplateDocument().
+   bool IsTemplateDocument() const { return template_document_host_; }
+   Document& EnsureTemplateDocument();
+-  Document* TemplateDocumentHost() { return template_document_host_; }
++  Document* TemplateDocumentHost() const { return template_document_host_; }
+ 
+   // TODO(thestig): Rename these and related functions, since we can call them
+   // for controls outside of forms as well.
+@@ -1799,6 +1803,9 @@ class CORE_EXPORT Document : public ContainerNode,
+   // Called when a previously render-blocking resource is no longer render-
+   // blocking, due to it has finished loading or has given up render-blocking.
+   void RenderBlockingResourceUnblocked();
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  brave_page_graph::PageGraph* GetPageGraph();
++// #endif
+ 
+   bool RenderingHasBegun() const { return rendering_has_begun_; }
+ 

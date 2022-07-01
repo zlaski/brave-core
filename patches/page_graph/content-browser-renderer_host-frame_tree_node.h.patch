@@ -1,0 +1,15 @@
+diff --git a/content/browser/renderer_host/frame_tree_node.h b/content/browser/renderer_host/frame_tree_node.h
+index 236ab137f382384c8ae71078d8daa04cdc6f7b50..ff0f6dd4e6094c6924d0ec3fe4f321a9181f6311 100644
+--- a/content/browser/renderer_host/frame_tree_node.h
++++ b/content/browser/renderer_host/frame_tree_node.h
+@@ -69,6 +69,10 @@ class CONTENT_EXPORT FrameTreeNode {
+   // regardless of which FrameTree it is in.
+   static FrameTreeNode* GloballyFindByID(int frame_tree_node_id);
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  static FrameTreeNode* GloballyFindByDevToolsFrameToken(
++      const base::UnguessableToken& devtools_frame_token);
++// #endif
+   // Returns the FrameTreeNode for the given |rfh|. Same as
+   // rfh->frame_tree_node(), but also supports nullptrs.
+   static FrameTreeNode* From(RenderFrameHost* rfh);

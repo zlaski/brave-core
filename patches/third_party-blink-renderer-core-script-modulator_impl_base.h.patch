@@ -1,0 +1,43 @@
+diff --git a/third_party/blink/renderer/core/script/modulator_impl_base.h b/third_party/blink/renderer/core/script/modulator_impl_base.h
+index a1b4024e43dfb97375644f9aaaefb59e9f2cbcee..b7c2993c3a4eb79ab5a922ac51d64a8ce4dc166d 100644
+--- a/third_party/blink/renderer/core/script/modulator_impl_base.h
++++ b/third_party/blink/renderer/core/script/modulator_impl_base.h
+@@ -16,6 +16,9 @@
+ #include "third_party/blink/renderer/platform/heap/collection_support/heap_hash_set.h"
+ #include "third_party/blink/renderer/platform/heap/garbage_collected.h"
+ 
++#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "brave/third_party/blink/brave_page_graph/types.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ class DynamicModuleResolver;
+@@ -33,8 +36,10 @@ class ModulatorImplBase : public Modulator {
+   ~ModulatorImplBase() override;
+   void Trace(Visitor*) const override;
+ 
++  ::brave_page_graph::PageGraph* GetPageGraph() const override { return this->page_graph_; }
++  DOMNodeId GetInitiatingDOMNodeId() const override { return this->initiator_; }
+  protected:
+-  explicit ModulatorImplBase(ScriptState*);
++  explicit ModulatorImplBase(ScriptState*, ::brave_page_graph::PageGraph*, DOMNodeId);
+ 
+   ExecutionContext* GetExecutionContext() const;
+ 
+@@ -80,6 +85,7 @@ class ModulatorImplBase : public Modulator {
+                               String* failure_reason) final;
+   void ResolveDynamically(const ModuleRequest& module_request,
+                           const ReferrerScriptInfo&,
++                          const ::brave_page_graph::ScriptId,
+                           ScriptPromiseResolver*) override;
+ 
+   ModuleImportMeta HostGetImportMetaProperties(
+@@ -104,6 +110,8 @@ class ModulatorImplBase : public Modulator {
+   Member<ModuleTreeLinkerRegistry> tree_linker_registry_;
+   Member<ModuleRecordResolver> module_record_resolver_;
+   Member<DynamicModuleResolver> dynamic_module_resolver_;
++  Member<brave_page_graph::PageGraph> page_graph_;
++  DOMNodeId initiator_;
+ };
+ 
+ }  // namespace blink

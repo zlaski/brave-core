@@ -1,0 +1,84 @@
+diff --git a/third_party/blink/renderer/core/script/classic_pending_script.cc b/third_party/blink/renderer/core/script/classic_pending_script.cc
+index 8e2d70bb8bf4e4c3e0df59936ae85e7ffe558db8..017b13c9298355a9c55e2fe313a11c66c596f729 100644
+--- a/third_party/blink/renderer/core/script/classic_pending_script.cc
++++ b/third_party/blink/renderer/core/script/classic_pending_script.cc
+@@ -33,6 +33,12 @@
+ #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
+ #include "third_party/blink/renderer/platform/wtf/functional.h"
+ 
++#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "third_party/blink/renderer/core/html/html_script_element.h"
++#include "third_party/blink/renderer/core/loader/resource/css_style_sheet_resource.h"
++#include "brave/third_party/blink/brave_page_graph/types.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#include "brave/third_party/blink/brave_page_graph/utilities/response_metadata.h"
+ namespace blink {
+ 
+ // <specdef href="https://html.spec.whatwg.org/C/#fetch-a-classic-script">
+@@ -70,8 +76,19 @@ ClassicPendingScript* ClassicPendingScript::Fetch(
+   // We allow streaming, as WatchForLoad() is always called when the script
+   // needs to execute and the ScriptResource is not finished, so
+   // SetClientIsWaitingForFinished is always set on the resource.
+-  ScriptResource::Fetch(params, element_document.Fetcher(), pending_script,
+-                        ScriptResource::kAllowStreaming);
++  ScriptResource* resource = ScriptResource::Fetch(params,
++      element_document.Fetcher(), pending_script,
++      ScriptResource::kAllowStreaming);
++  {
++    ::brave_page_graph::PageGraph* page_graph = element->GetDocument()
++      .GetPageGraph();
++    if (page_graph != nullptr) {
++      HTMLScriptElement* script_elm = static_cast<HTMLScriptElement*>(element);
++      page_graph->RegisterRequestStartFromElm(
++        DOMNodeIds::IdForNode(script_elm), resource->InspectorId(), url,
++        brave_page_graph::RequestType::kRequestTypeScriptClassic);
++    }
++  }
+   pending_script->CheckState();
+   return pending_script;
+ }
+@@ -254,6 +271,21 @@ void ClassicPendingScript::NotifyFinished(Resource* resource) {
+                          });
+ 
+   bool error_occurred = GetResource()->ErrorOccurred() || integrity_failure_;
++  {
++    ::brave_page_graph::PageGraph* page_graph = element->GetDocument()
++      .GetPageGraph();
++    if (page_graph != nullptr) {
++      const ResourceResponse& rep = resource->GetResponse();
++      const ::brave_page_graph::ResponseMetadata metadata(rep);
++
++      if (error_occurred) {
++        page_graph->RegisterRequestError(resource->InspectorId(), metadata);
++      } else {
++        page_graph->RegisterRequestComplete(resource->InspectorId(),
++            resource->GetType(), metadata, ResourceDigest(GetResource()));
++      }
++    }
++  }
+   if (error_occurred) {
+     AdvanceReadyState(kErrorOccurred);
+     return;
+@@ -394,9 +426,21 @@ ClassicScript* ClassicPendingScript::GetSource(const KURL& document_url) const {
+   // <spec href="https://html.spec.whatwg.org/C/#concept-script-base-url">
+   // ... the URL from which the script was obtained, ...</spec>
+   const KURL& base_url = resource->GetResponse().ResponseUrl();
+-  return ClassicScript::CreateFromResource(resource, base_url, options_,
++  auto* script = ClassicScript::CreateFromResource(resource, base_url, options_,
+                                            streamer, not_streamed_reason,
+                                            cache_consumer_);
++  if (is_external_) {
++    ::brave_page_graph::PageGraph* page_graph = GetElement()->GetDocument()
++      .GetPageGraph();
++    if (page_graph != nullptr) {
++      // Its possible the requested URL, and the URL for the returned
++      // resource, will change (e.g. HSTS, 301s, etc).  Make sure we
++      // use the originally requested URL to make sure everything lines up.
++      page_graph->RegisterUrlForScriptSource(resource->Url(),
++                                             script->SourceText().ToString());
++    }
++  }
++  return script;
+ }
+ 
+ // static

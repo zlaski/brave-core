@@ -1,0 +1,37 @@
+diff --git a/third_party/blink/renderer/core/loader/document_loader.cc b/third_party/blink/renderer/core/loader/document_loader.cc
+index 7c395d88dfa277e5f9644e35e4a786fc4915e4a1..d14f4942ae489f636affc9f3da50be1ced0a8d02 100644
+--- a/third_party/blink/renderer/core/loader/document_loader.cc
++++ b/third_party/blink/renderer/core/loader/document_loader.cc
+@@ -124,6 +124,8 @@
+ #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
+ #include "third_party/blink/renderer/platform/wtf/vector.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#include "brave/third_party/blink/brave_page_graph/types.h"
+ namespace blink {
+ 
+ namespace {
+@@ -920,6 +922,11 @@ void DocumentLoader::BodyLoadingFinished(
+     int64_t total_decoded_body_length,
+     bool should_report_corb_blocking,
+     const absl::optional<WebURLError>& error) {
++  // Another option for this is BodyDataReceived. Unclear which one is better.
++  brave_page_graph::PageGraph* pg = GetFrame()->GetDocument()->GetPageGraph();
++  if (pg && url_.Protocol() != "chrome-error" && url_.Protocol() != "about") {
++    pg->RegisterRequestCompleteForDocument(main_resource_identifier_, total_decoded_body_length);
++  }
+   TRACE_EVENT0("loading", "DocumentLoader::BodyLoadingFinished");
+   response_.SetEncodedDataLength(total_encoded_data_length);
+   response_.SetEncodedBodyLength(total_encoded_body_length);
+@@ -1699,6 +1706,11 @@ void DocumentLoader::StartLoadingResponse() {
+       MakeGarbageCollected<SourceKeyedCachedMetadataHandler>(
+           WTF::TextEncoding(), std::move(cached_metadata_sender));
+ 
++  brave_page_graph::PageGraph* pg = GetFrame()->GetDocument()->GetPageGraph();
++  if (pg) {
++    pg->RegisterRequestStartForDocument(DOMNodeIds::IdForNode(GetFrame()->GetDocument()), main_resource_identifier_, url_, GetFrame()->IsMainFrame());
++  }
++
+   body_loader_->StartLoadingBody(this, use_isolated_code_cache);
+ }
+ 

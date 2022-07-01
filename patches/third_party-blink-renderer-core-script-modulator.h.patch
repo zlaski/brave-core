@@ -1,0 +1,40 @@
+diff --git a/third_party/blink/renderer/core/script/modulator.h b/third_party/blink/renderer/core/script/modulator.h
+index 7837bf3d50eafe0061d8972761d4738ea693c87a..87947be9febe232cb8fb3c2ce429df7af3f3585c 100644
+--- a/third_party/blink/renderer/core/script/modulator.h
++++ b/third_party/blink/renderer/core/script/modulator.h
+@@ -26,6 +26,8 @@
+ #include "third_party/blink/renderer/platform/wtf/text/text_position.h"
+ #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
+ 
++#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ class ModuleScript;
+@@ -102,7 +104,7 @@ class CORE_EXPORT Modulator : public GarbageCollected<Modulator>,
+                               public V8PerContextData::Data,
+                               public NameClient {
+  public:
+-  static Modulator* From(ScriptState*);
++  static Modulator* From(ScriptState*, ::brave_page_graph::PageGraph*, DOMNodeId);
+   ~Modulator() override;
+ 
+   static void SetModulator(ScriptState*, Modulator*);
+@@ -175,6 +177,7 @@ class CORE_EXPORT Modulator : public GarbageCollected<Modulator>,
+   // https://tc39.github.io/proposal-dynamic-import/#sec-hostimportmoduledynamically
+   virtual void ResolveDynamically(const ModuleRequest& module_request,
+                                   const ReferrerScriptInfo&,
++                                  const ::brave_page_graph::ScriptId,
+                                   ScriptPromiseResolver*) = 0;
+ 
+   // Import maps. https://github.com/WICG/import-maps
+@@ -221,6 +224,9 @@ class CORE_EXPORT Modulator : public GarbageCollected<Modulator>,
+   // Produce V8 code cache for the given ModuleScript and its submodules.
+   virtual void ProduceCacheModuleTreeTopLevel(ModuleScript*) = 0;
+ 
++  virtual ::brave_page_graph::PageGraph* GetPageGraph() const = 0;
++  virtual DOMNodeId GetInitiatingDOMNodeId() const = 0;
++
+  protected:
+   const ImportMap* GetImportMap() const { return import_map_.Get(); }
+ 

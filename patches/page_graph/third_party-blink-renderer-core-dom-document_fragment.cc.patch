@@ -1,0 +1,34 @@
+diff --git a/third_party/blink/renderer/core/dom/document_fragment.cc b/third_party/blink/renderer/core/dom/document_fragment.cc
+index 0cd276b9e5dfea7f31fec8778d63a1ff50e28582..5d4568845d9477cb45ad08b66c79a331d8e14586 100644
+--- a/third_party/blink/renderer/core/dom/document_fragment.cc
++++ b/third_party/blink/renderer/core/dom/document_fragment.cc
+@@ -28,11 +28,28 @@
+ #include "third_party/blink/renderer/platform/bindings/runtime_call_stats.h"
+ #include "third_party/blink/renderer/platform/bindings/v8_per_isolate_data.h"
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++// #endif
++
+ namespace blink {
+ 
+ DocumentFragment::DocumentFragment(Document* document,
+                                    ConstructionType construction_type)
+-    : ContainerNode(document, construction_type) {}
++    : ContainerNode(document, construction_type) {
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    if (document == nullptr) {
++      return;
++    }
++    if (document->GetPageGraph() != nullptr) {
++      document->GetPageGraph()->RegisterHTMLElementNodeCreated(
++          DOMNodeIds::IdForNode(this), nodeName());
++    }
++  }
++// #endif
++}
+ 
+ DocumentFragment* DocumentFragment::Create(Document& document) {
+   return MakeGarbageCollected<DocumentFragment>(&document,

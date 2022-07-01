@@ -17,17 +17,6 @@
 namespace blink {
 
 String NavigatorBase::userAgent() const {
-  {
-    ::brave_page_graph::PageGraph* page_graph =
-        ::brave_page_graph::PageGraph::GetFromExecutionContext(
-            *(GetExecutionContext()));
-    if (page_graph != nullptr) {
-      String result = DomWindow()->GetFrame()->Loader().UserAgent();
-      page_graph->RegisterWebAPICall("NavigatorID.userAgent",
-                                     std::vector<const String>());
-      page_graph->RegisterWebAPIResult("NavigatorID.userAgent", result);
-    }
-  }
   if (blink::WebContentSettingsClient* settings =
           brave::GetContentSettingsClientFor(GetExecutionContext())) {
     if (!settings->AllowFingerprinting()) {

@@ -1,0 +1,32 @@
+diff --git a/third_party/blink/renderer/core/frame/web_local_frame_impl.cc b/third_party/blink/renderer/core/frame/web_local_frame_impl.cc
+index d0fbe64275b6dc9b0ac151cb81c69bd8524f72ae..d8a9015d9868065974873e51fb01c2926ade5436 100644
+--- a/third_party/blink/renderer/core/frame/web_local_frame_impl.cc
++++ b/third_party/blink/renderer/core/frame/web_local_frame_impl.cc
+@@ -269,6 +269,8 @@
+ #include "third_party/blink/renderer/core/layout/layout_font_accessor_win.h"
+ #endif
+ 
++#include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ namespace {
+@@ -1043,6 +1045,18 @@ void WebLocalFrameImpl::RequestExecuteScript(
+   Vector<WebScriptSource> script_sources;
+   script_sources.Append(sources.data(),
+                         base::checked_cast<wtf_size_t>(sources.size()));
++  {
++    Document* document = GetFrame()->GetDocument();
++    if (document != nullptr) {
++      ::brave_page_graph::PageGraph* page_graph = document->GetPageGraph();
++      if (page_graph != nullptr) {
++        for (wtf_size_t i = 0; i < script_sources.size(); i += 1) {
++          page_graph->RegisterUrlForExtensionScriptSource(
++              script_sources[i].url.GetString(), script_sources[i].code);
++        }
++      }
++    }
++  }
+   auto* executor = MakeGarbageCollected<PausableScriptExecutor>(
+       GetFrame()->DomWindow(), std::move(world), std::move(script_sources),
+       user_gesture, callback);

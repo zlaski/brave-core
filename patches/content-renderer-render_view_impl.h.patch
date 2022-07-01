@@ -1,0 +1,36 @@
+diff --git a/content/renderer/render_view_impl.h b/content/renderer/render_view_impl.h
+index 99978b33c294ebe37192baccb29f0a34a25aed17..5a5839640144998949fea26d4de2f5f31f48b887 100644
+--- a/content/renderer/render_view_impl.h
++++ b/content/renderer/render_view_impl.h
+@@ -44,6 +44,9 @@
+ #include "ui/gfx/geometry/rect_f.h"
+ #include "ui/surface/transport_dib.h"
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "base/unguessable_token.h"
++// #endif
+ namespace blink {
+ class WebURLRequest;
+ struct WebWindowFeatures;
+@@ -125,6 +128,10 @@ class CONTENT_EXPORT RenderViewImpl : public blink::WebViewClient,
+     return renderer_wide_named_frame_lookup_;
+   }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void FinalPageGraph(const std::string&, const std::string&) override;
++// #endif
++
+  protected:
+   RenderViewImpl(AgentSchedulingGroup& agent_scheduling_group,
+                  const mojom::CreateViewParams& params);
+@@ -187,7 +194,9 @@ class CONTENT_EXPORT RenderViewImpl : public blink::WebViewClient,
+   // Whether this was a renderer-created or browser-created RenderView.
+   bool was_created_by_renderer_ = false;
+ #endif
+-
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  base::UnguessableToken devtools_main_frame_token_;
++// #endif
+   // ---------------------------------------------------------------------------
+   // ADDING NEW DATA? Please see if it fits appropriately in one of the above
+   // sections rather than throwing it randomly at the end. If you're adding a

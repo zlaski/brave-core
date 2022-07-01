@@ -1,0 +1,41 @@
+diff --git a/third_party/blink/renderer/core/frame/web_local_frame_impl.cc b/third_party/blink/renderer/core/frame/web_local_frame_impl.cc
+index 6ccbeca2b197997dc4f7878c6fc67e2ce4345ffa..c3bd0251edb07a0643430635ac93b46a72ac48d1 100644
+--- a/third_party/blink/renderer/core/frame/web_local_frame_impl.cc
++++ b/third_party/blink/renderer/core/frame/web_local_frame_impl.cc
+@@ -262,6 +262,8 @@
+ #include "third_party/blink/renderer/platform/weborigin/security_policy.h"
+ #include "third_party/blink/renderer/platform/wtf/hash_map.h"
+ 
++#include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ static int g_frame_count = 0;
+@@ -1043,11 +1045,26 @@ void WebLocalFrameImpl::RequestExecuteScriptInIsolatedWorld(
+         {SchedulingPolicy::DisableBackForwardCache()});
+   }
+ 
++  const HeapVector<ScriptSourceCode> sources(
++      CreateSourcesVector(sources_in, num_sources));
++  {
++    Document* document = GetFrame()->GetDocument();
++    if (document != nullptr) {
++      ::brave_page_graph::PageGraph* page_graph = document->GetPageGraph();
++      if (page_graph != nullptr) {
++        for (unsigned i = 0; i < num_sources; i += 1) {
++          const WebScriptSource source = sources_in[i];
++          page_graph->RegisterUrlForExtensionScriptSource(
++              sources_in[i].url.GetString(), sources[i]);
++        }
++      }
++    }
++  }
+   scoped_refptr<DOMWrapperWorld> isolated_world =
+       DOMWrapperWorld::EnsureIsolatedWorld(ToIsolate(GetFrame()), world_id);
+   auto* executor = MakeGarbageCollected<PausableScriptExecutor>(
+       GetFrame()->DomWindow(), std::move(isolated_world),
+-      CreateSourcesVector(sources_in, num_sources), user_gesture, callback);
++      sources, user_gesture, callback);
+   switch (option) {
+     case kAsynchronousBlockingOnload:
+       executor->RunAsync(PausableScriptExecutor::kOnloadBlocking);

@@ -1,0 +1,32 @@
+diff --git a/third_party/blink/renderer/core/loader/threadable_loader.h b/third_party/blink/renderer/core/loader/threadable_loader.h
+index 63dc34ad534c95461ecadc25d55042e1934689ce..1c1072c6b7d7fb7b6ffa146c3527b0ee736e7c19 100644
+--- a/third_party/blink/renderer/core/loader/threadable_loader.h
++++ b/third_party/blink/renderer/core/loader/threadable_loader.h
+@@ -51,6 +51,7 @@ namespace blink {
+ 
+ class ExecutionContext;
+ class ResourceRequest;
++class RawResource;
+ class ThreadableLoaderClient;
+ 
+ // Useful for doing loader operations from any thread (not threadsafe, just able
+@@ -119,6 +120,9 @@ class CORE_EXPORT ThreadableLoader final
+ 
+   void SetDefersLoading(bool);
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  RawResource* GetRawResource() const;
++// #endif
+   void Trace(Visitor* visitor) const override;
+ 
+  private:
+@@ -168,6 +172,9 @@ class CORE_EXPORT ThreadableLoader final
+ 
+   RawResourceClientStateChecker checker_;
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  Member<RawResource> raw_resource_ = nullptr;
++// #endif
+   DISALLOW_COPY_AND_ASSIGN(ThreadableLoader);
+ };
+ 

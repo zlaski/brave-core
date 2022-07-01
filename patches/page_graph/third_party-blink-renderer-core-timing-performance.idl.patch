@@ -1,0 +1,13 @@
+diff --git a/third_party/blink/renderer/core/timing/performance.idl b/third_party/blink/renderer/core/timing/performance.idl
+index 7088dff953c0f20dbba9a23b54ee6c040bcde1c7..b3aeba80af879eea584e5b9328282053f3b87156 100644
+--- a/third_party/blink/renderer/core/timing/performance.idl
++++ b/third_party/blink/renderer/core/timing/performance.idl
+@@ -33,7 +33,7 @@
+ 
+ // TODO(foolip): None of the optional DOMString arguments in this interface
+ // should have a default value.
+-[Exposed=(Window,Worker)]
++[TrackInPageGraph, Exposed=(Window,Worker)]
+ interface Performance : EventTarget {
+     [Affects=Nothing] DOMHighResTimeStamp now();
+     readonly attribute DOMHighResTimeStamp timeOrigin;

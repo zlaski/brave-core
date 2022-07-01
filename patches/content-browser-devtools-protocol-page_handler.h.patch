@@ -1,0 +1,14 @@
+diff --git a/content/browser/devtools/protocol/page_handler.h b/content/browser/devtools/protocol/page_handler.h
+index d74a47e0aad0daee716740ba2cac6eaf395137bf..a61325696a2992fb6b4ec6f756d8ae78366f5e9b 100644
+--- a/content/browser/devtools/protocol/page_handler.h
++++ b/content/browser/devtools/protocol/page_handler.h
+@@ -101,6 +101,9 @@ class PageHandler : public DevToolsDomainHandler,
+   void DidCloseJavaScriptDialog(bool success, const std::u16string& user_input);
+   void NavigationReset(NavigationRequest* navigation_request);
+   void DownloadWillBegin(FrameTreeNode* ftn, download::DownloadItem* item);
++  // #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++    void FinalPageGraph(const std::string& frame_id, const std::string& data);
++  // #endif
+ 
+   WebContentsImpl* GetWebContents();
+ 

@@ -1,0 +1,136 @@
+diff --git a/third_party/blink/renderer/core/frame/window_or_worker_global_scope.cc b/third_party/blink/renderer/core/frame/window_or_worker_global_scope.cc
+index c278f90dc0874facfa71f2848ac7fdd6be4b863e..b539229503dc83fcfe156123c660d8a4b083b60a 100644
+--- a/third_party/blink/renderer/core/frame/window_or_worker_global_scope.cc
++++ b/third_party/blink/renderer/core/frame/window_or_worker_global_scope.cc
+@@ -54,6 +54,7 @@
+ #include "third_party/blink/renderer/platform/wtf/text/base64.h"
+ #include "third_party/blink/renderer/platform/wtf/text/string_utf8_adaptor.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ static bool IsAllowed(ExecutionContext* execution_context,
+@@ -155,8 +156,20 @@ int WindowOrWorkerGlobalScope::setTimeout(
+     return 0;
+   auto* action = MakeGarbageCollected<ScheduledAction>(
+       script_state, execution_context, handler, arguments);
+-  return DOMTimer::Install(execution_context, action,
++  {
++    int timeout_id = DOMTimer::Install(execution_context, action,
+                            base::Milliseconds(timeout), true);
++    if (execution_context->IsWindow()) {
++      ::brave_page_graph::PageGraph* page_graph =
++        ::brave_page_graph::PageGraph::GetFromExecutionContext(*execution_context);
++      if (page_graph) {
++        page_graph->RegisterWebAPICall("setTimeout", {String("(function)")});
++        page_graph->RegisterWebAPIResult("setTimeout",
++            String::Number(timeout_id));
++      }
++    }
++    return timeout_id;
++  }
+ }
+ 
+ int WindowOrWorkerGlobalScope::setTimeout(ScriptState* script_state,
+@@ -173,8 +186,20 @@ int WindowOrWorkerGlobalScope::setTimeout(ScriptState* script_state,
+     return 0;
+   auto* action = MakeGarbageCollected<ScheduledAction>(
+       script_state, execution_context, handler);
+-  return DOMTimer::Install(execution_context, action,
++  {
++    int timeout_id = DOMTimer::Install(execution_context, action,
+                            base::Milliseconds(timeout), true);
++    if (execution_context->IsWindow()) {
++      ::brave_page_graph::PageGraph* page_graph =
++        ::brave_page_graph::PageGraph::GetFromExecutionContext(*execution_context);
++      if (page_graph) {
++        page_graph->RegisterWebAPICall("setTimeout", {String(handler)});
++        page_graph->RegisterWebAPIResult("setTimeout",
++            String::Number(timeout_id));
++      }
++    }
++    return timeout_id;
++  }
+ }
+ 
+ int WindowOrWorkerGlobalScope::setInterval(
+@@ -188,8 +213,20 @@ int WindowOrWorkerGlobalScope::setInterval(
+     return 0;
+   auto* action = MakeGarbageCollected<ScheduledAction>(
+       script_state, execution_context, handler, arguments);
+-  return DOMTimer::Install(execution_context, action,
++  {
++    int interval_id = DOMTimer::Install(execution_context, action,
+                            base::Milliseconds(timeout), false);
++    if (execution_context->IsWindow()) {
++      ::brave_page_graph::PageGraph* page_graph =
++        ::brave_page_graph::PageGraph::GetFromExecutionContext(*execution_context);
++      if (page_graph) {
++        page_graph->RegisterWebAPICall("setInterval", {String("(function)")});
++        page_graph->RegisterWebAPIResult("setInterval",
++            String::Number(interval_id));
++      }
++    }
++    return interval_id;
++  }
+ }
+ 
+ int WindowOrWorkerGlobalScope::setInterval(ScriptState* script_state,
+@@ -206,20 +243,56 @@ int WindowOrWorkerGlobalScope::setInterval(ScriptState* script_state,
+     return 0;
+   auto* action = MakeGarbageCollected<ScheduledAction>(
+       script_state, execution_context, handler);
+-  return DOMTimer::Install(execution_context, action,
++  {
++    int interval_id = DOMTimer::Install(execution_context, action,
+                            base::Milliseconds(timeout), false);
++    if (execution_context->IsWindow()) {
++      ::brave_page_graph::PageGraph* page_graph =
++        ::brave_page_graph::PageGraph::GetFromExecutionContext(*execution_context);
++      if (page_graph) {
++        page_graph->RegisterWebAPICall("setInterval", {String(handler)});
++        page_graph->RegisterWebAPIResult("setInterval",
++            String::Number(interval_id));
++      }
++    }
++    return interval_id;
++  }
+ }
+ 
+ void WindowOrWorkerGlobalScope::clearTimeout(EventTarget& event_target,
+                                              int timeout_id) {
+   if (ExecutionContext* context = event_target.GetExecutionContext())
+     DOMTimer::RemoveByID(context, timeout_id);
++  {
++    ExecutionContext* context = event_target.GetExecutionContext();
++    if (context && context->IsWindow()) {
++      ::brave_page_graph::PageGraph* page_graph =
++        ::brave_page_graph::PageGraph::GetFromExecutionContext(*context);
++      if (page_graph) {
++        page_graph->RegisterWebAPICall("clearTimeout", {
++            String::Number(timeout_id)});
++        page_graph->RegisterWebAPIResult("clearTimeout", String());
++      }
++    }
++  }
+ }
+ 
+ void WindowOrWorkerGlobalScope::clearInterval(EventTarget& event_target,
+                                               int timeout_id) {
+   if (ExecutionContext* context = event_target.GetExecutionContext())
+     DOMTimer::RemoveByID(context, timeout_id);
++  {
++    ExecutionContext* context = event_target.GetExecutionContext();
++    if (context && context->IsWindow()) {
++      ::brave_page_graph::PageGraph* page_graph =
++        ::brave_page_graph::PageGraph::GetFromExecutionContext(*context);
++      if (page_graph) {
++        page_graph->RegisterWebAPICall("clearInterval", {
++            String::Number(timeout_id)});
++        page_graph->RegisterWebAPIResult("clearInterval", String());
++      }
++    }
++  }
+ }
+ 
+ bool WindowOrWorkerGlobalScope::crossOriginIsolated(

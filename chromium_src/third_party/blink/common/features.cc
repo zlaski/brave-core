@@ -47,5 +47,9 @@ const base::Feature kPartitionBlinkMemoryCache{
 const base::Feature kRestrictWebSocketsPool{"RestrictWebSocketsPool",
                                             base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Enable PageGraph machinery.
+const base::Feature kBravePageGraph{"BravePageGraph",
+                                    base::FEATURE_ENABLED_BY_DEFAULT};
+
 }  // namespace features
 }  // namespace blink

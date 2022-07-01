@@ -13,16 +13,19 @@
 
 #include "third_party/blink/renderer/core/core_export.h"
 #include "third_party/blink/renderer/core/inspector/protocol/Protocol.h"
+#include "third_party/blink/renderer/platform/heap/garbage_collected.h"
+#include "third_party/blink/renderer/platform/heap/member.h"
 
-#include "brave/third_party/blink/brave_page_graph/types.h"
+#include "brave/third_party/blink/brave_page_graph/page_graph_agent.h"
 #include "brave/third_party/blink/brave_page_graph/requests/request_tracker.h"
 #include "brave/third_party/blink/brave_page_graph/scripts/script_tracker.h"
+#include "brave/third_party/blink/brave_page_graph/types.h"
 
 namespace blink {
 
 class ExecutionContext;
 
-}
+}  // namespace blink
 
 namespace v8 {
 
@@ -71,141 +74,188 @@ struct TrackedRequestRecord;
 
 ::std::chrono::milliseconds NowInMs();
 
-class CORE_EXPORT PageGraph {
-// Needed so that graph items can assign themself the next graph id.
-friend GraphItem;
-// Needed so that edges between HTML nodes can find their siblings and parents.
-friend EdgeNodeInsert;
-// Needed so that HTML element nodes can find the script nodes for their event
-// listeners during GraphML generation.
-friend NodeHTMLElement;
+class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
+  // Needed so that graph items can assign themself the next graph id.
+  friend GraphItem;
+  // Needed so that edges between HTML nodes can find their siblings and
+  // parents.
+  friend EdgeNodeInsert;
+  // Needed so that HTML element nodes can find the script nodes for their event
+  // listeners during GraphML generation.
+  friend NodeHTMLElement;
+
  public:
   static PageGraph* GetFromIsolate(v8::Isolate& isolate);
   static PageGraph* GetFromContext(v8::Local<v8::Context> context);
   static PageGraph* GetFromExecutionContext(
-    blink::ExecutionContext& exec_context);
+      blink::ExecutionContext& exec_context);
 
-  PageGraph(blink::ExecutionContext& execution_context,
-            const WTF::String& frame_id, const blink::DOMNodeId node_id,
-            const WTF::String& tag_name, const blink::KURL& url);
-  ~PageGraph();
+  PageGraph(/*blink::ExecutionContext& execution_context,*/
+            const WTF::String& frame_id/*,
+            const blink::DOMNodeId node_id,
+            const WTF::String& tag_name,
+            const blink::KURL& url*/);
+  ~PageGraph() override;
+
+  void Trace(blink::Visitor*) const override;
+
+  // PageGraphAgent:
+  void RegisterPageGraphNodeConstructed(blink::Node* node) override;
+  void RegisterPageGraphBindingEvent(const char* name,
+                                     const char* type,
+                                     const char* event) override;
+  void RegisterPageGraphWebAPICallWithResult(
+      const char* name,
+      const blink::PageGraphBlinkReceiverData& receiver_data,
+      const blink::PageGraphBlinkArgs& args,
+      const blink::ExceptionState* exception_state,
+      const absl::optional<String>& result) override;
+  void ConsoleMessageAdded(blink::ConsoleMessage* console_message) override;
+  void DidModifyDOMAttr(blink::Element* element,
+                        const blink::QualifiedName& name,
+                        const AtomicString& value) override;
+  void DidRemoveDOMAttr(blink::Element* element,
+                        const blink::QualifiedName& name) override;
+
+  bool IsActive() const;
+
+  void DidCommitLoad(blink::LocalFrame*, blink::DocumentLoader*) override;
 
   void RegisterDocumentRootCreated(const blink::DOMNodeId node_id,
-    const blink::DOMNodeId parent_node_id, const WTF::String& tag_name,
-    const blink::KURL& url);
+                                   const blink::DOMNodeId parent_node_id,
+                                   const WTF::String& tag_name,
+                                   const blink::KURL& url);
   void RegisterRemoteFrameCreated(const blink::DOMNodeId parent_node_id,
-    const WTF::String& frame_id);
+                                  const WTF::String& frame_id);
 
-  void RegisterHTMLElementNodeCreated(const blink::DOMNodeId node_id,
-    const WTF::String& tag_name,
-    const ElementType element_type = kElementTypeDefault);
+  void RegisterHTMLElementNodeCreated(
+      const blink::DOMNodeId node_id,
+      const WTF::String& tag_name,
+      const ElementType element_type = kElementTypeDefault);
   // Used if it's possible the element has already been added previously
-  void TryRegisterHTMLElementNodeCreated(const blink::DOMNodeId node_id,
-    const WTF::String& tag_name,
-    const ElementType element_type = kElementTypeDefault);
+  void TryRegisterHTMLElementNodeCreated(
+      const blink::DOMNodeId node_id,
+      const WTF::String& tag_name,
+      const ElementType element_type = kElementTypeDefault);
   void RegisterHTMLTextNodeCreated(const blink::DOMNodeId node_id,
-    const WTF::String& text);
-  void RegisterHTMLElementNodeInserted(const blink::DOMNodeId node_id,
-    const blink::DOMNodeId parent_node_id,
-    const blink::DOMNodeId before_sibling_id);
+                                   const WTF::String& text);
+  void RegisterHTMLElementNodeInserted(
+      const blink::DOMNodeId node_id,
+      const blink::DOMNodeId parent_node_id,
+      const blink::DOMNodeId before_sibling_id);
   void RegisterHTMLTextNodeInserted(const blink::DOMNodeId node_id,
-    const blink::DOMNodeId parent_node_id,
-    const blink::DOMNodeId before_sibling_id);
+                                    const blink::DOMNodeId parent_node_id,
+                                    const blink::DOMNodeId before_sibling_id);
   void RegisterHTMLElementNodeRemoved(const blink::DOMNodeId node_id);
   void RegisterHTMLTextNodeRemoved(const blink::DOMNodeId node_id);
 
   void RegisterEventListenerAdd(const blink::DOMNodeId,
-    const WTF::String& event_type, const EventListenerId listener_id,
-    ScriptId listener_script_id);
+                                const WTF::String& event_type,
+                                const EventListenerId listener_id,
+                                ScriptId listener_script_id);
   void RegisterEventListenerRemove(const blink::DOMNodeId,
-    const WTF::String& event_type, const EventListenerId listener_id,
-    ScriptId listener_script_id);
+                                   const WTF::String& event_type,
+                                   const EventListenerId listener_id,
+                                   ScriptId listener_script_id);
 
   void RegisterInlineStyleSet(const blink::DOMNodeId node_id,
-    const WTF::String& attr_name, const WTF::String& attr_value);
+                              const WTF::String& attr_name,
+                              const WTF::String& attr_value);
   void RegisterInlineStyleDelete(const blink::DOMNodeId node_id,
-    const WTF::String& attr_name);
+                                 const WTF::String& attr_name);
   void RegisterAttributeSet(const blink::DOMNodeId node_id,
-    const WTF::String& attr_name, const WTF::String& attr_value);
+                            const WTF::String& attr_name,
+                            const WTF::String& attr_value);
   void RegisterAttributeDelete(const blink::DOMNodeId node_id,
-    const WTF::String& attr_name);
+                               const WTF::String& attr_name);
 
   void RegisterTextNodeChange(const blink::DOMNodeId node_id,
-    const WTF::String& new_text);
+                              const WTF::String& new_text);
 
   void RegisterRequestStartFromElm(const blink::DOMNodeId node_id,
-    const InspectorId request_id, const blink::KURL& url,
-    const RequestType type);
+                                   const InspectorId request_id,
+                                   const blink::KURL& url,
+                                   const RequestType type);
   void RegisterRequestStartFromCurrentScript(const InspectorId request_id,
-    const blink::KURL& url, const RequestType type);
+                                             const blink::KURL& url,
+                                             const RequestType type);
   void RegisterRequestStartFromCSS(const InspectorId request_id,
-    const blink::KURL& url, const RequestType type);
+                                   const blink::KURL& url,
+                                   const RequestType type);
   void RegisterRequestStartForDocument(const blink::DOMNodeId node_id,
-    const InspectorId request_id, const blink::KURL& url, const bool is_main_frame);
+                                       const InspectorId request_id,
+                                       const blink::KURL& url,
+                                       const bool is_main_frame);
   void RegisterRequestComplete(const InspectorId request_id,
-    const blink::ResourceType type, const ResponseMetadata& metadata,
-    const std::string& resource_hash);
+                               const blink::ResourceType type,
+                               const ResponseMetadata& metadata,
+                               const std::string& resource_hash);
   void RegisterRequestCompleteForDocument(const InspectorId request_id,
-    const int64_t size);
+                                          const int64_t size);
   void RegisterRequestError(const InspectorId request_id,
-    const ResponseMetadata& metadata);
+                            const ResponseMetadata& metadata);
 
   void RegisterResourceBlockAd(const GURL& url, const std::string& rule);
   void RegisterResourceBlockTracker(const GURL& url, const std::string& host);
   void RegisterResourceBlockJavaScript(const GURL& url);
   void RegisterResourceBlockFingerprinting(const GURL& url,
-    const FingerprintingRule& rule);
+                                           const FingerprintingRule& rule);
 
-  void RegisterStorageRead(const WTF::String& key, const WTF::String& value,
-    const StorageLocation location);
-  void RegisterStorageWrite(const WTF::String& key, const WTF::String& value,
-    const StorageLocation location);
+  void RegisterStorageRead(const WTF::String& key,
+                           const WTF::String& value,
+                           const StorageLocation location);
+  void RegisterStorageWrite(const WTF::String& key,
+                            const WTF::String& value,
+                            const StorageLocation location);
   void RegisterStorageDelete(const WTF::String& key,
-    const StorageLocation location);
+                             const StorageLocation location);
   void RegisterStorageClear(const StorageLocation location);
 
-  void RegisterWebAPICall(const WebAPI web_api,
-    const std::vector<const WTF::String>& arguments);
   void RegisterWebAPICall(const MethodName& method,
-    const std::vector<const WTF::String>& arguments);
-  void RegisterWebAPIResult(const WebAPI web_api,
-    const WTF::String& result);
+                          const std::vector<WTF::String>& arguments);
   void RegisterWebAPIResult(const MethodName& method,
-    const WTF::String& result);
+                            const WTF::String& result);
   void RegisterJSBuiltInCall(const JSBuiltIn built_in,
-    const std::vector<const std::string>& args);
+                             const std::vector<const std::string>& args);
   void RegisterJSBuiltInResponse(const JSBuiltIn built_in,
-    const std::string& result);
+                                 const std::string& result);
 
   void RegisterBindingEvent(const Binding binding,
-    const BindingType binding_type, const BindingEvent binding_event);
+                            const BindingType binding_type,
+                            const BindingEvent binding_event);
 
   // Methods for handling the registration of script units in the document,
   // and v8 script executing.
 
   // Local scripts are scripts that define their code inline.
   void RegisterElmForLocalScript(const blink::DOMNodeId node_id,
-    const WTF::String& code);
+                                 const WTF::String& code);
   // Remote scripts are scripts that reference remote code (eg src=...).
   void RegisterElmForRemoteScript(const blink::DOMNodeId node_id,
-    const blink::KURL& url);
+                                  const blink::KURL& url);
   // JavaScript URLs ("javascript:" schemes).
   void RegisterJavaScriptURL(const WTF::String& code);
-  void RegisterUrlForScriptSource(const blink::KURL& url, const WTF::String& code);
+  void RegisterUrlForScriptSource(const blink::KURL& url,
+                                  const WTF::String& code);
   void RegisterUrlForExtensionScriptSource(const WTF::String& url,
                                            const WTF::String& code);
   void RegisterScriptCompilation(const WTF::String& code,
-    const ScriptId script_id, const ScriptType type);
+                                 const ScriptId script_id,
+                                 const ScriptType type);
   void RegisterScriptCompilationFromAttr(const blink::DOMNodeId node_id,
-    const String& attr_name, const String& attr_value,
-    const ScriptId script_id);
+                                         const String& attr_name,
+                                         const String& attr_value,
+                                         const ScriptId script_id);
   void RegisterScriptCompilationFromEval(const ScriptId parent_script_id,
-      const ScriptId script_id, const String& source);
+                                         const ScriptId script_id,
+                                         const String& source);
 
-  void RegisterModuleScriptForDescendant(const blink::KURL& parent_location,
-    const blink::KURL& descendant_location);
-  void RegisterModuleScriptForDescendant(const ScriptId parent_id,
-    const blink::KURL& descendant_location);
+  void RegisterModuleScriptForDescendant(
+      const blink::KURL& parent_location,
+      const blink::KURL& descendant_location);
+  void RegisterModuleScriptForDescendant(
+      const ScriptId parent_id,
+      const blink::KURL& descendant_location);
 
   void GenerateReportForNode(const blink::DOMNodeId node_id,
                              blink::protocol::Array<WTF::String>& report);
@@ -233,15 +283,15 @@ friend NodeHTMLElement;
   NodeScript* GetScriptNode(const ScriptId script_id) const;
 
   NodeActor* GetCurrentActingNode(
-    ScriptPosition* out_script_position = nullptr) const;
+      ScriptPosition* out_script_position = nullptr) const;
   NodeActor* GetNodeActorForScriptId(const ScriptId script_id) const;
   ScriptId GetExecutingScriptId(
-    ScriptPosition* out_script_position = nullptr) const;
+      ScriptPosition* out_script_position = nullptr) const;
 
-  template<typename Callback>
+  template <typename Callback>
   void GetAllActingNodes(Callback callback);
 
-  template<typename Callback>
+  template <typename Callback>
   void GetAllExecutingScripts(Callback callback);
 
   NodeResource* GetResourceNodeForUrl(const std::string& url);
@@ -249,18 +299,19 @@ friend NodeHTMLElement;
   NodeAdFilter* GetAdFilterNodeForRule(const std::string& rule);
   NodeTrackerFilter* GetTrackerFilterNodeForHost(const std::string& host);
   NodeFingerprintingFilter* GetFingerprintingFilterNodeForRule(
-    const FingerprintingRule& rule);
+      const FingerprintingRule& rule);
 
   NodeBinding* GetBindingNode(const Binding binding,
-    const BindingType binding_type);
+                              const BindingType binding_type);
 
   void DoRegisterRequestStart(const InspectorId request_id,
-    Node* const requesting_node, const std::string& local_url,
-    const RequestType type);
+                              Node* const requesting_node,
+                              const std::string& local_url,
+                              const RequestType type);
   void PossiblyWriteRequestsIntoGraph(
-    const std::shared_ptr<const TrackedRequestRecord> record);
+      const std::shared_ptr<const TrackedRequestRecord> record);
   void WriteDocumentRequestIntoGraph(const blink::DOMNodeId initiator,
-    const DocumentRequest request);
+                                     const DocumentRequest request);
 
   // Return true if this PageGraph instance is instrumenting the top level
   // frame tree.
@@ -299,7 +350,7 @@ friend NodeHTMLElement;
   NodeStorageSessionStorage* const session_storage_node_;
 
   // Non-owning reference to the HTML root of the document (i.e. <html>).
-  NodeDOMRoot* html_root_node_;
+  NodeDOMRoot* html_root_node_ = nullptr;
 
   // Information about the network request to the HTML root of the document.
   // We need this separately from the RequestTracker because we create the
@@ -329,7 +380,7 @@ friend NodeHTMLElement;
   std::map<std::string, NodeAdFilter* const> ad_filter_nodes_;
   std::map<std::string, NodeTrackerFilter* const> tracker_filter_nodes_;
   std::map<FingerprintingRule, NodeFingerprintingFilter* const>
-    fingerprinting_filter_nodes_;
+      fingerprinting_filter_nodes_;
 
   // Index structure for looking up binding nodes.
   // This map does not own the references.
@@ -350,7 +401,7 @@ friend NodeHTMLElement;
 
   // Reference to the execution context associated with the page graph, which if
   // it exists, will always be for the top level frame.
-  blink::ExecutionContext& execution_context_;
+  blink::Member<blink::ExecutionContext> execution_context_;
 
   std::chrono::milliseconds start_;
 };

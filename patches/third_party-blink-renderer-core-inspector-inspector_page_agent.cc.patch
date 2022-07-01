@@ -1,0 +1,72 @@
+diff --git a/third_party/blink/renderer/core/inspector/inspector_page_agent.cc b/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
+index 53b0a90f55f756acef689533e9e2015cbcb0d76c..89d5dab609f66ef6a7f0e645a5d1b07510f6a7f6 100644
+--- a/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
++++ b/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
+@@ -97,6 +97,8 @@
+ #include "ui/display/screen_info.h"
+ #include "v8/include/v8-inspector.h"
+ 
++#include "third_party/blink/renderer/core/loader/resource/text_resource.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ using protocol::Response;
+@@ -309,6 +311,13 @@ static void MaybeEncodeTextContent(const String& text_content,
+                                 result, base64_encoded);
+ }
+ 
++void MaybeEncodeTextContent_Public(const String& text_content,
++                                   scoped_refptr<const SharedBuffer> buffer,
++                                   String* result,
++                                   bool* base64_encoded) {
++  MaybeEncodeTextContent(text_content, buffer, result, base64_encoded);
++}
++
+ // static
+ KURL InspectorPageAgent::UrlWithoutFragment(const KURL& url) {
+   KURL result = url;
+@@ -960,10 +969,10 @@ void InspectorPageAgent::DidClearDocumentOfWindowObject(LocalFrame* frame) {
+           v8_inspector::V8ContextInfo::executionContextId(
+               script_state->GetContext()));
+       DCHECK(scope);
+-      ClassicScript::CreateUnspecifiedScript(source)
++      ClassicScript::CreateUnspecifiedScript(source, ScriptSourceLocationType::kInspector)
+           ->RunScriptInIsolatedWorldAndReturnValue(window, world->GetWorldId());
+     } else {
+-      ClassicScript::CreateUnspecifiedScript(source)
++      ClassicScript::CreateUnspecifiedScript(source, ScriptSourceLocationType::kInspector)
+           ->RunScriptInIsolatedWorldAndReturnValue(window, world->GetWorldId());
+     }
+   }
+@@ -1809,6 +1818,31 @@ Response InspectorPageAgent::setInterceptFileChooserDialog(bool enabled) {
+   return Response::Success();
+ }
+ 
++Response InspectorPageAgent::generatePageGraph(String* data) {
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  LocalFrame* main_frame = inspected_frames_->Root();
++  if (!main_frame) {
++    return Response::ServerError("No main frame found");
++  }
++
++  Document* document = main_frame->GetDocument();
++  if (!document) {
++    return Response::ServerError("No Document instance to generate page graph for");
++  }
++
++  ::brave_page_graph::PageGraph* const page_graph = document->GetPageGraph();
++  if (!page_graph) {
++    return Response::ServerError("No Page Graph for this Document");
++  }
++
++  std::string graphml(page_graph->ToGraphML());
++  *data = String::FromUTF8(graphml.c_str());
++  return Response::Success();
++// #else
++//   return Response::ServerError("Browser not built with Page Graph support");
++// #endif
++}
++
+ Response InspectorPageAgent::generateTestReport(const String& message,
+                                                 Maybe<String> group) {
+   LocalDOMWindow* window = inspected_frames_->Root()->DomWindow();

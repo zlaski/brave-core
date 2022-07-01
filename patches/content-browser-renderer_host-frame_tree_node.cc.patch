@@ -1,0 +1,89 @@
+diff --git a/content/browser/renderer_host/frame_tree_node.cc b/content/browser/renderer_host/frame_tree_node.cc
+index aec3d76d0f18ff255951aebd2bac62983420e105..f1292c97f863e921a37eb8d61aff2ea78733d4e6 100644
+--- a/content/browser/renderer_host/frame_tree_node.cc
++++ b/content/browser/renderer_host/frame_tree_node.cc
+@@ -48,6 +48,16 @@ typedef std::unordered_map<int, FrameTreeNode*> FrameTreeNodeIdMap;
+ base::LazyInstance<FrameTreeNodeIdMap>::DestructorAtExit
+     g_frame_tree_node_id_map = LAZY_INSTANCE_INITIALIZER;
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++typedef std::unordered_map<base::UnguessableToken,
++                           FrameTreeNode*,
++                           base::UnguessableTokenHash>
++    DevToolsFrameTokenMap;
++
++base::LazyInstance<DevToolsFrameTokenMap>::DestructorAtExit
++    g_devtools_frame_token_map = LAZY_INSTANCE_INITIALIZER;
++// #endif
++
+ FencedFrame* FindFencedFrame(const FrameTreeNode* frame_tree_node) {
+   // TODO(crbug.com/1123606): Consider having a pointer to `FencedFrame` in
+   // `FrameTreeNode` or having a map between them.
+@@ -125,6 +135,17 @@ FrameTreeNode* FrameTreeNode::GloballyFindByID(int frame_tree_node_id) {
+   return it == nodes->end() ? nullptr : it->second;
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++// static
++FrameTreeNode* FrameTreeNode::GloballyFindByDevToolsFrameToken(
++    const base::UnguessableToken& devtools_frame_token) {
++  DCHECK_CURRENTLY_ON(BrowserThread::UI);
++  DevToolsFrameTokenMap* nodes = g_devtools_frame_token_map.Pointer();
++  auto it = nodes->find(devtools_frame_token);
++  return it == nodes->end() ? nullptr : it->second;
++}
++// #endif
++
+ // static
+ FrameTreeNode* FrameTreeNode::From(RenderFrameHost* rfh) {
+   if (!rfh)
+@@ -179,7 +200,7 @@ FrameTreeNode::FrameTreeNode(
+     const blink::mojom::FrameOwnerProperties& frame_owner_properties,
+     blink::FrameOwnerElementType owner_type,
+     const blink::FramePolicy& frame_policy)
+-    : frame_tree_(frame_tree),
++        : frame_tree_(frame_tree),
+       frame_tree_node_id_(next_frame_tree_node_id_++),
+       parent_(parent),
+       frame_owner_element_type_(owner_type),
+@@ -198,6 +219,14 @@ FrameTreeNode::FrameTreeNode(
+       g_frame_tree_node_id_map.Get().insert(
+           std::make_pair(frame_tree_node_id_, this));
+   CHECK(result.second);
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    std::pair<DevToolsFrameTokenMap::iterator, bool> result =
++        g_devtools_frame_token_map.Get().insert(
++            std::make_pair(devtools_frame_token_, this));
++    CHECK(result.second);
++  }
++// #endif
+ }
+ 
+ void FrameTreeNode::DestroyInnerFrameTreeIfExists() {
+@@ -210,12 +239,6 @@ void FrameTreeNode::DestroyInnerFrameTreeIfExists() {
+   // alongside ourself. `Portals` and `GuestView` however, *currently* have a
+   // more complex lifetime and are dealt with separately.
+   bool is_outer_dummy_node = false;
+-  if (current_frame_host() &&
+-      current_frame_host()->inner_tree_main_frame_tree_node_id() !=
+-          FrameTreeNode::kFrameTreeNodeInvalidId) {
+-    is_outer_dummy_node = true;
+-  }
+-
+   if (is_outer_dummy_node) {
+     FencedFrame* doomed_fenced_frame = FindFencedFrame(this);
+     // `doomed_fenced_frame` might not actually exist, because some outer dummy
+@@ -289,6 +312,12 @@ FrameTreeNode::~FrameTreeNode() {
+ 
+   g_frame_tree_node_id_map.Get().erase(frame_tree_node_id_);
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    g_devtools_frame_token_map.Get().erase(devtools_frame_token_);
++  }
++// #endif
++
+   // If a frame with a pending navigation is detached, make sure the
+   // WebContents (and its observers) update their loading state.
+   // TODO(dcheng): This should just check `IsLoading()`, but `IsLoading()`

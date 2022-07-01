@@ -1,0 +1,24 @@
+diff --git a/third_party/blink/renderer/core/probe/core_probes.json5 b/third_party/blink/renderer/core/probe/core_probes.json5
+index 502f6153937bd17bb8261fced4c4b2d595a9f329..638abce546310fb0626dcd85d1fbc88b48280686 100644
+--- a/third_party/blink/renderer/core/probe/core_probes.json5
++++ b/third_party/blink/renderer/core/probe/core_probes.json5
+@@ -17,6 +17,19 @@
+     ],
+   },
+   observers: {
++    PageGraphAgent: {
++      include_path: "brave/third_party/blink/brave_page_graph",
++      probes: [
++        "DidInsertDOMNode",
++        "DidCommitLoad",
++        "RegisterPageGraphBindingEvent",
++        "RegisterPageGraphWebAPICallWithResult",
++        "RegisterPageGraphNodeConstructed",
++        "ConsoleMessageAdded",
++        "DidModifyDOMAttr",
++        "DidRemoveDOMAttr",
++      ]
++    },
+     AdTracker: {
+       include_path: "third_party/blink/renderer/core/frame",
+       probes: [

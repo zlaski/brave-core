@@ -1,0 +1,29 @@
+diff --git a/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc b/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc
+index 44b445596060c9525f005ffb74420a67345a5b9e..afc373ec914d49ed1fd74dde12b71e9caf66ec5a 100644
+--- a/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc
++++ b/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc
+@@ -2424,6 +2424,24 @@ Response InspectorDOMAgent::getFileInfo(const String& object_id, String* path) {
+   return Response::Success();
+ }
+ 
++Response InspectorDOMAgent::reportPageGraphInfo(
++    int node_id,
++    std::unique_ptr<protocol::Array<String>>* report) {
++  *report = std::make_unique<protocol::Array<String>>();
++
++  Node* const node = NodeForId(node_id);
++  if (!node) {
++    return Response::ServerError("Could not find node with given id");
++  }
++
++  ::brave_page_graph::PageGraph* const page_graph =
++      node->GetDocument().GetPageGraph();
++  if (page_graph) {
++    page_graph->GenerateReportForNode(DOMNodeIds::IdForNode(node), **report);
++  }
++
++  return Response::Success();
++}
+ void InspectorDOMAgent::Trace(Visitor* visitor) const {
+   visitor->Trace(dom_listeners_);
+   visitor->Trace(inspected_frames_);

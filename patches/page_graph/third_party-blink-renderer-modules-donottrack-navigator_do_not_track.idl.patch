@@ -1,0 +1,11 @@
+diff --git a/third_party/blink/renderer/modules/donottrack/navigator_do_not_track.idl b/third_party/blink/renderer/modules/donottrack/navigator_do_not_track.idl
+index cedba8e01cbe9e73dd140230e950c0eaf5214621..c16e29d98f2a063f6eb9e9ef1120af795859ca8b 100644
+--- a/third_party/blink/renderer/modules/donottrack/navigator_do_not_track.idl
++++ b/third_party/blink/renderer/modules/donottrack/navigator_do_not_track.idl
+@@ -31,5 +31,5 @@
+ [
+     ImplementedAs=NavigatorDoNotTrack
+ ] partial interface Navigator {
+-    [HighEntropy=Direct, MeasureAs=NavigatorDoNotTrack] readonly attribute DOMString? doNotTrack;
++    [HighEntropy=Direct, MeasureAs=NavigatorDoNotTrack, TrackInPageGraph] readonly attribute DOMString? doNotTrack;
+ };

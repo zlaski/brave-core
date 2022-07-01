@@ -1,0 +1,88 @@
+diff --git a/third_party/blink/renderer/core/fetch/fetch_manager.cc b/third_party/blink/renderer/core/fetch/fetch_manager.cc
+index 3e76fb8ef1f1e6bdccafc804629c1013997d164d..9b190191dcde45cce2a09fa8306c6a6a2db2b0da 100644
+--- a/third_party/blink/renderer/core/fetch/fetch_manager.cc
++++ b/third_party/blink/renderer/core/fetch/fetch_manager.cc
+@@ -84,6 +84,11 @@
+ #include "third_party/blink/renderer/platform/wtf/vector.h"
+ #include "v8/include/v8.h"
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#include "brave/third_party/blink/brave_page_graph/utilities/response_metadata.h"
++// #endif
++
+ using network::mojom::CredentialsMode;
+ using network::mojom::FetchResponseType;
+ using network::mojom::RedirectMode;
+@@ -379,7 +384,11 @@ bool FetchManager::Loader::WillFollowRedirect(
+ }
+ 
+ void FetchManager::Loader::DidReceiveResponse(
+-    uint64_t,
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++    uint64_t brave_inspector_id,
++// #else
++//     uint64_t,
++// #endif
+     const ResourceResponse& response) {
+   // Verify that we're dealing with the URL we expect (which could be an
+   // HTTPS-upgraded variant of `url_list_.back()`.
+@@ -455,6 +464,18 @@ void FetchManager::Loader::DidReceiveResponse(
+ 
+   response_has_no_store_header_ = response.CacheControlContainsNoStore();
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    brave_page_graph::PageGraph* page_graph =
++        brave_page_graph::PageGraph::GetFromExecutionContext(
++            *execution_context_);
++    if (page_graph != nullptr) {
++      page_graph->RegisterRequestComplete(brave_inspector_id,
++        ResourceType::kRaw, brave_page_graph::ResponseMetadata(response), "");
++    }
++  }
++// #endif
++
+   Response* r =
+       Response::Create(resolver_->GetExecutionContext(), tainted_response);
+   r->headers()->SetGuard(Headers::kImmutableGuard);
+@@ -842,6 +863,19 @@ void FetchManager::Loader::PerformHTTPFetch() {
+   threadable_loader_ = MakeGarbageCollected<ThreadableLoader>(
+       *execution_context_, this, resource_loader_options);
+   threadable_loader_->Start(std::move(request));
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    brave_page_graph::PageGraph* page_graph =
++        brave_page_graph::PageGraph::GetFromExecutionContext(
++            *execution_context_);
++    if (page_graph != nullptr) {
++      page_graph->RegisterRequestStartFromCurrentScript(
++        threadable_loader_->GetRawResource()->InspectorId(),
++        fetch_request_data_->Url(),
++        brave_page_graph::RequestType::kRequestTypeUnknown);
++    }
++  }
++// #endif
+ }
+ 
+ // performDataFetch() is almost the same as performHTTPFetch(), except for:
+@@ -871,6 +905,19 @@ void FetchManager::Loader::PerformDataFetch() {
+   threadable_loader_ = MakeGarbageCollected<ThreadableLoader>(
+       *execution_context_, this, resource_loader_options);
+   threadable_loader_->Start(std::move(request));
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    brave_page_graph::PageGraph* page_graph =
++        brave_page_graph::PageGraph::GetFromExecutionContext(
++            *execution_context_);
++    if (page_graph != nullptr) {
++      page_graph->RegisterRequestStartFromCurrentScript(
++        threadable_loader_->GetRawResource()->InspectorId(),
++        fetch_request_data_->Url(),
++        brave_page_graph::RequestType::kRequestTypeUnknown);
++    }
++  }
++// #endif
+ }
+ 
+ void FetchManager::Loader::Failed(

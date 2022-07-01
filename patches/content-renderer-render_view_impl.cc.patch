@@ -1,0 +1,32 @@
+diff --git a/content/renderer/render_view_impl.cc b/content/renderer/render_view_impl.cc
+index 03b637c4d3a68a2bff5a4e06f421f23f97f40911..d11f5d2815a1eb99e111c58224d7e9a8924d9c68 100644
+--- a/content/renderer/render_view_impl.cc
++++ b/content/renderer/render_view_impl.cc
+@@ -115,6 +115,10 @@ void RenderViewImpl::Initialize(
+     scoped_refptr<base::SingleThreadTaskRunner> task_runner) {
+   DCHECK(RenderThread::IsMainThread());
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  devtools_main_frame_token_ = params->devtools_main_frame_token;
++// #endif
++
+   WebFrame* opener_frame = nullptr;
+   if (params->opener_frame_token)
+     opener_frame = WebFrame::FromFrameToken(params->opener_frame_token.value());
+@@ -425,4 +429,16 @@ blink::WebView* RenderViewImpl::GetWebView() {
+   return webview_;
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void RenderViewImpl::FinalPageGraph(const std::string& frame_id,
++                                    const std::string& data) {
++  DCHECK(!devtools_main_frame_token_.is_empty());
++  RenderFrameImpl* render_frame =
++      RenderFrameImpl::FromWebFrame(GetWebView()->MainFrame());
++  if (render_frame) {
++    render_frame->GetFrameHost()->FinalPageGraph(devtools_main_frame_token_, frame_id, data);
++  }
++}
++// #endif
++
+ }  // namespace content

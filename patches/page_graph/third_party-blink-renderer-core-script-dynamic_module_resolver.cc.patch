@@ -1,0 +1,32 @@
+diff --git a/third_party/blink/renderer/core/script/dynamic_module_resolver.cc b/third_party/blink/renderer/core/script/dynamic_module_resolver.cc
+index a02c2198a090c5adc58273ade290b081cfc05cc1..4c3031c790b680e98dcd89baf46d15081fa47d01 100644
+--- a/third_party/blink/renderer/core/script/dynamic_module_resolver.cc
++++ b/third_party/blink/renderer/core/script/dynamic_module_resolver.cc
+@@ -20,6 +20,8 @@
+ #include "third_party/blink/renderer/platform/loader/fetch/fetch_client_settings_object_snapshot.h"
+ #include "v8/include/v8.h"
+ 
++#include "brave/third_party/blink/brave_page_graph/types.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ namespace {
+@@ -262,6 +264,8 @@ void DynamicModuleResolver::ResolveDynamically(
+     const ModuleRequest& module_request,
+     const KURL& referrer_resource_url,
+     const ReferrerScriptInfo& referrer_info,
++    ::brave_page_graph::ScriptId referrer_script_id,
++    ::brave_page_graph::PageGraph* page_graph,
+     ScriptPromiseResolver* promise_resolver) {
+   DCHECK(modulator_->GetScriptState()->GetIsolate()->InContext())
+       << "ResolveDynamically should be called from V8 callback, within a valid "
+@@ -363,6 +367,9 @@ void DynamicModuleResolver::ResolveDynamically(
+       break;
+   }
+ 
++  if (page_graph != nullptr) {
++    page_graph->RegisterModuleScriptForDescendant(referrer_script_id, url);
++  }
+   // <spec step="4.4">Set fetch options to the descendant script fetch options
+   // for referencing script's fetch options.</spec>
+   //

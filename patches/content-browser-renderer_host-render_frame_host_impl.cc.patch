@@ -1,0 +1,43 @@
+diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
+index 9fc4b0b776e49b3c793710e40cbe737f3e29c428..38a94f0d19e27e41ff5045e27af1d7b5aeaf1807 100644
+--- a/content/browser/renderer_host/render_frame_host_impl.cc
++++ b/content/browser/renderer_host/render_frame_host_impl.cc
+@@ -2420,6 +2420,18 @@ void RenderFrameHostImpl::AddMessageToConsole(
+   AddMessageToConsoleImpl(level, message, /*discard_duplicates=*/false);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void RenderFrameHostImpl::RegisterResourceBlockAd(const GURL& url,
++                                                  const std::string& rule) {
++  GetMojomFrameInRenderer()->RegisterResourceBlockAd(std::move(url), std::move(rule));
++}
++
++void RenderFrameHostImpl::RegisterResourceBlockTracker(const GURL& url,
++                                                       const std::string& host) {
++  GetMojomFrameInRenderer()->RegisterResourceBlockTracker(std::move(url), std::move(host));
++}
++// #endif
++
+ void RenderFrameHostImpl::ExecuteJavaScriptMethod(
+     const std::u16string& object_name,
+     const std::u16string& method_name,
+@@ -5716,6 +5728,10 @@ void RenderFrameHostImpl::SetVirtualKeyboardOverlayPolicy(
+   GetPage().set_virtual_keyboard_overlays_content(vk_overlays_content);
+ }
+ 
++void RenderFrameHostImpl::FinalPageGraph(const ::base::UnguessableToken& devtools_main_frame_token, const std::string& frame_id, const std::string& data) {
++  GetProcess()->OnFinalPageGraph(devtools_main_frame_token, frame_id, data);
++}
++
+ #if BUILDFLAG(IS_ANDROID)
+ void RenderFrameHostImpl::UpdateUserGestureCarryoverInfo() {
+   // This should not occur for prerenders but may occur for pages in
+@@ -6320,7 +6336,7 @@ void RenderFrameHostImpl::SuddenTerminationDisablerChanged(
+       has_pagehide_handler_ = present;
+       break;
+     case blink::mojom::SuddenTerminationDisablerType::kUnloadHandler:
+-      DCHECK_NE(has_unload_handler_, present);
++      // DCHECK_NE(has_unload_handler_, present);
+       if (IsNestedWithinFencedFrame()) {
+         bad_message::ReceivedBadMessage(
+             GetProcess(),

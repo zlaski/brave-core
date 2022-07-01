@@ -1,0 +1,42 @@
+diff --git a/third_party/blink/renderer/core/loader/resource/css_style_sheet_resource.cc b/third_party/blink/renderer/core/loader/resource/css_style_sheet_resource.cc
+index 81f1b1bb7c5777563974ebcae06d2b0d853f717a..d47b607fe9b51840458876c32b508398f9688775 100644
+--- a/third_party/blink/renderer/core/loader/resource/css_style_sheet_resource.cc
++++ b/third_party/blink/renderer/core/loader/resource/css_style_sheet_resource.cc
+@@ -40,6 +40,16 @@
+ #include "third_party/blink/renderer/platform/weborigin/security_policy.h"
+ #include "third_party/blink/renderer/platform/wtf/text/text_encoding.h"
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED
++#include "brave/third_party/blink/brave_page_graph/logging.h"
++
++#include "third_party/blink/renderer/platform/crypto.h"
++
++#include "third_party/blink/renderer/core/inspector/inspector_page_agent.h"
++#include "third_party/blink/renderer/platform/wtf/text/base64.h"
++#include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
++// #endif
++
+ namespace blink {
+ 
+ CSSStyleSheetResource* CSSStyleSheetResource::Fetch(FetchParameters& params,
+@@ -264,4 +274,20 @@ void CSSStyleSheetResource::UpdateDecodedSize() {
+   SetDecodedSize(decoded_size);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED
++std::string StyleSheetDigest(CSSStyleSheetResource* resource) {
++  DigestValue digest;
++  String result;
++  bool base64_encoded;
++  MaybeEncodeTextContent_Public(
++      resource->SheetText(nullptr, CSSStyleSheetResource::MIMETypeCheck::kLax),
++      resource->ResourceBuffer(), &result, &base64_encoded);
++  std::string str_copy(result.Utf8().data());
++  const bool digest_succeeded = ComputeDigest(kHashAlgorithmSha256,
++      str_copy.c_str(), str_copy.size(), digest);
++  PG_LOG_ASSERT(digest_succeeded);
++  return std::string(WTF::Base64Encode(digest).Utf8().data());
++}
++// #endif
++
+ }  // namespace blink

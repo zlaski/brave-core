@@ -1,0 +1,30 @@
+diff --git a/content/renderer/render_frame_impl.h b/content/renderer/render_frame_impl.h
+index 56a772e39d82ce41aeb7bc4e12da6629c28c7fb1..f99c677a949af571e6388dbfd01dd0e9da8d3ca0 100644
+--- a/content/renderer/render_frame_impl.h
++++ b/content/renderer/render_frame_impl.h
+@@ -376,6 +376,12 @@ class CONTENT_EXPORT RenderFrameImpl
+                        const gfx::Range& range) override;
+   void AddMessageToConsole(blink::mojom::ConsoleMessageLevel level,
+                            const std::string& message) override;
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void RegisterResourceBlockAd(const GURL& url,
++                               const std::string& rule) override;
++  void RegisterResourceBlockTracker(const GURL& url,
++                                    const std::string& host) override;
++// #endif
+   bool IsPasting() override;
+   bool IsBrowserSideNavigationPending() override;
+   void LoadHTMLStringForTesting(const std::string& html,
+@@ -883,6 +889,12 @@ class CONTENT_EXPORT RenderFrameImpl
+   void OnMoveCaret(const gfx::Point& point);
+   void OnScrollFocusedEditableNodeIntoRect(const gfx::Rect& rect);
+   void OnSelectRange(const gfx::Point& base, const gfx::Point& extent);
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void OnRegisterResourceBlockAd(const GURL& url,
++                                 const std::string& rule);
++  void OnRegisterResourceBlockTracker(const GURL& url,
++                                      const std::string& host);
++// #endif
+   void OnSuppressFurtherDialogs();
+ 
+   // Callback scheduled from SerializeAsMHTML for when writing serialized

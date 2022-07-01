@@ -1,0 +1,13 @@
+diff --git a/components/performance_manager/performance_manager_tab_helper.cc b/components/performance_manager/performance_manager_tab_helper.cc
+index bf5d7dbc36706c40bdabc60c070444d96db1b5aa..1db073c4f08ca8d2ead4c494db5be6befca0e1f9 100644
+--- a/components/performance_manager/performance_manager_tab_helper.cc
++++ b/components/performance_manager/performance_manager_tab_helper.cc
+@@ -86,7 +86,7 @@ PerformanceManagerTabHelper::PerformanceManagerTabHelper(
+   // We have an early WebContents creation hook so should see it when there is
+   // only a single frame, and it is not yet created. We sanity check that here.
+ #if DCHECK_IS_ON()
+-  DCHECK(!web_contents->GetMainFrame()->IsRenderFrameCreated());
++  //DCHECK(!web_contents->GetMainFrame()->IsRenderFrameCreated());
+   size_t frame_count = 0;
+   web_contents->ForEachRenderFrameHost(base::BindRepeating(
+       [](size_t* frame_count, content::RenderFrameHost* render_frame_host) {

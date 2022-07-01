@@ -201,26 +201,6 @@ typedef enum {
 CORE_EXPORT JSBuiltIn JSBuiltInFromString(const std::string& built_in_str) noexcept;
 CORE_EXPORT const std::string& JSBuiltInToSting(const JSBuiltIn built_in) noexcept;
 
-typedef enum {
-  kWebAPIDocumentReferrer = 0,
-  kWebAPILocationAncestorOrigins,
-  kWebAPILocationAssign,
-  kWebAPILocationHash,
-  kWebAPILocationHost,
-  kWebAPILocationHostname,
-  kWebAPILocationHref,
-  kWebAPILocationOrigin,
-  kWebAPILocationPathname,
-  kWebAPILocationPort,
-  kWebAPILocationProtocol,
-  kWebAPILocationReload,
-  kWebAPILocationReplace,
-  kWebAPILocationSearch,
-  kWebAPIConsoleLog,
-} WebAPI;
-CORE_EXPORT WebAPI WebAPIFromString(const std::string& web_api_str) noexcept;
-CORE_EXPORT const std::string& WebAPIToString(const WebAPI web_api) noexcept;
-
 typedef const char* BindingType;
 CORE_EXPORT extern const BindingType kBindingTypeAttribute;
 CORE_EXPORT extern const BindingType kBindingTypeConstant;

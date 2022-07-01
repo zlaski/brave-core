@@ -1,4 +1,12 @@
-brave_page_graph_sources = [
+# Copyright 2022 The Brave Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//brave/third_party/blink/brave_page_graph/buildflags.gni")
+
+brave_page_graph_core_sources = [
+  "//brave/third_party/blink/brave_page_graph/blink_converters.cc",
+  "//brave/third_party/blink/brave_page_graph/blink_converters.h",
   "//brave/third_party/blink/brave_page_graph/graph_item/edge/attribute/edge_attribute.cc",
   "//brave/third_party/blink/brave_page_graph/graph_item/edge/attribute/edge_attribute.h",
   "//brave/third_party/blink/brave_page_graph/graph_item/edge/attribute/edge_attribute_delete.cc",
@@ -146,10 +154,11 @@ brave_page_graph_sources = [
   "//brave/third_party/blink/brave_page_graph/scripts/script_tracker.h",
   "//brave/third_party/blink/brave_page_graph/types.cc",
   "//brave/third_party/blink/brave_page_graph/types.h",
-  "//brave/third_party/blink/brave_page_graph/utilities/dispatchers.cc",
-  "//brave/third_party/blink/brave_page_graph/utilities/dispatchers.h",
   "//brave/third_party/blink/brave_page_graph/utilities/response_metadata.cc",
   "//brave/third_party/blink/brave_page_graph/utilities/response_metadata.h",
   "//brave/third_party/blink/brave_page_graph/utilities/urls.cc",
   "//brave/third_party/blink/brave_page_graph/utilities/urls.h",
 ]
+
+brave_page_graph_core_deps =
+    [ "//brave/third_party/blink/brave_page_graph:buildflags" ]

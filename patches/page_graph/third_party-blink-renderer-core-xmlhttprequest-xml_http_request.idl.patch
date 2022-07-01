@@ -1,0 +1,14 @@
+diff --git a/third_party/blink/renderer/core/xmlhttprequest/xml_http_request.idl b/third_party/blink/renderer/core/xmlhttprequest/xml_http_request.idl
+index 8ff21db2d0fbae7bacecba56b23ffc476b34deff..d6936d61bd8e776be19a1f0148da265c16150b89 100644
+--- a/third_party/blink/renderer/core/xmlhttprequest/xml_http_request.idl
++++ b/third_party/blink/renderer/core/xmlhttprequest/xml_http_request.idl
+@@ -42,7 +42,8 @@ typedef (Blob or BufferSource or FormData or URLSearchParams or USVString) XMLHt
+ 
+ [
+     ActiveScriptWrappable,
+-    Exposed=(Window,DedicatedWorker,SharedWorker)
++    Exposed=(Window,DedicatedWorker,SharedWorker),
++    TrackInPageGraph
+ ] interface XMLHttpRequest : XMLHttpRequestEventTarget {
+     [CallWith=ScriptState] constructor();
+     // event handler

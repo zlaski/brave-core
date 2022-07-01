@@ -1,0 +1,90 @@
+diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
+index 019b87a77fb7306bacdcda20e388cdfb8d3a6be8..82cfb63f9731ff648a737a6395860558b8ddd3ef 100644
+--- a/third_party/blink/renderer/core/frame/local_frame.cc
++++ b/third_party/blink/renderer/core/frame/local_frame.cc
+@@ -223,6 +223,9 @@
+ #include "third_party/blink/renderer/core/frame/window_controls_overlay_changed_delegate.h"
+ #endif
+ 
++#include "third_party/blink/renderer/core/inspector/identifiers_factory.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++
+ namespace blink {
+ 
+ namespace {
+@@ -384,6 +387,7 @@ LocalFrame::~LocalFrame() {
+ 
+ void LocalFrame::Trace(Visitor* visitor) const {
+   visitor->Trace(ad_tracker_);
++  visitor->Trace(page_graph_);
+   visitor->Trace(attribution_src_loader_);
+   visitor->Trace(probe_sink_);
+   visitor->Trace(performance_monitor_);
+@@ -574,6 +578,8 @@ bool LocalFrame::DetachImpl(FrameDetachType type) {
+       box_shadow_paint_image_generator_->Shutdown();
+     if (clip_path_paint_image_generator_)
+       clip_path_paint_image_generator_->Shutdown();
++    if (page_graph_)
++      probe_sink_->RemovePageGraphAgent(page_graph_);
+   }
+   idleness_detector_->Shutdown();
+   if (inspector_issue_reporter_)
+@@ -950,6 +956,17 @@ bool LocalFrame::BubbleLogicalScrollFromChildFrame(
+                                           owner_element);
+ }
+ 
++void LocalFrame::ExpectToSendFinalPageGraphOnUnload() {
++  UpdateSuddenTerminationStatus(true, mojom::blink::SuddenTerminationDisablerType::kUnloadHandler);
++}
++
++brave_page_graph::PageGraph* LocalFrame::GetPageGraph() const {
++  if (!page_graph_ || !page_graph_->IsActive()) {
++    return nullptr;
++  }
++  return page_graph_.Get();
++}
++
+ mojom::blink::SuddenTerminationDisablerType
+ SuddenTerminationDisablerTypeForEventType(const AtomicString& event_type) {
+   if (event_type == event_type_names::kUnload) {
+@@ -1506,6 +1523,32 @@ LocalFrame::LocalFrame(LocalFrameClient* client,
+     if (RuntimeEnabledFeatures::AdTaggingEnabled()) {
+       ad_tracker_ = MakeGarbageCollected<AdTracker>(this);
+     }
++    if (base::FeatureList::IsEnabled(features::kBravePageGraph)) {
++      LOG(ERROR) << "before creating PageGraph";
++      LOG(ERROR) << "IsProvisional() " << IsProvisional();
++      LOG(ERROR) << "!GetPage() || GetPage()->IsOrdinary() "
++                 << (!GetPage() || GetPage()->IsOrdinary());
++      LOG(ERROR) << "GetDocument() " << GetDocument();
++      if (GetDocument()) {
++        LOG(ERROR) << "GetDocument()->IsHTMLDocument() "
++                   << GetDocument()->IsHTMLDocument();
++        LOG(ERROR) << "GetDocument()->Url() " << GetDocument()->Url();
++        LOG(ERROR) << "GetDocument()->Url().ProtocolIsInHTTPFamily() "
++                   << GetDocument()->Url().ProtocolIsInHTTPFamily();
++      }
++      if (true /*!IsProvisional() && (!GetPage() || GetPage()->IsOrdinary()) //&&*/
++          /*GetDocument() && GetDocument()->IsHTMLDocument() &&
++          GetDocument()->Url().ProtocolIsInHTTPFamily()*/) {
++        LOG(ERROR) << "yes! creating PageGraph";
++        page_graph_ = MakeGarbageCollected<brave_page_graph::PageGraph>(
++            IdentifiersFactory::FrameId(this)/*,
++            DOMNodeIds::IdForNode(GetDocument()), String::FromUTF8("#document"),
++            GetDocument()->Url()*/);
++        probe_sink_->AddPageGraphAgent(page_graph_);
++      } else {
++        LOG(ERROR) << "not creating PageGraph";
++      }
++    }
+   } else {
+     // Inertness only needs to be updated if this frame might inherit the
+     // inert state from a higher-level frame. If this is an OOPIF local root,
+@@ -1515,6 +1558,7 @@ LocalFrame::LocalFrame(LocalFrameClient* client,
+     probe_sink_ = LocalFrameRoot().probe_sink_;
+     ad_tracker_ = LocalFrameRoot().ad_tracker_;
+     performance_monitor_ = LocalFrameRoot().performance_monitor_;
++    page_graph_ = LocalFrameRoot().page_graph_;
+   }
+   idleness_detector_ = MakeGarbageCollected<IdlenessDetector>(this, clock);
+   attribution_src_loader_ = MakeGarbageCollected<AttributionSrcLoader>(this);

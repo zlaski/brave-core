@@ -1,0 +1,127 @@
+diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
+index 76d3ab52c3c5b391bc61a742ab4fbfff915de6bc..6837797ca3594c1b5c639be85d6a3cbd0cc2ad72 100644
+--- a/third_party/blink/renderer/core/dom/document.cc
++++ b/third_party/blink/renderer/core/dom/document.cc
+@@ -358,6 +358,15 @@ using WeakDocumentSet = blink::HeapHashSet<blink::WeakMember<blink::Document>>;
+ static WeakDocumentSet& LiveDocumentSet();
+ #endif
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "third_party/blink/renderer/core/inspector/identifiers_factory.h"
++#include "third_party/blink/renderer/modules/service_worker/service_worker_container.h"
++#include "third_party/blink/renderer/modules/storage/dom_window_storage_controller.h"
++
++#include "brave/third_party/blink/brave_page_graph/logging.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++// #endif
++
+ namespace blink {
+ 
+ namespace {
+@@ -872,6 +881,90 @@ Document::~Document() {
+   InstanceCounters::DecrementCounter(InstanceCounters::kDocumentCounter);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++brave_page_graph::PageGraph* Document::GetPageGraph() {
++  if (!GetFrame()) {
++    return nullptr;
++  }
++  return GetFrame()->GetPageGraph();
++  /*Document* const context_document = To<LocalDOMWindow>(GetExecutionContext())->document();
++  if (!context_document) {
++    return nullptr;
++  }
++
++  if (wasDiscarded() || context_document->wasDiscarded()) {
++    return nullptr;
++  }
++
++  if (page_graph_non_owning_ != nullptr) {
++    return page_graph_non_owning_;
++  }
++
++  if (page_graph_ != nullptr) {
++    return page_graph_;
++  }
++
++  LocalFrame* const frame = GetFrame();
++  if (!frame) {
++    return context_document->GetPageGraph();
++  }
++  if (frame->IsProvisional()) {
++    return nullptr;
++  }
++
++  // Only instrument documents belonging to ordinary pages (and not, e.g.,
++  // service workers).
++  bool is_ordinary_document = false;
++  LocalFrame* const context_frame = context_document->GetFrame();
++  if (context_frame) {
++    Page* const context_page = context_frame->GetPage();
++    if (context_page && context_page->IsOrdinary()) {
++      is_ordinary_document = true;
++    }
++  }
++  if (!is_ordinary_document) {
++    PG_LOG("(skipping PageGraph instrumentation on document "
++               << context_document->Url().GetString() << ")");
++    return nullptr;
++  }
++
++  // If we're a child frame, then we can punt the decision on whether
++  // to instantiate a page graph instance upward.  But we need to
++  // make sure to add the page graph instance to the local isolate
++  // if the top frame has a PageGraph.
++  if (!frame->IsLocalRoot()) {
++    Document* local_frame_root_document =
++        context_frame->LocalFrameRoot().GetDocument();
++    PG_LOG_ASSERT(local_frame_root_document);
++    page_graph_non_owning_ = local_frame_root_document->GetPageGraph();
++    return page_graph_non_owning_;
++  }
++
++  PG_LOG_ASSERT(!IsTemplateDocument());
++  PG_LOG_ASSERT(context_document == this);
++
++  // Otherwise, we're the top document, and we need to decide if we should
++  // create a page graph instance.  We do this for documents that look like
++  // there HTML documents fetched over HTTP (so not file://, not extension
++  // content pages, etc.
++  const bool top_doc_is_html = IsHTMLDocument();
++  const bool top_doc_is_http_delivered = Url().ProtocolIsInHTTPFamily();
++  if (!top_doc_is_html || !top_doc_is_http_delivered) {
++    return nullptr;
++  }
++
++  const String frame_id = IdentifiersFactory::FrameId(frame);
++  page_graph_ = new ::brave_page_graph::PageGraph(*GetExecutionContext(),
++                                                  frame_id,
++                                                  DOMNodeIds::IdForNode(this),
++                                                  nodeName(), Url());
++
++  frame->ExpectToSendFinalPageGraphOnUnload();
++
++  return page_graph_;*/
++}
++// #endif
++
+ Range* Document::CreateRangeAdjustedToTreeScope(const TreeScope& tree_scope,
+                                                 const Position& position) {
+   DCHECK(position.IsNotNull());
+@@ -3836,6 +3929,15 @@ void Document::DispatchUnloadEvents(UnloadEventTimingInfo* unload_timing_info) {
+   if (parser_)
+     parser_->StopParsing();
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    Page* const page = GetPage();
++    if (page) {
++      page->FinalPageGraph(this);
++    }
++  }
++// #endif
++
+   if (load_event_progress_ == kLoadEventNotRun ||
+       // TODO(dcheng): We should consider if we can make this conditional check
+       // stronger with a DCHECK() that this isn't called if the unload event is

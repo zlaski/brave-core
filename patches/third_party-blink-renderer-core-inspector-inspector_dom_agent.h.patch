@@ -1,0 +1,25 @@
+diff --git a/third_party/blink/renderer/core/inspector/inspector_dom_agent.h b/third_party/blink/renderer/core/inspector/inspector_dom_agent.h
+index d42c4acb8384f9c5ec8ef6065506d8ecdf11c57d..59c5360b409584eeb3abd902829d3dbce202a344 100644
+--- a/third_party/blink/renderer/core/inspector/inspector_dom_agent.h
++++ b/third_party/blink/renderer/core/inspector/inspector_dom_agent.h
+@@ -48,6 +48,7 @@
+ #include "ui/gfx/geometry/quad_f.h"
+ #include "v8/include/v8-inspector.h"
+ 
++
+ namespace blink {
+ 
+ class CharacterData;
+@@ -267,6 +268,12 @@ class CORE_EXPORT InspectorDOMAgent final
+   static const HeapVector<Member<Element>> GetContainerQueryingDescendants(
+       Element* container);
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  protocol::Response reportPageGraphInfo(
++      int node_id,
++      std::unique_ptr<protocol::Array<String>>* report) override;
++// #endif
++
+   bool Enabled() const;
+   IncludeWhitespaceEnum IncludeWhitespace() const;
+   void ReleaseDanglingNodes();

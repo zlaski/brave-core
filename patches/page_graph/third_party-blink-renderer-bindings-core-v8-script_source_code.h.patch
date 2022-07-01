@@ -1,0 +1,36 @@
+diff --git a/third_party/blink/renderer/bindings/core/v8/script_source_code.h b/third_party/blink/renderer/bindings/core/v8/script_source_code.h
+index e8582e353506b1a80e42c576697441435165ff33..09917d07fe3364948bb788977f745f4cb7ecaa4b 100644
+--- a/third_party/blink/renderer/bindings/core/v8/script_source_code.h
++++ b/third_party/blink/renderer/bindings/core/v8/script_source_code.h
+@@ -109,13 +109,20 @@ class CORE_EXPORT ScriptSourceCode final {
+     return not_streaming_reason_;
+   }
+ 
+- private:
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void SetParentScriptId(const int parent_script_id) {
++    parent_script_id_ = parent_script_id;
++  }
++  int ParentScriptId() const { return parent_script_id_; }
++// #endif
++
+   ScriptSourceCode(
+       const ParkableString& source,
+       ScriptSourceLocationType = ScriptSourceLocationType::kUnknown,
+       SingleCachedMetadataHandler* cache_handler = nullptr,
+       const KURL& = KURL(),
+       const TextPosition& start_position = TextPosition::MinimumPosition());
++ private:
+ 
+   const ParkableString source_;
+   Member<SingleCachedMetadataHandler> cache_handler_;
+@@ -132,6 +139,9 @@ class CORE_EXPORT ScriptSourceCode final {
+   const String source_map_url_;
+   const TextPosition start_position_;
+   const ScriptSourceLocationType source_location_type_;
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  int parent_script_id_ = 0;
++// #endif
+ };
+ 
+ }  // namespace blink

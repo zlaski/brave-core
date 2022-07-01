@@ -1,0 +1,25 @@
+diff --git a/third_party/blink/renderer/core/loader/resource/image_resource_content.h b/third_party/blink/renderer/core/loader/resource/image_resource_content.h
+index 46c969e648945c55c1d44f49599f39aa3b48435b..6bb512bdbb8533c84836e451efd56d4d67d7507c 100644
+--- a/third_party/blink/renderer/core/loader/resource/image_resource_content.h
++++ b/third_party/blink/renderer/core/loader/resource/image_resource_content.h
+@@ -21,6 +21,9 @@
+ #include "third_party/blink/renderer/platform/wtf/hash_counted_set.h"
+ #include "third_party/blink/renderer/platform/wtf/hash_map.h"
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "brave/third_party/blink/brave_page_graph/types.h"
++// #endif
+ namespace blink {
+ 
+ class ExecutionContext;
+@@ -54,6 +57,10 @@ class CORE_EXPORT ImageResourceContent final
+   static ImageResourceContent* CreateLoaded(scoped_refptr<blink::Image>);
+ 
+   static ImageResourceContent* Fetch(FetchParameters&, ResourceFetcher*);
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  static ImageResourceContent* Fetch(FetchParameters&, ResourceFetcher*,
++    brave_page_graph::InspectorId* identifier);
++// #endif
+ 
+   explicit ImageResourceContent(scoped_refptr<blink::Image> = nullptr);
+ 

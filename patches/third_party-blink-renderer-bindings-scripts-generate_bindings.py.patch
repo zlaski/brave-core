@@ -1,0 +1,13 @@
+diff --git a/third_party/blink/renderer/bindings/scripts/generate_bindings.py b/third_party/blink/renderer/bindings/scripts/generate_bindings.py
+index 02e02cb40adc85bb9140a13f3ad8922531eecadb..63187e59fa28b8c525911a9d84e958c54ed03428 100644
+--- a/third_party/blink/renderer/bindings/scripts/generate_bindings.py
++++ b/third_party/blink/renderer/bindings/scripts/generate_bindings.py
+@@ -54,7 +54,7 @@ def parse_options(valid_tasks):
+     parser.add_argument(
+         '--format_generated_files',
+         action="store_true",
+-        default=False,
++        default=True,
+         help=("format the resulting generated files by applying clang-format, "
+               "etc."))
+     parser.add_argument(

@@ -1,0 +1,36 @@
+diff --git a/third_party/blink/renderer/core/html/html_frame_owner_element.cc b/third_party/blink/renderer/core/html/html_frame_owner_element.cc
+index 71bae267673a88c38c64e18f7299f200f6cfa797..041ee70ddf304f843aa8a989c2086fb7b782b3cd 100644
+--- a/third_party/blink/renderer/core/html/html_frame_owner_element.cc
++++ b/third_party/blink/renderer/core/html/html_frame_owner_element.cc
+@@ -64,6 +64,13 @@
+ #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
+ #include "third_party/blink/renderer/platform/weborigin/security_origin.h"
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
++#include "third_party/blink/renderer/core/inspector/identifiers_factory.h"
++
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++// #endif
++
+ namespace blink {
+ 
+ namespace {
+@@ -344,6 +351,17 @@ void HTMLFrameOwnerElement::SetContentFrame(Frame& frame) {
+ 
+   for (ContainerNode* node = this; node; node = node->ParentOrShadowHostNode())
+     node->IncrementConnectedSubframeCount();
++
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  if (frame.IsRemoteFrame()) {
++    ::brave_page_graph::PageGraph* const page_graph =
++        GetDocument().GetPageGraph();
++    if (page_graph) {
++      page_graph->RegisterRemoteFrameCreated(
++          DOMNodeIds::IdForNode(this), IdentifiersFactory::FrameId(&frame));
++    }
++  }
++// #endif
+ }
+ 
+ void HTMLFrameOwnerElement::ClearContentFrame() {

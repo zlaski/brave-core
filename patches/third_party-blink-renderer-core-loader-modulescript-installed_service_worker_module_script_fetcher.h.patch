@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/core/loader/modulescript/installed_service_worker_module_script_fetcher.h b/third_party/blink/renderer/core/loader/modulescript/installed_service_worker_module_script_fetcher.h
+index 169675d45e6674b48637923019cd0f3ba19ff532..bf68879ee8ce98617b737b78842ce9fe25932e37 100644
+--- a/third_party/blink/renderer/core/loader/modulescript/installed_service_worker_module_script_fetcher.h
++++ b/third_party/blink/renderer/core/loader/modulescript/installed_service_worker_module_script_fetcher.h
+@@ -26,6 +26,7 @@ class CORE_EXPORT InstalledServiceWorkerModuleScriptFetcher final
+   void Fetch(FetchParameters&,
+              ModuleType,
+              ResourceFetcher*,
++             const Modulator*,
+              ModuleGraphLevel,
+              ModuleScriptFetcher::Client*) override;
+ 

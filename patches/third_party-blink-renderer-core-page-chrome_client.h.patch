@@ -1,0 +1,14 @@
+diff --git a/third_party/blink/renderer/core/page/chrome_client.h b/third_party/blink/renderer/core/page/chrome_client.h
+index 547ebe573cf2baaeb3a0c2f30dad96d3cbc59b17..0a834789316f6ea1ff10df536f9cc91cb966ea41 100644
+--- a/third_party/blink/renderer/core/page/chrome_client.h
++++ b/third_party/blink/renderer/core/page/chrome_client.h
+@@ -536,6 +536,9 @@ class CORE_EXPORT ChromeClient : public GarbageCollected<ChromeClient> {
+ 
+   virtual void DocumentDetached(Document&) {}
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  virtual void FinalPageGraph(Document&) {}
++// #endif
+   // Return the user's zoom factor which is different from the typical usage
+   // of "zoom factor" in blink (e.g., |LocalFrame::PageZoomFactor()|) which
+   // includes CSS zoom and the device scale factor (if use-zoom-for-dsf is

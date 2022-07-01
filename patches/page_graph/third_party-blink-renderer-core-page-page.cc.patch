@@ -1,0 +1,17 @@
+diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
+index 4ae29426622ff50f4713f6fdd365ced522e45071..59498323de4a3d60fa4d8f7dcd5e87d23128e401 100644
+--- a/third_party/blink/renderer/core/page/page.cc
++++ b/third_party/blink/renderer/core/page/page.cc
+@@ -357,6 +357,12 @@ void Page::DocumentDetached(Document* document) {
+   GetChromeClient().DocumentDetached(*document);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void Page::FinalPageGraph(Document* document) {
++  GetChromeClient().FinalPageGraph(*document);
++}
++// #endif
++
+ bool Page::OpenedByDOM() const {
+   return opened_by_dom_;
+ }

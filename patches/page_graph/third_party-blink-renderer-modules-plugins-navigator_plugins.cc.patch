@@ -1,0 +1,60 @@
+diff --git a/third_party/blink/renderer/modules/plugins/navigator_plugins.cc b/third_party/blink/renderer/modules/plugins/navigator_plugins.cc
+index 290d152edd23be1418b7e04df4b32f7f66f3577c..7e2fac55bff20b5e26dc10e24b4dc821ffc3b3a2 100644
+--- a/third_party/blink/renderer/modules/plugins/navigator_plugins.cc
++++ b/third_party/blink/renderer/modules/plugins/navigator_plugins.cc
+@@ -14,6 +14,10 @@
+ #include "third_party/blink/renderer/modules/plugins/dom_mime_type_array.h"
+ #include "third_party/blink/renderer/modules/plugins/dom_plugin_array.h"
+ #include "third_party/blink/renderer/platform/privacy_budget/identifiability_digest_helpers.h"
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#include "third_party/blink/renderer/core/dom/document.h"
++#include <string>
++#include <sstream>
+ 
+ namespace blink {
+ 
+@@ -40,6 +44,44 @@ const char NavigatorPlugins::kSupplementName[] = "NavigatorPlugins";
+ 
+ // static
+ DOMPluginArray* NavigatorPlugins::plugins(Navigator& navigator) {
++  {
++    brave_page_graph::PageGraph* page_graph =
++      navigator.DomWindow()->GetFrame()->GetDocument()->GetPageGraph();
++    DOMPluginArray* plugins =
++      NavigatorPlugins::From(navigator).plugins(navigator.DomWindow());
++
++    if (page_graph != nullptr) {
++      page_graph->RegisterWebAPICall("NavigatorPlugins.plugins",
++        std::vector<const String>());
++
++      std::stringstream result_builder;
++      for (unsigned i = 0; i < plugins->length(); i++) {
++        result_builder << std::to_string(i) << ": ";
++        result_builder << "plugin name: "
++          << plugins->item(i)->name().Utf8().data() << ", ";
++        result_builder << "plugin filename: "
++          << plugins->item(i)->filename().Utf8().data() << ", ";
++        result_builder << "plugin description: "
++          << plugins->item(i)->description().Utf8().data() << ", ";
++        DOMMimeType* mime_type = plugins->item(i)->item(i);
++        if (mime_type != nullptr) {
++          result_builder << "mimetype type: " << mime_type->type() << ", ";
++          result_builder << "mimetype suffixes: " << mime_type->suffixes()
++            << ", ";
++          result_builder << "mimetype description: "
++            << mime_type->description() << ";";
++        }
++      }
++
++      const std::string str_result = result_builder.str();
++      const size_t length = str_result.length();
++      String result(str_result.c_str(), length);
++
++      page_graph->RegisterWebAPIResult("NavigatorPlugins.plugins", result);
++    }
++
++    return plugins;
++  }
+   return NavigatorPlugins::From(navigator).plugins(navigator.DomWindow());
+ }
+ 

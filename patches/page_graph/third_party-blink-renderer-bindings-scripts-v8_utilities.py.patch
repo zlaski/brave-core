@@ -1,0 +1,28 @@
+diff --git a/third_party/blink/renderer/bindings/scripts/v8_utilities.py b/third_party/blink/renderer/bindings/scripts/v8_utilities.py
+index 7432ab4e17f0009de5be7860149b37c3dfd610d1..4250ba26e8b9577a9aa609a0e47df2591794cfc2 100644
+--- a/third_party/blink/renderer/bindings/scripts/v8_utilities.py
++++ b/third_party/blink/renderer/bindings/scripts/v8_utilities.py
+@@ -478,6 +478,23 @@ def measure_as(definition_or_member, interface):
+     return None
+ 
+ 
++# [TrackInPageGraphAs]
++def track_in_page_graph_as(definition_or_member, interface):
++    extended_attributes = definition_or_member.extended_attributes
++    if 'TrackInPageGraphAs' in extended_attributes:
++        includes.add('brave/third_party/blink/brave_page_graph/page_graph.h')
++        includes.add('brave/third_party/blink/brave_page_graph/types.h')
++        return extended_attributes['TrackInPageGraphAs']
++    if 'TrackInPageGraph' in extended_attributes:
++        includes.add('brave/third_party/blink/brave_page_graph/page_graph.h')
++        includes.add('brave/third_party/blink/brave_page_graph/types.h')
++        track_in_page_graph_as_name = definition_or_member.name
++        if interface is not None:
++            track_in_page_graph_as_name = '%s#%s' % (interface.name, track_in_page_graph_as_name)
++        return track_in_page_graph_as_name
++    return None
++
++
+ # [HighEntropy]
+ def high_entropy(definition_or_member):
+     extended_attributes = definition_or_member.extended_attributes

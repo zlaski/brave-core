@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/core/loader/modulescript/installed_service_worker_module_script_fetcher.cc b/third_party/blink/renderer/core/loader/modulescript/installed_service_worker_module_script_fetcher.cc
+index 80875d2b8c364a6313920a564be14a2e3cb7ec81..1f409ffe4bc12b8d2efb8a3fc50f2070f8aac1d9 100644
+--- a/third_party/blink/renderer/core/loader/modulescript/installed_service_worker_module_script_fetcher.cc
++++ b/third_party/blink/renderer/core/loader/modulescript/installed_service_worker_module_script_fetcher.cc
+@@ -29,6 +29,7 @@ void InstalledServiceWorkerModuleScriptFetcher::Fetch(
+     FetchParameters& fetch_params,
+     ModuleType expected_module_type,
+     ResourceFetcher*,
++    const Modulator*,
+     ModuleGraphLevel level,
+     ModuleScriptFetcher::Client* client) {
+   DCHECK_EQ(fetch_params.GetScriptType(), mojom::blink::ScriptType::kModule);

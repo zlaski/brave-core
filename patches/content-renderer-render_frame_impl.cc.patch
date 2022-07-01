@@ -1,8 +1,49 @@
 diff --git a/content/renderer/render_frame_impl.cc b/content/renderer/render_frame_impl.cc
-index 3a03de6175413929c4e5ad9bd8ae7cb990f0bf77..614a3a74af619041dabc15b9293f66c6283ba7fa 100644
+index 3a03de6175413929c4e5ad9bd8ae7cb990f0bf77..bcf08804b1093bc194f4376e4e04afb26c8f20fa 100644
 --- a/content/renderer/render_frame_impl.cc
 +++ b/content/renderer/render_frame_impl.cc
-@@ -4569,6 +4569,7 @@ bool RenderFrameImpl::ShouldUseUserAgentOverride() const {
+@@ -2323,6 +2323,19 @@ void RenderFrameImpl::GetSerializedHtmlWithLocalLinks(
+                                 save_with_empty_url);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void RenderFrameImpl::OnRegisterResourceBlockAd(
++    const GURL& url,
++    const std::string& rule) {
++  RegisterResourceBlockAd(url, rule);
++}
++
++void RenderFrameImpl::OnRegisterResourceBlockTracker(
++    const GURL& url,
++    const std::string& host) {
++  RegisterResourceBlockTracker(url, host);
++}
++// #endif
+ void RenderFrameImpl::SetWantErrorMessageStackTrace() {
+   want_error_message_stack_trace_ = true;
+   v8::Isolate::GetCurrent()->SetCaptureStackTraceForUncaughtExceptions(true);
+@@ -2492,6 +2505,20 @@ void RenderFrameImpl::AddMessageToConsole(
+   AddMessageToConsoleImpl(level, message, false /* discard_duplicates */);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void RenderFrameImpl::RegisterResourceBlockAd(
++    const GURL& url,
++    const std::string& rule) {
++  frame_->GetDocument().RegisterResourceBlockAd(url, rule);
++}
++
++void RenderFrameImpl::RegisterResourceBlockTracker(
++    const GURL& url,
++    const std::string& host) {
++  frame_->GetDocument().RegisterResourceBlockTracker(url, host);
++}
++// #endif
++
+ bool RenderFrameImpl::IsPasting() {
+   return GetLocalRootWebFrameWidget()->IsPasting();
+ }
+@@ -4569,6 +4596,7 @@ bool RenderFrameImpl::ShouldUseUserAgentOverride() const {
    // Temporarily return early and fix properly as part of
    // https://crbug.com/426555.
    if (web_view->MainFrame()->IsWebRemoteFrame())

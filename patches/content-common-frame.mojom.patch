@@ -1,0 +1,24 @@
+diff --git a/content/common/frame.mojom b/content/common/frame.mojom
+index bdcbb09cdd884dda769a5501e3dc94547f454be9..7df7fdc44c71057e7d9c36129c9c80c02c28dae3 100644
+--- a/content/common/frame.mojom
++++ b/content/common/frame.mojom
+@@ -368,6 +368,10 @@ struct RemoteMainFrameInterfaces {
+ // KEEP THE COMMIT FUNCTIONS IN SYNC in content/common/navigation_client.mojom.
+ // These will eventually be removed from Frame.
+ interface Frame {
++  // Record that a resource was blocked by an ad filter.
++  RegisterResourceBlockAd(url.mojom.Url url, string rule);
++  // Record that a resource was blocked by an ad filter.
++  RegisterResourceBlockTracker(url.mojom.Url url, string host);
+   // Tells the renderer that a same-document navigation should be committed.
+   // The renderer will return a status value indicating whether the commit
+   // could proceed as expected or not. In particular, it might be necessary to
+@@ -807,6 +811,8 @@ interface FrameHost {
+   // proper encoding name. Sent for top-level frames.
+   UpdateEncoding(string encoding_name);
+ 
++  FinalPageGraph(mojo_base.mojom.UnguessableToken devtools_main_frame_token, string frame_id, string data);
++
+   // Updates information to determine whether a user gesture should carryover to
+   // future navigations. This is needed so navigations within a certain
+   // timeframe of a request initiated by a gesture will be treated as if they

@@ -1,0 +1,15 @@
+diff --git a/third_party/blink/public/web/web_view_client.h b/third_party/blink/public/web/web_view_client.h
+index 920db3f7116fabc2b89a4b59b72dc5f1f6fe25ba..54d50d74ce5eae299a58bb30982cc6c1fdef9e3b 100644
+--- a/third_party/blink/public/web/web_view_client.h
++++ b/third_party/blink/public/web/web_view_client.h
+@@ -92,6 +92,10 @@ class WebViewClient {
+   // Called when the View acquires focus.
+   virtual void DidFocus() {}
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  virtual void FinalPageGraph(const std::string&, const std::string&) {}
++// #endif
++
+ };
+ 
+ }  // namespace blink

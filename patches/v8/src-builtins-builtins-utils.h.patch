@@ -1,0 +1,43 @@
+diff --git a/src/builtins/builtins-utils.h b/src/builtins/builtins-utils.h
+index 3311db20317b979b42a13644f4d9ed646d79e15e..c2b34903cb8b46642868a82e9591f7698293842c 100644
+--- a/src/builtins/builtins-utils.h
++++ b/src/builtins/builtins-utils.h
+@@ -12,6 +12,9 @@
+ #include "src/heap/factory.h"
+ #include "src/logging/runtime-call-stats-scope.h"
+ 
++#include "include/v8-json.h"
++#include "src/utils/utils.h"
++
+ namespace v8 {
+ namespace internal {
+ 
+@@ -105,6 +108,16 @@ class BuiltinArguments : public JavaScriptArguments {
+   V8_WARN_UNUSED_RESULT static Object Builtin_Impl_##name(                  \
+       BuiltinArguments args, Isolate* isolate)
+ 
++inline void ReportBuiltInCallAndResponse(Isolate* isolate,
++                                         const BuiltinArguments& args,
++                                         const Object& object) {
++  /*Local<Context> context;
++  isolate->context()
++  if (!object.GetCreationContext().ToLocal(&context)) {
++  *String::Utf8Value(
++      isolate, JSON::Stringify(isolate->context(), object).ToLocalChecked());*/
++}
++
+ #define BUILTIN_NO_RCS(name)                                                \
+   V8_WARN_UNUSED_RESULT static Object Builtin_Impl_##name(                  \
+       BuiltinArguments args, Isolate* isolate);                             \
+@@ -113,6 +126,11 @@ class BuiltinArguments : public JavaScriptArguments {
+       int args_length, Address* args_object, Isolate* isolate) {            \
+     DCHECK(isolate->context().is_null() || isolate->context().IsContext()); \
+     BuiltinArguments args(args_length, args_object);                        \
++    Object result = Builtin_Impl_##name(args, isolate);                     \
++    if (V8_UNLIKELY(isolate->GetBuiltInFuncCallFunc())) {                   \
++      ReportBuiltInCallAndResponse(isolate, args, result);                  \
++    }                                                                       \
++    return BUILTIN_CONVERT_RESULT(result);                                  \
+     return BUILTIN_CONVERT_RESULT(Builtin_Impl_##name(args, isolate));      \
+   }                                                                         \
+                                                                             \

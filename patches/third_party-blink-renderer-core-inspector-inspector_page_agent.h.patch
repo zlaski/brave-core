@@ -1,0 +1,25 @@
+diff --git a/third_party/blink/renderer/core/inspector/inspector_page_agent.h b/third_party/blink/renderer/core/inspector/inspector_page_agent.h
+index 46eecaa402b26e83e38fcd3d86e330319cde2531..f987eada494adcc74fd2005dfd8026db6d5d9134 100644
+--- a/third_party/blink/renderer/core/inspector/inspector_page_agent.h
++++ b/third_party/blink/renderer/core/inspector/inspector_page_agent.h
+@@ -192,6 +192,8 @@ class CORE_EXPORT InspectorPageAgent final
+   protocol::Response waitForDebugger() override;
+   protocol::Response setInterceptFileChooserDialog(bool enabled) override;
+ 
++  protocol::Response generatePageGraph(String* data) override;
++
+   // InspectorInstrumentation API
+   void DidClearDocumentOfWindowObject(LocalFrame*);
+   void DidNavigateWithinDocument(LocalFrame*);
+@@ -304,6 +306,11 @@ class CORE_EXPORT InspectorPageAgent final
+   InspectorAgentState::Bytes script_font_families_cbor_;
+ };
+ 
++void MaybeEncodeTextContent_Public(const String& text_content,
++                                   scoped_refptr<const SharedBuffer> buffer,
++                                   String* result,
++                                   bool* base64_encoded);
++
+ }  // namespace blink
+ 
+ #endif  // THIRD_PARTY_BLINK_RENDERER_CORE_INSPECTOR_INSPECTOR_PAGE_AGENT_H_
