@@ -43,9 +43,10 @@ namespace network {
 class SharedURLLoaderFactory;
 }  // namespace network
 
+class PrefService;
+
 #if !BUILDFLAG(IS_ANDROID)
 
-class PrefService;
 class BraveAppMenuBrowserTest;
 class BraveBrowserCommandControllerTest;
 
@@ -63,33 +64,26 @@ class BraveVpnService :
     public mojom::ServiceHandler,
     public KeyedService {
  public:
-#if BUILDFLAG(IS_ANDROID)
-  BraveVpnService(
-      scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
-      base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
-          skus_service_getter);
-#else
   BraveVpnService(
       scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
       PrefService* prefs,
       base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
           skus_service_getter);
-#endif
   ~BraveVpnService() override;
 
   BraveVpnService(const BraveVpnService&) = delete;
   BraveVpnService& operator=(const BraveVpnService&) = delete;
 
   const std::string& GetCurrentEnvironment() const { return current_env_; }
+  bool is_purchased_user() const {
+    return purchased_state_ == mojom::PurchasedState::PURCHASED;
+  }
 
 #if !BUILDFLAG(IS_ANDROID)
   void ToggleConnection();
   void RemoveVPNConnnection();
   bool is_connected() const {
     return connection_state_ == mojom::ConnectionState::CONNECTED;
-  }
-  bool is_purchased_user() const {
-    return purchased_state_ == mojom::PurchasedState::PURCHASED;
   }
   mojom::ConnectionState connection_state() const { return connection_state_; }
   void ReloadPurchasedState();
@@ -257,7 +251,6 @@ class BraveVpnService :
       const std::string& credential_as_cookie);
 
 #if !BUILDFLAG(IS_ANDROID)
-  raw_ptr<PrefService> prefs_ = nullptr;
   std::vector<mojom::Region> regions_;
   std::unique_ptr<Hostname> hostname_;
   BraveVPNConnectionInfo connection_info_;
@@ -278,6 +271,7 @@ class BraveVpnService :
 
   SEQUENCE_CHECKER(sequence_checker_);
 
+  raw_ptr<PrefService> prefs_ = nullptr;
   base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
       skus_service_getter_;
   mojo::Remote<skus::mojom::SkusService> skus_service_;

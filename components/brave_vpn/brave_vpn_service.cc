@@ -11,7 +11,9 @@
 #include "base/json/json_reader.h"
 #include "base/json/json_writer.h"
 #include "base/strings/utf_string_conversions.h"
+#include "brave/components/brave_vpn/brave_vpn_utils.h"
 #include "brave/components/skus/browser/skus_utils.h"
+#include "components/prefs/pref_service.h"
 #include "net/base/network_change_notifier.h"
 #include "net/cookies/cookie_inclusion_status.h"
 #include "net/cookies/parsed_cookie.h"
@@ -27,11 +29,9 @@
 #include "base/strings/string_util.h"
 #include "brave/components/brave_vpn/brave_vpn_constants.h"
 #include "brave/components/brave_vpn/brave_vpn_service_helper.h"
-#include "brave/components/brave_vpn/brave_vpn_utils.h"
 #include "brave/components/brave_vpn/pref_names.h"
 #include "brave/components/brave_vpn/switches.h"
 #include "brave/components/version_info/version_info.h"
-#include "components/prefs/pref_service.h"
 #include "components/prefs/scoped_user_pref_update.h"
 #include "components/version_info/version_info.h"
 #include "third_party/icu/source/i18n/unicode/timezone.h"
@@ -102,7 +102,7 @@ bool IsNetworkAvailable() {
   return net::NetworkChangeNotifier::GetConnectionType() !=
          net::NetworkChangeNotifier::CONNECTION_NONE;
 }
-#endif
+#endif  //! BUILDFLAG(IS_ANDROID)
 }  // namespace
 
 namespace brave_vpn {
@@ -110,15 +110,6 @@ namespace brave_vpn {
 using ConnectionState = mojom::ConnectionState;
 using PurchasedState = mojom::PurchasedState;
 
-#if BUILDFLAG(IS_ANDROID)
-BraveVpnService::BraveVpnService(
-    scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
-    base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
-        skus_service_getter)
-    : skus_service_getter_(skus_service_getter),
-      api_request_helper_(GetNetworkTrafficAnnotationTag(), url_loader_factory),
-      weak_ptr_factory_(this) {}
-#else
 BraveVpnService::BraveVpnService(
     scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
     PrefService* prefs,
@@ -130,6 +121,7 @@ BraveVpnService::BraveVpnService(
                           url_loader_factory) {
   DCHECK(IsBraveVPNEnabled());
 
+#if !BUILDFLAG(IS_ANDROID)
   auto* cmd = base::CommandLine::ForCurrentProcess();
   is_simulation_ = cmd->HasSwitch(switches::kBraveVPNSimulation);
   observed_.Observe(GetBraveVPNConnectionAPI());
@@ -148,8 +140,8 @@ BraveVpnService::BraveVpnService(
   if (preference && !preference->IsDefaultValue()) {
     ReloadPurchasedState();
   }
+#endif  // !BUILDFLAG(IS_ANDROID)
 }
-#endif
 
 BraveVpnService::~BraveVpnService() {
 #if !BUILDFLAG(IS_ANDROID)
