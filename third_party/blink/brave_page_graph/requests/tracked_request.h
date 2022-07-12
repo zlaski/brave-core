@@ -7,9 +7,12 @@
 #define BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_REQUESTS_TRACKED_REQUEST_H_
 
 #include <vector>
-#include "third_party/blink/renderer/platform/loader/fetch/resource.h"
+
+#include "base/containers/span.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 #include "brave/third_party/blink/brave_page_graph/utilities/response_metadata.h"
+#include "third_party/blink/renderer/platform/crypto.h"
+#include "third_party/blink/renderer/platform/loader/fetch/resource.h"
 
 namespace brave_page_graph {
 
@@ -28,7 +31,7 @@ friend class RequestTracker;
   // replies).
   TrackedRequest(const InspectorId request_id, const blink::ResourceType type);
   // Constructor for when a failed response comes first.
-  TrackedRequest(const InspectorId request_id);
+  explicit TrackedRequest(const InspectorId request_id);
   ~TrackedRequest();
 
   bool IsComplete() const;
@@ -49,9 +52,11 @@ friend class RequestTracker;
   void SetResponseMetadata(const ResponseMetadata& metadata);
 
   const std::string& GetResponseBodyHash() const;
-  void SetResponseBodyHash(const std::string& response_body_hash);
+  void UpdateResponseBodyHash(base::span<const char> data);
 
  protected:
+  void FinishResponseBodyHash();
+
   enum class RequestStatus : uint8_t {
     kError = 0,
     kSuccess,
@@ -71,6 +76,7 @@ friend class RequestTracker;
   mutable bool is_complete_ = false;
 
   ResponseMetadata response_metadata_;
+  blink::Digestor body_digestor_{blink::kHashAlgorithmSha256};
   std::string hash_;
 };
 

@@ -63,6 +63,8 @@ friend class PageGraph;
   absl::optional<DocumentRequest> GetDocumentRequestInfo(
       const blink::DOMNodeId frame_id);
 
+  TrackedRequestRecord* GetTrackingRecord(const InspectorId request_id);
+
  private:
   std::map<InspectorId, std::shared_ptr<TrackedRequestRecord> > tracked_requests_;
 

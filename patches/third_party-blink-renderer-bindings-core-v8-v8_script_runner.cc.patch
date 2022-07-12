@@ -1,133 +1,22 @@
 diff --git a/third_party/blink/renderer/bindings/core/v8/v8_script_runner.cc b/third_party/blink/renderer/bindings/core/v8/v8_script_runner.cc
-index cd152a7e8cc15bced2ef025d3f936d45ab5f21c9..26872e784ebcbaeca5bebec305e488d20c94b400 100644
+index cd152a7e8cc15bced2ef025d3f936d45ab5f21c9..2b578ef229d709fcc09860ce3a1eaf852722de7c 100644
 --- a/third_party/blink/renderer/bindings/core/v8/v8_script_runner.cc
 +++ b/third_party/blink/renderer/bindings/core/v8/v8_script_runner.cc
-@@ -133,6 +133,7 @@ v8::MaybeLocal<v8::Script> CompileScriptInternal(
-     DCHECK(!streamer->IsStreamingSuppressed());
-     return v8::ScriptCompiler::Compile(
-         script_state->GetContext(), streamer->Source(v8::ScriptType::kClassic),
-+        classic_script.ParentScriptId(),
-         code, origin);
-   }
+@@ -223,7 +223,7 @@ int GetMicrotasksScopeDepth(v8::Isolate* isolate,
  
-@@ -145,7 +146,7 @@ v8::MaybeLocal<v8::Script> CompileScriptInternal(
-                                       classic_script, &inspector_data,
-                                       &compile_options);
-   if (inspector_data) {
--    v8::ScriptCompiler::Source source(code, origin, inspector_data);
-+    v8::ScriptCompiler::Source source(code, origin, classic_script.ParentScriptId(), inspector_data);
-     v8::MaybeLocal<v8::Script> script =
-         v8::ScriptCompiler::Compile(script_state->GetContext(), &source,
-                                     v8::ScriptCompiler::kConsumeCodeCache);
-@@ -155,7 +156,12 @@ v8::MaybeLocal<v8::Script> CompileScriptInternal(
-   switch (compile_options) {
-     case v8::ScriptCompiler::kNoCompileOptions:
-     case v8::ScriptCompiler::kEagerCompile: {
--      v8::ScriptCompiler::Source source(code, origin);
-+      // #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+      v8::ScriptCompiler::Source source(code, origin,
-+                                        classic_script.ParentScriptId());
-+      // #else
-+      //    v8::ScriptCompiler::Source source(code, origin);
-+      // #endif
-       return v8::ScriptCompiler::Compile(script_state->GetContext(), &source,
-                                          compile_options, no_cache_reason);
-     }
-@@ -169,6 +175,7 @@ v8::MaybeLocal<v8::Script> CompileScriptInternal(
-           V8CodeCache::GetCachedMetadata(cache_handler);
-       v8::ScriptCompiler::Source source(
-           code, origin,
-+          classic_script.ParentScriptId(),
-           V8CodeCache::CreateCachedData(cached_metadata).release(),
-           cache_consumer
-               ? cache_consumer->TakeV8ConsumeTask(cached_metadata.get())
-@@ -342,6 +349,7 @@ v8::MaybeLocal<v8::Module> V8ScriptRunner::CompileModule(
-         // TODO(leszeks): Add support for passing in ScriptCacheConsumer.
-         v8::ScriptCompiler::Source source(
-             code, origin,
-+            0,
-             V8CodeCache::CreateCachedData(cache_handler).release());
-         const v8::ScriptCompiler::CachedData* cached_data =
-             source.GetCachedData();
-@@ -539,6 +547,63 @@ ScriptEvaluationResult V8ScriptRunner::CompileAndRunScript(
-                                       compile_options, no_cache_reason,
-                                       host_defined_options)
-             .ToLocal(&script)) {
-+// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+      {
-+        ScriptSourceLocationType script_location = classic_script->SourceLocationType();
-+        if (script_location != ScriptSourceLocationType::kInspector) {
-+          ::brave_page_graph::PageGraph* page_graph =
-+                  ::brave_page_graph::PageGraph::GetFromExecutionContext(*execution_context);
-+          if (page_graph != nullptr) {
-+            const int script_id = script->GetUnboundScript()->GetId();
-+            LOG(ERROR) << "script_id " << script_id << " script_location " << static_cast<int>(script_location);
-+            if (script_location ==
-+                ScriptSourceLocationType::kEvalForScheduledAction) {
-+              page_graph->RegisterScriptCompilationFromEval(
-+                  classic_script->ParentScriptId(), script_id, classic_script->SourceText().ToString());
-+            } else {
-+              ::brave_page_graph::ScriptType type;
-+              switch (script_location) {
-+                case ScriptSourceLocationType::kExternalFile:
-+                  type = ::brave_page_graph::ScriptType::kExternalFile;
-+                  break;
-+                case ScriptSourceLocationType::kInline:
-+                  type = ::brave_page_graph::ScriptType::kInline;
-+                  break;
-+                case ScriptSourceLocationType::kInlineInsideDocumentWrite:
-+                  type =
-+                    ::brave_page_graph::ScriptType::kInlineInsideDocumentWrite;
-+                  break;
-+                case ScriptSourceLocationType::kInlineInsideGeneratedElement:
-+                  type =
-+                    ::brave_page_graph::ScriptType::kInlineInsideGeneratedElement;
-+                  break;
-+                case ScriptSourceLocationType::kInternal:
-+                  type = ::brave_page_graph::ScriptType::kInternal;
-+                  break;
-+                case ScriptSourceLocationType::kJavascriptUrl:
-+                  type = ::brave_page_graph::ScriptType::kJavascriptUrl;
-+                  break;
-+                case ScriptSourceLocationType::kEvalForScheduledAction:
-+                  type = ::brave_page_graph::ScriptType::kEvalForScheduledAction;
-+                  break;
-+                case ScriptSourceLocationType::kInspector:
-+                default:
-+                  type = ::brave_page_graph::ScriptType::kInspector;
-+                  break;
-+              }
-+              if (script_location == ScriptSourceLocationType::kJavascriptUrl ||
-+                  script_location == ScriptSourceLocationType::kUnknown ||
-+                  script_location == ScriptSourceLocationType::kInternal) {
-+                page_graph->RegisterJavaScriptURL(
-+                    classic_script->SourceText().ToString());
-+              }
-+              page_graph->RegisterScriptCompilation(
-+                  classic_script->SourceText().ToString(), script_id, type);
-+            }
-+          }
-+        }
-+      }
-+// #endif
-       maybe_result = V8ScriptRunner::RunCompiledScript(
-           isolate, script, host_defined_options, execution_context);
-       probe::DidProduceCompilationCache(
-@@ -814,7 +879,7 @@ ScriptEvaluationResult V8ScriptRunner::EvaluateModule(
-   //
-   // The settings object is |module_script->SettingsObject()|.
-   ScriptState* script_state = module_script->SettingsObject()->GetScriptState();
--  DCHECK_EQ(Modulator::From(script_state), module_script->SettingsObject());
-+  DCHECK_EQ(Modulator::From(script_state, nullptr, 0), module_script->SettingsObject());
-   ExecutionContext* execution_context = ExecutionContext::From(script_state);
-   v8::Isolate* isolate = script_state->GetIsolate();
+ }  // namespace
  
-@@ -900,7 +965,7 @@ ScriptEvaluationResult V8ScriptRunner::EvaluateModule(
-     execution_context->GetTaskRunner(TaskType::kNetworking)
-         ->PostTask(FROM_HERE,
-                    WTF::Bind(&Modulator::ProduceCacheModuleTreeTopLevel,
--                             WrapWeakPersistent(Modulator::From(script_state)),
-+                             WrapWeakPersistent(Modulator::From(script_state, nullptr, 0)),
-                              WrapWeakPersistent(module_script)));
-   }
+-v8::MaybeLocal<v8::Script> V8ScriptRunner::CompileScript(
++static v8::MaybeLocal<v8::Script> V8ScriptRunner_CompileScript_ChromiumImpl(
+     ScriptState* script_state,
+     const ClassicScript& classic_script,
+     v8::ScriptCompiler::CompileOptions compile_options,
+@@ -283,7 +283,7 @@ v8::MaybeLocal<v8::Script> V8ScriptRunner::CompileScript(
+   return script;
+ }
  
+-v8::MaybeLocal<v8::Module> V8ScriptRunner::CompileModule(
++static v8::MaybeLocal<v8::Module> V8ScriptRunner_CompileModule_ChromiumImpl(
+     v8::Isolate* isolate,
+     const ModuleScriptCreationParams& params,
+     const TextPosition& start_position,

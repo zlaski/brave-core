@@ -24,6 +24,7 @@
 namespace blink {
 
 class ExecutionContext;
+class LocalFrame;
 
 }  // namespace blink
 
@@ -91,6 +92,7 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
       blink::ExecutionContext& exec_context);
 
   PageGraph(/*blink::ExecutionContext& execution_context,*/
+            blink::LocalFrame* local_frame,
             const WTF::String& frame_id/*,
             const blink::DOMNodeId node_id,
             const WTF::String& tag_name,
@@ -99,8 +101,18 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
 
   void Trace(blink::Visitor*) const override;
 
+  blink::ExecutionContext* GetExecutionContext() const;
+
   // PageGraphAgent:
+  void DidInsertDOMNode(blink::Node* node) override;
+  void WillRemoveDOMNode(blink::Node* node) override;
   void RegisterPageGraphNodeConstructed(blink::Node* node) override;
+  void RegisterPageGraphPendingScriptConstructed(
+      blink::PendingScript* pending_script) override;
+  void RegisterPageGraphElmForLocalScript(blink::DOMNodeId dom_node_id,
+                                          const String& source_text) override;
+  void RegisterPageGraphElmForRemoteScript(blink::DOMNodeId dom_node_id,
+                                           const blink::KURL& url) override;
   void RegisterPageGraphBindingEvent(const char* name,
                                      const char* type,
                                      const char* event) override;
@@ -110,12 +122,57 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
       const blink::PageGraphBlinkArgs& args,
       const blink::ExceptionState* exception_state,
       const absl::optional<String>& result) override;
+  void RegisterPageGraphUrlForScriptSource(
+      const blink::KURL& base_url,
+      const String& source_string) override;
+  void RegisterPageGraphModuleScriptForDescendant(
+      int script_id,
+      const blink::KURL& url) override;
+  void RegisterPageGraphScriptCompilation(
+      const blink::ClassicScript& classic_script,
+      v8::Local<v8::Script> script) override;
+  void RegisterPageGraphModuleCompilation(
+      const blink::ModuleScriptCreationParams& params,
+      v8::Local<v8::Module> script) override;
+  void RegisterPageGraphScriptCompilationFromAttr(
+      blink::EventTarget* event_target,
+      const String& function_name,
+      const String& script_body,
+      v8::Local<v8::Function> compiled_function) override;
   void ConsoleMessageAdded(blink::ConsoleMessage* console_message) override;
   void DidModifyDOMAttr(blink::Element* element,
                         const blink::QualifiedName& name,
                         const AtomicString& value) override;
   void DidRemoveDOMAttr(blink::Element* element,
                         const blink::QualifiedName& name) override;
+  void PrepareRequest(blink::DocumentLoader*,
+                      blink::ResourceRequest&,
+                      blink::ResourceLoaderOptions&,
+                      blink::ResourceType) override;
+  void DidReceiveResourceResponse(
+      uint64_t identifier,
+      blink::DocumentLoader* loader,
+      const blink::ResourceResponse& response,
+      const blink::Resource* cached_resource) override;
+  void DidReceiveData(uint64_t identifier,
+                      blink::DocumentLoader*,
+                      const char* data,
+                      uint64_t data_length) override;
+  void DidReceiveBlob(uint64_t identifier,
+                      blink::DocumentLoader*,
+                      blink::BlobDataHandle*) override;
+  void DidFinishLoading(uint64_t identifier,
+                        blink::DocumentLoader*,
+                        base::TimeTicks finish_time,
+                        int64_t encoded_data_length,
+                        int64_t decoded_body_length,
+                        bool should_report_corb_blocking) override;
+  void DidFailLoading(
+      blink::CoreProbeSink* sink,
+      uint64_t identifier,
+      blink::DocumentLoader*,
+      const blink::ResourceError&,
+      const base::UnguessableToken& devtools_frame_or_worker_token) override;
 
   bool IsActive() const;
 
@@ -179,6 +236,10 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
   void RegisterRequestStartFromCurrentScript(const InspectorId request_id,
                                              const blink::KURL& url,
                                              const RequestType type);
+  void RegisterRequestStartFromScript(const ScriptId script_id,
+                                      const InspectorId request_id,
+                                      const blink::KURL& url,
+                                      const RequestType type);
   void RegisterRequestStartFromCSS(const InspectorId request_id,
                                    const blink::KURL& url,
                                    const RequestType type);
@@ -321,6 +382,8 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
   // the graph's construction if needed.
   PageGraphId id_counter_ = 0;
 
+  blink::WeakMember<blink::LocalFrame> local_frame_;
+
   // The blink assigned frame id for the local root's frame.
   const std::string frame_id_;
 
@@ -398,10 +461,6 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
   // Data structure for keeping track of all the in-air requests that
   // have been made, but have not completed.
   RequestTracker request_tracker_;
-
-  // Reference to the execution context associated with the page graph, which if
-  // it exists, will always be for the top level frame.
-  blink::Member<blink::ExecutionContext> execution_context_;
 
   std::chrono::milliseconds start_;
 };

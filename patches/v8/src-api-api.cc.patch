@@ -1,5 +1,5 @@
 diff --git a/src/api/api.cc b/src/api/api.cc
-index 8423f288efa3f058c11872c90546971a9aa0b8b8..7d5c562a195e435da8f998f5d044f8cc78eaa206 100644
+index 8423f288efa3f058c11872c90546971a9aa0b8b8..ee8b2b3367d4d23171f72eed95cd180e5e7f8187 100644
 --- a/src/api/api.cc
 +++ b/src/api/api.cc
 @@ -2217,6 +2217,13 @@ Local<Data> ScriptOrModule::HostDefinedOptions() {
@@ -16,99 +16,7 @@ index 8423f288efa3f058c11872c90546971a9aa0b8b8..7d5c562a195e435da8f998f5d044f8cc
  Local<UnboundScript> Script::GetUnboundScript() {
    i::DisallowGarbageCollection no_gc;
    i::Handle<i::JSFunction> obj = Utils::OpenHandle(this);
-@@ -2399,6 +2406,21 @@ Local<UnboundModuleScript> Module::GetUnboundModuleScript() {
-       i_isolate));
- }
- 
-+// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+int Module::GetModuleScriptId() const {
-+  i::Handle<i::Module> self = Utils::OpenHandle(this);
-+  Utils::ApiCheck(
-+      self->IsSourceTextModule(), "v8::Module::GetModuleScriptId",
-+      "v8::Module::GetUnboundModuleScript must be used on an SourceTextModule");
-+  i::Handle<i::SharedFunctionInfo> shared(
-+      i::Handle<i::SourceTextModule>::cast(self)->GetSharedFunctionInfo(),
-+      self->GetIsolate());
-+  if (shared->script().IsScript())
-+    return i::Script::cast(shared->script()).id();
-+  return 0;
-+}
-+// #endif
-+
- int Module::ScriptId() const {
-   i::Module self = *Utils::OpenHandle(this);
-   Utils::ApiCheck(self.IsSourceTextModule(), "v8::Module::ScriptId",
-@@ -2514,11 +2536,13 @@ namespace {
- i::ScriptDetails GetScriptDetails(
-     i::Isolate* i_isolate, Local<Value> resource_name, int resource_line_offset,
-     int resource_column_offset, Local<Value> source_map_url,
-+    int parent_script_id,
-     Local<Data> host_defined_options, ScriptOriginOptions origin_options) {
-   i::ScriptDetails script_details(Utils::OpenHandle(*(resource_name), true),
-                                   origin_options);
-   script_details.line_offset = resource_line_offset;
-   script_details.column_offset = resource_column_offset;
-+  script_details.parent_script_id = parent_script_id;
-   script_details.host_defined_options =
-       host_defined_options.IsEmpty()
-           ? i_isolate->factory()->empty_fixed_array()
-@@ -2547,6 +2571,7 @@ MaybeLocal<UnboundScript> ScriptCompiler::CompileUnboundInternal(
-   i::ScriptDetails script_details = GetScriptDetails(
-       i_isolate, source->resource_name, source->resource_line_offset,
-       source->resource_column_offset, source->source_map_url,
-+      source->parent_script_id,
-       source->host_defined_options, source->resource_options);
- 
-   i::MaybeHandle<i::SharedFunctionInfo> maybe_function_info;
-@@ -2699,6 +2724,7 @@ MaybeLocal<Function> ScriptCompiler::CompileFunctionInternal(
-     i::ScriptDetails script_details = GetScriptDetails(
-         i_isolate, source->resource_name, source->resource_line_offset,
-         source->resource_column_offset, source->source_map_url,
-+        source->parent_script_id,
-         source->host_defined_options, source->resource_options);
- 
-     std::unique_ptr<i::AlignedCachedData> cached_data;
-@@ -2779,11 +2805,13 @@ ScriptCompiler::ConsumeCodeCacheTask* ScriptCompiler::StartConsumingCodeCache(
- namespace {
- i::MaybeHandle<i::SharedFunctionInfo> CompileStreamedSource(
-     i::Isolate* i_isolate, ScriptCompiler::StreamedSource* v8_source,
-+    int parent_script_id,
-     Local<String> full_source_string, const ScriptOrigin& origin) {
-   i::Handle<i::String> str = Utils::OpenHandle(*(full_source_string));
-   i::ScriptDetails script_details =
-       GetScriptDetails(i_isolate, origin.ResourceName(), origin.LineOffset(),
-                        origin.ColumnOffset(), origin.SourceMapUrl(),
-+                       parent_script_id,
-                        origin.GetHostDefinedOptions(), origin.Options());
-   i::ScriptStreamingData* data = v8_source->impl();
-   return i::Compiler::GetSharedFunctionInfoForStreamedScript(
-@@ -2794,6 +2822,7 @@ i::MaybeHandle<i::SharedFunctionInfo> CompileStreamedSource(
- 
- MaybeLocal<Script> ScriptCompiler::Compile(Local<Context> context,
-                                            StreamedSource* v8_source,
-+                                           int parent_script_id,
-                                            Local<String> full_source_string,
-                                            const ScriptOrigin& origin) {
-   PREPARE_FOR_EXECUTION(context, ScriptCompiler, Compile, Script);
-@@ -2802,7 +2831,7 @@ MaybeLocal<Script> ScriptCompiler::Compile(Local<Context> context,
-                "V8.CompileStreamedScript");
-   i::Handle<i::SharedFunctionInfo> sfi;
-   i::MaybeHandle<i::SharedFunctionInfo> maybe_sfi =
--      CompileStreamedSource(i_isolate, v8_source, full_source_string, origin);
-+      CompileStreamedSource(i_isolate, v8_source, parent_script_id, full_source_string, origin);
-   has_pending_exception = !maybe_sfi.ToHandle(&sfi);
-   if (has_pending_exception) i_isolate->ReportPendingMessages();
-   RETURN_ON_FAILED_EXECUTION(Script);
-@@ -2822,7 +2851,7 @@ MaybeLocal<Module> ScriptCompiler::CompileModule(
-                "V8.CompileStreamedModule");
-   i::Handle<i::SharedFunctionInfo> sfi;
-   i::MaybeHandle<i::SharedFunctionInfo> maybe_sfi =
--      CompileStreamedSource(i_isolate, v8_source, full_source_string, origin);
-+      CompileStreamedSource(i_isolate, v8_source, 0, full_source_string, origin);
-   has_pending_exception = !maybe_sfi.ToHandle(&sfi);
-   if (has_pending_exception) i_isolate->ReportPendingMessages();
-   RETURN_ON_FAILED_EXECUTION(Module);
-@@ -5405,6 +5434,24 @@ Local<v8::Value> Function::GetBoundFunction() const {
+@@ -5405,6 +5412,24 @@ Local<v8::Value> Function::GetBoundFunction() const {
    return v8::Undefined(reinterpret_cast<v8::Isolate*>(self->GetIsolate()));
  }
  
@@ -133,7 +41,7 @@ index 8423f288efa3f058c11872c90546971a9aa0b8b8..7d5c562a195e435da8f998f5d044f8cc
  MaybeLocal<String> v8::Function::FunctionProtoToString(Local<Context> context) {
    PREPARE_FOR_EXECUTION(context, Function, FunctionProtoToString, String);
    auto self = Utils::OpenHandle(this);
-@@ -8389,6 +8436,33 @@ void Isolate::ReportExternalAllocationLimitReached() {
+@@ -8389,6 +8414,33 @@ void Isolate::ReportExternalAllocationLimitReached() {
    heap->ReportExternalMemoryPressure();
  }
  

@@ -1,5 +1,5 @@
 diff --git a/src/codegen/compiler.cc b/src/codegen/compiler.cc
-index 071cfa8e613d0345439434b682be981a7be778e5..2f5584cf639077e6d6ca6ffb65165f2e3c133e3e 100644
+index 071cfa8e613d0345439434b682be981a7be778e5..c8b9aeeb187bab269339bb99b22aba8eb17209fc 100644
 --- a/src/codegen/compiler.cc
 +++ b/src/codegen/compiler.cc
 @@ -2301,7 +2301,6 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
@@ -10,19 +10,15 @@ index 071cfa8e613d0345439434b682be981a7be778e5..2f5584cf639077e6d6ca6ffb65165f2e
    // The cache lookup key needs to be aware of the separation between the
    // parameters and the body to prevent this valid invocation:
    //   Function("", "function anonymous(\n/**/) {\n}");
-@@ -2317,6 +2316,11 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
+@@ -2317,6 +2316,7 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
      DCHECK_EQ(eval_scope_position, 0);
      eval_scope_position = -parameters_end_pos;
    }
-+// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+  const int parent_script_id = isolate->GetExecutingScriptId();
-+  eval_scope_position ^= (parent_script_id & 0xFFFF) << 15;  // Keep sign bit.
-+// #endif
 +
    CompilationCache* compilation_cache = isolate->compilation_cache();
    InfoCellPair eval_result = compilation_cache->LookupEval(
        source, outer_info, context, language_mode, eval_scope_position);
-@@ -2426,6 +2430,21 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
+@@ -2426,6 +2426,22 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
    }
    DCHECK(is_compiled_scope.is_compiled());
  
@@ -33,6 +29,7 @@ index 071cfa8e613d0345439434b682be981a7be778e5..2f5584cf639077e6d6ca6ffb65165f2e
 +    if (eval_script_compiled_func) {
 +      Object maybe_script = result->shared().script();
 +      if (maybe_script.IsScript()) {
++        const int parent_script_id = isolate->GetExecutingScriptId();
 +        Script script = Script::cast(maybe_script);
 +        eval_script_compiled_func(*reinterpret_cast<v8::Isolate*>(isolate),
 +            parent_script_id, script.id(), v8::Utils::ToLocal(source));

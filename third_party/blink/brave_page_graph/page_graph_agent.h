@@ -8,10 +8,12 @@
 
 #include <vector>
 
+#include "base/unguessable_token.h"
 #include "brave/third_party/blink/brave_page_graph/probe_types.h"
 #include "brave/third_party/blink/brave_page_graph/types.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
 #include "third_party/blink/renderer/core/core_export.h"
+#include "third_party/blink/renderer/core/dom/dom_node_ids.h"
 #include "third_party/blink/renderer/core/inspector/console_message.h"
 #include "third_party/blink/renderer/platform/heap/garbage_collected.h"
 #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
@@ -24,6 +26,23 @@ class LocalFrame;
 class DocumentLoader;
 class ExceptionState;
 class ConsoleMessage;
+class Document;
+class ExecutionContext;
+struct FetchInitiatorInfo;
+class HTTPHeaderMap;
+class KURL;
+enum class RenderBlockingBehavior : uint8_t;
+class ResourceError;
+struct ResourceLoaderOptions;
+class ResourceResponse;
+enum class ResourceType : uint8_t;
+class CoreProbeSink;
+class ResourceRequest;
+class Resource;
+class BlobDataHandle;
+class PendingScript;
+class ClassicScript;
+class EventTarget;
 
 class CORE_EXPORT PageGraphAgent : public GarbageCollected<PageGraphAgent> {
  public:
@@ -31,9 +50,31 @@ class CORE_EXPORT PageGraphAgent : public GarbageCollected<PageGraphAgent> {
 
   virtual void Trace(Visitor*) const {}
 
-  virtual void DidInsertDOMNode(Node*) {}
-  virtual void DidCommitLoad(LocalFrame*, DocumentLoader*) {}
+  virtual void DidInsertDOMNode(Node*) = 0;
+  virtual void WillRemoveDOMNode(Node*) = 0 ;
+  virtual void DidCommitLoad(LocalFrame*, DocumentLoader*) = 0;
   virtual void RegisterPageGraphNodeConstructed(Node*) = 0;
+  virtual void RegisterPageGraphPendingScriptConstructed(PendingScript*) = 0;
+  virtual void RegisterPageGraphElmForLocalScript(
+      DOMNodeId dom_node_id,
+      const String& source_text) = 0;
+  virtual void RegisterPageGraphElmForRemoteScript(DOMNodeId dom_node_id,
+                                                   const KURL& url) = 0;
+  virtual void RegisterPageGraphUrlForScriptSource(
+      const KURL& base_url,
+      const String& source_string) = 0;
+  virtual void RegisterPageGraphModuleScriptForDescendant(int script_id,
+                                                          const KURL& url) = 0;
+  virtual void RegisterPageGraphScriptCompilation(const ClassicScript&,
+                                                  v8::Local<v8::Script>) = 0;
+  virtual void RegisterPageGraphModuleCompilation(
+      const ModuleScriptCreationParams& params,
+      v8::Local<v8::Module> script) = 0;
+  virtual void RegisterPageGraphScriptCompilationFromAttr(
+      EventTarget*,
+      const String& function_name,
+      const String& script_body,
+      v8::Local<v8::Function> compiled_function) = 0;
   virtual void RegisterPageGraphBindingEvent(const char* name,
                                              const char* type,
                                              const char* event) = 0;
@@ -48,6 +89,33 @@ class CORE_EXPORT PageGraphAgent : public GarbageCollected<PageGraphAgent> {
                                 const QualifiedName& name,
                                 const AtomicString& value) = 0;
   virtual void DidRemoveDOMAttr(Element*, const QualifiedName& name) = 0;
+  virtual void PrepareRequest(DocumentLoader*,
+                              ResourceRequest&,
+                              ResourceLoaderOptions&,
+                              ResourceType) = 0;
+  virtual void DidReceiveResourceResponse(uint64_t identifier,
+                                          DocumentLoader* loader,
+                                          const ResourceResponse& response,
+                                          const Resource* cached_resource) = 0;
+  virtual void DidReceiveData(uint64_t identifier,
+                              DocumentLoader*,
+                              const char* data,
+                              uint64_t data_length) = 0;
+  virtual void DidReceiveBlob(uint64_t identifier,
+                              DocumentLoader*,
+                              BlobDataHandle*) = 0;
+  virtual void DidFinishLoading(uint64_t identifier,
+                                DocumentLoader*,
+                                base::TimeTicks finish_time,
+                                int64_t encoded_data_length,
+                                int64_t decoded_body_length,
+                                bool should_report_corb_blocking) = 0;
+  virtual void DidFailLoading(
+      CoreProbeSink* sink,
+      uint64_t identifier,
+      DocumentLoader*,
+      const ResourceError&,
+      const base::UnguessableToken& devtools_frame_or_worker_token) = 0;
 };
 
 }  // namespace blink

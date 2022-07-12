@@ -24,6 +24,7 @@
 
 #include "base/json/json_string_value_serializer.h"
 
+#include "third_party/blink/public/mojom/script/script_type.mojom-shared.h"
 #include "third_party/blink/public/platform/web_string.h"
 #include "third_party/blink/renderer/bindings/core/v8/v8_binding_for_core.h"
 #include "third_party/blink/renderer/core/dom/dom_node_ids.h"
@@ -34,19 +35,31 @@
 #include "third_party/blink/renderer/core/dom/element.h"
 #include "third_party/blink/renderer/core/dom/node.h"
 #include "third_party/blink/renderer/core/html_names.h"
+#include "third_party/blink/renderer/core/script/classic_pending_script.h"
+#include "third_party/blink/renderer/core/script/module_pending_script.h"
 
 #include "third_party/blink/renderer/core/dom/character_data.h"
 #include "third_party/blink/renderer/core/execution_context/execution_context.h"
 #include "third_party/blink/renderer/core/frame/local_dom_window.h"
 #include "third_party/blink/renderer/core/frame/local_frame.h"
+#include "third_party/blink/renderer/core/html/html_frame_owner_element.h"
 #include "third_party/blink/renderer/core/loader/document_loader.h"
+#include "third_party/blink/renderer/core/loader/resource/script_resource.h"
+#include "third_party/blink/renderer/core/script/classic_script.h"
 
 #include "third_party/blink/renderer/core/inspector/protocol/Protocol.h"
 
 #include "third_party/blink/renderer/core/inspector/console_message.h"
+#include "third_party/blink/renderer/core/loader/modulescript/module_script_creation_params.h"
 #include "third_party/blink/renderer/platform/bindings/string_resource.h"
+#include "third_party/blink/renderer/platform/crypto.h"
+#include "third_party/blink/renderer/platform/graphics/dom_node_id.h"
+#include "third_party/blink/renderer/platform/loader/fetch/fetch_initiator_type_names.h"
 #include "third_party/blink/renderer/platform/loader/fetch/resource.h"
+#include "third_party/blink/renderer/platform/loader/fetch/resource_loader_options.h"
+#include "third_party/blink/renderer/platform/loader/fetch/resource_request.h"
 #include "third_party/blink/renderer/platform/weborigin/kurl.h"
+#include "third_party/blink/renderer/platform/wtf/text/base64.h"
 
 #include "third_party/blink/renderer/platform/wtf/casting.h"
 #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
@@ -139,6 +152,8 @@
 
 #include "brave/third_party/blink/brave_page_graph/utilities/response_metadata.h"
 #include "brave/third_party/blink/brave_page_graph/utilities/urls.h"
+
+#include "base/debug/stack_trace.h"
 
 using ::std::endl;
 using ::std::make_unique;
@@ -266,8 +281,9 @@ static void OnBuiltInFuncResponse(v8::Isolate& isolate,
   }
 }
 
-PageGraph::PageGraph(const WTF::String& frame_id/*, const DOMNodeId node_id,
-    const WTF::String& tag_name, const blink::KURL& url*/) :
+PageGraph::PageGraph(blink::LocalFrame* local_frame,
+                     const WTF::String& frame_id)
+    : local_frame_(local_frame),
       frame_id_(frame_id.Utf8().data()),
       parser_node_(new NodeParser(this)),
       extensions_node_(new NodeExtensions(this)),
@@ -300,7 +316,11 @@ PageGraph::PageGraph(const WTF::String& frame_id/*, const DOMNodeId node_id,
 PageGraph::~PageGraph() = default;
 
 void PageGraph::Trace(blink::Visitor* visitor) const {
-  visitor->Trace(execution_context_);
+  visitor->Trace(local_frame_);
+}
+
+blink::ExecutionContext* PageGraph::GetExecutionContext() const {
+  return local_frame_->DomWindow();
 }
 
 bool PageGraph::IsActive() const {
@@ -316,23 +336,19 @@ void PageGraph::DidCommitLoad(blink::LocalFrame* local_frame,
   blink::Document* document = local_frame->GetDocument();
   DCHECK(document);
 
-  if (!document->IsHTMLDocument() ||
-      !document->Url().ProtocolIsInHTTPFamily()) {
-    return;
-  }
 
-  execution_context_ = document->GetExecutionContext();
-
-  Isolate* const isolate = execution_context_->GetIsolate();
+  DCHECK_EQ(GetExecutionContext(), document->GetExecutionContext());
+  Isolate* const isolate = GetExecutionContext()->GetIsolate();
   if (isolate) {
     isolate->SetEvalScriptCompiledFunc(&OnEvalScriptCompiled);
     isolate->SetBuiltInFuncCallFunc(&OnBuiltInFuncCall);
     isolate->SetBuiltInFuncResponseFunc(&OnBuiltInFuncResponse);
   }
 
-  const string local_tag_name("#document");
+  const string local_tag_name(
+      static_cast<blink::Node*>(document)->nodeName().Utf8());
   const KURL normalized_url = NormalizeUrl(document->Url());
-  const string local_url(normalized_url.GetString().Utf8().data());
+  const string local_url(normalized_url.GetString().Utf8());
 
   Log("init");
   Log(" --- ");
@@ -377,9 +393,6 @@ void PageGraph::RegisterDocumentRootCreated(
     const blink::DOMNodeId parent_node_id,
     const String& tag_name,
     const KURL& url) {
-  if (!html_root_node_) {
-    return;
-  }
   if (element_nodes_.count(node_id) != 0) {
     return;  // Already registered.
   }
@@ -428,9 +441,6 @@ void PageGraph::RegisterDocumentRootCreated(
 void PageGraph::RegisterRemoteFrameCreated(
     const blink::DOMNodeId parent_node_id,
     const String& frame_id) {
-  if (!html_root_node_) {
-    return;
-  }
   const string local_frame_id(frame_id.Utf8().data());
 
   Log("RegisterRemoteFrameCreated) parent node id: " +
@@ -452,9 +462,6 @@ void PageGraph::RegisterRemoteFrameCreated(
 void PageGraph::RegisterHTMLElementNodeCreated(const DOMNodeId node_id,
                                                const String& tag_name,
                                                const ElementType element_type) {
-  if (!html_root_node_) {
-    return;
-  }
   string local_tag_name(tag_name.Utf8().data());
 
   Log("RegisterHTMLElementNodeCreated) node id: " + to_string(node_id) + " (" +
@@ -497,7 +504,7 @@ void PageGraph::RegisterHTMLTextNodeCreated(const DOMNodeId node_id,
   string local_text(text.Utf8().data());
 
   Log("RegisterHTMLTextNodeCreated) node id: " + to_string(node_id) +
-      ", text: '" + local_text + "'");
+      ", text" /*: '" + local_text + "'"*/);
   NodeActor* const acting_node = GetCurrentActingNode();
 
   PG_LOG_ASSERT(text_nodes_.count(node_id) == 0);
@@ -512,9 +519,6 @@ void PageGraph::RegisterHTMLElementNodeInserted(
     const DOMNodeId node_id,
     const DOMNodeId parent_node_id,
     const DOMNodeId before_sibling_id) {
-  if (!html_root_node_) {
-    return;
-  }
   const DOMNodeId inserted_parent_node_id = parent_node_id;
 
   Log("RegisterHTMLElementNodeInserted) node id: " + to_string(node_id) +
@@ -734,13 +738,22 @@ void PageGraph::RegisterRequestStartFromCurrentScript(
     const InspectorId request_id,
     const KURL& url,
     const RequestType type) {
+  Log("RegisterRequestStartFromCurrentScript)");
+  const ScriptId current_script_id = GetExecutingScriptId();
+  RegisterRequestStartFromScript(current_script_id, request_id, url, type);
+}
+
+void PageGraph::RegisterRequestStartFromScript(const ScriptId script_id,
+                                               const InspectorId request_id,
+                                               const blink::KURL& url,
+                                               const RequestType type) {
   const KURL normalized_url = NormalizeUrl(url);
   const string local_url(normalized_url.GetString().Utf8().data());
 
-  Log("RegisterRequestStartFromCurrentScript) request id: " +
-      to_string(request_id) + ", url: " + local_url +
+  Log("RegisterRequestStartFromScript) script id: " + to_string(script_id) +
+      " request id: " + to_string(request_id) + ", url: " + local_url +
       ", type: " + to_string(type));
-  NodeActor* const acting_node = GetCurrentActingNode();
+  NodeActor* const acting_node = GetNodeActorForScriptId(script_id);
 
   if (!IsA<NodeScript>(acting_node)) {
     Log("Skipping, I hope this is pre-fetch...");
@@ -810,8 +823,8 @@ void PageGraph::RegisterRequestComplete(const InspectorId request_id,
 
   TrackedRequest* request = request_record->request.get();
   if (request != nullptr) {
-    request->SetResponseMetadata(metadata);
-    request->SetResponseBodyHash(resource_hash);
+    //request->SetResponseMetadata(metadata);
+    //request->SetResponseBodyHash(resource_hash);
   }
 
   PossiblyWriteRequestsIntoGraph(request_record);
@@ -848,7 +861,7 @@ void PageGraph::RegisterRequestError(const InspectorId request_id,
 
   TrackedRequest* request = request_record->request.get();
   if (request != nullptr) {
-    request->SetResponseMetadata(metadata);
+    //request->SetResponseMetadata(metadata);
   }
 
   PossiblyWriteRequestsIntoGraph(request_record);
@@ -910,7 +923,7 @@ void PageGraph::RegisterResourceBlockFingerprinting(
 void PageGraph::RegisterElmForLocalScript(const DOMNodeId node_id,
                                           const WTF::String& code) {
   Log("RegisterElmForLocalScript) node_id: " + to_string(node_id));
-  Log("Script: " + code.Utf8());
+  //Log("Script: " + code.Utf8());
   script_tracker_.AddScriptSourceForElm(code, node_id);
 }
 
@@ -923,7 +936,7 @@ void PageGraph::RegisterElmForRemoteScript(const DOMNodeId node_id,
 }
 
 void PageGraph::RegisterJavaScriptURL(const WTF::String& code) {
-  Log("RegisterJavaScriptURL) script: " + code.Utf8());
+  Log("RegisterJavaScriptURL) script: <>"); // + code.Utf8());
 
   // Use the document node as the "owning element" of JavaScript URLs for now.
   script_tracker_.AddScriptSourceForElm(code, html_root_node_->GetNodeId());
@@ -949,7 +962,7 @@ void PageGraph::RegisterScriptCompilation(const WTF::String& code,
                                           const ScriptId script_id,
                                           const ScriptType type) {
   Log("RegisterScriptCompilation) script id: " + to_string(script_id));
-  Log("code: " + code.Utf8());
+  //Log("code: " + code.Utf8());
 
   if (type == ScriptType::kScriptTypeModule) {
     script_tracker_.AddScriptId(script_id, code.Impl()->GetHash());
@@ -1478,13 +1491,13 @@ NodeActor* PageGraph::GetNodeActorForScriptId(const ScriptId script_id) const {
 
 ScriptId PageGraph::GetExecutingScriptId(
     ScriptPosition* out_script_position) const {
-  return execution_context_->GetIsolate()->GetExecutingScriptId(
+  return GetExecutionContext()->GetIsolate()->GetExecutingScriptId(
       out_script_position);
 }
 
 template <typename Callback>
 void PageGraph::GetAllExecutingScripts(Callback callback) {
-  execution_context_->GetIsolate()->GetAllExecutingScripts(callback);
+  GetExecutionContext()->GetIsolate()->GetAllExecutingScripts(callback);
 }
 
 NodeResource* PageGraph::GetResourceNodeForUrl(const std::string& url) {
@@ -1659,16 +1672,82 @@ void PageGraph::Log(const string& str) const {
 }
 
 bool PageGraph::IsRootFrame() const {
-  if (execution_context_->IsWindow() == false) {
+  if (GetExecutionContext()->IsWindow() == false) {
     return false;
   }
 
-  Document* document = To<LocalDOMWindow>(*execution_context_).document();
-  if (document == nullptr) {
-    return false;
-  }
+  return local_frame_->IsLocalRoot();
+}
 
-  return document->IsInMainFrame();
+void PageGraph::DidInsertDOMNode(blink::Node* node) {
+  const blink::Node::NodeType node_type = node->getNodeType();
+  const bool is_html_elm_node =
+      (node_type == blink::Node::kElementNode ||
+       node_type == blink::Node::kDocumentFragmentNode ||
+       node_type == blink::Node::kDocumentTypeNode);
+  const bool is_html_text_node =
+      (is_html_elm_node == false &&
+       (node_type == blink::Node::kTextNode ||
+        node_type == blink::Node::kCommentNode ||
+        node_type == blink::Node::kCdataSectionNode));
+
+  if (is_html_elm_node || is_html_text_node) {
+    const blink::DOMNodeId node_id = blink::DOMNodeIds::IdForNode(node);
+    blink::Node* const parent = node->parentNode();
+
+    if (parent) {
+      if (parent->IsDocumentNode()) {
+        Document* const dom_root_node = To<Document>(parent);
+        Document* const dom_root_context =
+            To<LocalDOMWindow>(dom_root_node->GetExecutionContext())
+                ->document();
+        Document& top_document =
+            (dom_root_context ? dom_root_context : dom_root_node)
+                ->TopDocument();
+
+        if (dom_root_node != &top_document) {
+          DOMNodeId dom_root_parent = 0;
+          if (blink::HTMLFrameOwnerElement* const local_frame_owner =
+                  dom_root_node->LocalOwner()) {
+            // If the child document represents the contents of an embedded
+            // frame, treat the HTMLFrameOwnerElement as its parent node.
+            dom_root_parent = blink::DOMNodeIds::IdForNode(local_frame_owner);
+          } else if (dom_root_context != dom_root_node) {
+            // Otherwise, treat the context document as the parent node.
+            dom_root_parent = blink::DOMNodeIds::IdForNode(dom_root_context);
+          }
+          DCHECK(dom_root_parent);
+
+          RegisterDocumentRootCreated(
+              blink::DOMNodeIds::IdForNode(dom_root_node), dom_root_parent,
+              parent->nodeName(), dom_root_node->Url());
+        }
+      }
+
+      blink::DOMNodeId parent_node_id = blink::DOMNodeIds::IdForNode(parent);
+      blink::Node* const sibling = node->previousSibling();
+      const blink::DOMNodeId sibling_node_id =
+          (sibling) ? blink::DOMNodeIds::IdForNode(sibling) : 0;
+
+      if (is_html_elm_node) {
+        RegisterHTMLElementNodeInserted(node_id, parent_node_id,
+                                        sibling_node_id);
+      } else {
+        RegisterHTMLTextNodeInserted(node_id, parent_node_id, sibling_node_id);
+      }
+    }
+  }
+}
+
+void PageGraph::WillRemoveDOMNode(blink::Node* node) {
+  const blink::Node::NodeType node_type = node->getNodeType();
+  if (node_type == blink::Node::kElementNode ||
+      node_type == blink::Node::kDocumentTypeNode ||
+      node_type == blink::Node::kDocumentFragmentNode) {
+    RegisterHTMLElementNodeRemoved(blink::DOMNodeIds::IdForNode(node));
+  } else {
+    RegisterHTMLTextNodeRemoved(blink::DOMNodeIds::IdForNode(node));
+  }
 }
 
 void PageGraph::RegisterPageGraphNodeConstructed(blink::Node* node) {
@@ -1694,6 +1773,19 @@ void PageGraph::RegisterPageGraphNodeConstructed(blink::Node* node) {
 
   RegisterHTMLElementNodeCreated(blink::DOMNodeIds::IdForNode(node),
                                  node->nodeName(), element_type);
+}
+
+void PageGraph::RegisterPageGraphPendingScriptConstructed(
+    blink::PendingScript* pending_script) {
+  if (pending_script->GetScriptType() ==
+      blink::mojom::blink::ScriptType::kClassic) {
+    /*blink::ClassicPendingScript* classic_pending_script =
+        To<blink::ClassicPendingScript>(pending_script);
+    if (!classic_pending_script->IsExternal()) {
+      RegisterElmForLocalScript(
+          classic_pending_script->GetElement()->GetDOMNodeId(),
+          classic_pending_script->GetElement());*/
+  }
 }
 
 void PageGraph::RegisterPageGraphBindingEvent(const char* name,
@@ -1754,6 +1846,18 @@ void PageGraph::RegisterPageGraphWebAPICallWithResult(
     RegisterWebAPIResult(name, *result);
 }
 
+void PageGraph::RegisterPageGraphUrlForScriptSource(
+    const blink::KURL& base_url,
+    const String& source_string) {
+  RegisterUrlForScriptSource(base_url, source_string);
+}
+
+void PageGraph::RegisterPageGraphModuleScriptForDescendant(
+    int script_id,
+    const blink::KURL& url) {
+  RegisterModuleScriptForDescendant(script_id, url);
+}
+
 void PageGraph::ConsoleMessageAdded(blink::ConsoleMessage* console_message) {
   const auto source = console_message->Source();
   if (source == blink::mojom::ConsoleMessageSource::kJavaScript ||
@@ -1811,7 +1915,11 @@ void PageGraph::ConsoleMessageAdded(blink::ConsoleMessage* console_message) {
 void PageGraph::DidModifyDOMAttr(blink::Element* element,
                                  const blink::QualifiedName& name,
                                  const AtomicString& value) {
-  RegisterAttributeSet(blink::DOMNodeIds::IdForNode(element), name.ToString(),
+  auto node_id = blink::DOMNodeIds::IdForNode(element);
+  // EditingViewPortElement sets attribute in the node constructor.
+  if (element_nodes_.count(node_id) == 0)
+    return;
+  RegisterAttributeSet(node_id, name.ToString(),
                        value);
 }
 
@@ -1819,6 +1927,285 @@ void PageGraph::DidRemoveDOMAttr(blink::Element* element,
                                  const blink::QualifiedName& name) {
   RegisterAttributeDelete(blink::DOMNodeIds::IdForNode(element),
                           name.ToString());
+}
+
+void PageGraph::PrepareRequest(blink::DocumentLoader* loader,
+                               blink::ResourceRequest& request,
+                               blink::ResourceLoaderOptions& options,
+                               blink::ResourceType resource_type) {
+  if (request.GetRedirectInfo()) {
+    LOG(INFO) << "Skip redirect request prepare";
+    return;
+  }
+  RequestType request_type = kRequestTypeUnknown;
+  switch (resource_type) {
+    case blink::ResourceType::kImage:
+      request_type = kRequestTypeImage;
+      break;
+    case blink::ResourceType::kCSSStyleSheet:
+      request_type = kRequestTypeCSS;
+      break;
+    case blink::ResourceType::kScript:
+      request_type = kRequestTypeScriptClassic;
+      break;
+    case blink::ResourceType::kFont:
+      request_type = kRequestTypeFont;
+      break;
+    case blink::ResourceType::kRaw:
+      break;
+    case blink::ResourceType::kSVGDocument:
+      request_type = kRequestTypeSVG;
+      break;
+    case blink::ResourceType::kXSLStyleSheet:
+      break;
+    case blink::ResourceType::kLinkPrefetch:
+      break;
+    case blink::ResourceType::kTextTrack:
+      break;
+    case blink::ResourceType::kAudio:
+      request_type = kRequestTypeAudio;
+      break;
+    case blink::ResourceType::kVideo:
+      request_type = kRequestTypeVideo;
+      break;
+    case blink::ResourceType::kManifest:
+    case blink::ResourceType::kMock:
+      break;
+  };
+
+  // Unhandled page graph request types:
+  // kRequestTypeAJAX = 0,
+  // kRequestTypeDocument,
+  // kRequestTypeScriptModule,
+  // kRequestTypeSubdocument,
+
+  if (options.initiator_info.dom_node_id != blink::kInvalidDOMNodeId) {
+    RegisterRequestStartFromElm(options.initiator_info.dom_node_id,
+                                request.InspectorId(), request.Url(),
+                                request_type);
+    return;
+  }
+
+  if (options.initiator_info.name == blink::fetch_initiator_type_names::kCSS ||
+      options.initiator_info.name ==
+          blink::fetch_initiator_type_names::kUacss) {
+    RegisterRequestStartFromCSS(request.InspectorId(), request.Url(),
+                                request_type);
+    return;
+  }
+
+  if (options.initiator_info.name ==
+      blink::fetch_initiator_type_names::kFetch) {
+    RegisterRequestStartFromCurrentScript(request.InspectorId(), request.Url(),
+                                          request_type);
+    return;
+  }
+
+  if (options.initiator_info.name ==
+      blink::fetch_initiator_type_names::kXmlhttprequest) {
+    request_type = kRequestTypeAJAX;
+    RegisterRequestStartFromCurrentScript(request.InspectorId(), request.Url(),
+                                          request_type);
+    return;
+  }
+
+  if (options.initiator_info.name.IsEmpty()) {
+    LOG(INFO) << "Empty request initiator for request id: "
+              << request.InspectorId();
+    if (options.initiator_info.parent_script_id) {
+      RegisterRequestStartFromScript(options.initiator_info.parent_script_id,
+                                     request.InspectorId(), request.Url(),
+                                     request_type);
+    } else {
+      RegisterRequestStartFromCurrentScript(request.InspectorId(),
+                                            request.Url(), request_type);
+    }
+    return;
+  }
+
+  LOG(ERROR) << "Unhandled request id: " << request.InspectorId()
+             << " type: " << request_type
+             << " initiator: " << options.initiator_info.name << "\n"
+             << base::debug::StackTrace().ToString();
+}
+
+void PageGraph::DidReceiveResourceResponse(
+    uint64_t identifier,
+    blink::DocumentLoader* loader,
+    const blink::ResourceResponse& response,
+    const blink::Resource* cached_resource) {
+  TrackedRequestRecord* request_record =
+      request_tracker_.GetTrackingRecord(identifier);
+  LOG(ERROR) << "DidReceiveResourceResponse " << identifier;
+  if (!request_record) {
+    Log("DidReceiveResourceResponse) resource untracked: " +
+        to_string(identifier));
+    return;
+  }
+
+  TrackedRequest* request = request_record->request.get();
+  if (request == nullptr) {
+    return;
+  }
+
+  request->SetResponseMetadata(ResponseMetadata(response));
+}
+
+void PageGraph::DidReceiveData(uint64_t identifier,
+                               blink::DocumentLoader*,
+                               const char* data,
+                               uint64_t data_length) {
+  TrackedRequestRecord* request_record =
+      request_tracker_.GetTrackingRecord(identifier);
+  if (!request_record) {
+    Log("DidReceiveData) resource untracked: " + to_string(identifier));
+    return;
+  }
+
+  TrackedRequest* request = request_record->request.get();
+  if (!request) {
+    return;
+  }
+
+  request->UpdateResponseBodyHash(base::make_span(data, data_length));
+}
+
+void PageGraph::DidReceiveBlob(uint64_t identifier,
+                               blink::DocumentLoader*,
+                               blink::BlobDataHandle*) {}
+
+void PageGraph::DidFinishLoading(uint64_t identifier,
+                                 blink::DocumentLoader*,
+                                 base::TimeTicks finish_time,
+                                 int64_t encoded_data_length,
+                                 int64_t decoded_body_length,
+                                 bool should_report_corb_blocking) {
+  RegisterRequestComplete(identifier, ResourceType::kImage, ResponseMetadata(),
+                          std::string());
+}
+
+void PageGraph::DidFailLoading(
+    blink::CoreProbeSink* sink,
+    uint64_t identifier,
+    blink::DocumentLoader*,
+    const blink::ResourceError&,
+    const base::UnguessableToken& devtools_frame_or_worker_token) {
+  RegisterRequestError(identifier, ResponseMetadata());
+}
+
+void PageGraph::RegisterPageGraphScriptCompilation(
+    const blink::ClassicScript& classic_script,
+    v8::Local<v8::Script> script) {
+  blink::ScriptSourceLocationType script_location =
+      classic_script.SourceLocationType();
+  if (script_location == blink::ScriptSourceLocationType::kInspector) {
+    return;
+  }
+
+  const String& source_text = classic_script.SourceText().ToString();
+
+  if (script_location == blink::ScriptSourceLocationType::kExternalFile) {
+    blink::KURL script_url = classic_script.BaseUrl();
+    if (script_url.ProtocolIsAbout()) {
+      script_url = classic_script.SourceUrl();
+    }
+    RegisterUrlForScriptSource(script_url, source_text);
+  }
+
+  const int script_id = script->GetUnboundScript()->GetId();
+  LOG(ERROR) << "script_id " << script_id << " script_location "
+             << static_cast<int>(script_location);
+  if (script_location ==
+      blink::ScriptSourceLocationType::kEvalForScheduledAction) {
+    RegisterScriptCompilationFromEval(
+        classic_script.FetchOptions().GetParentScriptId(), script_id,
+        classic_script.SourceText().ToString());
+  } else {
+    ScriptType type;
+    switch (script_location) {
+      case blink::ScriptSourceLocationType::kExternalFile:
+        type = ::brave_page_graph::ScriptType::kExternalFile;
+        break;
+      case blink::ScriptSourceLocationType::kInline:
+        type = ::brave_page_graph::ScriptType::kInline;
+        break;
+      case blink::ScriptSourceLocationType::kInlineInsideDocumentWrite:
+        type = ::brave_page_graph::ScriptType::kInlineInsideDocumentWrite;
+        break;
+      case blink::ScriptSourceLocationType::kInlineInsideGeneratedElement:
+        type = ::brave_page_graph::ScriptType::kInlineInsideGeneratedElement;
+        break;
+      case blink::ScriptSourceLocationType::kInternal:
+        type = ::brave_page_graph::ScriptType::kInternal;
+        break;
+      case blink::ScriptSourceLocationType::kJavascriptUrl:
+        type = ::brave_page_graph::ScriptType::kJavascriptUrl;
+        break;
+      case blink::ScriptSourceLocationType::kEvalForScheduledAction:
+        type = ::brave_page_graph::ScriptType::kEvalForScheduledAction;
+        break;
+      case blink::ScriptSourceLocationType::kInspector:
+      default:
+        type = ::brave_page_graph::ScriptType::kInspector;
+        break;
+    }
+    if (script_location == blink::ScriptSourceLocationType::kJavascriptUrl ||
+        script_location == blink::ScriptSourceLocationType::kUnknown ||
+        script_location == blink::ScriptSourceLocationType::kInternal) {
+      RegisterJavaScriptURL(source_text);
+    }
+    RegisterScriptCompilation(source_text, script_id, type);
+  }
+}
+
+void PageGraph::RegisterPageGraphModuleCompilation(
+    const blink::ModuleScriptCreationParams& params,
+    v8::Local<v8::Module> script) {
+  int script_id = script->ScriptId();
+  if (script_id == 0) {
+    return;
+  }
+  const String& source_text = params.GetSourceText().ToString();
+  RegisterUrlForScriptSource(params.BaseURL(), source_text);
+  RegisterScriptCompilation(source_text, script_id,
+                            brave_page_graph::ScriptType::kScriptTypeModule);
+}
+
+void PageGraph::RegisterPageGraphScriptCompilationFromAttr(
+    blink::EventTarget* event_target,
+    const String& function_name,
+    const String& script_body,
+    v8::Local<v8::Function> compiled_function) {
+  blink::Node* event_recipient = event_target->ToNode();
+  if (!event_recipient && event_target->ToLocalDOMWindow() &&
+      event_target->ToLocalDOMWindow()->document()) {
+    event_recipient = event_target->ToLocalDOMWindow()->document()->body();
+  }
+  // std::cout << "element: " << (void *)element << std::endl;
+  // std::cout << "event_recipient: " << (void *)event_recipient << std::endl;
+  // std::cout << "IsTopLeveLNode(): " << event_target.IsTopLevelNode() <<
+  // std::endl; std::cout << "ToLocalDOMWindow(): " << (void
+  // *)event_target.ToLocalDOMWindow() << std::endl;
+  if (!event_recipient) {
+    LOG(ERROR) << "No event_recipient";
+    return;
+  }
+  const blink::DOMNodeId node_id =
+      blink::DOMNodeIds::IdForNode(event_recipient);
+  const auto script_id = compiled_function->ScriptId();
+  RegisterScriptCompilationFromAttr(node_id, function_name, script_body,
+                                    script_id);
+}
+
+void PageGraph::RegisterPageGraphElmForLocalScript(blink::DOMNodeId dom_node_id,
+                                                   const String& source_text) {
+  RegisterElmForLocalScript(dom_node_id, source_text);
+}
+
+void PageGraph::RegisterPageGraphElmForRemoteScript(
+    blink::DOMNodeId dom_node_id,
+    const blink::KURL& url) {
+  RegisterElmForRemoteScript(dom_node_id, url);
 }
 
 }  // namespace brave_page_graph

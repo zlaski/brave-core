@@ -1,14 +1,22 @@
 diff --git a/third_party/blink/renderer/core/probe/core_probes.pidl b/third_party/blink/renderer/core/probe/core_probes.pidl
-index 00c3a260189a48c98845d4da30a73893fd5679a6..02bd9e58b43fd79d0863b79b3dd226231c266b55 100644
+index 00c3a260189a48c98845d4da30a73893fd5679a6..7d93e91b3acb1dbc67110a2f7276e529ca07daa8 100644
 --- a/third_party/blink/renderer/core/probe/core_probes.pidl
 +++ b/third_party/blink/renderer/core/probe/core_probes.pidl
-@@ -63,6 +63,10 @@ interface CoreProbes {
+@@ -63,6 +63,18 @@ interface CoreProbes {
    class HTMLPortalElement;
    class PerformanceEntry;
  
 +  void RegisterPageGraphBindingEvent(ExecutionContext*, const char* name, const char* type, const char* event);
 +  void RegisterPageGraphWebAPICallWithResult(ExecutionContext*, const char* name, const PageGraphBlinkReceiverData& receiver_data, const PageGraphBlinkArgs& args, const ExceptionState* exception_state, const absl::optional<String>& result);
 +  void RegisterPageGraphNodeConstructed([Keep] Node* node);
++  void RegisterPageGraphPendingScriptConstructed(ExecutionContext*, PendingScript* pending_script);
++  void RegisterPageGraphElmForLocalScript(ExecutionContext*, DOMNodeId dom_node_id, const String& source_text);
++  void RegisterPageGraphElmForRemoteScript(ExecutionContext*, DOMNodeId dom_node_id, const KURL& url);
++  void RegisterPageGraphUrlForScriptSource(ExecutionContext*, const KURL& base_url, const String& source_string);
++  void RegisterPageGraphModuleScriptForDescendant(ExecutionContext*, int script_id, const KURL& url);
++  void RegisterPageGraphScriptCompilation(ExecutionContext*, const ClassicScript& classic_script, v8::Local<v8::Script> script);
++  void RegisterPageGraphScriptCompilationFromAttr([Keep] EventTarget*, const String& function_name, const String& script_body, v8::Local<v8::Function> compiled_function);
++  void RegisterPageGraphModuleCompilation(ExecutionContext*, const ModuleScriptCreationParams& params, v8::Local<v8::Module> script);
 +
    void DidClearDocumentOfWindowObject([Keep] LocalFrame*);
    void WillInsertDOMNode([Keep] Node* parent);

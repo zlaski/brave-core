@@ -6,17 +6,16 @@
 #ifndef BRAVE_CHROMIUM_SRC_THIRD_PARTY_BLINK_RENDERER_CORE_DOM_NODE_H_
 #define BRAVE_CHROMIUM_SRC_THIRD_PARTY_BLINK_RENDERER_CORE_DOM_NODE_H_
 
+#include <type_traits>
+
 #include "third_party/blink/renderer/platform/bindings/active_script_wrappable_base.h"
 #define MarkAncestorsWithChildNeedsStyleInvalidation \
-  NotUsed();                                         \
-  void NodeConstructed();                            \
+  NodeConstructed();                                 \
   void MarkAncestorsWithChildNeedsStyleInvalidation
 
 #include "src/third_party/blink/renderer/core/dom/node.h"
 
 #undef MarkAncestorsWithChildNeedsStyleInvalidation
-
-#include <type_traits>
 
 namespace blink {
 class ActiveScriptWrappableBase;

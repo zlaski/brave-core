@@ -16,6 +16,9 @@ namespace blink {
 using PageGraphBlinkArgs = std::vector<String>;
 using PageGraphBlinkReceiverData = HashMap<String, String>;
 
+class ModuleScriptCreationParams;
+class PendingScript;
+
 }  // namespace blink
 
 #endif  // BRAVE_COMPONENTS_BRAVE_PAGE_GRAPH_PROBE_TYPES_H_

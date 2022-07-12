@@ -128,14 +128,21 @@ absl::optional<DocumentRequest> RequestTracker::GetDocumentRequestInfo(
   return document_requests_.at(request_id);
 }
 
+TrackedRequestRecord* RequestTracker::GetTrackingRecord(
+    const InspectorId request_id) {
+  auto record_it = tracked_requests_.find(request_id);
+  return record_it != tracked_requests_.end() ? record_it->second.get()
+                                              : nullptr;
+}
+
 shared_ptr<const TrackedRequestRecord> RequestTracker::ReturnTrackingRecord(
     const InspectorId request_id) {
-
-  TrackedRequestRecord* record = tracked_requests_.at(request_id).get();
+  auto record_it = tracked_requests_.find(request_id);
+  auto& record = record_it->second;
   TrackedRequest* request = record->request.get();
 
-  if (request->IsComplete() == false) {
-    return tracked_requests_.at(request_id);
+  if (!request->IsComplete()) {
+    return record_it->second;
   }
 
   const size_t num_requestors = request->GetRequesters().size();
@@ -150,9 +157,8 @@ shared_ptr<const TrackedRequestRecord> RequestTracker::ReturnTrackingRecord(
   }
 
   AddTracedRequestToHistory(request);
-  shared_ptr<const TrackedRequestRecord> record_shared =
-    tracked_requests_.at(request_id);
-  tracked_requests_.erase(request_id);
+  auto record_shared = std::move(record);
+  tracked_requests_.erase(record_it);
   return record_shared;
 }
 

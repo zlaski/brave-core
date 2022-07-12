@@ -6,11 +6,12 @@
 #include "brave/third_party/blink/brave_page_graph/requests/tracked_request.h"
 #include <string>
 #include <vector>
-#include "third_party/blink/renderer/platform/loader/fetch/resource.h"
-#include "brave/third_party/blink/brave_page_graph/logging.h"
-#include "brave/third_party/blink/brave_page_graph/graph_item/node/node_resource.h"
 #include "brave/third_party/blink/brave_page_graph/graph_item/node/node.h"
+#include "brave/third_party/blink/brave_page_graph/graph_item/node/node_resource.h"
+#include "brave/third_party/blink/brave_page_graph/logging.h"
 #include "brave/third_party/blink/brave_page_graph/utilities/response_metadata.h"
+#include "third_party/blink/renderer/platform/loader/fetch/resource.h"
+#include "third_party/blink/renderer/platform/wtf/text/base64.h"
 
 using ::std::string;
 using ::std::vector;
@@ -113,6 +114,7 @@ void TrackedRequest::SetIsError() {
   PG_LOG_ASSERT(request_status_ == RequestStatus::kUnknown ||
       request_status_ == RequestStatus::kError);
   request_status_ = RequestStatus::kError;
+  FinishResponseBodyHash();
 }
 
 void TrackedRequest::SetCompletedResourceType(const blink::ResourceType type) {
@@ -124,6 +126,7 @@ void TrackedRequest::SetCompletedResourceType(const blink::ResourceType type) {
       request_status_ == RequestStatus::kSuccess);
   request_status_ = RequestStatus::kSuccess;
   resource_type_ = type;
+  FinishResponseBodyHash();
 }
 
 const ResponseMetadata& TrackedRequest::GetResponseMetadata() const {
@@ -136,12 +139,25 @@ void TrackedRequest::SetResponseMetadata(const ResponseMetadata& metadata) {
 
 const string& TrackedRequest::GetResponseBodyHash() const {
   PG_LOG_ASSERT(request_status_ == RequestStatus::kSuccess);
+  PG_LOG_ASSERT(!hash_.empty());
   return hash_;
 }
 
-void TrackedRequest::SetResponseBodyHash(const string& response_body_hash) {
-  PG_LOG_ASSERT(request_status_ == RequestStatus::kSuccess);
-  hash_ = response_body_hash;
+void TrackedRequest::UpdateResponseBodyHash(base::span<const char> data) {
+  PG_LOG_ASSERT(request_status_ != RequestStatus::kSuccess);
+  if (!data.data()) {
+    return;
+  }
+  base::span<const uint8_t> uint8_span(
+      reinterpret_cast<const uint8_t*>(data.data()), data.size());
+  CHECK(body_digestor_.Update(uint8_span));
+}
+
+void TrackedRequest::FinishResponseBodyHash() {
+  PG_LOG_ASSERT(hash_.empty());
+  blink::DigestValue digest;
+  CHECK(body_digestor_.Finish(digest));
+  hash_ = WTF::Base64Encode(digest).Utf8();
 }
 
 }  // namsepace brave_page_graph
