@@ -1,22 +1,8 @@
 diff --git a/src/api/api.cc b/src/api/api.cc
-index 8423f288efa3f058c11872c90546971a9aa0b8b8..ee8b2b3367d4d23171f72eed95cd180e5e7f8187 100644
+index 8423f288efa3f058c11872c90546971a9aa0b8b8..3d5eca79e41fce4e5ae750f667ec0590f72f7f48 100644
 --- a/src/api/api.cc
 +++ b/src/api/api.cc
-@@ -2217,6 +2217,13 @@ Local<Data> ScriptOrModule::HostDefinedOptions() {
-   return ToApiHandle<Data>(val);
- }
- 
-+// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-+// int ScriptOrModule::GetScriptId() const {
-+//   i::Handle<i::ScriptOrModule> self = Utils::OpenHandle(this);
-+//   return self->id();
-+// }
-+// #endif
-+
- Local<UnboundScript> Script::GetUnboundScript() {
-   i::DisallowGarbageCollection no_gc;
-   i::Handle<i::JSFunction> obj = Utils::OpenHandle(this);
-@@ -5405,6 +5412,24 @@ Local<v8::Value> Function::GetBoundFunction() const {
+@@ -5405,6 +5405,24 @@ Local<v8::Value> Function::GetBoundFunction() const {
    return v8::Undefined(reinterpret_cast<v8::Isolate*>(self->GetIsolate()));
  }
  
@@ -41,7 +27,7 @@ index 8423f288efa3f058c11872c90546971a9aa0b8b8..ee8b2b3367d4d23171f72eed95cd180e
  MaybeLocal<String> v8::Function::FunctionProtoToString(Local<Context> context) {
    PREPARE_FOR_EXECUTION(context, Function, FunctionProtoToString, String);
    auto self = Utils::OpenHandle(this);
-@@ -8389,6 +8414,33 @@ void Isolate::ReportExternalAllocationLimitReached() {
+@@ -8389,6 +8407,33 @@ void Isolate::ReportExternalAllocationLimitReached() {
    heap->ReportExternalMemoryPressure();
  }
  

@@ -1,5 +1,5 @@
 diff --git a/third_party/blink/renderer/bindings/core/v8/js_event_handler_for_content_attribute.cc b/third_party/blink/renderer/bindings/core/v8/js_event_handler_for_content_attribute.cc
-index 18108a283b6740c7a4095977cf5cc07d96831e6a..af6ca610c0e3df4efd3bc22247fa1c20eb00ff6b 100644
+index 18108a283b6740c7a4095977cf5cc07d96831e6a..74fb62e0eac09933c50972ca6c6791eaa15e8e18 100644
 --- a/third_party/blink/renderer/bindings/core/v8/js_event_handler_for_content_attribute.cc
 +++ b/third_party/blink/renderer/bindings/core/v8/js_event_handler_for_content_attribute.cc
 @@ -12,6 +12,8 @@
@@ -11,12 +11,12 @@ index 18108a283b6740c7a4095977cf5cc07d96831e6a..af6ca610c0e3df4efd3bc22247fa1c20
  namespace blink {
  
  JSEventHandlerForContentAttribute* JSEventHandlerForContentAttribute::Create(
-@@ -233,6 +235,8 @@ v8::Local<v8::Value> JSEventHandlerForContentAttribute::GetCompiledHandler(
-   // EventHandler callback function object whose object reference is function
+@@ -234,6 +236,8 @@ v8::Local<v8::Value> JSEventHandlerForContentAttribute::GetCompiledHandler(
    // and whose callback context is settings object.
    compiled_function->SetName(V8String(isolate, function_name_));
+   SetCompiledHandler(script_state_of_event_target, compiled_function);
 +  probe::RegisterPageGraphScriptCompilationFromAttr(
 +      &event_target, function_name_, script_body_, compiled_function);
-   SetCompiledHandler(script_state_of_event_target, compiled_function);
  
    return JSEventHandler::GetListenerObject(event_target);
+ }

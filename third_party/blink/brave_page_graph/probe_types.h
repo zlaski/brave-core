@@ -18,6 +18,7 @@ using PageGraphBlinkReceiverData = HashMap<String, String>;
 
 class ModuleScriptCreationParams;
 class PendingScript;
+class RegisteredEventListener;
 
 }  // namespace blink
 

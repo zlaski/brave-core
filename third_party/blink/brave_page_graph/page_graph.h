@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "third_party/blink/renderer/core/core_export.h"
 #include "third_party/blink/renderer/core/inspector/protocol/Protocol.h"
@@ -91,13 +92,10 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
   static PageGraph* GetFromExecutionContext(
       blink::ExecutionContext& exec_context);
 
-  PageGraph(/*blink::ExecutionContext& execution_context,*/
-            blink::LocalFrame* local_frame,
-            const WTF::String& frame_id/*,
-            const blink::DOMNodeId node_id,
-            const WTF::String& tag_name,
-            const blink::KURL& url*/);
+  explicit PageGraph(blink::LocalFrame* local_frame);
   ~PageGraph() override;
+
+  void Shutdown();
 
   void Trace(blink::Visitor*) const override;
 
@@ -106,9 +104,8 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
   // PageGraphAgent:
   void DidInsertDOMNode(blink::Node* node) override;
   void WillRemoveDOMNode(blink::Node* node) override;
-  void RegisterPageGraphNodeConstructed(blink::Node* node) override;
-  void RegisterPageGraphPendingScriptConstructed(
-      blink::PendingScript* pending_script) override;
+  void NodeCreated(blink::Node* node) override;
+  void RegisterPageGraphNodeFullyCreated(blink::Node* node) override;
   void RegisterPageGraphElmForLocalScript(blink::DOMNodeId dom_node_id,
                                           const String& source_text) override;
   void RegisterPageGraphElmForRemoteScript(blink::DOMNodeId dom_node_id,
@@ -173,6 +170,16 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
       blink::DocumentLoader*,
       const blink::ResourceError&,
       const base::UnguessableToken& devtools_frame_or_worker_token) override;
+  void RegisterPageGraphEventListenerAdd(
+      blink::EventTarget* event_target,
+      const String& event_type,
+      blink::RegisteredEventListener* registered_listener) override;
+  void RegisterPageGraphEventListenerRemove(
+      blink::EventTarget* event_target,
+      const String& event_type,
+      blink::RegisteredEventListener* registered_listener) override;
+  void RegisterPageGraphRemoteFrameCreated(
+      blink::HTMLFrameOwnerElement* frame_owner_element) override;
 
   bool IsActive() const;
 
@@ -186,11 +193,6 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
                                   const WTF::String& frame_id);
 
   void RegisterHTMLElementNodeCreated(
-      const blink::DOMNodeId node_id,
-      const WTF::String& tag_name,
-      const ElementType element_type = kElementTypeDefault);
-  // Used if it's possible the element has already been added previously
-  void TryRegisterHTMLElementNodeCreated(
       const blink::DOMNodeId node_id,
       const WTF::String& tag_name,
       const ElementType element_type = kElementTypeDefault);
@@ -325,8 +327,6 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
 
   std::chrono::milliseconds GetTimestamp() const;
 
-  void Log(const std::string& str) const;
-
  protected:
   void AddNode(Node* const node);
   void AddEdge(const Edge* const edge);
@@ -378,6 +378,8 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
   // frame tree.
   bool IsRootFrame() const;
 
+  void SpeculativelyRegisterCurrentlyConstructedNode(blink::DOMNodeId node_id);
+
   // Monotonically increasing counter, used so that we can replay the
   // the graph's construction if needed.
   PageGraphId id_counter_ = 0;
@@ -428,6 +430,10 @@ class CORE_EXPORT PageGraph : public blink::PageGraphAgent {
   // Index structure for storing and looking up nodes representing built
   // in JS funcs and methods. This map does not own the references.
   std::map<JSBuiltIn, NodeJSBuiltIn* const> builtin_js_nodes_;
+
+  // Keep track of currently constructed nodes to track not yet added nodes.
+  base::flat_map<blink::DOMNodeId, blink::UntracedMember<blink::Node>>
+      currently_constructed_nodes_;
 
   // Index structure for looking up HTML nodes.
   // This map does not own the references.

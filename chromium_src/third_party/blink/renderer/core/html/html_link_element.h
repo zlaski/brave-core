@@ -8,9 +8,10 @@
 
 #include "third_party/blink/renderer/core/loader/link_loader_client.h"
 
-#define IsLinkCreatedByParser       \
-  IsLinkCreatedByParser() override; \
-  HTMLLinkElement* GetOwner
+#define IsLinkCreatedByParser           \
+  NotUsed();                            \
+  HTMLLinkElement* GetOwner() override; \
+  bool IsLinkCreatedByParser
 
 #include "src/third_party/blink/renderer/core/html/html_link_element.h"
 

@@ -1,28 +1,12 @@
 diff --git a/third_party/blink/renderer/core/script/dynamic_module_resolver.cc b/third_party/blink/renderer/core/script/dynamic_module_resolver.cc
-index a0d413af87827f659d2277eb906402fd99db3981..73911a10fdad1558f320f6a07d1c929a65178097 100644
+index a0d413af87827f659d2277eb906402fd99db3981..797530272b108a101e9e559067a7d878e6f57dbc 100644
 --- a/third_party/blink/renderer/core/script/dynamic_module_resolver.cc
 +++ b/third_party/blink/renderer/core/script/dynamic_module_resolver.cc
-@@ -21,6 +21,8 @@
- #include "third_party/blink/renderer/platform/loader/fetch/fetch_client_settings_object_snapshot.h"
- #include "v8/include/v8.h"
- 
-+#include "third_party/blink/renderer/core/probe/core_probes.h"
-+
- namespace blink {
- 
- namespace {
-@@ -285,6 +287,14 @@ void DynamicModuleResolver::ResolveDynamically(
+@@ -285,6 +285,7 @@ void DynamicModuleResolver::ResolveDynamically(
        referrer_info.ParserState(), referrer_info.CredentialsMode(),
        referrer_info.GetReferrerPolicy(), mojom::blink::FetchPriorityHint::kAuto,
        RenderBlockingBehavior::kNonBlocking);
-+  if (CoreProbeSink::HasAgentsGlobal(CoreProbeSink::kPageGraphAgent)) {
-+    options.SetDOMNodeId(referrer_info.GetDOMNodeId());
-+    options.SetParentScriptId(
-+        modulator_->GetScriptState()->GetIsolate()->GetExecutingScriptId());
-+    probe::RegisterPageGraphModuleScriptForDescendant(
-+        ExecutionContext::From(modulator_->GetScriptState()),
-+        options.GetParentScriptId(), url);
-+  }
++  BRAVE_DYNAMIC_MODULE_RESOLVER_RESOLVE_DYNAMICALLY
  
    // <spec label="fetch-an-import()-module-script-graph" step="3">Fetch a single
    // module script given url, settings object, "script", options, settings

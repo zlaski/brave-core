@@ -1,8 +1,8 @@
 diff --git a/third_party/blink/renderer/core/probe/core_probes.json5 b/third_party/blink/renderer/core/probe/core_probes.json5
-index 502f6153937bd17bb8261fced4c4b2d595a9f329..b151379e9300d51b719ae5d1e18ead27c7828c45 100644
+index 502f6153937bd17bb8261fced4c4b2d595a9f329..e7dfe5fa1fd56fe6a71a7a078f89d050b8865ffd 100644
 --- a/third_party/blink/renderer/core/probe/core_probes.json5
 +++ b/third_party/blink/renderer/core/probe/core_probes.json5
-@@ -17,6 +17,34 @@
+@@ -17,6 +17,37 @@
      ],
    },
    observers: {
@@ -12,8 +12,8 @@ index 502f6153937bd17bb8261fced4c4b2d595a9f329..b151379e9300d51b719ae5d1e18ead27
 +        "DidInsertDOMNode",
 +        "WillRemoveDOMNode",
 +        "DidCommitLoad",
-+        "RegisterPageGraphNodeConstructed",
-+        "RegisterPageGraphPendingScriptConstructed",
++        "NodeCreated",
++        "RegisterPageGraphNodeFullyCreated",
 +        "RegisterPageGraphElmForLocalScript",
 +        "RegisterPageGraphElmForRemoteScript",
 +        "RegisterPageGraphUrlForScriptSource",
@@ -32,6 +32,9 @@ index 502f6153937bd17bb8261fced4c4b2d595a9f329..b151379e9300d51b719ae5d1e18ead27
 +        "DidReceiveBlob",
 +        "DidFinishLoading",
 +        "DidFailLoading",
++        "RegisterPageGraphEventListenerAdd",
++        "RegisterPageGraphEventListenerRemove",
++        "RegisterPageGraphRemoteFrameCreated",
 +      ]
 +    },
      AdTracker: {

@@ -43,6 +43,7 @@ class BlobDataHandle;
 class PendingScript;
 class ClassicScript;
 class EventTarget;
+class HTMLFrameOwnerElement;
 
 class CORE_EXPORT PageGraphAgent : public GarbageCollected<PageGraphAgent> {
  public:
@@ -53,8 +54,8 @@ class CORE_EXPORT PageGraphAgent : public GarbageCollected<PageGraphAgent> {
   virtual void DidInsertDOMNode(Node*) = 0;
   virtual void WillRemoveDOMNode(Node*) = 0 ;
   virtual void DidCommitLoad(LocalFrame*, DocumentLoader*) = 0;
-  virtual void RegisterPageGraphNodeConstructed(Node*) = 0;
-  virtual void RegisterPageGraphPendingScriptConstructed(PendingScript*) = 0;
+  virtual void NodeCreated(Node*) = 0;
+  virtual void RegisterPageGraphNodeFullyCreated(Node*) = 0;
   virtual void RegisterPageGraphElmForLocalScript(
       DOMNodeId dom_node_id,
       const String& source_text) = 0;
@@ -116,6 +117,16 @@ class CORE_EXPORT PageGraphAgent : public GarbageCollected<PageGraphAgent> {
       DocumentLoader*,
       const ResourceError&,
       const base::UnguessableToken& devtools_frame_or_worker_token) = 0;
+  virtual void RegisterPageGraphEventListenerAdd(
+      EventTarget*,
+      const String& event_type,
+      RegisteredEventListener* registered_listener) = 0;
+  virtual void RegisterPageGraphEventListenerRemove(
+      EventTarget*,
+      const String& event_type,
+      RegisteredEventListener* registered_listener) = 0;
+  virtual void RegisterPageGraphRemoteFrameCreated(
+      HTMLFrameOwnerElement* frame_owner_element) = 0;
 };
 
 }  // namespace blink

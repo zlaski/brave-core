@@ -63,7 +63,7 @@ def _should_track_in_page_graph(cg_context):
     if not cg_context.property_:
         return False
 
-    return True
+    # return True
 
     tracked_class_items = _PAGE_GRAPH_TRACKED_ITEMS.get(
         cg_context.class_like.identifier, None)
