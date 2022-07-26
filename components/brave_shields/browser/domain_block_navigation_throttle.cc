@@ -43,11 +43,10 @@ bool ShouldBlockDomainOnTaskRunner(
   // are all "first-party", but the throttle is already only called when
   // necessary.
   bool aggressive_blocking = true;
-  const brave_shields::BlockDecision* block_decision = nullptr;
   ad_block_service->ShouldStartRequest(
       url, blink::mojom::ResourceType::kMainFrame, url.host(),
       aggressive_blocking, &did_match_rule, &did_match_exception,
-      &did_match_important, &mock_data_url, &block_decision);
+      &did_match_important, &mock_data_url, nullptr);
   return (did_match_important || (did_match_rule && !did_match_exception));
 }
 

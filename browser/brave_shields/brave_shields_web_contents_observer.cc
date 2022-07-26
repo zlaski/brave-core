@@ -126,36 +126,29 @@ void BraveShieldsWebContentsObserver::DispatchBlockedEvent(
   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
 
   // #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
-  {
-    if (block_decision->IsAdBlockDecision() ||
-        block_decision->IsTrackerBlockDecision()) {
-      RenderFrameHost* rfh = nullptr;
-
-      WebContents* web_contents =
-          WebContents::FromFrameTreeNodeId(frame_tree_node_id);
-      if (web_contents) {
-        rfh = web_contents->GetMainFrame();
+  if (block_decision && (block_decision->IsAdBlockDecision() ||
+                         block_decision->IsTrackerBlockDecision())) {
+    WebContents* web_contents =
+        WebContents::FromFrameTreeNodeId(frame_tree_node_id);
+    auto& remote =
+        BraveShieldsWebContentsObserver::FromWebContents(web_contents)
+            ->GetBraveShieldsRemote(web_contents->GetMainFrame());
+    if (remote) {
+      const AdBlockDecision* const ad_block_decision =
+          block_decision->AsAdBlockDecision();
+      if (ad_block_decision) {
+        remote->RegisterResourceBlockAd(request_url, ad_block_decision->Rule());
       }
 
-      if (rfh) {
-        const AdBlockDecision* const ad_block_decision =
-            block_decision->AsAdBlockDecision();
-        if (ad_block_decision) {
-          rfh->RegisterResourceBlockAd(request_url, ad_block_decision->Rule());
-        }
-
-        const TrackerBlockDecision* const tracker_block_decision =
-            block_decision->AsTrackerBlockDecision();
-        if (tracker_block_decision) {
-          rfh->RegisterResourceBlockTracker(request_url,
-                                            tracker_block_decision->Host());
-        }
+      const TrackerBlockDecision* const tracker_block_decision =
+          block_decision->AsTrackerBlockDecision();
+      if (tracker_block_decision) {
+        remote->RegisterResourceBlockTracker(request_url,
+                                             tracker_block_decision->Host());
       }
     }
   }
   // #endif
-
-  delete block_decision;
 
   auto subresource = request_url.spec();
   WebContents* web_contents =

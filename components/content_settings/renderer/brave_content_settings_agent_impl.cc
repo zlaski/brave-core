@@ -368,6 +368,30 @@ void BraveContentSettingsAgentImpl::SetReduceLanguageEnabled(bool enabled) {
   reduce_language_enabled_ = enabled;
 }
 
+void BraveContentSettingsAgentImpl::RegisterResourceBlockAd(
+    const GURL& url,
+    const std::string& rule) {
+#if BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
+  blink::WebPageGraph* page_graph =
+      render_frame()->GetWebFrame()->GetWebPageGraph();
+  if (page_graph) {
+    page_graph->RegisterResourceBlockAd(url, rule);
+  }
+#endif  // BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
+}
+
+void BraveContentSettingsAgentImpl::RegisterResourceBlockTracker(
+    const GURL& url,
+    const std::string& host) {
+#if BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
+  blink::WebPageGraph* page_graph =
+      render_frame()->GetWebFrame()->GetWebPageGraph();
+  if (page_graph) {
+    page_graph->RegisterResourceBlockTracker(url, host);
+  }
+#endif  // BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
+}
+
 void BraveContentSettingsAgentImpl::BindBraveShieldsReceiver(
     mojo::PendingAssociatedReceiver<brave_shields::mojom::BraveShields>
         pending_receiver) {

@@ -92,7 +92,7 @@ struct BraveRequestInfo {
 
   content::BrowserContext* browser_context = nullptr;
 
-  const brave_shields::BlockDecision* block_decision = nullptr;
+  std::unique_ptr<brave_shields::BlockDecision> block_decision;
 
   net::HttpRequestHeaders* headers = nullptr;
   // The following two sets are populated by |OnBeforeStartTransactionCallback|.

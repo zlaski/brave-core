@@ -33,15 +33,16 @@ class BaseBraveShieldsService {
   virtual ~BaseBraveShieldsService();
   bool Start();
   bool IsInitialized() const;
-  virtual void ShouldStartRequest(const GURL& url,
-                                  blink::mojom::ResourceType resource_type,
-                                  const std::string& tab_host,
-                                  bool aggressive_blocking,
-                                  bool* did_match_rule,
-                                  bool* did_match_exception,
-                                  bool* did_match_important,
-                                  std::string* mock_data_url,
-                                  const BlockDecision** block_decision);
+  virtual void ShouldStartRequest(
+      const GURL& url,
+      blink::mojom::ResourceType resource_type,
+      const std::string& tab_host,
+      bool aggressive_blocking,
+      bool* did_match_rule,
+      bool* did_match_exception,
+      bool* did_match_important,
+      std::string* mock_data_url,
+      std::unique_ptr<BlockDecision>* block_decision);
 
   scoped_refptr<base::SequencedTaskRunner> GetTaskRunner();
 

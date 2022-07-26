@@ -65,7 +65,7 @@ class AdBlockRegionalServiceManager
                           bool* did_match_exception,
                           bool* did_match_important,
                           std::string* mock_data_url,
-                          const BlockDecision** block_decision);
+                          std::unique_ptr<BlockDecision>* block_decision);
   absl::optional<std::string> GetCspDirectives(
       const GURL& url,
       blink::mojom::ResourceType resource_type,
