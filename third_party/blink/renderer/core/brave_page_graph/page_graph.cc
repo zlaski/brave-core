@@ -6,9 +6,7 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
 
 #include <signal.h>
-#include <chrono>
 #include <climits>
-#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -19,8 +17,8 @@
 
 #include <libxml/tree.h>
 
-#include "base/no_destructor.h"
 #include "base/json/json_string_value_serializer.h"
+#include "base/no_destructor.h"
 
 #include "brave/v8/include/v8-isolate-page-graph-utils.h"
 
@@ -169,10 +167,6 @@ using ::std::string;
 using ::std::stringstream;
 using ::std::unique_ptr;
 using ::std::vector;
-using ::std::chrono::duration_cast;
-using ::std::chrono::milliseconds;
-using ::std::chrono::seconds;
-using ::std::chrono::system_clock;
 
 using ::blink::ClassicScript;
 using ::blink::Document;
@@ -242,10 +236,6 @@ class V8PageGraphDelegate : public v8::page_graph::PageGraphDelegate {
 
 }  // namespace
 
-milliseconds NowInMs() {
-  return duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-}
-
 PageGraph::PageGraph(blink::LocalFrame* local_frame)
     : local_frame_(local_frame),
       frame_id_(blink::IdentifiersFactory::FrameId(local_frame_).Utf8()),
@@ -261,7 +251,7 @@ PageGraph::PageGraph(blink::LocalFrame* local_frame)
       cookie_jar_node_(new NodeStorageCookieJar(this)),
       local_storage_node_(new NodeStorageLocalStorage(this)),
       session_storage_node_(new NodeStorageSessionStorage(this)),
-      start_(NowInMs()) {
+      start_(base::TimeTicks::Now()) {
   DCHECK(local_frame_->IsLocalRoot());
 
   AddNode(parser_node_);
@@ -796,7 +786,7 @@ void PageGraph::RegisterRequestStartForDocument(const DOMNodeId frame_id,
                                                 const InspectorId request_id,
                                                 const blink::KURL& url,
                                                 const bool is_main_frame) {
-  const milliseconds timestamp = NowInMs() - start_;
+  const base::TimeDelta timestamp = base::TimeTicks::Now() - start_;
 
   const KURL normalized_url = NormalizeUrl(url);
   const string local_url(normalized_url.GetString().Utf8().data());
@@ -812,13 +802,13 @@ void PageGraph::RegisterRequestStartForDocument(const DOMNodeId frame_id,
       return;
     }
     root_request_record_ = DocumentRequest{
-        request_id,
-        local_url,
-        is_main_frame,
-        timestamp,
-        absl::nullopt,
-        0,
-        std::chrono::milliseconds::zero(),
+        .request_id = request_id,
+        .url = local_url,
+        .is_main_frame = is_main_frame,
+        .start_timestamp = timestamp,
+        .response_metadata = absl::nullopt,
+        .size = 0,
+        .complete_timestamp = base::TimeDelta(),
     };
   } else {
     request_tracker_.RegisterDocumentRequestStart(
@@ -834,7 +824,7 @@ void PageGraph::RegisterRequestCompleteForDocument(const InspectorId request_id,
   VLOG(1) << "RegisterRequestCompleteForDocument) request id: " << request_id
           << ", size: " << size;
 
-  const milliseconds timestamp = NowInMs() - start_;
+  const base::TimeDelta timestamp = base::TimeTicks::Now() - start_;
 
   if (root_request_record_ && root_request_record_->request_id == request_id) {
     root_request_record_->size = size;
@@ -1025,7 +1015,6 @@ void PageGraph::RegisterScriptCompilationFromAttr(
     const String& attr_value,
     const ScriptId script_id) {
   string local_attr_name(attr_name.Utf8().data());
-  string local_attr_value(attr_value.Utf8().data());
   VLOG(1) << "RegisterScriptCompilationFromAttr) script id: " << script_id
           << ", node id: " << node_id << ", attr name: ";
   script_tracker_.AddScriptId(script_id, attr_value.Impl()->GetHash());
@@ -1421,14 +1410,15 @@ string PageGraph::ToGraphML() const {
       xmlNewChild(desc_container_node, nullptr, BAD_CAST "time", nullptr);
 
   xmlNewTextChild(time_container_node, nullptr, BAD_CAST "start",
-                  BAD_CAST base::NumberToString(start_.count()).c_str());
+                  BAD_CAST base::NumberToString(0).c_str());
 
-  const milliseconds end_time = NowInMs();
-  xmlNewTextChild(time_container_node, nullptr, BAD_CAST "end",
-                  BAD_CAST base::NumberToString(end_time.count()).c_str());
+  const base::TimeDelta end_time = base::TimeTicks::Now() - start_;
+  xmlNewTextChild(
+      time_container_node, nullptr, BAD_CAST "end",
+      BAD_CAST base::NumberToString(end_time.InMilliseconds()).c_str());
 
-  for (const GraphMLAttr* const graphml_attr : GetGraphMLAttrs()) {
-    graphml_attr->AddDefinitionNode(graphml_root_node);
+  for (const auto& graphml_attr : GetGraphMLAttrs()) {
+    graphml_attr.second->AddDefinitionNode(graphml_root_node);
   }
 
   xmlNodePtr graph_node =
@@ -1454,7 +1444,7 @@ string PageGraph::ToGraphML() const {
   return graphml_string;
 }
 
-milliseconds PageGraph::GetTimestamp() const {
+base::TimeTicks PageGraph::GetStartTime() const {
   return start_;
 }
 

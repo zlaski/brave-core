@@ -49,7 +49,7 @@ void Edge::AddGraphMLAttributes(xmlDocPtr doc, xmlNodePtr parent_node) const {
       ->AddValueNode(doc, parent_node, GetId());
   if (graph_ != nullptr) {
     GraphMLAttrDefForType(kGraphMLAttrDefPageGraphEdgeTimestamp)
-        ->AddValueNode(doc, parent_node, GetMicroSecSincePageStart());
+        ->AddValueNode(doc, parent_node, GetTimeDeltaSincePageStart());
   }
 }
 

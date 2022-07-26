@@ -7,12 +7,11 @@
 #define BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_GRAPHML_H_
 
 #include <libxml/tree.h>
-#include <chrono>
 #include <string>
 #include <vector>
-#include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
-using ::std::chrono::milliseconds;
+#include "base/containers/flat_map.h"
+#include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
 namespace brave_page_graph {
 
@@ -45,7 +44,7 @@ class GraphMLAttr {
                     const double value) const;
   void AddValueNode(xmlDocPtr doc,
                     xmlNodePtr parent_node,
-                    const milliseconds value) const;
+                    const base::TimeDelta value) const;
 
  protected:
   const uint64_t id_;
@@ -54,8 +53,9 @@ class GraphMLAttr {
   const GraphMLAttrType type_;
 };
 
+using GraphMLAttrs = base::flat_map<GraphMLAttrDef, const GraphMLAttr*>;
+const GraphMLAttrs& GetGraphMLAttrs() noexcept;
 const GraphMLAttr* GraphMLAttrDefForType(const GraphMLAttrDef type) noexcept;
-const std::vector<const GraphMLAttr* const>& GetGraphMLAttrs();
 
 }  // namespace brave_page_graph
 

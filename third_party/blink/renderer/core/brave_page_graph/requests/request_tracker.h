@@ -6,13 +6,13 @@
 #ifndef BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_REQUESTS_REQUEST_TRACKER_H_
 #define BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_REQUESTS_REQUEST_TRACKER_H_
 
-#include <chrono>
 #include <map>
 #include <memory>
 #include <string>
 #include <utility>
 
 #include "base/memory/ref_counted.h"
+#include "base/time/time.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/utilities/response_metadata.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
@@ -34,14 +34,14 @@ struct DocumentRequest {
   InspectorId request_id;
   std::string url;
   bool is_main_frame;
-  std::chrono::milliseconds start_timestamp;
+  base::TimeDelta start_timestamp;
 
   // Information available at response
   absl::optional<ResponseMetadata> response_metadata;
 
   // Information available at request completion
   int64_t size;
-  std::chrono::milliseconds complete_timestamp;
+  base::TimeDelta complete_timestamp;
 };
 
 class RequestTracker {
@@ -68,11 +68,10 @@ class RequestTracker {
                                     const blink::DOMNodeId frame_id,
                                     const std::string& url,
                                     const bool is_main_frame,
-                                    const std::chrono::milliseconds timestamp);
-  void RegisterDocumentRequestComplete(
-      const InspectorId request_id,
-      const int64_t size,
-      const std::chrono::milliseconds timestamp);
+                                    const base::TimeDelta timestamp);
+  void RegisterDocumentRequestComplete(const InspectorId request_id,
+                                       const int64_t size,
+                                       const base::TimeDelta timestamp);
   DocumentRequest* GetDocumentRequestInfo(const InspectorId request_id);
   TrackedRequestRecord* GetTrackingRecord(const InspectorId request_id);
 

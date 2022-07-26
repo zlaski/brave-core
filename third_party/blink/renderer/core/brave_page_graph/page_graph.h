@@ -6,12 +6,12 @@
 #ifndef BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_PAGE_GRAPH_H_
 #define BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_PAGE_GRAPH_H_
 
-#include <chrono>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
+#include "base/time/time.h"
 #include "brave/third_party/blink/public/web/web_page_graph.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/blink_probe_types.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/requests/request_tracker.h"
@@ -97,8 +97,6 @@ class NodeJSWebAPI;
 class RequestTracker;
 class ScriptTracker;
 struct TrackedRequestRecord;
-
-::std::chrono::milliseconds NowInMs();
 
 class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
                               public blink::WebPageGraph {
@@ -346,7 +344,7 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
 
   std::string ToGraphML() const;
 
-  std::chrono::milliseconds GetTimestamp() const;
+  base::TimeTicks GetStartTime() const;
 
  protected:
   void AddNode(Node* const node);
@@ -490,7 +488,7 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
   // have been made, but have not completed.
   RequestTracker request_tracker_;
 
-  std::chrono::milliseconds start_;
+  base::TimeTicks start_;
 };
 
 }  // namespace brave_page_graph

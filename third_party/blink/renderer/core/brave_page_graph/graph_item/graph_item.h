@@ -7,9 +7,8 @@
 #define BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_GRAPH_ITEM_GRAPH_ITEM_H_
 
 #include <libxml/tree.h>
-#include <chrono>
-#include <ctime>
 
+#include "base/time/time.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
 namespace brave_page_graph {
@@ -24,7 +23,7 @@ class GraphItem {
   virtual ~GraphItem();
 
   PageGraphId GetId() const { return id_; }
-  ::std::chrono::milliseconds GetTimestamp() const { return time_; }
+  base::TimeTicks GetTimestamp() const { return time_; }
 
   virtual ItemName GetItemName() const = 0;
   virtual ItemDesc GetItemDesc() const;
@@ -37,7 +36,7 @@ class GraphItem {
   virtual bool IsEdge() const;
   virtual bool IsNode() const;
 
-  ::std::chrono::milliseconds GetMicroSecSincePageStart() const;
+  base::TimeDelta GetTimeDeltaSincePageStart() const;
 
  protected:
   explicit GraphItem(PageGraph* const graph);
@@ -50,7 +49,7 @@ class GraphItem {
   static void StartGraphMLExport(PageGraphId id_counter);
 
   const PageGraphId id_;
-  const ::std::chrono::milliseconds time_;
+  const base::TimeTicks time_;
   PageGraph* const graph_ = nullptr;
 };
 

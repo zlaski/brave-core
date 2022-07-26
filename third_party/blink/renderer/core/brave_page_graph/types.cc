@@ -23,8 +23,6 @@ string GraphMLAttrTypeToString(const GraphMLAttrType type) noexcept {
       return "boolean";
     case kGraphMLAttrTypeInt:
       return "int";
-    case kGraphMLAttrTypeLong:
-      return "long";
     case kGraphMLAttrTypeFloat:
       return "float";
     case kGraphMLAttrTypeDouble:

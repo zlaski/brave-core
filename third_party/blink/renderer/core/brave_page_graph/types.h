@@ -82,7 +82,6 @@ typedef enum {
   kGraphMLAttrTypeString = 0,
   kGraphMLAttrTypeBoolean,
   kGraphMLAttrTypeInt,
-  kGraphMLAttrTypeLong,
   kGraphMLAttrTypeFloat,
   kGraphMLAttrTypeDouble,
   kGraphMLAttrTypeUnknown

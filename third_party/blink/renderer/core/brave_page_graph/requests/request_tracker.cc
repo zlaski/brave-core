@@ -67,7 +67,7 @@ void RequestTracker::RegisterDocumentRequestStart(
     const blink::DOMNodeId frame_id,
     const std::string& url,
     const bool is_main_frame,
-    const std::chrono::milliseconds timestamp) {
+    const base::TimeDelta timestamp) {
   // Any previous document requests from this root should have been canceled.
   if (document_request_initiators_.count(frame_id) != 0) {
     PG_LOG_ASSERT(document_request_initiators_.at(frame_id) == request_id);
@@ -79,13 +79,8 @@ void RequestTracker::RegisterDocumentRequestStart(
   PG_LOG_ASSERT(document_requests_.count(request_id) == 0);
 
   auto request_record = DocumentRequest{
-      request_id,
-      url,
-      is_main_frame,
-      timestamp,
-      absl::nullopt,
-      0,
-      std::chrono::milliseconds::zero(),
+      request_id,    url, is_main_frame,     timestamp,
+      absl::nullopt, 0,   base::TimeDelta(),
   };
   document_request_initiators_.emplace(frame_id, request_id);
   document_requests_.emplace(request_id, request_record);
@@ -94,7 +89,7 @@ void RequestTracker::RegisterDocumentRequestStart(
 void RequestTracker::RegisterDocumentRequestComplete(
     const InspectorId request_id,
     const int64_t size,
-    const std::chrono::milliseconds timestamp) {
+    const base::TimeDelta timestamp) {
   // The request should have been started previously.
   PG_LOG_ASSERT(document_requests_.count(request_id) != 0);
 
@@ -102,8 +97,7 @@ void RequestTracker::RegisterDocumentRequestComplete(
 
   // The request should not have been completed previously.
   PG_LOG_ASSERT(request_record.size == 0);
-  PG_LOG_ASSERT(request_record.complete_timestamp ==
-                std::chrono::milliseconds::zero());
+  PG_LOG_ASSERT(request_record.complete_timestamp == base::TimeDelta());
 
   request_record.size = size;
   request_record.complete_timestamp = timestamp;
