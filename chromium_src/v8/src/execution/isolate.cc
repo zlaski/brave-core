@@ -61,8 +61,7 @@ v8::page_graph::ExecutingScript Isolate::GetExecutingScript(
   return v8::page_graph::ExecutingScript();
 }
 
-std::vector<v8::page_graph::ExecutingScript>
-Isolate::GetAllExecutingScripts() {
+std::vector<v8::page_graph::ExecutingScript> Isolate::GetAllExecutingScripts() {
   return GetExecutingScriptsImpl(this, true, true);
 }
 #endif  // BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
