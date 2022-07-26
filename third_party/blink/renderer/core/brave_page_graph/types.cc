@@ -10,12 +10,9 @@
 #include "third_party/blink/renderer/core/dom/dom_node_ids.h"
 #include "third_party/blink/renderer/platform/loader/fetch/resource.h"
 
-using ::std::map;
-using ::std::string;
-
 namespace brave_page_graph {
 
-string GraphMLAttrTypeToString(const GraphMLAttrType type) noexcept {
+std::string GraphMLAttrTypeToString(const GraphMLAttrType type) noexcept {
   switch (type) {
     case kGraphMLAttrTypeString:
       return "string";
@@ -33,7 +30,7 @@ string GraphMLAttrTypeToString(const GraphMLAttrType type) noexcept {
   }
 }
 
-string GraphMLForTypeToString(const GraphMLAttrForType type) noexcept {
+std::string GraphMLForTypeToString(const GraphMLAttrForType type) noexcept {
   switch (type) {
     case kGraphMLAttrForTypeNode:
       return "node";
@@ -45,7 +42,7 @@ string GraphMLForTypeToString(const GraphMLAttrForType type) noexcept {
   }
 }
 
-string RequestTypeToString(const RequestType type) noexcept {
+std::string RequestTypeToString(const RequestType type) noexcept {
   switch (type) {
     case kRequestTypeAJAX:
       return "AJAX";
@@ -75,7 +72,7 @@ string RequestTypeToString(const RequestType type) noexcept {
   }
 }
 
-string ResourceTypeToString(const blink::ResourceType type) noexcept {
+std::string ResourceTypeToString(const blink::ResourceType type) noexcept {
   switch (type) {
     case blink::ResourceType::kImage:
       return "image";
@@ -106,7 +103,7 @@ string ResourceTypeToString(const blink::ResourceType type) noexcept {
   }
 }
 
-string ScriptTypeToString(const ScriptType type) noexcept {
+std::string ScriptTypeToString(const ScriptType type) noexcept {
   switch (type) {
     case kScriptTypeClassic:
       return "classic";
@@ -138,7 +135,7 @@ string ScriptTypeToString(const ScriptType type) noexcept {
   }
 }
 
-string RequestStatusToString(const RequestStatus status) noexcept {
+std::string RequestStatusToString(const RequestStatus status) noexcept {
   switch (status) {
     case kRequestStatusStart:
       return "started";
@@ -151,7 +148,7 @@ string RequestStatusToString(const RequestStatus status) noexcept {
   }
 }
 
-string StorageLocationToString(const StorageLocation location) noexcept {
+std::string StorageLocationToString(const StorageLocation location) noexcept {
   switch (location) {
     case kStorageLocationCookie:
       return "cookie";

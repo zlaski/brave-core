@@ -14,15 +14,13 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
 EdgeEventListenerAction::EdgeEventListenerAction(
     PageGraph* const graph,
     NodeActor* const out_node,
     NodeHTMLElement* const in_node,
-    const string& event_type,
+    const std::string& event_type,
     const EventListenerId listener_id,
     const ScriptId listener_script_id)
     : Edge(graph, out_node, in_node),

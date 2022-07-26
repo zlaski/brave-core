@@ -13,9 +13,6 @@
 #include "third_party/blink/renderer/platform/loader/fetch/resource.h"
 #include "third_party/blink/renderer/platform/wtf/text/base64.h"
 
-using ::std::string;
-using ::std::vector;
-
 namespace brave_page_graph {
 
 TrackedRequest::~TrackedRequest() {}
@@ -66,7 +63,7 @@ InspectorId TrackedRequest::GetRequestId() const {
   return request_id_;
 }
 
-const vector<Node*>& TrackedRequest::GetRequesters() const {
+const std::vector<Node*>& TrackedRequest::GetRequesters() const {
   return requesters_;
 }
 
@@ -138,7 +135,7 @@ void TrackedRequest::SetResponseMetadata(const ResponseMetadata& metadata) {
   response_metadata_ = metadata;
 }
 
-const string& TrackedRequest::GetResponseBodyHash() const {
+const std::string& TrackedRequest::GetResponseBodyHash() const {
   PG_LOG_ASSERT(request_status_ == RequestStatus::kSuccess);
   PG_LOG_ASSERT(!hash_.empty());
   return hash_;

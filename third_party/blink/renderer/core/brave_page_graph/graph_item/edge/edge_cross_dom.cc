@@ -17,8 +17,6 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/edge_cross_dom.h"
 
-using ::std::string;
-
 using ::blink::DOMNodeId;
 
 namespace brave_page_graph {

@@ -15,17 +15,14 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
-using ::std::string;
-using ::std::stringstream;
-
 using ::blink::DOMNodeId;
 
 namespace brave_page_graph {
 
 NodeDOMRoot::NodeDOMRoot(PageGraph* const graph,
                          const DOMNodeId node_id,
-                         const string& tag_name,
-                         const string& url)
+                         const std::string& tag_name,
+                         const std::string& url)
     : NodeHTMLElement(graph, node_id, tag_name), url_(url) {}
 
 ItemName NodeDOMRoot::GetItemName() const {
@@ -33,7 +30,7 @@ ItemName NodeDOMRoot::GetItemName() const {
 }
 
 ItemDesc NodeDOMRoot::GetItemDesc() const {
-  stringstream builder;
+  std::stringstream builder;
   builder << NodeHTMLElement::GetItemDesc();
 
   if (!url_.empty()) {

@@ -18,9 +18,6 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/edge.h"
 
-using ::std::string;
-using ::std::vector;
-
 namespace brave_page_graph {
 
 Node::Node(PageGraph* const graph) : GraphItem(graph) {}

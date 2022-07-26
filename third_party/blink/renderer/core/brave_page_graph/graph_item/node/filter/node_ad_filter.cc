@@ -12,8 +12,6 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
 
-using ::std::stringstream;
-
 namespace brave_page_graph {
 
 NodeAdFilter::NodeAdFilter(PageGraph* const graph, const std::string& rule)
@@ -26,7 +24,7 @@ ItemName NodeAdFilter::GetItemName() const {
 }
 
 ItemDesc NodeAdFilter::GetItemDesc() const {
-  stringstream builder;
+  std::stringstream builder;
   builder << NodeFilter::GetItemDesc();
   if (!rule_.empty()) {
     builder << " [" << rule_ << "]";

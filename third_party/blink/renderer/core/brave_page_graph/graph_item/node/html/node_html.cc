@@ -20,7 +20,6 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/node.h"
 
 using ::blink::DynamicTo;
-using ::std::stringstream;
 
 namespace brave_page_graph {
 
@@ -38,7 +37,7 @@ void NodeHTML::MarkDeleted() {
 }
 
 ItemDesc NodeHTML::GetItemDesc() const {
-  stringstream builder;
+  std::stringstream builder;
   builder << Node::GetItemDesc();
   if (is_deleted_) {
     builder << " [deleted]";

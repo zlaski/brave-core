@@ -15,8 +15,6 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/utilities/response_metadata.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
 EdgeRequestResponse::EdgeRequestResponse(PageGraph* const graph,

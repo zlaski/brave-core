@@ -17,9 +17,6 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/html/node_html_element.h"
 
-using ::std::string;
-using ::std::stringstream;
-
 using ::blink::DynamicTo;
 
 namespace brave_page_graph {
@@ -42,7 +39,7 @@ ItemName NodeScript::GetItemName() const {
 }
 
 ItemDesc NodeScript::GetItemDesc() const {
-  stringstream builder;
+  std::stringstream builder;
   builder << NodeActor::GetItemDesc();
 
   if (!url_.empty()) {

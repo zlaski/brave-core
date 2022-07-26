@@ -15,8 +15,6 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
 Edge::Edge(PageGraph* const graph, Node* const out_node, Node* const in_node)

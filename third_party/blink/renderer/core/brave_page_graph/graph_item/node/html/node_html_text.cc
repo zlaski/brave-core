@@ -31,13 +31,12 @@
 
 using ::blink::DOMNodeId;
 using ::blink::DynamicTo;
-using ::std::string;
 
 namespace brave_page_graph {
 
 NodeHTMLText::NodeHTMLText(PageGraph* const graph,
                            const DOMNodeId node_id,
-                           const string& text)
+                           const std::string& text)
     : NodeHTML(graph, node_id), text_(text) {}
 
 NodeHTMLText::~NodeHTMLText() {}

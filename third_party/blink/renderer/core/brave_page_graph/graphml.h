@@ -18,10 +18,9 @@ namespace brave_page_graph {
 class GraphMLAttr {
  public:
   GraphMLAttr() = delete;
-  GraphMLAttr(const GraphMLAttrForType for_value, const std::string& name);
   GraphMLAttr(const GraphMLAttrForType for_value,
               const std::string& name,
-              const GraphMLAttrType type);
+              const GraphMLAttrType type = kGraphMLAttrTypeString);
   GraphMLId GetGraphMLId() const;
   void AddDefinitionNode(xmlNodePtr parent_node) const;
   void AddValueNode(xmlDocPtr doc,

@@ -13,15 +13,13 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
-using ::std::string;
-
 using ::blink::DOMNodeId;
 
 namespace brave_page_graph {
 
 NodeFrameOwner::NodeFrameOwner(PageGraph* const graph,
                                const DOMNodeId node_id,
-                               const string& tag_name)
+                               const std::string& tag_name)
     : NodeHTMLElement(graph, node_id, tag_name) {}
 
 ItemName NodeFrameOwner::GetItemName() const {

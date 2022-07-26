@@ -13,11 +13,9 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/node.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
-NodeShield::NodeShield(PageGraph* const graph, const string& type)
+NodeShield::NodeShield(PageGraph* const graph, const std::string& type)
     : Node(graph), type_(type) {}
 
 NodeShield::~NodeShield() {}

@@ -13,8 +13,6 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/node.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
 EdgeJS::EdgeJS(PageGraph* const graph,

@@ -19,26 +19,14 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
-using ::std::endl;
-using ::std::map;
-using ::std::string;
-using ::std::unique_ptr;
-using ::std::vector;
-
 namespace brave_page_graph {
 
 namespace {
 uint32_t graphml_index = 0;
 }
 
-GraphMLAttr::GraphMLAttr(const GraphMLAttrForType for_value, const string& name)
-    : id_(++graphml_index),
-      for_(for_value),
-      name_(name),
-      type_(kGraphMLAttrTypeString) {}
-
 GraphMLAttr::GraphMLAttr(const GraphMLAttrForType for_value,
-                         const string& name,
+                         const std::string& name,
                          const GraphMLAttrType type)
     : id_(++graphml_index), for_(for_value), name_(name), type_(type) {}
 
@@ -60,12 +48,12 @@ void GraphMLAttr::AddDefinitionNode(xmlNodePtr parent_node) const {
 void GraphMLAttr::AddValueNode(xmlDocPtr doc,
                                xmlNodePtr parent_node,
                                const char* value) const {
-  AddValueNode(doc, parent_node, string(value));
+  AddValueNode(doc, parent_node, std::string(value));
 }
 
 void GraphMLAttr::AddValueNode(xmlDocPtr doc,
                                xmlNodePtr parent_node,
-                               const string& value) const {
+                               const std::string& value) const {
   PG_LOG_ASSERT(type_ == kGraphMLAttrTypeString);
   xmlChar* encoded_content =
       xmlEncodeEntitiesReentrant(doc, BAD_CAST value.c_str());

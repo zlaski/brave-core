@@ -16,14 +16,12 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/html/node_html_element.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
 EdgeAttributeDelete::EdgeAttributeDelete(PageGraph* const graph,
                                          NodeActor* const out_node,
                                          NodeHTMLElement* const in_node,
-                                         const string& name,
+                                         const std::string& name,
                                          const bool is_style)
     : EdgeAttribute(graph, out_node, in_node, name, is_style) {}
 

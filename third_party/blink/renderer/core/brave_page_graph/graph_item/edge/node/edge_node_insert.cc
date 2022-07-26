@@ -22,9 +22,6 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/html/node_html_element.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/html/node_html_text.h"
 
-using ::std::string;
-using ::std::stringstream;
-
 using ::blink::DOMNodeId;
 
 namespace brave_page_graph {
@@ -61,7 +58,7 @@ ItemDesc EdgeNodeInsert::GetItemDesc() const {
 
   const Node* const prior_sibling_node = GetPriorSiblingNode();
 
-  stringstream builder;
+  std::stringstream builder;
   builder << EdgeNode::GetItemDesc();
   builder << " [parent: " << parent_node->GetItemDesc() << "]";
 

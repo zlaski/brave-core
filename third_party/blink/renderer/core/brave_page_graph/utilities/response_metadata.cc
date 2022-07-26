@@ -11,8 +11,6 @@
 
 using ::blink::HTTPHeaderMap;
 using ::blink::ResourceResponse;
-using ::std::string;
-using ::std::stringstream;
 
 namespace brave_page_graph {
 
@@ -28,7 +26,7 @@ static void SerializeHeaderMap(const HTTPHeaderMap& headers,
 }
 
 ResponseMetadata::ResponseMetadata(const ResourceResponse& response) {
-  stringstream ss;
+  std::stringstream ss;
 
   /*const auto load_info = response.GetResourceLoadInfo();
   if (load_info) {
@@ -43,7 +41,7 @@ ResponseMetadata::ResponseMetadata(const ResourceResponse& response) {
   is_cookie_setting_ = false;
 }
 
-const string& ResponseMetadata::GetResponseHeaderSummary() const {
+const std::string& ResponseMetadata::GetResponseHeaderSummary() const {
   return response_header_summary_;
 }
 

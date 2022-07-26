@@ -15,15 +15,13 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/storage/node_storage.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
 EdgeStorageSet::EdgeStorageSet(PageGraph* const graph,
                                NodeScript* const out_node,
                                NodeStorage* const in_node,
-                               const string& key,
-                               const string& value)
+                               const std::string& key,
+                               const std::string& value)
     : EdgeStorage(graph, out_node, in_node, key), value_(value) {}
 
 EdgeStorageSet::~EdgeStorageSet() {}

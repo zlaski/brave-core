@@ -18,14 +18,13 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
 using ::blink::To;
-using ::std::string;
 
 namespace brave_page_graph {
 
 EdgeJSResult::EdgeJSResult(PageGraph* const graph,
                            NodeJS* const out_node,
                            NodeScript* const in_node,
-                           const string& result)
+                           const std::string& result)
     : EdgeJS(graph, out_node, in_node), result_(result) {}
 
 EdgeJSResult::~EdgeJSResult() {}
@@ -45,7 +44,7 @@ void EdgeJSResult::AddGraphMLAttributes(xmlDocPtr doc,
       ->AddValueNode(doc, parent_node, result_);
 }
 
-const string& EdgeJSResult::GetResult() const {
+const std::string& EdgeJSResult::GetResult() const {
   return result_;
 }
 

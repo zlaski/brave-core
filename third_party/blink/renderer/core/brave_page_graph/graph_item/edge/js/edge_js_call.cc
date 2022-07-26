@@ -20,14 +20,11 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
 using ::blink::To;
-using ::std::string;
-using ::std::stringstream;
-using ::std::vector;
 
 namespace brave_page_graph {
 
-string BuildArgumentsString(const vector<string>& arguments) {
-  stringstream builder;
+std::string BuildArgumentsString(const std::vector<std::string>& arguments) {
+  std::stringstream builder;
   const size_t num_args = arguments.size();
   const size_t last_index = num_args - 1;
   for (size_t i = 0; i < num_args; i += 1) {
@@ -43,7 +40,7 @@ string BuildArgumentsString(const vector<string>& arguments) {
 EdgeJSCall::EdgeJSCall(PageGraph* const graph,
                        NodeScript* const out_node,
                        NodeJS* const in_node,
-                       const vector<string>& arguments,
+                       const std::vector<std::string>& arguments,
                        const int script_position)
     : EdgeJS(graph, out_node, in_node),
       arguments_(arguments),

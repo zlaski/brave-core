@@ -16,8 +16,6 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/node.h"
 
-using ::std::stringstream;
-
 namespace brave_page_graph {
 
 NodeRemoteFrame::NodeRemoteFrame(PageGraph* const graph,
@@ -31,7 +29,7 @@ ItemName NodeRemoteFrame::GetItemName() const {
 }
 
 ItemDesc NodeRemoteFrame::GetItemDesc() const {
-  stringstream builder;
+  std::stringstream builder;
   builder << Node::GetItemDesc() << " [" << frame_id_ << "]";
   return builder.str();
 }

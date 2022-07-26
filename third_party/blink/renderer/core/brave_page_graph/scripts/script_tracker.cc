@@ -15,8 +15,6 @@
 
 using ::blink::DOMNodeId;
 using ::blink::KURL;
-using ::std::map;
-using ::std::vector;
 
 namespace brave_page_graph {
 
@@ -28,7 +26,7 @@ void ScriptTracker::AddScriptUrlForElm(const KURL& url,
                                        const DOMNodeId node_id) {
   const UrlHash url_hash(url.GetString().Impl()->GetHash());
   if (node_id_to_script_url_hashes_.count(node_id) == 0) {
-    node_id_to_script_url_hashes_.emplace(node_id, vector<UrlHash>());
+    node_id_to_script_url_hashes_.emplace(node_id, std::vector<UrlHash>());
   }
   node_id_to_script_url_hashes_.at(node_id).push_back(url_hash);
 
@@ -42,7 +40,7 @@ void ScriptTracker::AddScriptSourceForElm(const String& code,
                                           const DOMNodeId node_id) {
   const SourceCodeHash code_hash(code.Impl()->GetHash());
   if (node_id_to_source_hashes_.count(node_id) == 0) {
-    node_id_to_source_hashes_.emplace(node_id, vector<SourceCodeHash>());
+    node_id_to_source_hashes_.emplace(node_id, std::vector<SourceCodeHash>());
   }
   node_id_to_source_hashes_.at(node_id).push_back(code_hash);
 
@@ -61,7 +59,7 @@ void ScriptTracker::AddDescendantUrlForParent(
 
   if (script_url_to_descendant_module_urls_.count(parent_url_hash) == 0) {
     script_url_to_descendant_module_urls_.emplace(parent_url_hash,
-                                                  vector<blink::KURL>());
+                                                  std::vector<blink::KURL>());
   }
   auto& descendant_module_urls =
       script_url_to_descendant_module_urls_.at(parent_url_hash);
@@ -78,7 +76,7 @@ void ScriptTracker::AddDescendantUrlForParent(
 
   if (script_url_to_parent_module_urls_.count(descendant_url_hash) == 0) {
     script_url_to_parent_module_urls_.emplace(descendant_url_hash,
-                                              vector<blink::KURL>());
+                                              std::vector<blink::KURL>());
   }
   auto& parent_module_urls =
       script_url_to_parent_module_urls_.at(descendant_url_hash);
@@ -102,7 +100,7 @@ void ScriptTracker::AddDescendantUrlForParent(
 
   if (script_id_to_descendant_module_urls_.count(parent_id) == 0) {
     script_id_to_descendant_module_urls_.emplace(parent_id,
-                                                 vector<blink::KURL>());
+                                                 std::vector<blink::KURL>());
   }
   auto& descendant_module_urls =
       script_id_to_descendant_module_urls_.at(parent_id);
@@ -119,7 +117,7 @@ void ScriptTracker::AddDescendantUrlForParent(
 
   if (script_url_to_parent_module_ids_.count(descendant_url_hash) == 0) {
     script_url_to_parent_module_ids_.emplace(descendant_url_hash,
-                                             vector<ScriptId>());
+                                             std::vector<ScriptId>());
   }
   auto& parent_module_ids =
       script_url_to_parent_module_ids_.at(descendant_url_hash);

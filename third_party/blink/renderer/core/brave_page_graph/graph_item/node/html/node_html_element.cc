@@ -39,11 +39,6 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/actor/node_actor.h"
 
-using ::std::endl;
-using ::std::find;
-using ::std::string;
-using ::std::stringstream;
-
 using ::blink::DOMNodeId;
 using ::blink::DynamicTo;
 
@@ -51,7 +46,7 @@ namespace brave_page_graph {
 
 NodeHTMLElement::NodeHTMLElement(PageGraph* const graph,
                                  const DOMNodeId node_id,
-                                 const string& tag_name)
+                                 const std::string& tag_name)
     : NodeHTML(graph, node_id), tag_name_(tag_name) {}
 
 NodeHTMLElement::~NodeHTMLElement() {}
@@ -61,7 +56,7 @@ ItemName NodeHTMLElement::GetItemName() const {
 }
 
 ItemDesc NodeHTMLElement::GetItemDesc() const {
-  stringstream builder;
+  std::stringstream builder;
   builder << NodeHTML::GetItemDesc();
 
   builder << " [" << tag_name_;
@@ -90,7 +85,7 @@ void NodeHTMLElement::AddGraphMLTag(xmlDocPtr doc,
   // node to which it's attached.
   for (auto& event_listener : event_listeners_) {
     const EventListenerId listener_id = event_listener.first;
-    const string& event_type = event_listener.second.event_type;
+    const std::string& event_type = event_listener.second.event_type;
     NodeActor* const listener_node = GetGraph()->GetNodeActorForScriptId(
         event_listener.second.listener_script_id);
 

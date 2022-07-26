@@ -13,8 +13,6 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
 NodeJSBuiltIn::NodeJSBuiltIn(PageGraph* const graph, const JSBuiltIn& built_in)

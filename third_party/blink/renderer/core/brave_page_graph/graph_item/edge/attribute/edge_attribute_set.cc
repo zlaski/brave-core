@@ -20,15 +20,13 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/attribute/edge_attribute.h"
 
-using ::std::string;
-
 namespace brave_page_graph {
 
 EdgeAttributeSet::EdgeAttributeSet(PageGraph* const graph,
                                    NodeActor* const out_node,
                                    NodeHTMLElement* const in_node,
-                                   const string& name,
-                                   const string& value,
+                                   const std::string& name,
+                                   const std::string& value,
                                    const bool is_style)
     : EdgeAttribute(graph, out_node, in_node, name, is_style), value_(value) {}
 

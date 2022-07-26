@@ -18,11 +18,6 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 #include "third_party/blink/renderer/platform/loader/fetch/resource.h"
 
-using ::std::make_pair;
-using ::std::make_unique;
-using ::std::move;
-using ::std::unique_ptr;
-
 namespace brave_page_graph {
 
 RequestTracker::RequestTracker() {}
@@ -36,8 +31,8 @@ scoped_refptr<const TrackedRequestRecord> RequestTracker::RegisterRequestStart(
     const blink::ResourceType resource_type,
     const RequestType request_type) {
   if (tracked_requests_.count(request_id) == 0) {
-    auto request_record = make_unique<TrackedRequest>(request_id, requester,
-                                                      resource, request_type);
+    auto request_record = std::make_unique<TrackedRequest>(
+        request_id, requester, resource, request_type);
     CheckTracedRequestAgainstHistory(request_record.get());
     auto tracking_record = base::MakeRefCounted<TrackedRequestRecord>();
     tracking_record->request = move(request_record);
@@ -131,7 +126,7 @@ scoped_refptr<const TrackedRequestRecord> RequestTracker::ReturnTrackingRecord(
   record->num_complete_replies += 1;
 
   // If this is the last requester we need to reply, then
-  // we want to set things up so that we loose our handle on the unique_ptr
+  // we want to set things up so that we loose our handle on the std::unique_ptr
   // on return.  Otherwise, we can just leave it in place.
   if (record->num_complete_replies < num_requestors) {
     return tracked_requests_.at(request_id);

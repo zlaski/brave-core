@@ -15,21 +15,18 @@
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/node.h"
 
-using ::std::string;
-using ::std::stringstream;
-
 namespace brave_page_graph {
 
 EdgeStorage::EdgeStorage(PageGraph* const graph,
                          Node* const out_node,
                          Node* const in_node,
-                         const string& key)
+                         const std::string& key)
     : Edge(graph, out_node, in_node), key_(key) {}
 
 EdgeStorage::~EdgeStorage() {}
 
 ItemName EdgeStorage::GetItemDesc() const {
-  stringstream builder;
+  std::stringstream builder;
   builder << Edge::GetItemDesc();
 
   if (!key_.empty()) {
