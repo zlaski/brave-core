@@ -5,13 +5,18 @@
 
 #include "third_party/blink/renderer/bindings/core/v8/scheduled_action.h"
 
+#include "brave/components/brave_page_graph/common/buildflags.h"
+#include "brave/v8/include/v8-isolate-page-graph-utils.h"
 #include "third_party/blink/renderer/core/probe/core_probes.h"
 
-#define BRAVE_SCHEDULED_ACTION_STRING_CODE_CONSTRUCTOR              \
-  if (CoreProbeSink::HasAgentsGlobal(CoreProbeSink::kPageGraph)) {  \
-    parent_script_id_ =                                             \
-        script_state->GetIsolate()->GetExecutingScript().script_id; \
-  }
+#define BRAVE_SCHEDULED_ACTION_STRING_CODE_CONSTRUCTOR                   \
+  IF_BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH, {                                \
+    if (CoreProbeSink::HasAgentsGlobal(CoreProbeSink::kPageGraph)) {     \
+      parent_script_id_ =                                                \
+          v8::page_graph::GetExecutingScript(script_state->GetIsolate()) \
+              .script_id;                                                \
+    }                                                                    \
+  })
 
 #include "src/third_party/blink/renderer/bindings/core/v8/scheduled_action.cc"
 

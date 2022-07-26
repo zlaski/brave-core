@@ -8,15 +8,19 @@
 
 #include "src/v8/src/builtins/builtins.h"
 
+#include "brave/components/brave_page_graph/common/buildflags.h"
+
 namespace v8 {
 namespace internal {
 
+#if BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
 class BuiltinArguments;
 
 void ReportBuiltinCallAndResponse(Isolate* isolate,
                                   const char* builtin_name,
                                   const BuiltinArguments& builtin_args,
                                   const Object& builtin_result);
+#endif  // BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
 
 }  // namespace internal
 }  // namespace v8

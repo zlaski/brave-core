@@ -1,4 +1,0 @@
-include_rules = [
-  "+gin/public/context_holder.h",
-  "+gin/public/gin_embedders.h",
-]

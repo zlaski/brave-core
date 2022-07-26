@@ -112,11 +112,6 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
   friend NodeHTMLElement;
 
  public:
-  static PageGraph* GetFromIsolate(v8::Isolate* isolate);
-  static PageGraph* GetFromContext(v8::Local<v8::Context> context);
-  static PageGraph* GetFromExecutionContext(
-      blink::ExecutionContext& exec_context);
-
   explicit PageGraph(blink::LocalFrame* local_frame);
   ~PageGraph() override;
 

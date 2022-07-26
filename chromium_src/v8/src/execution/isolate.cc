@@ -8,9 +8,12 @@
 namespace v8 {
 namespace internal {
 
-static std::vector<v8::Isolate::ExecutingScript>
+#if BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
+namespace {
+
+std::vector<v8::page_graph::ExecutingScript>
 GetExecutingScriptsImpl(Isolate* isolate, bool all, bool include_position) {
-  std::vector<v8::Isolate::ExecutingScript> result;
+  std::vector<v8::page_graph::ExecutingScript> result;
   JavaScriptFrameIterator it(isolate);
   while (!it.done()) {
     JavaScriptFrame* frame = it.frame();
@@ -36,7 +39,7 @@ GetExecutingScriptsImpl(Isolate* isolate, bool all, bool include_position) {
       }
 
       result.emplace_back(
-          v8::Isolate::ExecutingScript{script_id, script_position});
+          v8::page_graph::ExecutingScript{script_id, script_position});
       if (!all) {
         return result;
       }
@@ -46,19 +49,23 @@ GetExecutingScriptsImpl(Isolate* isolate, bool all, bool include_position) {
   return result;
 }
 
-v8::Isolate::ExecutingScript Isolate::GetExecutingScript(
+}  // namespace
+
+v8::page_graph::ExecutingScript Isolate::GetExecutingScript(
     bool include_position) {
   auto executing_scripts =
       GetExecutingScriptsImpl(this, false, include_position);
   if (!executing_scripts.empty()) {
     return std::move(executing_scripts[0]);
   }
-  return v8::Isolate::ExecutingScript();
+  return v8::page_graph::ExecutingScript();
 }
 
-std::vector<v8::Isolate::ExecutingScript> Isolate::GetAllExecutingScripts() {
+std::vector<v8::page_graph::ExecutingScript>
+Isolate::GetAllExecutingScripts() {
   return GetExecutingScriptsImpl(this, true, true);
 }
+#endif  // BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
 
 }  // namespace internal
 }  // namespace v8

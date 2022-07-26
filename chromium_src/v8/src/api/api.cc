@@ -5,21 +5,28 @@
 
 #include "src/v8/src/api/api.cc"
 
-namespace v8 {
+#include "brave/v8/include/v8-isolate-page-graph-utils.h"
 
-Isolate::ExecutingScript Isolate::GetExecutingScript(bool include_position) {
-  i::Isolate* internal_isolate = reinterpret_cast<i::Isolate*>(this);
+#if BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
+namespace v8 {
+namespace page_graph {
+
+ExecutingScript GetExecutingScript(Isolate* isolate, bool include_position) {
+  i::Isolate* internal_isolate = reinterpret_cast<i::Isolate*>(isolate);
   return internal_isolate->GetExecutingScript(include_position);
 }
 
-std::vector<Isolate::ExecutingScript> Isolate::GetAllExecutingScripts() {
-  i::Isolate* internal_isolate = reinterpret_cast<i::Isolate*>(this);
+std::vector<ExecutingScript> GetAllExecutingScripts(Isolate* isolate) {
+  i::Isolate* internal_isolate = reinterpret_cast<i::Isolate*>(isolate);
   return internal_isolate->GetAllExecutingScripts();
 }
 
-void Isolate::SetPageGraphBackend(PageGraphBackend* page_graph_backend) {
-  i::Isolate* internal_isolate = reinterpret_cast<i::Isolate*>(this);
-  internal_isolate->SetPageGraphBackend(page_graph_backend);
+void SetPageGraphDelegate(Isolate* isolate,
+                          PageGraphDelegate* page_graph_delegate) {
+  i::Isolate* internal_isolate = reinterpret_cast<i::Isolate*>(isolate);
+  internal_isolate->set_page_graph_delegate(page_graph_delegate);
 }
 
+}  // namespace page_graph
 }  // namespace v8
+#endif  // BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)

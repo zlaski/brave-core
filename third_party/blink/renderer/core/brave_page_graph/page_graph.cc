@@ -19,10 +19,10 @@
 
 #include <libxml/tree.h>
 
-#include "gin/public/context_holder.h"
-#include "gin/public/gin_embedders.h"
-
+#include "base/no_destructor.h"
 #include "base/json/json_string_value_serializer.h"
+
+#include "brave/v8/include/v8-isolate-page-graph-utils.h"
 
 #include "third_party/blink/public/mojom/script/script_type.mojom-shared.h"
 #include "third_party/blink/public/platform/web_string.h"
@@ -200,50 +200,12 @@ constexpr char kPageGraphVersion[] = "0.2.3";
 constexpr char kPageGraphUrl[] =
     "https://github.com/brave/brave-browser/wiki/PageGraph";
 
-}  // namespace
-
-milliseconds NowInMs() {
-  return duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-}
-
-static constexpr int kV8ContextPerContextDataIndex =
-    static_cast<int>(gin::kPerContextDataStartIndex) +
-    static_cast<int>(gin::kEmbedderBlink);
-
-/* static */
-PageGraph* PageGraph::GetFromIsolate(Isolate* isolate) {
-  HandleScope handle_scope(isolate);
-
-  Local<Context> context = isolate->GetCurrentContext();
-  if (context.IsEmpty() == true) {
+PageGraph* GetPageGraphFromIsolate(Isolate* isolate) {
+  blink::LocalDOMWindow* window = blink::CurrentDOMWindow(isolate);
+  if (!window) {
     return nullptr;
   }
-
-  return GetFromContext(context);
-}
-
-/* static */
-PageGraph* PageGraph::GetFromContext(Local<Context> context) {
-  if (kV8ContextPerContextDataIndex >=
-      context->GetNumberOfEmbedderDataFields()) {
-    return nullptr;  // This is not a blink::ExecutionContext.
-  }
-
-  ExecutionContext* exec_context = ToExecutionContext(context);
-  if (exec_context == nullptr) {
-    return nullptr;
-  }
-
-  return GetFromExecutionContext(*exec_context);
-}
-
-/* static */
-PageGraph* PageGraph::GetFromExecutionContext(ExecutionContext& exec_context) {
-  if (!exec_context.IsWindow()) {
-    return nullptr;
-  }
-
-  blink::LocalFrame* frame = To<LocalDOMWindow>(exec_context).GetFrame();
+  blink::LocalFrame* frame = window->GetFrame();
   if (!frame) {
     return nullptr;
   }
@@ -251,28 +213,37 @@ PageGraph* PageGraph::GetFromExecutionContext(ExecutionContext& exec_context) {
   return static_cast<PageGraph*>(frame->GetPageGraph());
 }
 
-static void OnV8EvalScriptCompiled(v8::Isolate* isolate,
-                                   const ScriptId parent_script_id,
-                                   const ScriptId script_id,
-                                   v8::Local<v8::String> source) {
-  PageGraph* const page_graph = PageGraph::GetFromIsolate(isolate);
-  if (page_graph) {
-    const String local_source =
-        blink::ToBlinkString<String>(source, blink::kDoNotExternalize);
-    page_graph->RegisterScriptCompilationFromEval(parent_script_id, script_id,
-                                                  local_source);
+class V8PageGraphDelegate : public v8::page_graph::PageGraphDelegate {
+ public:
+  void OnEvalScriptCompiled(v8::Isolate* isolate,
+                            const ScriptId parent_script_id,
+                            const ScriptId script_id,
+                            v8::Local<v8::String> source) override {
+    PageGraph* const page_graph = GetPageGraphFromIsolate(isolate);
+    if (page_graph) {
+      const String local_source =
+          blink::ToBlinkString<String>(source, blink::kDoNotExternalize);
+      page_graph->RegisterScriptCompilationFromEval(parent_script_id, script_id,
+                                                    local_source);
+    }
   }
-}
 
-static void OnV8BuiltInCall(v8::Isolate* isolate,
-                            const char* built_in,
-                            const std::vector<std::string>& args,
-                            const std::string& result) {
-  PageGraph* const page_graph = PageGraph::GetFromIsolate(isolate);
-  if (page_graph) {
-    page_graph->RegisterJSBuiltInCall(built_in, args);
-    page_graph->RegisterJSBuiltInResponse(built_in, result);
+  void OnBuiltinCall(v8::Isolate* isolate,
+                     const char* built_in,
+                     const std::vector<std::string>& args,
+                     const std::string& result) override {
+    PageGraph* const page_graph = GetPageGraphFromIsolate(isolate);
+    if (page_graph) {
+      page_graph->RegisterJSBuiltInCall(built_in, args);
+      page_graph->RegisterJSBuiltInResponse(built_in, result);
+    }
   }
+};
+
+}  // namespace
+
+milliseconds NowInMs() {
+  return duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 }
 
 PageGraph::PageGraph(blink::LocalFrame* local_frame)
@@ -341,12 +312,9 @@ void PageGraph::DidCommitLoad(blink::LocalFrame* local_frame,
 
   DCHECK_EQ(GetExecutionContext(), document->GetExecutionContext());
   Isolate* const isolate = GetExecutionContext()->GetIsolate();
-  static v8::Isolate::PageGraphBackend page_graph_backend{
-      .eval_script_compiled_cb = &OnV8EvalScriptCompiled,
-      .builtin_call_cb = &OnV8BuiltInCall,
-  };
   if (isolate) {
-    isolate->SetPageGraphBackend(&page_graph_backend);
+    static base::NoDestructor<V8PageGraphDelegate> page_graph_delegate;
+    v8::page_graph::SetPageGraphDelegate(isolate, page_graph_delegate.get());
   }
 
   const string local_tag_name(
@@ -1523,9 +1491,8 @@ NodeActor* PageGraph::GetNodeActorForScriptId(const ScriptId script_id) const {
 
 ScriptId PageGraph::GetExecutingScriptId(
     ScriptPosition* out_script_position) const {
-  auto executing_script =
-      GetExecutionContext()->GetIsolate()->GetExecutingScript(
-          out_script_position != nullptr);
+  auto executing_script = v8::page_graph::GetExecutingScript(
+      GetExecutionContext()->GetIsolate(), out_script_position != nullptr);
   if (out_script_position) {
     *out_script_position = executing_script.script_position;
   }
@@ -1534,8 +1501,8 @@ ScriptId PageGraph::GetExecutingScriptId(
 
 template <typename Callback>
 void PageGraph::GetAllExecutingScripts(Callback callback) {
-  for (const auto& executing_script :
-       GetExecutionContext()->GetIsolate()->GetAllExecutingScripts()) {
+  for (const auto& executing_script : v8::page_graph::GetAllExecutingScripts(
+           GetExecutionContext()->GetIsolate())) {
     callback(executing_script.script_id, executing_script.script_position);
   }
 }
