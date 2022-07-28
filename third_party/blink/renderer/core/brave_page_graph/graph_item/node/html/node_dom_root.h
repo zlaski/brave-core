@@ -20,6 +20,7 @@ class NodeDOMRoot final : public NodeHTMLElement {
  public:
   NodeDOMRoot() = delete;
 
+  void SetURL(const std::string& url) { url_ = url; }
   const std::string& GetURL() const { return url_; }
 
   ItemName GetItemName() const override;
@@ -33,11 +34,10 @@ class NodeDOMRoot final : public NodeHTMLElement {
  protected:
   NodeDOMRoot(PageGraph* const graph,
               const blink::DOMNodeId node_id,
-              const std::string& tag_name,
-              const std::string& url);
+              const std::string& tag_name);
 
  private:
-  const std::string url_;
+  std::string url_;
 };
 
 }  // namespace brave_page_graph

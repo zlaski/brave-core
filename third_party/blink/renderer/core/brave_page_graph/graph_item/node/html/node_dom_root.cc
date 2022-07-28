@@ -21,9 +21,8 @@ namespace brave_page_graph {
 
 NodeDOMRoot::NodeDOMRoot(PageGraph* const graph,
                          const DOMNodeId node_id,
-                         const std::string& tag_name,
-                         const std::string& url)
-    : NodeHTMLElement(graph, node_id, tag_name), url_(url) {}
+                         const std::string& tag_name)
+    : NodeHTMLElement(graph, node_id, tag_name) {}
 
 ItemName NodeDOMRoot::GetItemName() const {
   return "DOM root";

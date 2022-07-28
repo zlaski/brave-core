@@ -84,6 +84,16 @@ void GraphMLAttr::AddValueNode(xmlDocPtr doc,
 
 void GraphMLAttr::AddValueNode(xmlDocPtr doc,
                                xmlNodePtr parent_node,
+                               const int64_t value) const {
+  PG_LOG_ASSERT(type_ == kGraphMLAttrTypeString);
+  xmlNodePtr new_node =
+      xmlNewTextChild(parent_node, nullptr, BAD_CAST "data",
+                      BAD_CAST base::NumberToString(value).c_str());
+  xmlSetProp(new_node, BAD_CAST "key", BAD_CAST GetGraphMLId().c_str());
+}
+
+void GraphMLAttr::AddValueNode(xmlDocPtr doc,
+                               xmlNodePtr parent_node,
                                const uint64_t value) const {
   PG_LOG_ASSERT(type_ == kGraphMLAttrTypeString);
   xmlNodePtr new_node =
@@ -154,22 +164,19 @@ const GraphMLAttrs& GetGraphMLAttrs() noexcept {
       {kGraphMLAttrDefNodeType,
        new GraphMLAttr(kGraphMLAttrForTypeNode, "node type")},
       {kGraphMLAttrDefPageGraphEdgeId,
-       new GraphMLAttr(kGraphMLAttrForTypeEdge, "id", kGraphMLAttrTypeInt)},
+       new GraphMLAttr(kGraphMLAttrForTypeEdge, "id")},
       {kGraphMLAttrDefPageGraphNodeId,
-       new GraphMLAttr(kGraphMLAttrForTypeNode, "id", kGraphMLAttrTypeInt)},
+       new GraphMLAttr(kGraphMLAttrForTypeNode, "id")},
       {kGraphMLAttrDefPageGraphEdgeTimestamp,
-       new GraphMLAttr(kGraphMLAttrForTypeEdge, "timestamp",
-                       kGraphMLAttrTypeInt)},
+       new GraphMLAttr(kGraphMLAttrForTypeEdge, "timestamp")},
       {kGraphMLAttrDefPageGraphNodeTimestamp,
-       new GraphMLAttr(kGraphMLAttrForTypeNode, "timestamp",
-                       kGraphMLAttrTypeInt)},
+       new GraphMLAttr(kGraphMLAttrForTypeNode, "timestamp")},
       {kGraphMLAttrDefParentNodeId,
        new GraphMLAttr(kGraphMLAttrForTypeEdge, "parent", kGraphMLAttrTypeInt)},
       {kGraphMLAttrDefPrimaryPattern,
        new GraphMLAttr(kGraphMLAttrForTypeNode, "primary pattern")},
       {kGraphMLAttrDefRequestId,
-       new GraphMLAttr(kGraphMLAttrForTypeEdge, "request id",
-                       kGraphMLAttrTypeInt)},
+       new GraphMLAttr(kGraphMLAttrForTypeEdge, "request id")},
       {kGraphMLAttrDefRequestType,
        new GraphMLAttr(kGraphMLAttrForTypeEdge, "request type")},
       {kGraphMLAttrDefResourceType,

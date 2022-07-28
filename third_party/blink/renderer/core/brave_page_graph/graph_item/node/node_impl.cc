@@ -49,7 +49,8 @@ void Node::AddGraphMLAttributes(xmlDocPtr doc, xmlNodePtr parent_node) const {
   GraphMLAttrDefForType(kGraphMLAttrDefPageGraphNodeId)
       ->AddValueNode(doc, parent_node, GetId());
   GraphMLAttrDefForType(kGraphMLAttrDefPageGraphNodeTimestamp)
-      ->AddValueNode(doc, parent_node, GetTimeDeltaSincePageStart());
+      ->AddValueNode(doc, parent_node,
+                     GetTimeDeltaSincePageStart().InMilliseconds());
 }
 
 bool Node::IsNode() const {

@@ -14,7 +14,7 @@ namespace blink {
 #if BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
 WebPageGraph* WebLocalFrameImpl::GetWebPageGraph() {
   DCHECK(GetFrame());
-  return GetFrame()->GetPageGraph();
+  return blink::PageGraph::From(*GetFrame());
 }
 #endif  // BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH)
 

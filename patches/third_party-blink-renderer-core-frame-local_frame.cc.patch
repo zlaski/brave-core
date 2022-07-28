@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
+index 019b87a77fb7306bacdcda20e388cdfb8d3a6be8..0c5927cfeeed4ffc625a8bc31525cd54a622e990 100644
+--- a/third_party/blink/renderer/core/frame/local_frame.cc
++++ b/third_party/blink/renderer/core/frame/local_frame.cc
+@@ -1519,6 +1519,7 @@ LocalFrame::LocalFrame(LocalFrameClient* client,
+   idleness_detector_ = MakeGarbageCollected<IdlenessDetector>(this, clock);
+   attribution_src_loader_ = MakeGarbageCollected<AttributionSrcLoader>(this);
+   inspector_task_runner_->InitIsolate(isolate);
++  BRAVE_LOCAL_FRAME_CONSTRUCTOR
+ 
+   DCHECK(ad_tracker_ ? RuntimeEnabledFeatures::AdTaggingEnabled()
+                      : !RuntimeEnabledFeatures::AdTaggingEnabled());

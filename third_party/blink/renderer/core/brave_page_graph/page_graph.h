@@ -20,11 +20,13 @@
 #include "third_party/abseil-cpp/absl/types/optional.h"
 #include "third_party/blink/renderer/core/core_export.h"
 #include "third_party/blink/renderer/core/dom/dom_node_ids.h"
+#include "third_party/blink/renderer/core/execution_context/execution_context.h"
 #include "third_party/blink/renderer/core/inspector/console_message.h"
 #include "third_party/blink/renderer/core/inspector/protocol/Protocol.h"
 #include "third_party/blink/renderer/core/inspector/protocol/dom.h"
 #include "third_party/blink/renderer/platform/heap/garbage_collected.h"
 #include "third_party/blink/renderer/platform/heap/member.h"
+#include "third_party/blink/renderer/platform/supplementable.h"
 #include "third_party/blink/renderer/platform/wtf/text/wtf_string.h"
 
 namespace base {
@@ -54,6 +56,7 @@ class EventTarget;
 class HTMLFrameOwnerElement;
 class EncodedFormData;
 class ModuleScriptCreationParams;
+class ScriptElementBase;
 
 }  // namespace blink
 
@@ -98,8 +101,7 @@ class RequestTracker;
 class ScriptTracker;
 struct TrackedRequestRecord;
 
-class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
-                              public blink::WebPageGraph {
+class CORE_EXPORT PageGraph : public blink::WebPageGraph {
   // Needed so that graph items can assign themself the next graph id.
   friend GraphItem;
   // Needed so that edges between HTML nodes can find their siblings and
@@ -115,7 +117,7 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
 
   virtual void Shutdown();
 
-  void Trace(blink::Visitor*) const;
+  virtual void Trace(blink::Visitor*) const;
 
   blink::ExecutionContext* GetExecutionContext() const;
 
@@ -124,25 +126,32 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
   void WillRemoveDOMNode(blink::Node* node);
   void NodeCreated(blink::Node* node);
   void RegisterPageGraphNodeFullyCreated(blink::Node* node);
-  void RegisterPageGraphElmForLocalScript(blink::DOMNodeId dom_node_id,
-                                          const String& source_text);
-  void RegisterPageGraphElmForRemoteScript(blink::DOMNodeId dom_node_id,
-                                           const blink::KURL& url);
-  void RegisterPageGraphBindingEvent(base::StringPiece name,
+  void RegisterPageGraphElmForLocalScript(
+      blink::ScriptElementBase* script_element,
+      const String& source_text);
+  void RegisterPageGraphElmForRemoteScript(
+      blink::ScriptElementBase* script_element,
+      const blink::KURL& url);
+  void RegisterPageGraphBindingEvent(blink::ExecutionContext*,
+                                     base::StringPiece name,
                                      blink::PageGraphBindingType type,
                                      blink::PageGraphBindingEvent event);
   void RegisterPageGraphWebAPICallWithResult(
+      blink::ExecutionContext*,
       base::StringPiece name,
       const blink::PageGraphBlinkReceiverData& receiver_data,
       const blink::PageGraphBlinkArgs& args,
       const blink::ExceptionState* exception_state,
       const absl::optional<String>& result);
-  void RegisterPageGraphModuleScriptForDescendant(int script_id,
+  void RegisterPageGraphModuleScriptForDescendant(blink::ExecutionContext*,
+                                                  int script_id,
                                                   const blink::KURL& url);
   void RegisterPageGraphScriptCompilation(
+      blink::ExecutionContext* execution_context,
       const blink::ClassicScript& classic_script,
       v8::Local<v8::Script> script);
   void RegisterPageGraphModuleCompilation(
+      blink::ExecutionContext* execution_context,
       const blink::ModuleScriptCreationParams& params,
       v8::Local<v8::Module> script);
   void RegisterPageGraphScriptCompilationFromAttr(
@@ -197,56 +206,57 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
       const String& event_type,
       blink::RegisteredEventListener* registered_listener);
   void RegisterPageGraphRemoteFrameCreated(
+      blink::ExecutionContext*,
       blink::HTMLFrameOwnerElement* frame_owner_element);
 
   bool IsActive() const;
 
   void DidCommitLoad(blink::LocalFrame*, blink::DocumentLoader*);
 
-  void RegisterDocumentRootCreated(const blink::DOMNodeId node_id,
-                                   const blink::DOMNodeId parent_node_id,
+  void RegisterDocumentRootCreated(blink::Node* node,
+                                   blink::Node* parent_node,
                                    const String& tag_name,
                                    const blink::KURL& url);
-  void RegisterRemoteFrameCreated(const blink::DOMNodeId parent_node_id,
+  void RegisterRemoteFrameCreated(blink::Node* parent_node,
                                   const String& frame_id);
 
   void RegisterHTMLElementNodeCreated(
-      const blink::DOMNodeId node_id,
+      blink::Node* node,
       const String& tag_name,
       const ElementType element_type = kElementTypeDefault);
-  void RegisterHTMLTextNodeCreated(const blink::DOMNodeId node_id,
+  void RegisterHTMLTextNodeCreated(blink::Node* node,
                                    const String& text);
   void RegisterHTMLElementNodeInserted(
-      const blink::DOMNodeId node_id,
-      const blink::DOMNodeId parent_node_id,
+      blink::Node* node,
+      blink::Node* parent_node,
       const blink::DOMNodeId before_sibling_id);
-  void RegisterHTMLTextNodeInserted(const blink::DOMNodeId node_id,
-                                    const blink::DOMNodeId parent_node_id,
+  void RegisterHTMLTextNodeInserted(blink::Node* node,
+                                    blink::Node* parent_node,
                                     const blink::DOMNodeId before_sibling_id);
-  void RegisterHTMLElementNodeRemoved(const blink::DOMNodeId node_id);
-  void RegisterHTMLTextNodeRemoved(const blink::DOMNodeId node_id);
+  void RegisterHTMLElementNodeRemoved(blink::Node* node);
+  void RegisterHTMLTextNodeRemoved(blink::Node* node);
 
-  void RegisterEventListenerAdd(const blink::DOMNodeId,
+  void RegisterEventListenerAdd(blink::Node* node,
                                 const String& event_type,
                                 const EventListenerId listener_id,
                                 ScriptId listener_script_id);
-  void RegisterEventListenerRemove(const blink::DOMNodeId,
+  void RegisterEventListenerRemove(blink::Node* node,
                                    const String& event_type,
                                    const EventListenerId listener_id,
                                    ScriptId listener_script_id);
 
-  void RegisterInlineStyleSet(const blink::DOMNodeId node_id,
+  void RegisterInlineStyleSet(blink::Node* node,
                               const String& attr_name,
                               const String& attr_value);
-  void RegisterInlineStyleDelete(const blink::DOMNodeId node_id,
+  void RegisterInlineStyleDelete(blink::Node* node,
                                  const String& attr_name);
-  void RegisterAttributeSet(const blink::DOMNodeId node_id,
+  void RegisterAttributeSet(blink::Node* node,
                             const String& attr_name,
                             const String& attr_value);
-  void RegisterAttributeDelete(const blink::DOMNodeId node_id,
+  void RegisterAttributeDelete(blink::Node* node,
                                const String& attr_name);
 
-  void RegisterTextNodeChange(const blink::DOMNodeId node_id,
+  void RegisterTextNodeChange(blink::Node* node,
                               const String& new_text);
 
   void RegisterRequestStartFromElm(const blink::DOMNodeId node_id,
@@ -265,11 +275,12 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
                                       const blink::ResourceType resource_type,
                                       const RequestType type);
   void RegisterRequestStartFromCSSOrLink(
+      blink::DocumentLoader* loader,
       const InspectorId request_id,
       const blink::KURL& url,
       const blink::ResourceType resource_type,
       const RequestType type);
-  void RegisterRequestStartForDocument(const blink::DOMNodeId node_id,
+  void RegisterRequestStartForDocument(blink::Document* document,
                                        const InspectorId request_id,
                                        const blink::KURL& url,
                                        const bool is_main_frame);
@@ -303,9 +314,9 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
   void RegisterJSBuiltInResponse(const char* built_in,
                                  const std::string& result);
 
-  void RegisterBindingEvent(const Binding binding,
-                            const BindingType binding_type,
-                            const BindingEvent binding_event);
+//   void RegisterBindingEvent(const Binding binding,
+//                             const BindingType binding_type,
+//                             const BindingEvent binding_event);
 
   // Methods for handling the registration of script units in the document,
   // and v8 script executing.
@@ -317,7 +328,8 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
   void RegisterElmForRemoteScript(const blink::DOMNodeId node_id,
                                   const blink::KURL& url);
   // JavaScript URLs ("javascript:" schemes).
-  void RegisterJavaScriptURL(const String& code);
+  void RegisterJavaScriptURL(blink::ExecutionContext* execution_context,
+                             const String& code);
   void RegisterUrlForScriptSource(const blink::KURL& url, const String& code);
   void RegisterUrlForExtensionScriptSource(const String& url,
                                            const String& code);
@@ -346,7 +358,7 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
 
   base::TimeTicks GetStartTime() const;
 
- protected:
+ private:
   void AddNode(Node* const node);
   void AddEdge(const Edge* const edge);
 
@@ -363,16 +375,17 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
   NodeScript* GetScriptNode(const ScriptId script_id) const;
 
   NodeActor* GetCurrentActingNode(
+      blink::Node* node,
       ScriptPosition* out_script_position = nullptr) const;
   NodeActor* GetNodeActorForScriptId(const ScriptId script_id) const;
   ScriptId GetExecutingScriptId(
       ScriptPosition* out_script_position = nullptr) const;
 
-  template <typename Callback>
-  void GetAllActingNodes(Callback callback);
+//   template <typename Callback>
+//   void GetAllActingNodes(Callback callback);
 
-  template <typename Callback>
-  void GetAllExecutingScripts(Callback callback);
+//   template <typename Callback>
+//   void GetAllExecutingScripts(Callback callback);
 
   NodeResource* GetResourceNodeForUrl(const std::string& url);
 
@@ -420,7 +433,7 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
 
   // Non-owning references to singleton items in the graph. (the owning
   // references will be in the above vectors).
-  NodeParser* const parser_node_;
+  base::flat_map<blink::DOMNodeId, NodeParser*> document_parser_nodes_;
   NodeExtensions* const extensions_node_;
 
   NodeShields* const shields_node_;
@@ -433,15 +446,6 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
   NodeStorageCookieJar* const cookie_jar_node_;
   NodeStorageLocalStorage* const local_storage_node_;
   NodeStorageSessionStorage* const session_storage_node_;
-
-  // Non-owning reference to the HTML root of the document (i.e. <html>).
-  NodeDOMRoot* html_root_node_ = nullptr;
-
-  // Information about the network request to the HTML root of the document.
-  // We need this separately from the RequestTracker because we create the
-  // initial DOM Root node immediately at the initialization of PageGraph,
-  // before the request occurs.
-  absl::optional<DocumentRequest> root_request_record_;
 
   // Index structure for storing and looking up webapi nodes.
   // This map does not own the references.
@@ -495,10 +499,17 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
 
 namespace blink {
 
-class CORE_EXPORT PageGraph : public brave_page_graph::PageGraph {
+class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
+                              public Supplement<LocalFrame>,
+                              public brave_page_graph::PageGraph {
  public:
-  explicit PageGraph(LocalFrame* local_frame);
+  static const char kSupplementName[];
+  static PageGraph* From(LocalFrame&);
+  static void ProvideTo(LocalFrame&);
 
+  explicit PageGraph(LocalFrame& local_frame);
+
+  void Trace(Visitor* visitor) const override;
   void Shutdown() override;
 };
 

@@ -37,6 +37,9 @@ class GraphMLAttr {
                     const bool value) const;
   void AddValueNode(xmlDocPtr doc,
                     xmlNodePtr parent_node,
+                    const int64_t value) const;
+  void AddValueNode(xmlDocPtr doc,
+                    xmlNodePtr parent_node,
                     const uint64_t value) const;
   void AddValueNode(xmlDocPtr doc,
                     xmlNodePtr parent_node,
