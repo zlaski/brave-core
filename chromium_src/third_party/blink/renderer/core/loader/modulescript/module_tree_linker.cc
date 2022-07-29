@@ -12,13 +12,6 @@
       options.SetDOMNodeId(module_script->FetchOptions().GetDOMNodeId()); \
       if (record->IsSourceTextModule()) {                                 \
         options.SetParentScriptId(record->ScriptId());                    \
-        ExecutionContext* execution_context =                             \
-            ExecutionContext::From(script_state);                         \
-        for (const auto& module_request : module_requests) {              \
-          probe::RegisterPageGraphModuleScriptForDescendant(              \
-              execution_context, options.GetParentScriptId(),             \
-              module_request.url);                                        \
-        }                                                                 \
       }                                                                   \
     }                                                                     \
   })

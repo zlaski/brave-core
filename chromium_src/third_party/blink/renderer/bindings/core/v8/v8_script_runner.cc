@@ -20,8 +20,12 @@ v8::MaybeLocal<v8::Script> V8ScriptRunner::CompileScript(
   if (CoreProbeSink::HasAgentsGlobal(CoreProbeSink::kPageGraph)) {
     v8::Local<v8::Script> script;
     if (result.ToLocal(&script)) {
+      const auto referrer_info = ReferrerScriptInfo::FromV8HostDefinedOptions(
+          script_state->GetIsolate()->GetCurrentContext(), host_defined_options,
+          classic_script.SourceUrl());
       probe::RegisterPageGraphScriptCompilation(
-          ExecutionContext::From(script_state), classic_script, script);
+          ExecutionContext::From(script_state), referrer_info, classic_script,
+          script);
     }
   }
   return result;
@@ -39,10 +43,11 @@ v8::MaybeLocal<v8::Module> V8ScriptRunner::CompileModule(
       isolate, params, start_position, compile_options, no_cache_reason,
       referrer_info);
   if (CoreProbeSink::HasAgentsGlobal(CoreProbeSink::kPageGraph)) {
-    v8::Local<v8::Module> script;
-    if (result.ToLocal(&script)) {
+    v8::Local<v8::Module> module;
+    if (result.ToLocal(&module)) {
       probe::RegisterPageGraphModuleCompilation(
-          ExecutionContext::From(isolate->GetCurrentContext()), params, script);
+          ExecutionContext::From(isolate->GetCurrentContext()), referrer_info,
+          params, module);
     }
   }
   return result;

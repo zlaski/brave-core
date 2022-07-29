@@ -37,9 +37,6 @@ def _add_page_graph_to_config(config):
             "DidFinishLoading",
             "DidFailLoading",
             "RegisterPageGraphNodeFullyCreated",
-            "RegisterPageGraphElmForLocalScript",
-            "RegisterPageGraphElmForRemoteScript",
-            "RegisterPageGraphModuleScriptForDescendant",
             "RegisterPageGraphScriptCompilation",
             "RegisterPageGraphModuleCompilation",
             "RegisterPageGraphScriptCompilationFromAttr",
@@ -61,18 +58,16 @@ def _add_page_graph_events_to_pidl_source(source):
     idx += len(insert_after)
     ext = """
         class ModuleScriptCreationParams;
-        class ScriptElementBase;
         class RegisteredEventListener;
+        class ReferrerScriptInfo;
+        class ScriptElementBase;
 
         void RegisterPageGraphBindingEvent([Keep] ExecutionContext*, base::StringPiece name, PageGraphBindingType type, PageGraphBindingEvent event);
         void RegisterPageGraphWebAPICallWithResult([Keep] ExecutionContext*, base::StringPiece name, const PageGraphBlinkReceiverData& receiver_data, const PageGraphBlinkArgs& args, const ExceptionState* exception_state, const absl::optional<String>& result);
         void RegisterPageGraphNodeFullyCreated([Keep] Node* node);
-        void RegisterPageGraphElmForLocalScript(ExecutionContext*, ScriptElementBase* script_element, const String& source_text);
-        void RegisterPageGraphElmForRemoteScript(ExecutionContext*, ScriptElementBase* script_element, const KURL& url);
-        void RegisterPageGraphModuleScriptForDescendant([Keep] ExecutionContext*, int script_id, const KURL& url);
-        void RegisterPageGraphScriptCompilation([Keep] ExecutionContext*, const ClassicScript& classic_script, v8::Local<v8::Script> script);
+        void RegisterPageGraphScriptCompilation([Keep] ExecutionContext*, const ReferrerScriptInfo& referrer_info, const ClassicScript& classic_script, v8::Local<v8::Script> script);
         void RegisterPageGraphScriptCompilationFromAttr([Keep] EventTarget*, const String& function_name, const String& script_body, v8::Local<v8::Function> compiled_function);
-        void RegisterPageGraphModuleCompilation([Keep] ExecutionContext*, const ModuleScriptCreationParams& params, v8::Local<v8::Module> script);
+        void RegisterPageGraphModuleCompilation([Keep] ExecutionContext*, const ReferrerScriptInfo& referrer_info, const ModuleScriptCreationParams& params, v8::Local<v8::Module> script);
         void RegisterPageGraphEventListenerAdd([Keep] EventTarget*, const String& event_type, RegisteredEventListener* registered_listener);
         void RegisterPageGraphEventListenerRemove([Keep] EventTarget*, const String& event_type, RegisteredEventListener* registered_listener);
         void RegisterPageGraphRemoteFrameCreated([Keep] ExecutionContext*, HTMLFrameOwnerElement*);

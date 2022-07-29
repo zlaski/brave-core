@@ -13,20 +13,6 @@
     }                                                                \
   })
 
-#define BRAVE_SCRIPT_LOADER_PREPARE_SCRIPT_IF_HAS_SRC_ATTRIBUTE \
-  IF_BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH, {                       \
-    probe::RegisterPageGraphElmForRemoteScript(                 \
-        element_->GetExecutionContext(), element_, url);        \
-  })
-
-#define BRAVE_SCRIPT_LOADER_PREPARE_SCRIPT_IF_NO_SRC_ATTRIBUTE                 \
-  IF_BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH, {                                      \
-    probe::RegisterPageGraphElmForLocalScript(element_->GetExecutionContext(), \
-                                              element_, source_text);          \
-  })
-
 #include "src/third_party/blink/renderer/core/script/script_loader.cc"
 
-#undef BRAVE_SCRIPT_LOADER_PREPARE_SCRIPT_IF_NO_SRC_ATTRIBUTE
-#undef BRAVE_SCRIPT_LOADER_PREPARE_SCRIPT_IF_HAS_SRC_ATTRIBUTE
 #undef BRAVE_SCRIPT_LOADER_PREPARE_SCRIPT

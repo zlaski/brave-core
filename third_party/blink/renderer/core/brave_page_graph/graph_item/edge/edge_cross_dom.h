@@ -17,6 +17,7 @@ namespace brave_page_graph {
 class NodeDOMRoot;
 class NodeFrameOwner;
 class NodeRemoteFrame;
+class NodeActor;
 class PageGraph;
 
 class EdgeCrossDOM final : public Edge {
@@ -40,6 +41,9 @@ class EdgeCrossDOM final : public Edge {
   EdgeCrossDOM(PageGraph* const graph,
                NodeFrameOwner* const out_node,
                NodeRemoteFrame* const in_node);
+  EdgeCrossDOM(PageGraph* const graph,
+               NodeActor* const out_node,
+               NodeActor* const in_node);
 };
 
 }  // namespace brave_page_graph

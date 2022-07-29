@@ -38,6 +38,7 @@ namespace blink {
 class ExecutionContext;
 class LocalFrame;
 class Node;
+class CharacterData;
 class Element;
 class DocumentLoader;
 class ExceptionState;
@@ -57,17 +58,9 @@ class HTMLFrameOwnerElement;
 class EncodedFormData;
 class ModuleScriptCreationParams;
 class ScriptElementBase;
+class ReferrerScriptInfo;
 
 }  // namespace blink
-
-namespace v8 {
-
-class Context;
-class Isolate;
-template <class T>
-class Local;
-
-}  // namespace v8
 
 namespace brave_page_graph {
 
@@ -119,19 +112,10 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
 
   virtual void Trace(blink::Visitor*) const;
 
-  blink::ExecutionContext* GetExecutionContext() const;
-
-  // PageGraphAgent:
   void DidInsertDOMNode(blink::Node* node);
   void WillRemoveDOMNode(blink::Node* node);
   void NodeCreated(blink::Node* node);
   void RegisterPageGraphNodeFullyCreated(blink::Node* node);
-  void RegisterPageGraphElmForLocalScript(
-      blink::ScriptElementBase* script_element,
-      const String& source_text);
-  void RegisterPageGraphElmForRemoteScript(
-      blink::ScriptElementBase* script_element,
-      const blink::KURL& url);
   void RegisterPageGraphBindingEvent(blink::ExecutionContext*,
                                      base::StringPiece name,
                                      blink::PageGraphBindingType type,
@@ -143,15 +127,14 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
       const blink::PageGraphBlinkArgs& args,
       const blink::ExceptionState* exception_state,
       const absl::optional<String>& result);
-  void RegisterPageGraphModuleScriptForDescendant(blink::ExecutionContext*,
-                                                  int script_id,
-                                                  const blink::KURL& url);
   void RegisterPageGraphScriptCompilation(
       blink::ExecutionContext* execution_context,
+      const blink::ReferrerScriptInfo& referrer_info,
       const blink::ClassicScript& classic_script,
       v8::Local<v8::Script> script);
   void RegisterPageGraphModuleCompilation(
       blink::ExecutionContext* execution_context,
+      const blink::ReferrerScriptInfo& referrer_info,
       const blink::ModuleScriptCreationParams& params,
       v8::Local<v8::Module> script);
   void RegisterPageGraphScriptCompilationFromAttr(
@@ -213,19 +196,12 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
 
   void DidCommitLoad(blink::LocalFrame*, blink::DocumentLoader*);
 
-  void RegisterDocumentRootCreated(blink::Node* node,
-                                   blink::Node* parent_node,
-                                   const String& tag_name,
-                                   const blink::KURL& url);
   void RegisterRemoteFrameCreated(blink::Node* parent_node,
                                   const String& frame_id);
 
-  void RegisterHTMLElementNodeCreated(
-      blink::Node* node,
-      const String& tag_name,
-      const ElementType element_type = kElementTypeDefault);
-  void RegisterHTMLTextNodeCreated(blink::Node* node,
-                                   const String& text);
+  void RegisterDocumentNodeCreated(blink::Document* node);
+  void RegisterHTMLTextNodeCreated(blink::CharacterData* node);
+  void RegisterHTMLElementNodeCreated(blink::Node* node);
   void RegisterHTMLElementNodeInserted(
       blink::Node* node,
       blink::Node* parent_node,
@@ -265,15 +241,18 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
                                    const blink::ResourceType resource_type,
                                    const RequestType type);
   void RegisterRequestStartFromCurrentScript(
+      blink::ExecutionContext* execution_context,
       const InspectorId request_id,
       const blink::KURL& url,
       const blink::ResourceType resource_type,
       const RequestType type);
-  void RegisterRequestStartFromScript(const ScriptId script_id,
-                                      const InspectorId request_id,
-                                      const blink::KURL& url,
-                                      const blink::ResourceType resource_type,
-                                      const RequestType type);
+  void RegisterRequestStartFromScript(
+      blink::ExecutionContext* execution_context,
+      const ScriptId script_id,
+      const InspectorId request_id,
+      const blink::KURL& url,
+      const blink::ResourceType resource_type,
+      const RequestType type);
   void RegisterRequestStartFromCSSOrLink(
       blink::DocumentLoader* loader,
       const InspectorId request_id,
@@ -297,59 +276,51 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
   void RegisterResourceBlockFingerprinting(const blink::WebURL& url,
                                            const FingerprintingRule& rule);
 
-  void RegisterStorageRead(const String& key,
+  void RegisterStorageRead(blink::ExecutionContext* execution_context,
+                           const String& key,
                            const String& value,
                            const StorageLocation location);
-  void RegisterStorageWrite(const String& key,
+  void RegisterStorageWrite(blink::ExecutionContext* execution_context,
+                            const String& key,
                             const String& value,
                             const StorageLocation location);
-  void RegisterStorageDelete(const String& key, const StorageLocation location);
-  void RegisterStorageClear(const StorageLocation location);
+  void RegisterStorageDelete(blink::ExecutionContext* execution_context,
+                             const String& key,
+                             const StorageLocation location);
+  void RegisterStorageClear(blink::ExecutionContext* execution_context,
+                            const StorageLocation location);
 
-  void RegisterWebAPICall(const MethodName& method,
+  void RegisterWebAPICall(blink::ExecutionContext* execution_context,
+                          const MethodName& method,
                           const std::vector<String>& arguments);
-  void RegisterWebAPIResult(const MethodName& method, const String& result);
-  void RegisterJSBuiltInCall(const char* built_in,
+  void RegisterWebAPIResult(blink::ExecutionContext* execution_context,
+                            const MethodName& method,
+                            const String& result);
+  void RegisterJSBuiltInCall(blink::ExecutionContext* execution_context,
+                             const char* built_in,
                              const std::vector<std::string>& args);
-  void RegisterJSBuiltInResponse(const char* built_in,
+  void RegisterJSBuiltInResponse(blink::ExecutionContext* execution_context,
+                                 const char* built_in,
                                  const std::string& result);
 
-//   void RegisterBindingEvent(const Binding binding,
-//                             const BindingType binding_type,
-//                             const BindingEvent binding_event);
+  //   void RegisterBindingEvent(const Binding binding,
+  //                             const BindingType binding_type,
+  //                             const BindingEvent binding_event);
 
   // Methods for handling the registration of script units in the document,
   // and v8 script executing.
 
-  // Local scripts are scripts that define their code inline.
-  void RegisterElmForLocalScript(const blink::DOMNodeId node_id,
-                                 const String& code);
-  // Remote scripts are scripts that reference remote code (eg src=...).
-  void RegisterElmForRemoteScript(const blink::DOMNodeId node_id,
-                                  const blink::KURL& url);
-  // JavaScript URLs ("javascript:" schemes).
-  void RegisterJavaScriptURL(blink::ExecutionContext* execution_context,
-                             const String& code);
-  void RegisterUrlForScriptSource(const blink::KURL& url, const String& code);
-  void RegisterUrlForExtensionScriptSource(const String& url,
-                                           const String& code);
-  void RegisterScriptCompilation(const String& code,
+  void RegisterScriptCompilation(blink::ExecutionContext* execution_context,
                                  const ScriptId script_id,
-                                 const ScriptType type);
-  void RegisterScriptCompilationFromAttr(const blink::DOMNodeId node_id,
-                                         const String& attr_name,
-                                         const String& attr_value,
-                                         const ScriptId script_id);
-  void RegisterScriptCompilationFromEval(const ScriptId parent_script_id,
-                                         const ScriptId script_id,
-                                         const String& source);
-
-  void RegisterModuleScriptForDescendant(
-      const blink::KURL& parent_location,
-      const blink::KURL& descendant_location);
-  void RegisterModuleScriptForDescendant(
-      const ScriptId parent_id,
-      const blink::KURL& descendant_location);
+                                 const ScriptData& script_data);
+  void RegisterScriptCompilationFromAttr(
+      blink::ExecutionContext* execution_context,
+      const ScriptId script_id,
+      const ScriptData& script_data);
+  void RegisterScriptCompilationFromEval(
+      blink::ExecutionContext* execution_context,
+      const ScriptId script_id,
+      const ScriptData& script_data);
 
   void GenerateReportForNode(const blink::DOMNodeId node_id,
                              blink::protocol::Array<String>& report);
@@ -372,20 +343,23 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
   NodeHTML* GetHTMLNode(const blink::DOMNodeId node_id) const;
   NodeHTMLElement* GetHTMLElementNode(const blink::DOMNodeId node_id) const;
   NodeHTMLText* GetHTMLTextNode(const blink::DOMNodeId node_id) const;
-  NodeScript* GetScriptNode(const ScriptId script_id) const;
+  NodeScript* GetScriptNode(blink::ExecutionContext* execution_context,
+                            const ScriptId script_id);
 
   NodeActor* GetCurrentActingNode(
-      blink::Node* node,
-      ScriptPosition* out_script_position = nullptr) const;
-  NodeActor* GetNodeActorForScriptId(const ScriptId script_id) const;
+      blink::ExecutionContext* execution_context,
+      ScriptPosition* out_script_position = nullptr);
+  NodeActor* GetNodeActorForScriptId(blink::ExecutionContext* execution_context,
+                                     const ScriptId script_id);
   ScriptId GetExecutingScriptId(
+      blink::ExecutionContext* execution_context,
       ScriptPosition* out_script_position = nullptr) const;
 
-//   template <typename Callback>
-//   void GetAllActingNodes(Callback callback);
+  //   template <typename Callback>
+  //   void GetAllActingNodes(Callback callback);
 
-//   template <typename Callback>
-//   void GetAllExecutingScripts(Callback callback);
+  //   template <typename Callback>
+  //   void GetAllExecutingScripts(Callback callback);
 
   NodeResource* GetResourceNodeForUrl(const std::string& url);
 
@@ -413,6 +387,9 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
 
   void SpeculativelyRegisterCurrentlyConstructedNode(blink::DOMNodeId node_id);
 
+  ScriptTracker& GetScriptTracker(blink::ExecutionContext*);
+  std::map<ScriptId, NodeScript*>& GetScriptNodes(blink::ExecutionContext*);
+
   // Monotonically increasing counter, used so that we can replay the
   // the graph's construction if needed.
   PageGraphId id_counter_ = 0;
@@ -433,7 +410,9 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
 
   // Non-owning references to singleton items in the graph. (the owning
   // references will be in the above vectors).
-  base::flat_map<blink::DOMNodeId, NodeParser*> document_parser_nodes_;
+  //base::flat_map<blink::ExecutionContext*, NodeParser*> document_parser_nodes_;
+  blink::HeapHashMap<blink::Member<ExecutionContext>, NodeParser*>
+      parser_nodes_;
   NodeExtensions* const extensions_node_;
 
   NodeShields* const shields_node_;
@@ -464,10 +443,6 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
   std::map<blink::DOMNodeId, NodeHTMLElement* const> element_nodes_;
   std::map<blink::DOMNodeId, NodeHTMLText* const> text_nodes_;
 
-  // Index structure for looking up script nodes.
-  // This map does not own the references.
-  std::map<ScriptId, NodeScript* const> script_nodes_;
-
   // Index structure for looking up filter nodes.
   // These maps do not own the references.
   std::map<std::string, NodeAdFilter* const> ad_filter_nodes_;
@@ -481,7 +456,12 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
 
   // Data structure used for mapping HTML script elements (and other
   // sources of script in a document) to v8 script units.
-  ScriptTracker script_tracker_;
+  std::map<v8::Isolate*, ScriptTracker> script_trackers_;
+
+  // Index structure for looking up script nodes.
+  // This map does not own the references.
+  std::map<v8::Isolate*, std::map<ScriptId, NodeScript*>>
+      script_nodes_;
 
   // Makes sure we don't have more than one node in the graph representing
   // a single URL (not required for correctness, but keeps things tidier

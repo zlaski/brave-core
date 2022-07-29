@@ -5,20 +5,19 @@
 
 #include "brave/components/brave_page_graph/common/buildflags.h"
 
-#define BRAVE_COMPILER_GET_FUNCTION_FROM_EVAL                          \
-  IF_BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH, {                              \
-    auto* page_graph_delegate = isolate->page_graph_delegate();        \
-    if (V8_UNLIKELY(page_graph_delegate)) {                            \
-      Object maybe_script = result->shared().script();                 \
-      if (maybe_script.IsScript()) {                                   \
-        const int parent_script_id =                                   \
-            isolate->GetExecutingScript(false).script_id;              \
-        Script script = Script::cast(maybe_script);                    \
-        page_graph_delegate->OnEvalScriptCompiled(                     \
-            reinterpret_cast<v8::Isolate*>(isolate), parent_script_id, \
-            script.id(), v8::Utils::ToLocal(source));                  \
-      }                                                                \
-    }                                                                  \
+#define BRAVE_COMPILER_GET_FUNCTION_FROM_EVAL                                 \
+  IF_BUILDFLAG(ENABLE_BRAVE_PAGE_GRAPH, {                                     \
+    auto* page_graph_delegate = isolate->page_graph_delegate();               \
+    if (V8_UNLIKELY(page_graph_delegate)) {                                   \
+      Object maybe_script = result->shared().script();                        \
+      if (maybe_script.IsScript()) {                                          \
+        const int script_id = Script::cast(maybe_script).id();                \
+        page_graph_delegate->OnEvalScriptCompiled(                            \
+            reinterpret_cast<v8::Isolate*>(isolate),                          \
+            isolate->GetAllExecutingScripts(), script_id,                     \
+            v8::Utils::ToLocal(source));                                      \
+      }                                                                       \
+    }                                                                         \
   })
 
 #include "src/v8/src/codegen/compiler.cc"

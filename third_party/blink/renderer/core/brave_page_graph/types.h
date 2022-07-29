@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 
+#include "third_party/blink/renderer/bindings/core/v8/script_source_location_type.h"
 #include "third_party/blink/renderer/core/core_export.h"
 #include "third_party/blink/renderer/platform/graphics/dom_node_id.h"
 #include "third_party/blink/renderer/platform/weborigin/kurl.h"
@@ -30,6 +31,53 @@ class NodeHTML;
 typedef std::string ItemDesc;
 typedef std::string ItemName;
 typedef std::string GraphMLId;
+
+using JSBuiltIn = std::string;
+
+typedef const char* BindingType;
+CORE_EXPORT extern const BindingType kBindingTypeAttribute;
+CORE_EXPORT extern const BindingType kBindingTypeConstant;
+CORE_EXPORT extern const BindingType kBindingTypeConstructor;
+CORE_EXPORT extern const BindingType kBindingTypeMethod;
+
+typedef const char* BindingEvent;
+CORE_EXPORT extern const BindingEvent kBindingEventAttributeGet;
+CORE_EXPORT extern const BindingEvent kBindingEventAttributeSet;
+CORE_EXPORT extern const BindingEvent kBindingEventConstantGet;
+CORE_EXPORT extern const BindingEvent kBindingEventConstructorCall;
+CORE_EXPORT extern const BindingEvent kBindingEventMethodCall;
+
+typedef const char* Binding;
+
+typedef unsigned SourceCodeHash;
+typedef unsigned UrlHash;
+typedef int ScriptId;
+typedef int ScriptPosition;
+typedef int EventListenerId;
+typedef uint64_t PageGraphId;
+typedef std::string MethodName;
+typedef std::string RequestURL;
+typedef uint64_t InspectorId;
+
+struct ScriptSource {
+  blink::DOMNodeId node_id = blink::kInvalidDOMNodeId;
+  ScriptId parent_script_id = 0;
+  blink::KURL url;
+  String function_name;
+  blink::ScriptSourceLocationType location_type =
+      blink::ScriptSourceLocationType::kUnknown;
+  bool is_module = false;
+  bool is_eval = false;
+
+  bool operator==(const ScriptSource& rhs) const;
+};
+
+struct ScriptData {
+  String code;
+  ScriptSource source;
+
+  bool operator==(const ScriptData& rhs) const;
+};
 
 typedef enum {
   kGraphMLAttrDefAttrName = 0,
@@ -117,28 +165,6 @@ CORE_EXPORT std::string ResourceTypeToString(
     const blink::ResourceType type) noexcept;
 
 typedef enum {
-  kScriptTypeClassic = 0,
-  kScriptTypeEval,
-  kScriptTypeModule,
-  kScriptTypeExtension,
-  kExternalFile,
-  kInline,
-  kInlineInsideDocumentWrite,
-  kInlineInsideGeneratedElement,
-  kInternal,
-  kJavascriptUrl,
-  kEvalForScheduledAction,
-  kInspector,
-  kScriptTypeUnknown
-} ScriptType;
-CORE_EXPORT std::string ScriptTypeToString(const ScriptType type) noexcept;
-
-typedef enum {
-  kElementTypeDefault = 0,
-  kElementTypeFrameOwner,
-} ElementType;
-
-typedef enum {
   kRequestStatusStart = 0,
   kRequestStatusComplete,
   kRequestStatusError,
@@ -154,33 +180,6 @@ typedef enum {
 } StorageLocation;
 CORE_EXPORT std::string StorageLocationToString(
     const StorageLocation location) noexcept;
-
-using JSBuiltIn = std::string;
-
-typedef const char* BindingType;
-CORE_EXPORT extern const BindingType kBindingTypeAttribute;
-CORE_EXPORT extern const BindingType kBindingTypeConstant;
-CORE_EXPORT extern const BindingType kBindingTypeConstructor;
-CORE_EXPORT extern const BindingType kBindingTypeMethod;
-
-typedef const char* BindingEvent;
-CORE_EXPORT extern const BindingEvent kBindingEventAttributeGet;
-CORE_EXPORT extern const BindingEvent kBindingEventAttributeSet;
-CORE_EXPORT extern const BindingEvent kBindingEventConstantGet;
-CORE_EXPORT extern const BindingEvent kBindingEventConstructorCall;
-CORE_EXPORT extern const BindingEvent kBindingEventMethodCall;
-
-typedef const char* Binding;
-
-typedef unsigned SourceCodeHash;
-typedef unsigned UrlHash;
-typedef int ScriptId;
-typedef int ScriptPosition;
-typedef int EventListenerId;
-typedef uint64_t PageGraphId;
-typedef std::string MethodName;
-typedef std::string RequestURL;
-typedef uint64_t InspectorId;
 
 struct CORE_EXPORT FingerprintingRule {
   const std::string& primary_pattern;

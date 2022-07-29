@@ -25,7 +25,7 @@ Response InspectorPageAgent::generatePageGraph(String* data) {
     return Response::ServerError("No Page Graph for main frame");
   }
 
-  *data = String::FromUTF8(page_graph->ToGraphML());
+  *data = String(page_graph->ToGraphML());
   return Response::Success();
 #else
   return Response::ServerError("Page Graph buildflag is disabled");

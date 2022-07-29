@@ -15,9 +15,6 @@
           v8::page_graph::GetExecutingScript(                        \
               modulator_->GetScriptState()->GetIsolate())            \
               .script_id);                                           \
-      probe::RegisterPageGraphModuleScriptForDescendant(             \
-          ExecutionContext::From(modulator_->GetScriptState()),      \
-          options.GetParentScriptId(), url);                         \
     }                                                                \
   })
 

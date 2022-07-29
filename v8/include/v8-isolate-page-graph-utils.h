@@ -23,10 +23,11 @@ class V8_EXPORT PageGraphDelegate {
  public:
   virtual ~PageGraphDelegate() = default;
 
-  virtual void OnEvalScriptCompiled(Isolate* isolate,
-                                    const int parent_script_id,
-                                    const int script_id,
-                                    Local<String> source) = 0;
+  virtual void OnEvalScriptCompiled(
+      Isolate* isolate,
+      const std::vector<ExecutingScript>& executing_scripts,
+      const int script_id,
+      Local<String> source) = 0;
   virtual void OnBuiltinCall(Isolate* isolate,
                              const char* builtin_name,
                              const std::vector<std::string>& args,

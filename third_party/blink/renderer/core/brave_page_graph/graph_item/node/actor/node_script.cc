@@ -21,18 +21,45 @@ using ::blink::DynamicTo;
 
 namespace brave_page_graph {
 
+namespace {
+
+std::string GetScriptTypeAsString(const ScriptSource& script_source) noexcept {
+  if (script_source.is_module) {
+    return "module";
+  }
+  if (script_source.is_eval) {
+    return "eval";
+  }
+  switch (script_source.location_type) {
+    case blink::ScriptSourceLocationType::kUnknown:
+      return "unknown";
+    case blink::ScriptSourceLocationType::kExternalFile:
+      return "external file";
+    case blink::ScriptSourceLocationType::kInline:
+      return "inline";
+    case blink::ScriptSourceLocationType::kInlineInsideDocumentWrite:
+      return "inline inside document write";
+    case blink::ScriptSourceLocationType::kInlineInsideGeneratedElement:
+      return "inline inside generated element";
+    case blink::ScriptSourceLocationType::kInternal:
+      return "internal";
+    case blink::ScriptSourceLocationType::kJavascriptUrl:
+      return "javascript url";
+    case blink::ScriptSourceLocationType::kEvalForScheduledAction:
+      return "eval for scheduled action";
+    case blink::ScriptSourceLocationType::kInspector:
+      return "inspector";
+  }
+}
+
+}  // namespace
+
 NodeScript::NodeScript(PageGraph* const graph,
                        const ScriptId script_id,
-                       const ScriptType type,
-                       const std::string& source,
-                       const std::string& url)
-    : NodeActor(graph),
-      script_id_(script_id),
-      script_type_(type),
-      source_(source),
-      url_(url) {}
+                       const ScriptData& script_data)
+    : NodeActor(graph), script_id_(script_id), script_data_(script_data) {}
 
-NodeScript::~NodeScript() {}
+NodeScript::~NodeScript() = default;
 
 ItemName NodeScript::GetItemName() const {
   return "script";
@@ -42,8 +69,8 @@ ItemDesc NodeScript::GetItemDesc() const {
   std::stringstream builder;
   builder << NodeActor::GetItemDesc();
 
-  if (!url_.empty()) {
-    builder << " [" << url_ << "]";
+  if (!script_data_.source.url.IsEmpty()) {
+    builder << " [" << script_data_.source.url << "]";
   }
 
   return builder.str();
@@ -69,9 +96,10 @@ void NodeScript::AddGraphMLAttributes(xmlDocPtr doc,
   GraphMLAttrDefForType(kGraphMLAttrDefScriptIdForNode)
       ->AddValueNode(doc, parent_node, script_id_);
   GraphMLAttrDefForType(kGraphMLAttrDefScriptType)
-      ->AddValueNode(doc, parent_node, ScriptTypeToString(script_type_));
+      ->AddValueNode(doc, parent_node,
+                     GetScriptTypeAsString(script_data_.source));
   GraphMLAttrDefForType(kGraphMLAttrDefSource)
-      ->AddValueNode(doc, parent_node, source_);
+      ->AddValueNode(doc, parent_node, script_data_.code.Utf8());
   GraphMLAttrDefForType(kGraphMLAttrDefURL)
       ->AddValueNode(doc, parent_node, url_);
 }

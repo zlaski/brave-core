@@ -103,38 +103,6 @@ std::string ResourceTypeToString(const blink::ResourceType type) noexcept {
   }
 }
 
-std::string ScriptTypeToString(const ScriptType type) noexcept {
-  switch (type) {
-    case kScriptTypeClassic:
-      return "classic";
-    case kScriptTypeEval:
-      return "eval";
-    case kScriptTypeModule:
-      return "module";
-    case kScriptTypeExtension:
-      return "extension";
-    case kExternalFile:
-      return "external file";
-    case kInline:
-      return "inline";
-    case kInlineInsideDocumentWrite:
-      return "inline inside document write";
-    case kInlineInsideGeneratedElement:
-      return "inline inside generated element";
-    case kInternal:
-      return "internal";
-    case kJavascriptUrl:
-      return "javascript url";
-    case kEvalForScheduledAction:
-      return "eval for scheduled action";
-    case kInspector:
-      return "inspector";
-    case kScriptTypeUnknown:
-    default:
-      return "unknown";
-  }
-}
-
 std::string RequestStatusToString(const RequestStatus status) noexcept {
   switch (status) {
     case kRequestStatusStart:
@@ -190,6 +158,19 @@ std::string FingerprintingRule::ToString() const {
   return "primary pattern: " + primary_pattern +
          ", secondary pattern: " + secondary_pattern + ", source: " + source +
          ", incognito: " + base::NumberToString(incognito);
+}
+
+bool ScriptSource::operator==(const ScriptSource& rhs) const {
+  auto tie = [](const ScriptSource& v) {
+    return std::tie(v.node_id, v.parent_script_id, v.url, v.function_name,
+                    v.location_type, v.is_module, v.is_eval);
+  };
+  return tie(*this) == tie(rhs);
+};
+
+bool ScriptData::operator==(const ScriptData& rhs) const {
+  auto tie = [](const ScriptData& v) { return std::tie(v.code, v.source); };
+  return tie(*this) == tie(rhs);
 }
 
 }  // namespace brave_page_graph

@@ -29,8 +29,6 @@ class NodeScript : public NodeActor {
   ~NodeScript() override;
 
   ScriptId GetScriptId() const { return script_id_; }
-  ScriptType GetScriptType() const { return script_type_; }
-  const std::string& GetSource() const { return source_; }
 
   const std::string& GetURL() const { return url_; }
   void SetURL(const std::string url) { url_ = url; }
@@ -46,16 +44,13 @@ class NodeScript : public NodeActor {
  protected:
   NodeScript(PageGraph* const graph,
              const ScriptId script_id,
-             const ScriptType type,
-             const std::string& source,
-             const std::string& url = "");
+             const ScriptData& script_data);
 
   void AddInEdge(const Edge* const in_edge) override;
 
  private:
   const ScriptId script_id_;
-  const ScriptType script_type_;
-  const std::string source_;
+  const ScriptData script_data_;
   std::string url_;
 };
 
