@@ -18,7 +18,7 @@
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/types.h"
 
-#include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/edge_html.h"
+#include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/edge_structure.h"
 
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/attribute/edge_attribute_delete.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/attribute/edge_attribute_set.h"
@@ -77,7 +77,7 @@ void NodeHTMLElement::AddGraphMLTag(xmlDocPtr doc,
   NodeHTML::AddGraphMLTag(doc, parent_node);
 
   for (NodeHTML* const child_node : child_nodes_) {
-    EdgeHTML html_edge(this, child_node);
+    EdgeStructure html_edge(this, child_node);
     html_edge.AddGraphMLTag(doc, parent_node);
   }
 

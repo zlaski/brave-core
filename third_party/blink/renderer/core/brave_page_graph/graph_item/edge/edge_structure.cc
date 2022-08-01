@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/edge_html.h"
+#include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/edge/edge_structure.h"
 
 #include <ostream>
 #include <sstream>
@@ -18,22 +18,22 @@
 
 namespace brave_page_graph {
 
-EdgeHTML::EdgeHTML(PageGraph* const graph,
-                   NodeHTMLElement* const out_node,
-                   NodeHTML* const in_node)
+EdgeStructure::EdgeStructure(PageGraph* const graph,
+                             Node* const out_node,
+                             Node* const in_node)
     : Edge(graph, out_node, in_node) {}
 
-EdgeHTML::EdgeHTML(const NodeHTMLElement* const out_node,
-                   NodeHTML* const in_node)
+EdgeStructure::EdgeStructure(const NodeHTMLElement* const out_node,
+                             NodeHTML* const in_node)
     : Edge(const_cast<NodeHTMLElement*>(out_node), in_node) {}
 
-EdgeHTML::~EdgeHTML() {}
+EdgeStructure::~EdgeStructure() {}
 
-ItemName EdgeHTML::GetItemName() const {
+ItemName EdgeStructure::GetItemName() const {
   return "structure";
 }
 
-bool EdgeHTML::IsEdgeHTML() const {
+bool EdgeStructure::IsEdgeStructure() const {
   return true;
 }
 

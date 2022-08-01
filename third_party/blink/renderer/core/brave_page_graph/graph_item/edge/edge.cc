@@ -88,7 +88,7 @@ bool Edge::IsEdgeFilter() const {
   return false;
 }
 
-bool Edge::IsEdgeHTML() const {
+bool Edge::IsEdgeJS() const {
   return false;
 }
 
@@ -120,7 +120,7 @@ bool Edge::IsEdgeTextChange() const {
   return false;
 }
 
-bool Edge::IsEdgeJS() const {
+bool Edge::IsEdgeStructure() const {
   return false;
 }
 

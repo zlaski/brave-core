@@ -108,8 +108,6 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
   explicit PageGraph(blink::LocalFrame* local_frame);
   ~PageGraph() override;
 
-  virtual void Shutdown();
-
   virtual void Trace(blink::Visitor*) const;
 
   void DidInsertDOMNode(blink::Node* node);
@@ -330,6 +328,11 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
   base::TimeTicks GetStartTime() const;
 
  private:
+  struct ExecutionContextNodes {
+    NodeParser* parser_node;
+    NodeExtensions* extensions_node;
+  };
+
   void AddNode(Node* const node);
   void AddEdge(const Edge* const edge);
 
@@ -410,10 +413,10 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
 
   // Non-owning references to singleton items in the graph. (the owning
   // references will be in the above vectors).
-  //base::flat_map<blink::ExecutionContext*, NodeParser*> document_parser_nodes_;
-  blink::HeapHashMap<blink::Member<ExecutionContext>, NodeParser*>
-      parser_nodes_;
-  NodeExtensions* const extensions_node_;
+  // base::flat_map<blink::ExecutionContext*, NodeParser*>
+  // document_parser_nodes_;
+  blink::HeapHashMap<blink::Member<ExecutionContext>, ExecutionContextNodes>
+      execution_context_nodes_;
 
   NodeShields* const shields_node_;
   NodeShield* const ad_shield_node_;
@@ -490,7 +493,6 @@ class CORE_EXPORT PageGraph : public blink::GarbageCollected<PageGraph>,
   explicit PageGraph(LocalFrame& local_frame);
 
   void Trace(Visitor* visitor) const override;
-  void Shutdown() override;
 };
 
 }  // namespace blink

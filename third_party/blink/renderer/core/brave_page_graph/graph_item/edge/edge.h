@@ -44,7 +44,6 @@ class Edge : public GraphItem {
   virtual bool IsEdgeEventListenerAction() const;
   virtual bool IsEdgeExecute() const;
   virtual bool IsEdgeFilter() const;
-  virtual bool IsEdgeHTML() const;
   virtual bool IsEdgeJS() const;
   virtual bool IsEdgeNode() const;
   virtual bool IsEdgeRequest() const;
@@ -52,6 +51,7 @@ class Edge : public GraphItem {
   virtual bool IsEdgeShield() const;
   virtual bool IsEdgeStorage() const;
   virtual bool IsEdgeStorageBucket() const;
+  virtual bool IsEdgeStructure() const;
   virtual bool IsEdgeTextChange() const;
 
  protected:

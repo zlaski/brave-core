@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_HTML_H_
-#define BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_HTML_H_
+#ifndef BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_STRUCTURE_H_
+#define BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_STRUCTURE_H_
 
 #include "third_party/blink/renderer/platform/wtf/casting.h"
 
@@ -18,25 +18,25 @@ class NodeHTML;
 class NodeHTMLElement;
 class PageGraph;
 
-class EdgeHTML : public Edge {
+class EdgeStructure : public Edge {
   // Needed for generating edges during GraphML export
   friend class NodeHTMLElement;
   friend class PageGraph;
 
  public:
-  EdgeHTML() = delete;
-  ~EdgeHTML() override;
+  EdgeStructure() = delete;
+  ~EdgeStructure() override;
 
   ItemName GetItemName() const override;
 
-  bool IsEdgeHTML() const override;
+  bool IsEdgeStructure() const override;
 
  protected:
-  EdgeHTML(PageGraph* const graph,
-           NodeHTMLElement* const out_node,
-           NodeHTML* const in_node);
+  EdgeStructure(PageGraph* const graph,
+                Node* const out_node,
+                Node* const in_node);
   // Only used for generating edges during GraphML export.
-  EdgeHTML(const NodeHTMLElement* const out_node, NodeHTML* const in_node);
+  EdgeStructure(const NodeHTMLElement* const out_node, NodeHTML* const in_node);
 };
 
 }  // namespace brave_page_graph
@@ -44,16 +44,16 @@ class EdgeHTML : public Edge {
 namespace blink {
 
 template <>
-struct DowncastTraits<brave_page_graph::EdgeHTML> {
+struct DowncastTraits<brave_page_graph::EdgeStructure> {
   static bool AllowFrom(const brave_page_graph::Edge& edge) {
-    return edge.IsEdgeHTML();
+    return edge.IsEdgeStructure();
   }
   static bool AllowFrom(const brave_page_graph::GraphItem& graph_item) {
-    return IsA<brave_page_graph::EdgeHTML>(
+    return IsA<brave_page_graph::EdgeStructure>(
         DynamicTo<brave_page_graph::Edge>(graph_item));
   }
 };
 
 }  // namespace blink
 
-#endif  // BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_HTML_H_
+#endif  // BRAVE_THIRD_PARTY_BLINK_RENDERER_CORE_BRAVE_PAGE_GRAPH_GRAPH_ITEM_EDGE_EDGE_STRUCTURE_H_
