@@ -222,16 +222,13 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
   void RegisterInlineStyleSet(blink::Node* node,
                               const String& attr_name,
                               const String& attr_value);
-  void RegisterInlineStyleDelete(blink::Node* node,
-                                 const String& attr_name);
+  void RegisterInlineStyleDelete(blink::Node* node, const String& attr_name);
   void RegisterAttributeSet(blink::Node* node,
                             const String& attr_name,
                             const String& attr_value);
-  void RegisterAttributeDelete(blink::Node* node,
-                               const String& attr_name);
+  void RegisterAttributeDelete(blink::Node* node, const String& attr_name);
 
-  void RegisterTextNodeChange(blink::Node* node,
-                              const String& new_text);
+  void RegisterTextNodeChange(blink::Node* node, const String& new_text);
 
   void RegisterRequestStartFromElm(const blink::DOMNodeId node_id,
                                    const InspectorId request_id,
@@ -463,8 +460,7 @@ class CORE_EXPORT PageGraph : public blink::WebPageGraph {
 
   // Index structure for looking up script nodes.
   // This map does not own the references.
-  std::map<v8::Isolate*, std::map<ScriptId, NodeScript*>>
-      script_nodes_;
+  std::map<v8::Isolate*, std::map<ScriptId, NodeScript*>> script_nodes_;
 
   // Makes sure we don't have more than one node in the graph representing
   // a single URL (not required for correctness, but keeps things tidier

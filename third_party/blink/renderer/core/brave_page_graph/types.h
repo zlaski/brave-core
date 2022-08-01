@@ -199,15 +199,6 @@ struct CORE_EXPORT FingerprintingRule {
   std::string ToString() const;
 };
 
-struct CORE_EXPORT EventListener {
-  const std::string& event_type;
-  const ScriptId listener_script_id;
-
-  EventListener(const std::string& event_type,
-                ScriptId const listener_script_id)
-      : event_type(event_type), listener_script_id(listener_script_id) {}
-};
-
 typedef std::vector<const Edge*> EdgeList;
 typedef std::vector<Node*> NodeList;
 typedef std::vector<std::unique_ptr<const Edge>> EdgeUniquePtrList;
@@ -217,7 +208,6 @@ typedef std::vector<NodeHTML*> HTMLNodeList;
 typedef std::vector<blink::DOMNodeId> DOMNodeIdList;
 typedef std::vector<ScriptId> ScriptIdList;
 typedef std::map<const std::string, const std::string> AttributeMap;
-typedef std::map<EventListenerId, const EventListener> EventListenerMap;
 
 typedef std::map<SourceCodeHash, ScriptId> HashToScriptIdMap;
 typedef std::map<ScriptId, SourceCodeHash> ScriptIdToHashMap;

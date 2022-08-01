@@ -43,12 +43,12 @@ class EdgeNodeInsert final : public EdgeNode {
   EdgeNodeInsert(PageGraph* const graph,
                  NodeActor* const out_node,
                  NodeHTML* const in_node,
-                 const blink::DOMNodeId parent_node_id = 0,
-                 const blink::DOMNodeId prior_sibling_node_id = 0);
+                 NodeHTMLElement* parent_node = nullptr,
+                 NodeHTML* prior_sibling_node = nullptr);
 
  private:
-  const blink::DOMNodeId parent_node_id_;
-  const blink::DOMNodeId prior_sibling_node_id_;
+  NodeHTMLElement* parent_node_;
+  NodeHTML* prior_sibling_node_;
 };
 
 }  // namespace brave_page_graph

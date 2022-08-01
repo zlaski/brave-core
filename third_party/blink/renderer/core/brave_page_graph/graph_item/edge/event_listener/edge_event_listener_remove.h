@@ -39,7 +39,7 @@ class EdgeEventListenerRemove final : public EdgeEventListenerAction {
                           NodeHTMLElement* const in_node,
                           const std::string& event_type,
                           const EventListenerId listener_id,
-                          const ScriptId listener_script_id);
+                          NodeActor* listener_script);
 };
 
 }  // namespace brave_page_graph

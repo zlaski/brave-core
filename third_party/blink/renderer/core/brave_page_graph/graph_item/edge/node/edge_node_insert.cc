@@ -29,23 +29,20 @@ namespace brave_page_graph {
 EdgeNodeInsert::EdgeNodeInsert(PageGraph* const graph,
                                NodeActor* const out_node,
                                NodeHTML* const in_node,
-                               const DOMNodeId parent_node_id,
-                               const DOMNodeId prior_sibling_node_id)
+                               NodeHTMLElement* parent_node,
+                               NodeHTML* prior_sibling_node)
     : EdgeNode(graph, out_node, in_node),
-      parent_node_id_(parent_node_id),
-      prior_sibling_node_id_(prior_sibling_node_id) {}
+      parent_node_(parent_node),
+      prior_sibling_node_(prior_sibling_node) {}
 
 EdgeNodeInsert::~EdgeNodeInsert() {}
 
 NodeHTMLElement* EdgeNodeInsert::GetParentNode() const {
-  return parent_node_id_ ? GetGraph()->GetHTMLElementNode(parent_node_id_)
-                         : nullptr;
+  return parent_node_;
 }
 
 NodeHTML* EdgeNodeInsert::GetPriorSiblingNode() const {
-  return prior_sibling_node_id_
-             ? GetGraph()->GetHTMLNode(prior_sibling_node_id_)
-             : nullptr;
+  return prior_sibling_node_;
 }
 
 ItemName EdgeNodeInsert::GetItemName() const {
@@ -72,13 +69,13 @@ ItemDesc EdgeNodeInsert::GetItemDesc() const {
 void EdgeNodeInsert::AddGraphMLAttributes(xmlDocPtr doc,
                                           xmlNodePtr parent_node) const {
   EdgeNode::AddGraphMLAttributes(doc, parent_node);
-  if (parent_node_id_) {
+  if (parent_node_) {
     GraphMLAttrDefForType(kGraphMLAttrDefParentNodeId)
-        ->AddValueNode(doc, parent_node, parent_node_id_);
+        ->AddValueNode(doc, parent_node, parent_node_->GetNodeId());
   }
-  if (prior_sibling_node_id_) {
+  if (prior_sibling_node_) {
     GraphMLAttrDefForType(kGraphMLAttrDefBeforeNodeId)
-        ->AddValueNode(doc, parent_node, prior_sibling_node_id_);
+        ->AddValueNode(doc, parent_node, prior_sibling_node_->GetNodeId());
   }
 }
 

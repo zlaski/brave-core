@@ -22,6 +22,7 @@ namespace brave_page_graph {
 
 class NodeHTMLText;
 class PageGraph;
+class EdgeEventListenerAdd;
 
 class NodeHTMLElement : public NodeHTML {
   friend class NodeHTMLText;
@@ -37,7 +38,6 @@ class NodeHTMLElement : public NodeHTML {
 
   const AttributeMap& GetAttributes() const { return attributes_; }
   const AttributeMap& GetInlineStyles() const { return inline_styles_; }
-  const EventListenerMap& GetEventListeners() const { return event_listeners_; }
 
   ItemName GetItemName() const override;
   ItemDesc GetItemDesc() const override;
@@ -71,7 +71,7 @@ class NodeHTMLElement : public NodeHTML {
 
   AttributeMap attributes_;
   AttributeMap inline_styles_;
-  EventListenerMap event_listeners_;
+  std::map<EventListenerId, const EdgeEventListenerAdd*> event_listeners_;
 };
 
 }  // namespace brave_page_graph

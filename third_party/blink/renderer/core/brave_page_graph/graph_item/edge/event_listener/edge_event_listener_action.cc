@@ -9,6 +9,7 @@
 
 #include "base/strings/string_number_conversions.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/actor/node_actor.h"
+#include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/actor/node_script.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graph_item/node/html/node_html_element.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/graphml.h"
 #include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
@@ -22,19 +23,26 @@ EdgeEventListenerAction::EdgeEventListenerAction(
     NodeHTMLElement* const in_node,
     const std::string& event_type,
     const EventListenerId listener_id,
-    const ScriptId listener_script_id)
+    NodeActor* listener_script)
     : Edge(graph, out_node, in_node),
       event_type_(event_type),
       listener_id_(listener_id),
-      listener_script_id_(listener_script_id) {}
+      listener_script_(listener_script) {}
 
 EdgeEventListenerAction::~EdgeEventListenerAction() {}
+
+ScriptId EdgeEventListenerAction::GetListenerScriptId() const {
+  if (auto* node_script = blink::DynamicTo<NodeScript>(listener_script_)) {
+    return node_script->GetScriptId();
+  }
+  return 0;
+}
 
 ItemDesc EdgeEventListenerAction::GetItemDesc() const {
   return Edge::GetItemDesc() + " [" + event_type_ + "]" +
          " [listener id: " + base::NumberToString(listener_id_) + "]" +
-         " [listener script id: " + base::NumberToString(listener_script_id_) +
-         "]";
+         " [listener script id: " +
+         base::NumberToString(GetListenerScriptId()) + "]";
 }
 
 void EdgeEventListenerAction::AddGraphMLAttributes(
@@ -46,7 +54,7 @@ void EdgeEventListenerAction::AddGraphMLAttributes(
   GraphMLAttrDefForType(kGraphMLAttrDefEventListenerId)
       ->AddValueNode(doc, parent_node, listener_id_);
   GraphMLAttrDefForType(kGraphMLAttrDefScriptIdForEdge)
-      ->AddValueNode(doc, parent_node, listener_script_id_);
+      ->AddValueNode(doc, parent_node, GetListenerScriptId());
 }
 
 bool EdgeEventListenerAction::IsEdgeEventListenerAction() const {

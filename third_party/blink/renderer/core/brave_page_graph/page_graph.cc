@@ -202,6 +202,41 @@ class V8PageGraphDelegate : public v8::page_graph::PageGraphDelegate {
   }
 };
 
+static v8::Local<v8::Function> GetInnermostFunction(
+    v8::Local<v8::Function> function) {
+  while (true) {
+    v8::Local<v8::Value> bound_function = function->GetBoundFunction();
+    if (bound_function->IsFunction()) {
+      function = bound_function.As<v8::Function>();
+    } else {
+      break;
+    }
+  }
+
+  return function;
+}
+
+static int GetListenerScriptId(blink::EventTarget* event_target,
+                               blink::EventListener* listener) {
+  blink::JSBasedEventListener* const js_listener =
+      DynamicTo<blink::JSBasedEventListener>(listener);
+  if (!js_listener) {
+    return 0;
+  }
+
+  v8::HandleScope handle_scope(
+      event_target->GetExecutionContext()->GetIsolate());
+  v8::Local<v8::Value> maybe_listener_function =
+      js_listener->GetEffectiveFunction(*event_target);
+  if (!maybe_listener_function->IsFunction()) {
+    return 0;
+  }
+
+  v8::Local<v8::Function> listener_function =
+      GetInnermostFunction(maybe_listener_function.As<v8::Function>());
+  return listener_function->ScriptId();
+}
+
 }  // namespace
 
 PageGraph::PageGraph(blink::LocalFrame* local_frame)
@@ -448,15 +483,29 @@ void PageGraph::RegisterHTMLElementNodeInserted(
 
   PG_LOG_ASSERT(element_nodes_.count(node_id) == 1);
   SpeculativelyRegisterCurrentlyConstructedNode(parent_node_id);
+  NodeHTMLElement* parent_graph_node = nullptr;
+  auto parent_node_it = element_nodes_.find(parent_node_id);
+  if (parent_node_it != element_nodes_.end()) {
+    parent_graph_node = parent_node_it->second;
+  }
+  NodeHTML* prior_graph_sibling_node = nullptr;
+  if (before_sibling_id) {
+    auto element_node_it = element_nodes_.find(before_sibling_id);
+    if (element_node_it != element_nodes_.end()) {
+      prior_graph_sibling_node = element_node_it->second;
+    } else {
+      auto text_node_it = text_nodes_.find(before_sibling_id);
+      if (text_node_it != text_nodes_.end()) {
+        prior_graph_sibling_node = text_node_it->second;
+      }
+    }
+  }
   PG_LOG_ASSERT(element_nodes_.count(parent_node_id) == 1);
-  PG_LOG_ASSERT(before_sibling_id == 0 ||
-                element_nodes_.count(before_sibling_id) +
-                        text_nodes_.count(before_sibling_id) ==
-                    1);
+  PG_LOG_ASSERT(before_sibling_id == 0 || prior_graph_sibling_node);
   NodeHTMLElement* const inserted_node = element_nodes_.at(node_id);
 
-  AddEdge(new EdgeNodeInsert(this, acting_node, inserted_node, parent_node_id,
-                             before_sibling_id));
+  AddEdge(new EdgeNodeInsert(this, acting_node, inserted_node,
+                             parent_graph_node, prior_graph_sibling_node));
 }
 
 void PageGraph::RegisterHTMLTextNodeInserted(
@@ -475,15 +524,27 @@ void PageGraph::RegisterHTMLTextNodeInserted(
 
   PG_LOG_ASSERT(text_nodes_.count(node_id) == 1);
   SpeculativelyRegisterCurrentlyConstructedNode(parent_node_id);
-  PG_LOG_ASSERT(element_nodes_.count(parent_node_id) == 1);
-  PG_LOG_ASSERT(before_sibling_id == 0 ||
-                element_nodes_.count(before_sibling_id) +
-                        text_nodes_.count(before_sibling_id) ==
-                    1);
+  NodeHTMLElement* parent_graph_node = nullptr;
+  auto parent_node_it = element_nodes_.find(parent_node_id);
+  if (parent_node_it != element_nodes_.end()) {
+    parent_graph_node = parent_node_it->second;
+  }
+  NodeHTML* prior_graph_sibling_node = nullptr;
+  if (before_sibling_id) {
+    auto element_node_it = element_nodes_.find(before_sibling_id);
+    if (element_node_it != element_nodes_.end()) {
+      prior_graph_sibling_node = element_node_it->second;
+    } else {
+      auto text_node_it = text_nodes_.find(before_sibling_id);
+      if (text_node_it != text_nodes_.end()) {
+        prior_graph_sibling_node = text_node_it->second;
+      }
+    }
+  }
   NodeHTMLText* const inserted_node = text_nodes_.at(node_id);
 
-  AddEdge(new EdgeNodeInsert(this, acting_node, inserted_node, parent_node_id,
-                             before_sibling_id));
+  AddEdge(new EdgeNodeInsert(this, acting_node, inserted_node,
+                             parent_graph_node, prior_graph_sibling_node));
 }
 
 void PageGraph::RegisterHTMLElementNodeRemoved(blink::Node* node) {
@@ -530,9 +591,9 @@ void PageGraph::RegisterEventListenerAdd(blink::Node* node,
   PG_LOG_ASSERT(element_nodes_.count(node_id) == 1);
   NodeHTMLElement* const element_node = element_nodes_.at(node_id);
 
-  AddEdge(new EdgeEventListenerAdd(this, acting_node, element_node,
-                                   local_event_type, listener_id,
-                                   listener_script_id));
+  AddEdge(new EdgeEventListenerAdd(
+      this, acting_node, element_node, local_event_type, listener_id,
+      GetScriptNode(node->GetExecutionContext(), listener_script_id)));
 }
 
 void PageGraph::RegisterEventListenerRemove(blink::Node* node,
@@ -553,9 +614,9 @@ void PageGraph::RegisterEventListenerRemove(blink::Node* node,
   PG_LOG_ASSERT(element_nodes_.count(node_id) == 1);
   NodeHTMLElement* const element_node = element_nodes_.at(node_id);
 
-  AddEdge(new EdgeEventListenerRemove(this, acting_node, element_node,
-                                      local_event_type, listener_id,
-                                      listener_script_id));
+  AddEdge(new EdgeEventListenerRemove(
+      this, acting_node, element_node, local_event_type, listener_id,
+      GetScriptNode(node->GetExecutionContext(), listener_script_id)));
 }
 
 void PageGraph::RegisterInlineStyleSet(blink::Node* node,
@@ -898,8 +959,7 @@ void PageGraph::RegisterScriptCompilation(
   } else {
     PG_LOG_ASSERT(execution_context_nodes_.Contains(execution_context));
     AddEdge(new EdgeExecute(
-        this,
-        execution_context_nodes_.at(execution_context).extensions_node,
+        this, execution_context_nodes_.at(execution_context).extensions_node,
         code_node));
   }
 }
@@ -2070,39 +2130,6 @@ void PageGraph::RegisterPageGraphScriptCompilationFromAttr(
                                     script_id, script_data);
 }
 
-static v8::Local<v8::Function> GetInnermostFunction(
-    v8::Local<v8::Function> function) {
-  while (true) {
-    v8::Local<v8::Value> bound_function = function->GetBoundFunction();
-    if (bound_function->IsFunction()) {
-      function = bound_function.As<v8::Function>();
-    } else {
-      break;
-    }
-  }
-
-  return function;
-}
-
-static int GetListenerScriptId(blink::EventTarget* event_target,
-                               blink::EventListener* listener) {
-  v8::Isolate* const isolate(event_target->GetExecutionContext()->GetIsolate());
-  v8::HandleScope handle_scope(isolate);
-
-  if (IsA<blink::JSBasedEventListener>(listener)) {
-    blink::JSBasedEventListener* const js_listener =
-        To<blink::JSBasedEventListener>(listener);
-    v8::Local<v8::Value> maybe_listener_function =
-        js_listener->GetEffectiveFunction(*event_target);
-    if (maybe_listener_function->IsFunction()) {
-      v8::Local<v8::Function> listener_function =
-          GetInnermostFunction(maybe_listener_function.As<v8::Function>());
-      return listener_function->ScriptId();
-    }
-  }
-  return 0;
-}
-
 void PageGraph::RegisterPageGraphEventListenerAdd(
     blink::EventTarget* event_target,
     const String& event_type,
@@ -2111,8 +2138,11 @@ void PageGraph::RegisterPageGraphEventListenerAdd(
   if (!node || !node->IsHTMLElement()) {
     return;
   }
-  int listener_script_id =
+  const int listener_script_id =
       GetListenerScriptId(event_target, registered_listener->Callback());
+  if (!listener_script_id) {
+    return;
+  }
   RegisterEventListenerAdd(node, event_type, registered_listener->Id(),
                            listener_script_id);
 }
@@ -2125,8 +2155,11 @@ void PageGraph::RegisterPageGraphEventListenerRemove(
   if (!node || !node->IsHTMLElement()) {
     return;
   }
-  int listener_script_id =
+  const int listener_script_id =
       GetListenerScriptId(event_target, registered_listener->Callback());
+  if (!listener_script_id) {
+    return;
+  }
   RegisterEventListenerRemove(node, event_type, registered_listener->Id(),
                               listener_script_id);
 }

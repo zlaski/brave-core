@@ -83,18 +83,15 @@ void NodeHTMLElement::AddGraphMLTag(xmlDocPtr doc,
 
   // For each event listener, draw an edge from the listener script to the DOM
   // node to which it's attached.
+  for (auto& event_listener : event_listeners_) {
+    const EventListenerId listener_id = event_listener.first;
+    const std::string& event_type = event_listener.second->GetEventType();
+    NodeActor* const listener_node = event_listener.second->GetListenerNode();
 
-  // TODO
-  // for (auto& event_listener : event_listeners_) {
-  //   const EventListenerId listener_id = event_listener.first;
-  //   const std::string& event_type = event_listener.second.event_type;
-  //   NodeActor* const listener_node = GetGraph()->GetNodeActorForScriptId(
-  //       event_listener.second.listener_script_id);
-
-  //   EdgeEventListener event_listener_edge(this, listener_node, event_type,
-  //                                         listener_id);
-  //   event_listener_edge.AddGraphMLTag(doc, parent_node);
-  // }
+    EdgeEventListener event_listener_edge(this, listener_node, event_type,
+                                          listener_id);
+    event_listener_edge.AddGraphMLTag(doc, parent_node);
+  }
 }
 
 void NodeHTMLElement::AddGraphMLAttributes(xmlDocPtr doc,
@@ -145,10 +142,8 @@ void NodeHTMLElement::AddInEdge(const Edge* const in_edge) {
   NodeHTML::AddInEdge(in_edge);
   if (const EdgeEventListenerAdd* const add_event_listener_in_edge =
           DynamicTo<EdgeEventListenerAdd>(in_edge)) {
-    event_listeners_.emplace(
-        add_event_listener_in_edge->GetListenerId(),
-        EventListener(add_event_listener_in_edge->GetEventType(),
-                      add_event_listener_in_edge->GetListenerScriptId()));
+    event_listeners_.emplace(add_event_listener_in_edge->GetListenerId(),
+                             add_event_listener_in_edge);
   } else if (const EdgeEventListenerRemove* const
                  remove_event_listener_in_edge =
                      DynamicTo<EdgeEventListenerRemove>(in_edge)) {

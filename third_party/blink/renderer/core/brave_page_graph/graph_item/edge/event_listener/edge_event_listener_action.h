@@ -30,7 +30,8 @@ class EdgeEventListenerAction : public Edge {
 
   const std::string& GetEventType() const { return event_type_; }
   EventListenerId GetListenerId() const { return listener_id_; }
-  ScriptId GetListenerScriptId() const { return listener_script_id_; }
+  NodeActor* GetListenerNode() const { return listener_script_; }
+  ScriptId GetListenerScriptId() const;
 
   ItemDesc GetItemDesc() const override;
 
@@ -48,12 +49,12 @@ class EdgeEventListenerAction : public Edge {
                           NodeHTMLElement* const in_node,
                           const std::string& event_type,
                           const EventListenerId listener_id,
-                          const ScriptId listener_script_id);
+                          NodeActor* listener_script);
 
  private:
   const std::string event_type_;
   const EventListenerId listener_id_;
-  const ScriptId listener_script_id_;
+  NodeActor* listener_script_;
 };
 
 }  // namespace brave_page_graph

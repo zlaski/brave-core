@@ -20,13 +20,13 @@ EdgeEventListenerRemove::EdgeEventListenerRemove(
     NodeHTMLElement* const in_node,
     const std::string& event_type,
     const EventListenerId listener_id,
-    const ScriptId listener_script_id)
+    NodeActor* listener_script)
     : EdgeEventListenerAction(graph,
                               out_node,
                               in_node,
                               event_type,
                               listener_id,
-                              listener_script_id) {}
+                              listener_script) {}
 
 EdgeEventListenerRemove::~EdgeEventListenerRemove() {}
 
