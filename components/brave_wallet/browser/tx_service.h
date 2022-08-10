@@ -60,6 +60,7 @@ class TxService : public KeyedService,
   // mojom::TxService
   void AddUnapprovedTransaction(mojom::TxDataUnionPtr tx_data_union,
                                 const std::string& from,
+                                const absl::optional<std::string>& chain_id,
                                 const absl::optional<url::Origin>& origin,
                                 const absl::optional<std::string>& group_id,
                                 AddUnapprovedTransactionCallback) override;
@@ -194,6 +195,7 @@ class TxService : public KeyedService,
   SolanaTxManager* GetSolanaTxManager();
   FilTxManager* GetFilTxManager();
 
+  raw_ptr<JsonRpcService> json_rpc_service_;
   raw_ptr<PrefService> prefs_;  // NOT OWNED
   base::flat_map<mojom::CoinType, std::unique_ptr<TxManager>> tx_manager_map_;
   mojo::RemoteSet<mojom::TxServiceObserver> observers_;

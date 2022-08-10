@@ -10,6 +10,7 @@
 #include "brave/components/brave_wallet/browser/brave_wallet_prefs.h"
 #include "brave/components/brave_wallet/browser/eth_tx_manager.h"
 #include "brave/components/brave_wallet/browser/fil_tx_manager.h"
+#include "brave/components/brave_wallet/browser/json_rpc_service.h"
 #include "brave/components/brave_wallet/browser/solana_tx_manager.h"
 #include "brave/components/brave_wallet/browser/tx_manager.h"
 #include "url/origin.h"
@@ -34,7 +35,7 @@ mojom::CoinType GetCoinTypeFromTxDataUnion(
 TxService::TxService(JsonRpcService* json_rpc_service,
                      KeyringService* keyring_service,
                      PrefService* prefs)
-    : prefs_(prefs), weak_factory_(this) {
+    : json_rpc_service_(json_rpc_service), prefs_(prefs), weak_factory_(this) {
   tx_manager_map_[mojom::CoinType::ETH] = std::unique_ptr<TxManager>(
       new EthTxManager(this, json_rpc_service, keyring_service, prefs));
   tx_manager_map_[mojom::CoinType::SOL] = std::unique_ptr<TxManager>(
@@ -113,13 +114,17 @@ void TxService::BindFilTxManagerProxy(
 void TxService::AddUnapprovedTransaction(
     mojom::TxDataUnionPtr tx_data_union,
     const std::string& from,
+    const absl::optional<std::string>& chain_id,
     const absl::optional<url::Origin>& origin,
     const absl::optional<std::string>& group_id,
     AddUnapprovedTransactionCallback callback) {
   auto coin_type = GetCoinTypeFromTxDataUnion(*tx_data_union);
-
+  const std::string chain = chain_id.has_value()
+                                ? *chain_id
+                                : json_rpc_service_->GetChainId(coin_type);
   GetTxManager(coin_type)->AddUnapprovedTransaction(
-      std::move(tx_data_union), from, origin, group_id, std::move(callback));
+      std::move(tx_data_union), from, chain, origin, group_id,
+      std::move(callback));
 }
 
 void TxService::ApproveTransaction(mojom::CoinType coin_type,

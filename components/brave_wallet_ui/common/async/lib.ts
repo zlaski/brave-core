@@ -740,11 +740,11 @@ export async function sendEthTransaction (store: Store, payload: SendEthTransact
     }
     // @ts-expect-error google closure is ok with undefined for other fields but mojom runtime is not
     const txDataUnion: BraveWallet.TxDataUnion = { ethTxData1559: txData1559 }
-    addResult = await apiProxy.txService.addUnapprovedTransaction(txDataUnion, payload.from, null, null)
+    addResult = await apiProxy.txService.addUnapprovedTransaction(txDataUnion, payload.from, null, null, null)
   } else {
     // @ts-expect-error google closure is ok with undefined for other fields but mojom runtime is not
     const txDataUnion: BraveWallet.TxDataUnion = { ethTxData: txData }
-    addResult = await apiProxy.txService.addUnapprovedTransaction(txDataUnion, payload.from, null, null)
+    addResult = await apiProxy.txService.addUnapprovedTransaction(txDataUnion, payload.from, null, null, null)
   }
   return addResult
 }
@@ -762,20 +762,20 @@ export async function sendFilTransaction (payload: SendFilTransactionParams) {
     value: payload.value
   }
   // @ts-expect-error google closure is ok with undefined for other fields but mojom runtime is not
-  return await apiProxy.txService.addUnapprovedTransaction({ filTxData: filTxData }, payload.from, null, null)
+  return await apiProxy.txService.addUnapprovedTransaction({ filTxData: filTxData }, payload.from, null, null, null)
 }
 
 export async function sendSolTransaction (payload: SendSolTransactionParams) {
   const { solanaTxManagerProxy, txService } = getAPIProxy()
   const value = await solanaTxManagerProxy.makeSystemProgramTransferTxData(payload.from, payload.to, BigInt(payload.value))
   // @ts-expect-error google closure is ok with undefined for other fields but mojom runtime is not
-  return await txService.addUnapprovedTransaction({ solanaTxData: value.txData }, payload.from, null, null)
+  return await txService.addUnapprovedTransaction({ solanaTxData: value.txData }, payload.from, null, null, null)
 }
 
 export async function sendSPLTransaction (payload: BraveWallet.SolanaTxData) {
   const { txService } = getAPIProxy()
   // @ts-expect-error google closure is ok with undefined for other fields but mojom runtime is not
-  return await txService.addUnapprovedTransaction({ solanaTxData: payload }, payload.feePayer, null, null)
+  return await txService.addUnapprovedTransaction({ solanaTxData: payload }, payload.feePayer, null, null, null)
 }
 
 export async function sendSolanaSerializedTransaction (payload: SolanaSerializedTransactionParams) {
@@ -793,6 +793,7 @@ export async function sendSolanaSerializedTransaction (payload: SolanaSerialized
       // @ts-expect-error google closure is ok with undefined for other fields but mojom runtime is not
       { solanaTxData: result.txData },
       payload.from,
+      null,
       null,
       payload.groupId || null
     )

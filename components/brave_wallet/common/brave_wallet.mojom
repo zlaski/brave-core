@@ -983,7 +983,8 @@ interface TxServiceObserver {
 // transactions.
 interface TxService {
   // Used to add a transaction. Missing origin is expected to come from chrome://wallet.
-  AddUnapprovedTransaction(TxDataUnion tx_data_union, string from, url.mojom.Origin? origin, string? group_id) => (bool success, string tx_meta_id, string error_message);
+  // Current selected network will be used if chain_id is not specified.
+  AddUnapprovedTransaction(TxDataUnion tx_data_union, string from, string? chain_id, url.mojom.Origin? origin, string? group_id) => (bool success, string tx_meta_id, string error_message);
 
   // Used to approve a transaction
   ApproveTransaction(CoinType coin_type, string tx_meta_id) => (bool status, ProviderErrorUnion error_union, string error_message);

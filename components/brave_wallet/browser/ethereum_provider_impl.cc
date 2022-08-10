@@ -371,8 +371,8 @@ void EthereumProviderImpl::ContinueAddAndApproveTransaction(
   }
 
   tx_service_->AddUnapprovedTransaction(
-      mojom::TxDataUnion::NewEthTxData(std::move(tx_data)), from, origin,
-      absl::nullopt,
+      mojom::TxDataUnion::NewEthTxData(std::move(tx_data)), from,
+      absl::nullopt /* chain_id */, origin, absl::nullopt,
       base::BindOnce(&EthereumProviderImpl::OnAddUnapprovedTransactionAdapter,
                      weak_factory_.GetWeakPtr(), std::move(callback),
                      std::move(id)));
@@ -440,8 +440,8 @@ void EthereumProviderImpl::ContinueAddAndApprove1559TransactionWithAccounts(
   }
 
   tx_service_->AddUnapprovedTransaction(
-      mojom::TxDataUnion::NewEthTxData1559(std::move(tx_data)), from, origin,
-      absl::nullopt,
+      mojom::TxDataUnion::NewEthTxData1559(std::move(tx_data)), from,
+      absl::nullopt /* chain_id */, origin, absl::nullopt,
       base::BindOnce(&EthereumProviderImpl::OnAddUnapprovedTransactionAdapter,
                      weak_factory_.GetWeakPtr(), std::move(callback),
                      std::move(id)));

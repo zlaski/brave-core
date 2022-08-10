@@ -46,6 +46,7 @@ FilTxManager::~FilTxManager() {
 }
 
 void FilTxManager::GetEstimatedGas(const std::string& from,
+                                   const absl::optional<std::string>& chain_id,
                                    const absl::optional<url::Origin>& origin,
                                    const absl::optional<std::string>& group_id,
                                    std::unique_ptr<FilTransaction> tx,
@@ -60,12 +61,13 @@ void FilTxManager::GetEstimatedGas(const std::string& from,
   json_rpc_service_->GetFilEstimateGas(
       from, to, gas_premium, gas_fee_cap, gas_limit, nonce, max_fee, value,
       base::BindOnce(&FilTxManager::ContinueAddUnapprovedTransaction,
-                     weak_factory_.GetWeakPtr(), from, origin, group_id,
-                     std::move(tx), std::move(callback)));
+                     weak_factory_.GetWeakPtr(), from, chain_id, origin,
+                     group_id, std::move(tx), std::move(callback)));
 }
 
 void FilTxManager::ContinueAddUnapprovedTransaction(
     const std::string& from,
+    const absl::optional<std::string>& chain_id,
     const absl::optional<url::Origin>& origin,
     const absl::optional<std::string>& group_id,
     std::unique_ptr<FilTransaction> tx,
@@ -86,6 +88,7 @@ void FilTxManager::ContinueAddUnapprovedTransaction(
   FilTxMeta meta(std::move(tx));
   meta.set_id(TxMeta::GenerateMetaID());
   meta.set_from(FilAddress::FromAddress(from).EncodeAsString());
+  meta.set_chain_id(chain_id);
   meta.set_origin(
       origin.value_or(url::Origin::Create(GURL("chrome://wallet"))));
   meta.set_group_id(group_id);
@@ -98,6 +101,7 @@ void FilTxManager::ContinueAddUnapprovedTransaction(
 void FilTxManager::AddUnapprovedTransaction(
     mojom::TxDataUnionPtr tx_data_union,
     const std::string& from,
+    const absl::optional<std::string>& chain_id,
     const absl::optional<url::Origin>& origin,
     const absl::optional<std::string>& group_id,
     AddUnapprovedTransactionCallback callback) {
@@ -128,12 +132,12 @@ void FilTxManager::AddUnapprovedTransaction(
   const std::string gas_premium = tx->gas_premium();
   auto gas_limit = tx->gas_limit();
   if (!gas_limit || gas_fee_cap.empty() || gas_premium.empty()) {
-    GetEstimatedGas(from, origin, group_id, std::move(tx_ptr),
+    GetEstimatedGas(from, chain_id, origin, group_id, std::move(tx_ptr),
                     std::move(callback));
   } else {
     ContinueAddUnapprovedTransaction(
-        from, origin, group_id, std::move(tx_ptr), std::move(callback),
-        gas_premium, gas_fee_cap, gas_limit,
+        from, chain_id, origin, group_id, std::move(tx_ptr),
+        std::move(callback), gas_premium, gas_fee_cap, gas_limit,
         mojom::FilecoinProviderError::kSuccess, "");
   }
 }

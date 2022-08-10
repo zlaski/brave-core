@@ -42,6 +42,7 @@ class SolanaTxManager : public TxManager, public SolanaBlockTracker::Observer {
   // TxManager
   void AddUnapprovedTransaction(mojom::TxDataUnionPtr tx_data_union,
                                 const std::string& from,
+                                const absl::optional<std::string>& chain_id,
                                 const absl::optional<url::Origin>& origin,
                                 const absl::optional<std::string>& group_id,
                                 AddUnapprovedTransactionCallback) override;

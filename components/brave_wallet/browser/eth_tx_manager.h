@@ -43,6 +43,7 @@ class EthTxManager : public TxManager, public EthBlockTracker::Observer {
   // TxManager
   void AddUnapprovedTransaction(mojom::TxDataUnionPtr tx_data_union,
                                 const std::string& from,
+                                const absl::optional<std::string>& chain_id,
                                 const absl::optional<url::Origin>& origin,
                                 const absl::optional<std::string>& groupId,
                                 AddUnapprovedTransactionCallback) override;
@@ -153,11 +154,13 @@ class EthTxManager : public TxManager, public EthBlockTracker::Observer {
 
   void AddUnapprovedTransaction(mojom::TxDataPtr tx_data,
                                 const std::string& from,
+                                const absl::optional<std::string>& chain_id,
                                 const url::Origin& origin,
                                 const absl::optional<std::string>& groupId,
                                 AddUnapprovedTransactionCallback);
   void AddUnapproved1559Transaction(mojom::TxData1559Ptr tx_data,
                                     const std::string& from,
+                                    const absl::optional<std::string>& chain_id,
                                     const url::Origin& origin,
                                     const absl::optional<std::string>& groupId,
                                     AddUnapprovedTransactionCallback);
@@ -183,6 +186,7 @@ class EthTxManager : public TxManager, public EthBlockTracker::Observer {
                             mojom::ProviderError error,
                             const std::string& error_message);
   void OnGetGasPrice(const std::string& from,
+                     const absl::optional<std::string>& chain_id,
                      const url::Origin& origin,
                      const std::string& to,
                      const std::string& value,
@@ -196,6 +200,7 @@ class EthTxManager : public TxManager, public EthBlockTracker::Observer {
                      const std::string& error_message);
   void ContinueAddUnapprovedTransaction(
       const std::string& from,
+      const absl::optional<std::string>& chain_id,
       const absl::optional<url::Origin>& origin,
       const absl::optional<std::string>& group_id,
       std::unique_ptr<EthTransaction> tx,
@@ -213,6 +218,7 @@ class EthTxManager : public TxManager, public EthBlockTracker::Observer {
       const std::string& error_message);
   void OnGetGasOracleForUnapprovedTransaction(
       const std::string& from,
+      const absl::optional<std::string>& chain_id,
       const url::Origin& origin,
       const std::string& to,
       const std::string& value,
@@ -226,6 +232,7 @@ class EthTxManager : public TxManager, public EthBlockTracker::Observer {
 
   void ContinueSpeedupOrCancelTransaction(
       const std::string& from,
+      const absl::optional<std::string>& chain_id,
       const absl::optional<url::Origin>& origin,
       const absl::optional<std::string>& group_id,
       const std::string& gas_limit,
@@ -236,6 +243,7 @@ class EthTxManager : public TxManager, public EthBlockTracker::Observer {
       const std::string& error_message);
   void ContinueSpeedupOrCancel1559Transaction(
       const std::string& from,
+      const absl::optional<std::string>& chain_id,
       const absl::optional<url::Origin>& origin,
       const absl::optional<std::string>& group_id,
       const std::string& gas_limit,
