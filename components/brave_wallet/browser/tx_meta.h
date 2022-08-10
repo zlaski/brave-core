@@ -36,6 +36,7 @@ class TxMeta {
   base::Time submitted_time() const { return submitted_time_; }
   base::Time confirmed_time() const { return confirmed_time_; }
   const std::string& tx_hash() const { return tx_hash_; }
+  const absl::optional<std::string>& chain_id() const { return chain_id_; }
   const absl::optional<url::Origin>& origin() const { return origin_; }
   const absl::optional<std::string>& group_id() const { return group_id_; }
 
@@ -52,6 +53,9 @@ class TxMeta {
     confirmed_time_ = confirmed_time;
   }
   void set_tx_hash(const std::string& tx_hash) { tx_hash_ = tx_hash; }
+  void set_chain_id(const absl::optional<std::string>& chain_id) {
+    chain_id_ = chain_id;
+  }
   void set_origin(const absl::optional<url::Origin>& origin) {
     origin_ = origin;
   }
@@ -70,6 +74,7 @@ class TxMeta {
   base::Time confirmed_time_;
   std::string tx_hash_;
   absl::optional<url::Origin> origin_;
+  absl::optional<std::string> chain_id_;
   absl::optional<std::string> group_id_;
 };
 

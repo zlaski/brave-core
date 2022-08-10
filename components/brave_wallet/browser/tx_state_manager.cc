@@ -73,6 +73,10 @@ bool TxStateManager::ValueToTxMeta(const base::Value::Dict& value,
     return false;
   meta->set_tx_hash(*tx_hash);
 
+  const std::string* chain_id = value.FindString("chain_id");
+  if (chain_id)  // Okay to not have chain_id to support old transactions.
+    meta->set_chain_id(*chain_id);
+
   const std::string* origin_spec = value.FindString("origin");
   // That's ok not to have origin.
   if (origin_spec) {

@@ -73,8 +73,9 @@ mojom::TransactionInfoPtr EthTxMeta::ToTransactionInfo() const {
     std::tie(tx_type, tx_params, tx_args) = *tx_info;
   }
 
+  // TODO(jocelyn): Should we use chain_id from tx if exists?
   return mojom::TransactionInfo::New(
-      id_, from_, tx_hash_,
+      id_, from_, tx_hash_, chain_id_,
       mojom::TxDataUnion::NewEthTxData1559(mojom::TxData1559::New(
           mojom::TxData::New(
               tx_->nonce() ? Uint256ValueToHex(tx_->nonce().value()) : "",

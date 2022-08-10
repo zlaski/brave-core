@@ -19,7 +19,8 @@ bool TxMeta::operator==(const TxMeta& meta) const {
          created_time_ == meta.created_time_ &&
          submitted_time_ == meta.submitted_time_ &&
          confirmed_time_ == meta.confirmed_time_ && tx_hash_ == meta.tx_hash_ &&
-         origin_ == meta.origin_ && group_id_ == meta.group_id_;
+         chain_id_ == meta.chain_id_ && origin_ == meta.origin_ &&
+         group_id_ == meta.group_id_;
 }
 
 base::Value::Dict TxMeta::ToValue() const {
@@ -32,6 +33,10 @@ base::Value::Dict TxMeta::ToValue() const {
   dict.Set("submitted_time", base::TimeToValue(submitted_time_));
   dict.Set("confirmed_time", base::TimeToValue(confirmed_time_));
   dict.Set("tx_hash", tx_hash_);
+
+  if (chain_id_.has_value())
+    dict.Set("chain_id", *chain_id_);
+
   if (origin_.has_value()) {
     DCHECK(!origin_->opaque());
     dict.Set("origin", origin_->GetURL().spec());
