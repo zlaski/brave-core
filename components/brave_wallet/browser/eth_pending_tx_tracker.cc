@@ -64,6 +64,7 @@ void EthPendingTxTracker::ResubmitPendingTransactions() {
     }
     json_rpc_service_->SendRawTransaction(
         pending_eth_transaction->tx()->GetSignedTransaction(),
+        pending_eth_transaction->chain_id(),
         base::BindOnce(&EthPendingTxTracker::OnSendRawTransaction,
                        weak_factory_.GetWeakPtr()));
   }

@@ -199,7 +199,7 @@ void FilTxManager::OnGetNextNonce(std::unique_ptr<FilTxMeta> meta,
     return;
   }
   json_rpc_service_->SendFilecoinTransaction(
-      signed_tx.value(),
+      signed_tx.value(), meta->chain_id(),
       base::BindOnce(&FilTxManager::OnSendFilecoinTransaction,
                      weak_factory_.GetWeakPtr(), meta->id(),
                      std::move(callback)));
@@ -397,9 +397,10 @@ void FilTxManager::ProcessFilHardwareSignature(
   tx_state_manager_->AddOrUpdateTx(*meta);
 
   json_rpc_service_->SendFilecoinTransaction(
-      signed_tx, base::BindOnce(&FilTxManager::OnSendFilecoinTransaction,
-                                weak_factory_.GetWeakPtr(), meta->id(),
-                                std::move(callback)));
+      signed_tx, meta->chain_id(),
+      base::BindOnce(&FilTxManager::OnSendFilecoinTransaction,
+                     weak_factory_.GetWeakPtr(), meta->id(),
+                     std::move(callback)));
 }
 
 }  // namespace brave_wallet

@@ -479,7 +479,8 @@ void EthTxManager::ProcessHardwareSignature(
       base::BindOnce(&EthTxManager::ContinueProcessHardwareSignature,
                      weak_factory_.GetWeakPtr(), std::move(callback));
 
-  PublishTransaction(tx_meta_id, data, std::move(internal_callback));
+  PublishTransaction(tx_meta_id, data, meta->chain_id(),
+                     std::move(internal_callback));
 }
 
 void EthTxManager::ContinueProcessHardwareSignature(
@@ -562,16 +563,19 @@ void EthTxManager::OnGetNextNonce(std::unique_ptr<EthTxMeta> meta,
     return;
   }
   PublishTransaction(meta->id(), meta->tx()->GetSignedTransaction(),
-                     std::move(callback));
+                     meta->chain_id(), std::move(callback));
 }
 
-void EthTxManager::PublishTransaction(const std::string& tx_meta_id,
-                                      const std::string& signed_transaction,
-                                      ApproveTransactionCallback callback) {
+void EthTxManager::PublishTransaction(
+    const std::string& tx_meta_id,
+    const std::string& signed_transaction,
+    const absl::optional<std::string>& chain_id,
+    ApproveTransactionCallback callback) {
   json_rpc_service_->SendRawTransaction(
-      signed_transaction, base::BindOnce(&EthTxManager::OnPublishTransaction,
-                                         weak_factory_.GetWeakPtr(), tx_meta_id,
-                                         std::move(callback)));
+      signed_transaction, chain_id,
+      base::BindOnce(&EthTxManager::OnPublishTransaction,
+                     weak_factory_.GetWeakPtr(), tx_meta_id,
+                     std::move(callback)));
 }
 
 void EthTxManager::OnPublishTransaction(std::string tx_meta_id,

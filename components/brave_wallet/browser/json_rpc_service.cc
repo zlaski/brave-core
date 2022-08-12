@@ -912,13 +912,24 @@ void JsonRpcService::OnGetTransactionReceipt(
   std::move(callback).Run(receipt, mojom::ProviderError::kSuccess, "");
 }
 
-void JsonRpcService::SendRawTransaction(const std::string& signed_tx,
-                                        SendRawTxCallback callback) {
+void JsonRpcService::SendRawTransaction(
+    const std::string& signed_tx,
+    const absl::optional<std::string>& chain_id,
+    SendRawTxCallback callback) {
+  auto network_url =
+      chain_id ? GetNetworkURL(prefs_, *chain_id, mojom::CoinType::ETH)
+               : network_urls_[mojom::CoinType::ETH];
+  if (signed_tx.empty() || !network_url.is_valid()) {
+    std::move(callback).Run(
+        "", mojom::ProviderError::kInvalidParams,
+        l10n_util::GetStringUTF8(IDS_WALLET_INVALID_PARAMETERS));
+    return;
+  }
+
   auto internal_callback =
       base::BindOnce(&JsonRpcService::OnSendRawTransaction,
                      weak_ptr_factory_.GetWeakPtr(), std::move(callback));
-  RequestInternal(eth::eth_sendRawTransaction(signed_tx), true,
-                  network_urls_[mojom::CoinType::ETH],
+  RequestInternal(eth::eth_sendRawTransaction(signed_tx), true, network_url,
                   std::move(internal_callback));
 }
 
@@ -2193,11 +2204,15 @@ void JsonRpcService::OnGetSPLTokenAccountBalance(
 }
 void JsonRpcService::SendFilecoinTransaction(
     const std::string& signed_tx,
+    const absl::optional<std::string>& chain_id,
     SendFilecoinTransactionCallback callback) {
-  if (signed_tx.empty()) {
+  auto network_url =
+      chain_id ? GetNetworkURL(prefs_, *chain_id, mojom::CoinType::FIL)
+               : network_urls_[mojom::CoinType::FIL];
+  if (signed_tx.empty() || !network_url.is_valid()) {
     std::move(callback).Run(
-        "", mojom::FilecoinProviderError::kInternalError,
-        l10n_util::GetStringUTF8(IDS_WALLET_INTERNAL_ERROR));
+        "", mojom::FilecoinProviderError::kInvalidParams,
+        l10n_util::GetStringUTF8(IDS_WALLET_INVALID_PARAMETERS));
     return;
   }
   auto request = fil::getSendTransaction(signed_tx);
@@ -2210,7 +2225,7 @@ void JsonRpcService::SendFilecoinTransaction(
   auto internal_callback =
       base::BindOnce(&JsonRpcService::OnSendFilecoinTransaction,
                      weak_ptr_factory_.GetWeakPtr(), std::move(callback));
-  RequestInternal(request.value(), true, network_urls_[mojom::CoinType::FIL],
+  RequestInternal(request.value(), true, network_url,
                   std::move(internal_callback));
 }
 
@@ -2241,9 +2256,13 @@ void JsonRpcService::OnSendFilecoinTransaction(
 
 void JsonRpcService::SendSolanaTransaction(
     const std::string& signed_tx,
+    const absl::optional<std::string>& chain_id,
     absl::optional<SolanaTransaction::SendOptions> send_options,
     SendSolanaTransactionCallback callback) {
-  if (signed_tx.empty()) {
+  auto network_url =
+      chain_id ? GetNetworkURL(prefs_, *chain_id, mojom::CoinType::SOL)
+               : network_urls_[mojom::CoinType::SOL];
+  if (signed_tx.empty() || !network_url.is_valid()) {
     std::move(callback).Run(
         "", mojom::SolanaProviderError::kInvalidParams,
         l10n_util::GetStringUTF8(IDS_WALLET_INVALID_PARAMETERS));
@@ -2254,8 +2273,7 @@ void JsonRpcService::SendSolanaTransaction(
       base::BindOnce(&JsonRpcService::OnSendSolanaTransaction,
                      weak_ptr_factory_.GetWeakPtr(), std::move(callback));
   RequestInternal(solana::sendTransaction(signed_tx, std::move(send_options)),
-                  true, network_urls_[mojom::CoinType::SOL],
-                  std::move(internal_callback));
+                  true, network_url, std::move(internal_callback));
 }
 
 void JsonRpcService::OnSendSolanaTransaction(

@@ -126,6 +126,7 @@ class JsonRpcService : public KeyedService, public mojom::JsonRpcService {
                               mojom::FilecoinProviderError error,
                               const std::string& error_message)>;
   void SendFilecoinTransaction(const std::string& signed_tx,
+                               const absl::optional<std::string>& chain_id,
                                SendFilecoinTransactionCallback callback);
 
   using GetTxReceiptCallback =
@@ -140,6 +141,7 @@ class JsonRpcService : public KeyedService, public mojom::JsonRpcService {
                               mojom::ProviderError error,
                               const std::string& error_message)>;
   void SendRawTransaction(const std::string& signed_tx,
+                          const absl::optional<std::string>& chain_id,
                           SendRawTxCallback callback);
 
   void GetERC20TokenBalance(const std::string& conract_address,
@@ -336,6 +338,7 @@ class JsonRpcService : public KeyedService, public mojom::JsonRpcService {
                               const std::string& error_message)>;
   void SendSolanaTransaction(
       const std::string& signed_tx,
+      const absl::optional<std::string>& chain_id,
       absl::optional<SolanaTransaction::SendOptions> send_options,
       SendSolanaTransactionCallback callback);
   using GetSolanaLatestBlockhashCallback =

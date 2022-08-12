@@ -179,6 +179,7 @@ class EthTxManager : public TxManager, public EthBlockTracker::Observer {
       uint256_t nonce);
   void PublishTransaction(const std::string& tx_meta_id,
                           const std::string& signed_transaction,
+                          const absl::optional<std::string>& chain_id,
                           ApproveTransactionCallback callback);
   void OnPublishTransaction(std::string tx_meta_id,
                             ApproveTransactionCallback callback,
