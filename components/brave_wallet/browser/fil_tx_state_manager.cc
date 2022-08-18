@@ -36,6 +36,13 @@ std::string FilTxStateManager::GetTxPrefPathPrefix() {
                     json_rpc_service_->GetChainId(mojom::CoinType::FIL))});
 }
 
+std::vector<std::string> FilTxStateManager::GetTxPrefPathPrefixes() {
+  std::vector<std::string> prefixes;
+  for (const auto* network : GetAllChains(prefs_, mojom::CoinType::FIL)) {
+    prefixes.push_back(GetTxPrefPathPrefix(network->chain_id));
+  }
+}
+
 std::unique_ptr<FilTxMeta> FilTxStateManager::ValueToFilTxMeta(
     const base::Value::Dict& value) {
   return std::unique_ptr<FilTxMeta>{

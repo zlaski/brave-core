@@ -740,11 +740,11 @@ export async function sendEthTransaction (store: Store, payload: SendEthTransact
     }
     // @ts-expect-error google closure is ok with undefined for other fields but mojom runtime is not
     const txDataUnion: BraveWallet.TxDataUnion = { ethTxData1559: txData1559 }
-    addResult = await apiProxy.txService.addUnapprovedTransaction(txDataUnion, payload.from, null, null, null)
+    addResult = await apiProxy.txService.addUnapprovedTransaction(txDataUnion, payload.from, chainId, null, null)
   } else {
     // @ts-expect-error google closure is ok with undefined for other fields but mojom runtime is not
     const txDataUnion: BraveWallet.TxDataUnion = { ethTxData: txData }
-    addResult = await apiProxy.txService.addUnapprovedTransaction(txDataUnion, payload.from, null, null, null)
+    addResult = await apiProxy.txService.addUnapprovedTransaction(txDataUnion, payload.from, chainId, null, null)
   }
   return addResult
 }

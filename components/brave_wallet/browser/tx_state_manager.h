@@ -76,6 +76,7 @@ class TxStateManager {
   // This will be used to get/set the transaction pref for a specific
   // coin_type.
   virtual std::string GetTxPrefPathPrefix() = 0;
+  virtual std::vector<std::string> GetTxPrefPathPrefixes() = 0;
 
   base::ObserverList<Observer> observers_;
 

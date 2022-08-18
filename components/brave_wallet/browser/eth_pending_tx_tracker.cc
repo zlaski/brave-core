@@ -161,7 +161,7 @@ bool EthPendingTxTracker::ShouldTxDropped(const EthTxMeta& meta) {
 void EthPendingTxTracker::DropTransaction(TxMeta* meta) {
   if (!meta)
     return;
-  tx_state_manager_->DeleteTx(meta->id());
+  tx_state_manager_->DeleteTx(meta->id(), meta->chain_id());
 }
 
 }  // namespace brave_wallet

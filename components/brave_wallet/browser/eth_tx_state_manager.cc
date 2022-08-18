@@ -21,6 +21,10 @@
 
 namespace brave_wallet {
 
+namespace {
+constexpr mojom::CoinType kCoinType = mojom::CoinType::ETH;
+}
+
 EthTxStateManager::EthTxStateManager(PrefService* prefs,
                                      JsonRpcService* json_rpc_service)
     : TxStateManager(prefs, json_rpc_service) {}
@@ -104,11 +108,25 @@ std::unique_ptr<TxMeta> EthTxStateManager::ValueToTxMeta(
   return meta;
 }
 
-std::string EthTxStateManager::GetTxPrefPathPrefix() {
+std::string EthTxStateManager::GetTxPrefPathPrefix(
+    const absl::optional<std::string>& chain_id) {
+  const std::string chain = chain_id ?
+      *chain_id : json_rpc_service_->GetChainId(mojom::CoinType::ETH);
   return base::StrCat(
       {kEthereumPrefKey, ".",
-       GetNetworkId(prefs_, mojom::CoinType::ETH,
-                    json_rpc_service_->GetChainId(mojom::CoinType::ETH))});
+       GetNetworkId(prefs_, mojom::CoinType::ETH, chain)});
+}
+
+std::vector<std::string> EthTxStateManager::GetTxPrefPathPrefixes(
+    const absl::optional<std::string>& chain_id) {
+  if (chain_id) {
+    return GetTxPrefPathPrefix(*chain_id);
+  }
+
+  std::vector<std::string> prefixes;
+  for (const auto* network : GetAllChains(prefs_, mojom::CoinType::ETH)) {
+    prefixes.push_back(GetTxPrefPathPrefix(network->chain_id));
+  }
 }
 
 }  // namespace brave_wallet

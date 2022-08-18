@@ -62,6 +62,13 @@ std::string SolanaTxStateManager::GetTxPrefPathPrefix() {
                     json_rpc_service_->GetChainId(mojom::CoinType::SOL))});
 }
 
+std::vector<std::string> SolanaTxStateManager::GetTxPrefPathPrefixes() {
+  std::vector<std::string> prefixes;
+  for (const auto* network : GetAllChains(prefs_, mojom::CoinType::SOL)) {
+    prefixes.push_back(GetTxPrefPathPrefix(network->chain_id));
+  }
+}
+
 std::unique_ptr<SolanaTxMeta> SolanaTxStateManager::GetSolanaTx(
     const std::string& id) {
   return std::unique_ptr<SolanaTxMeta>{

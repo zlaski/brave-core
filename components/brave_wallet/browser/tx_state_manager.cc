@@ -124,48 +124,60 @@ void TxStateManager::AddOrUpdateTx(const TxMeta& meta) {
 std::unique_ptr<TxMeta> TxStateManager::GetTx(const std::string& id) {
   const base::Value::Dict& dict =
       *prefs_->GetValueDict(kBraveWalletTransactions);
-  const base::Value::Dict* value =
-      dict.FindDictByDottedPath(GetTxPrefPathPrefix() + "." + id);
-  if (!value)
-    return nullptr;
+  for (const auto& prefix : GetTxPrefPathPrefixes()) {
+    if (const base::Value::Dict* value =
+            dict.FindDictByDottedPath(prefix + "." + id))
+      return ValueToTxMeta(*value);
+  }
 
-  return ValueToTxMeta(*value);
+  return nullptr;
 }
 
-void TxStateManager::DeleteTx(const std::string& id) {
+void TxStateManager::DeleteTx(const std::string& id, const absl::optional<std::string>& chain_id) {
   DictionaryPrefUpdate update(prefs_, kBraveWalletTransactions);
   base::Value* dict = update.Get();
-  dict->GetDict().RemoveByDottedPath(GetTxPrefPathPrefix() + "." + id);
+  for (const auto& prefix : GetTxPrefPathPrefixes(chain_id)) {
+    if (dict->GetDict().RemoveByDottedPath(prefix + "." + id))
+      return;
+  }
+  return;
 }
 
 void TxStateManager::WipeTxs() {
-  DictionaryPrefUpdate update(prefs_, kBraveWalletTransactions);
-  base::Value* dict = update.Get();
-  dict->GetDict().RemoveByDottedPath(GetTxPrefPathPrefix());
+  /*
+    DictionaryPrefUpdate update(prefs_, kBraveWalletTransactions);
+    base::Value* dict = update.Get();
+    dict->GetDict().RemoveByDottedPath(GetTxPrefPathPrefix());
+  */
 }
 
+// TODO: need a specific network for supporting nonce tracker's GetNonce.
 std::vector<std::unique_ptr<TxMeta>> TxStateManager::GetTransactionsByStatus(
     absl::optional<mojom::TransactionStatus> status,
     absl::optional<std::string> from) {
   std::vector<std::unique_ptr<TxMeta>> result;
   const base::Value::Dict& dict =
       *prefs_->GetValueDict(kBraveWalletTransactions);
-  const base::Value::Dict* network_dict =
-      dict.FindDictByDottedPath(GetTxPrefPathPrefix());
-  if (!network_dict)
-    return result;
 
-  for (const auto it : *network_dict) {
-    std::unique_ptr<TxMeta> meta = ValueToTxMeta(it.second.GetDict());
-    if (!meta) {
+  for (const auto& prefix : GetTxPrefPathPrefixes()) {
+    const base::Value::Dict* network_dict =
+      dict.FindDictByDottedPath(prefix);
+    if (!network_dict)
       continue;
-    }
-    if (!status.has_value() || meta->status() == *status) {
-      if (from.has_value() && meta->from() != *from)
+
+    for (const auto it : *network_dict) {
+      std::unique_ptr<TxMeta> meta = ValueToTxMeta(it.second.GetDict());
+      if (!meta) {
         continue;
-      result.push_back(std::move(meta));
+      }
+      if (!status.has_value() || meta->status() == *status) {
+        if (from.has_value() && meta->from() != *from)
+          continue;
+        result.push_back(std::move(meta));
+      }
     }
   }
+
   return result;
 }
 
@@ -190,7 +202,7 @@ void TxStateManager::RetireTxByStatus(mojom::TransactionStatus status,
         }
       }
     }
-    DeleteTx(oldest_meta->id());
+    DeleteTx(oldest_meta->id(), oldest_meta->chain_id);
   }
 }
 

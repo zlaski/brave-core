@@ -41,6 +41,7 @@ class SolanaTxStateManager : public TxStateManager {
   std::unique_ptr<TxMeta> ValueToTxMeta(
       const base::Value::Dict& value) override;
   std::string GetTxPrefPathPrefix() override;
+  std::vector<std::string> GetTxPrefPathPrefixes() override;
 };
 
 }  // namespace brave_wallet

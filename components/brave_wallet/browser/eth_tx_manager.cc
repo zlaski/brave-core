@@ -507,9 +507,10 @@ void EthTxManager::ApproveTransaction(const std::string& tx_meta_id,
     return;
   }
 
+  const std::string chain_id_str =
+      meta->chain_id() ? *meta->chain_id() : json_rpc_service_->GetChainId(mojom::CoinType::ETH);
   uint256_t chain_id = 0;
-  if (!HexValueToUint256(json_rpc_service_->GetChainId(mojom::CoinType::ETH),
-                         &chain_id)) {
+  if (!HexValueToUint256(chain_id_str, &chain_id)) {
     LOG(ERROR) << "Could not convert chain ID";
     std::move(callback).Run(
         false,
