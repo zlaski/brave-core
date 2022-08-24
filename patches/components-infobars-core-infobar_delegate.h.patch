@@ -1,12 +1,16 @@
 diff --git a/components/infobars/core/infobar_delegate.h b/components/infobars/core/infobar_delegate.h
-index a8ba5ca4a8afb723996871dd0848311ee3703d7e..2527b69dad864a0dfd1c82a35ddfa576663966cf 100644
+index 7128e748daa6504dd9f058eb7cd4eff118a90757..3b52797c3b9ee47b202c38b16cf81616be4af4dd 100644
 --- a/components/infobars/core/infobar_delegate.h
 +++ b/components/infobars/core/infobar_delegate.h
-@@ -181,6 +181,7 @@ class InfoBarDelegate {
+@@ -180,6 +180,11 @@ class InfoBarDelegate {
+     IOS_PERMISSIONS_INFOBAR_DELEGATE = 108,
      SUPPORTED_LINKS_INFOBAR_DELEGATE_CHROMEOS = 109,
      AUTOFILL_VIRTUAL_CARD_ENROLLMENT_INFOBAR_DELEGATE_MOBILE = 110,
-     BASIC_PRINT_DEPRECATED_ACCELERATOR_DELEGATE = 111,
++<<<<<<< ours
++=======
++    BASIC_PRINT_DEPRECATED_ACCELERATOR_DELEGATE = 111,
 +    BRAVE_INFOBAR_DELEGATE_IDENTIFIERS
++>>>>>>> theirs
    };
  
    // Describes navigation events, used to decide whether infobars should be

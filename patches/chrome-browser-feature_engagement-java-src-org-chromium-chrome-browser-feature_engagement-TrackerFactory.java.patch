@@ -1,15 +1,18 @@
 diff --git a/chrome/browser/feature_engagement/java/src/org/chromium/chrome/browser/feature_engagement/TrackerFactory.java b/chrome/browser/feature_engagement/java/src/org/chromium/chrome/browser/feature_engagement/TrackerFactory.java
-index d8ec0d8a61dac3bf170ffadb93ffcf78ce344087..1b77face226e3744c1879b0176ceb37c9f9a5833 100644
+index 16e290299b02ee247d97f7830879affa59977af1..a9b173ae200410a53234080d126274bdac8283e6 100644
 --- a/chrome/browser/feature_engagement/java/src/org/chromium/chrome/browser/feature_engagement/TrackerFactory.java
 +++ b/chrome/browser/feature_engagement/java/src/org/chromium/chrome/browser/feature_engagement/TrackerFactory.java
-@@ -30,6 +30,10 @@ public final class TrackerFactory {
+@@ -29,9 +29,13 @@ public final class TrackerFactory {
+      */
      public static Tracker getTrackerForProfile(Profile profile) {
          if (sTestTracker != null) return sTestTracker;
-         if (profile == null) return null;
-+        if (!profile.isNativeInitialized()) {
-+            // Temporary to debug https://crbug.com/1346710.
-+            throw new IllegalArgumentException("Profile must have a valid native pointer.");
-+        }
- 
-         return TrackerFactoryJni.get().getTrackerForProfile(profile);
-     }
++<<<<<<< ours
+         if (profile == null) {
+             throw new IllegalArgumentException("Profile is required for retrieving tracker.");
+         }
++=======
++        if (profile == null) return null;
++>>>>>>> theirs
+         if (!profile.isNativeInitialized()) {
+             // Temporary to debug https://crbug.com/1346710.
+             throw new IllegalArgumentException("Profile must have a valid native pointer.");
