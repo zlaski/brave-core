@@ -18,8 +18,8 @@ DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
 DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
     ExecutionContext* context,
     DOMHighResTimeStamp timeStamp) {
-  return RoundDOMHighResTimeStamp(
-    brave::AllowFingerprinting(context), timeStamp);
+  return RoundDOMHighResTimeStamp(brave::AllowFingerprinting(context),
+                                  timeStamp);
 }
 
 }  // namespace blink

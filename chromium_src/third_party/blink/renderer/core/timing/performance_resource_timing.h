@@ -7,8 +7,12 @@
 
 #define BRAVE_CHROMIUM_SRC_THIRD_PARTY_BLINK_RENDERER_CORE_TIMING_PERFORMANCE_RESOURCE_TIMING_H_
 
-#define is_secure_transport_ \
-  is_secure_transport_ = false;                 \
+// Adding a "context" member here. This member has no trailing underscore
+// because we are taking advantage of a name collision with one of the
+// PerformanceResourceTiming constructor arguments, which has type
+// ExecutionContext.
+#define is_secure_transport_    \
+  is_secure_transport_ = false; \
   const bool context
 
 #include "src/third_party/blink/renderer/core/timing/performance_resource_timing.h"

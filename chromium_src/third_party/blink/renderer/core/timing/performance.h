@@ -9,12 +9,11 @@
 
 #include "third_party/blink/renderer/core/execution_context/execution_context.h"
 
-#define ClampTimeResolution                                \
-  RoundDOMHighResTimeStamp(bool allowFingerprinting,       \
-                           DOMHighResTimeStamp timeStamp); \
-  static DOMHighResTimeStamp RoundDOMHighResTimeStamp( \
-      ExecutionContext* context,      \
-                           DOMHighResTimeStamp timeStamp); \
+#define ClampTimeResolution                                      \
+  RoundDOMHighResTimeStamp(bool allowFingerprinting,             \
+                           DOMHighResTimeStamp timeStamp);       \
+  static DOMHighResTimeStamp RoundDOMHighResTimeStamp(           \
+      ExecutionContext* context, DOMHighResTimeStamp timeStamp); \
   static DOMHighResTimeStamp ClampTimeResolution
 
 #include "src/third_party/blink/renderer/core/timing/performance.h"
