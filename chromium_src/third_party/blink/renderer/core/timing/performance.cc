@@ -4,13 +4,22 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "src/third_party/blink/renderer/core/timing/performance.cc"
+#include "third_party/blink/renderer/core/execution_context/execution_context.h"
 
 namespace blink {
 
 DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
+    bool allowFingerprinting,
+    DOMHighResTimeStamp timeStamp) {
+  printf("allowFingerprinting: %d\n", allowFingerprinting);
+  return allowFingerprinting ? timeStamp : floor(timeStamp + 0.5);
+}
+
+DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
     ExecutionContext* context,
     DOMHighResTimeStamp timeStamp) {
-  return floor(timeStamp + 0.5);
+  return RoundDOMHighResTimeStamp(
+    brave::AllowFingerprinting(context), timeStamp);
 }
 
 }  // namespace blink

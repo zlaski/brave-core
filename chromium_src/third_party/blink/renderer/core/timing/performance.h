@@ -7,8 +7,13 @@
 
 #define BRAVE_CHROMIUM_SRC_THIRD_PARTY_BLINK_RENDERER_CORE_TIMING_PERFORMANCE_H_
 
+#include "third_party/blink/renderer/core/execution_context/execution_context.h"
+
 #define ClampTimeResolution                                \
-  RoundDOMHighResTimeStamp(ExecutionContext* context,      \
+  RoundDOMHighResTimeStamp(bool allowFingerprinting,       \
+                           DOMHighResTimeStamp timeStamp); \
+  static DOMHighResTimeStamp RoundDOMHighResTimeStamp( \
+      ExecutionContext* context,      \
                            DOMHighResTimeStamp timeStamp); \
   static DOMHighResTimeStamp ClampTimeResolution
 
