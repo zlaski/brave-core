@@ -24,8 +24,8 @@ namespace blink {
 namespace {
 
 DOMHighResTimeStamp MaybeRoundDOMHighResTimeStamp(
-    bool allow_fingerprinting,
-    DOMHighResTimeStamp time_stamp) {
+    DOMHighResTimeStamp time_stamp,
+    bool allow_fingerprinting) {
   return allow_fingerprinting ? time_stamp : floor(time_stamp + 0.5);
 }
 
@@ -50,10 +50,10 @@ DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
     bool cross_origin_isolated_capability,
     bool allow_fingerprinting) {
   return MaybeRoundDOMHighResTimeStamp(
-      allow_fingerprinting,
       MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(
           time_origin, monotonic_time, allow_negative_value,
-          cross_origin_isolated_capability));
+          cross_origin_isolated_capability),
+      allow_fingerprinting);
 }
 
 // static
@@ -71,8 +71,8 @@ DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
 DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
     base::TimeTicks monotonic_time) const {
   return MaybeRoundDOMHighResTimeStamp(
-      allow_fingerprinting_,
-      MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(monotonic_time));
+      MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(monotonic_time),
+      allow_fingerprinting_);
 }
 
 }  // namespace blink
