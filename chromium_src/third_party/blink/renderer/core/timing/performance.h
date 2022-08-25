@@ -18,11 +18,11 @@
   cross_origin_isolated_capability_;      \
   bool allow_fingerprinting_
 
-#define ClampTimeResolution                                      \
-  RoundDOMHighResTimeStamp(bool allowFingerprinting,             \
-                           DOMHighResTimeStamp timeStamp);       \
-  static DOMHighResTimeStamp RoundDOMHighResTimeStamp(           \
-      ExecutionContext* context, DOMHighResTimeStamp timeStamp); \
+#define ClampTimeResolution                                       \
+  RoundDOMHighResTimeStamp(bool allow_fingerprinting,             \
+                           DOMHighResTimeStamp time_stamp);       \
+  static DOMHighResTimeStamp RoundDOMHighResTimeStamp(            \
+      ExecutionContext* context, DOMHighResTimeStamp time_stamp); \
   static DOMHighResTimeStamp ClampTimeResolution
 
 #include "src/third_party/blink/renderer/core/timing/performance.h"
