@@ -13,30 +13,27 @@
 //#define MonotonicTimeToDOMHighResTimeStamp            \
 //  MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl
 
-#define now()               \
-  MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(base::TimeTicks) const;  \
+#define now()                                                             \
+  MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(base::TimeTicks) const; \
   DOMHighResTimeStamp now()
 
 #define cross_origin_isolated_capability_ \
   cross_origin_isolated_capability_;      \
   bool allow_fingerprinting_
 
-#define ClampTimeResolution         \
-  MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl ( \
-      base::TimeTicks time_origin, \
-      base::TimeTicks monotonic_time, \
-      bool allow_negative_value, \
-      bool cross_origin_isolated_capability); \
-  static DOMHighResTimeStamp RoundDOMHighResTimeStamp( \
-           bool allow_fingerprinting,             \
-           DOMHighResTimeStamp time_stamp);       \
-  static DOMHighResTimeStamp RoundDOMHighResTimeStamp(            \
-      ExecutionContext* context, DOMHighResTimeStamp time_stamp); \
+#define ClampTimeResolution                                              \
+  MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(                       \
+      base::TimeTicks time_origin, base::TimeTicks monotonic_time,       \
+      bool allow_negative_value, bool cross_origin_isolated_capability); \
+  static DOMHighResTimeStamp RoundDOMHighResTimeStamp(                   \
+      bool allow_fingerprinting, DOMHighResTimeStamp time_stamp);        \
+  static DOMHighResTimeStamp RoundDOMHighResTimeStamp(                   \
+      ExecutionContext* context, DOMHighResTimeStamp time_stamp);        \
   static DOMHighResTimeStamp ClampTimeResolution
 
 #include "src/third_party/blink/renderer/core/timing/performance.h"
 
-//#undef MonotonicTimeToDOMHighResTimeStamp
+// #undef MonotonicTimeToDOMHighResTimeStamp
 #undef now
 #undef cross_origin_isolated_capability_
 #undef ClampTimeResolution
