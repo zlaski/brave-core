@@ -5,12 +5,11 @@
 
 #include "third_party/blink/renderer/core/timing/performance.h"
 
-#define now() \
-  now_ChromiumImpl()
+#define now() now_ChromiumImpl()
 
-#define cross_origin_isolated_capability_(...) \
+#define cross_origin_isolated_capability_(...)    \
   cross_origin_isolated_capability_(__VA_ARGS__), \
-  allow_fingerprinting_(brave::AllowFingerprinting(context))
+      allow_fingerprinting_(brave::AllowFingerprinting(context))
 
 #include "src/third_party/blink/renderer/core/timing/performance.cc"
 
@@ -38,8 +37,7 @@ DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
 }
 
 DOMHighResTimeStamp Performance::now() const {
-  return RoundDOMHighResTimeStamp(allow_fingerprinting_,
-                                  now_ChromiumImpl());
+  return RoundDOMHighResTimeStamp(allow_fingerprinting_, now_ChromiumImpl());
 }
 
 }  // namespace blink
