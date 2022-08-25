@@ -6,9 +6,7 @@
 #include "third_party/blink/renderer/core/timing/performance.h"
 
 #define MonotonicTimeToDOMHighResTimeStamp(...)            \
-  RoundDOMHighResTimeStamp(                                \
-      performance_navigation_timing.GetExecutionContext(), \
-      Performance::MonotonicTimeToDOMHighResTimeStamp(__VA_ARGS__))
+  MonotonicTimeToDOMHighResTimeStamp(__VA_ARGS__, performance_navigation_timing.GetExecutionContext())
 
 #include "src/third_party/blink/renderer/core/timing/performance_navigation_timing_activation_start.cc"
 

@@ -14,8 +14,7 @@
       context(brave::AllowFingerprinting(context))
 
 #define MonotonicTimeToDOMHighResTimeStamp(...) \
-  RoundDOMHighResTimeStamp(                     \
-      context, Performance::MonotonicTimeToDOMHighResTimeStamp(__VA_ARGS__))
+  MonotonicTimeToDOMHighResTimeStamp(__VA_ARGS__, context)
 
 #include "src/third_party/blink/renderer/core/timing/performance_resource_timing.cc"
 

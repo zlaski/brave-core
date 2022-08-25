@@ -25,6 +25,14 @@
   MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(                       \
       base::TimeTicks time_origin, base::TimeTicks monotonic_time,       \
       bool allow_negative_value, bool cross_origin_isolated_capability); \
+  static DOMHighResTimeStamp MonotonicTimeToDOMHighResTimeStamp(         \
+      base::TimeTicks time_origin, base::TimeTicks monotonic_time,       \
+      bool allow_negative_value, bool cross_origin_isolated_capability, \
+      bool allow_fingerprinting);                                       \
+  static DOMHighResTimeStamp MonotonicTimeToDOMHighResTimeStamp(         \
+      base::TimeTicks time_origin, base::TimeTicks monotonic_time,       \
+      bool allow_negative_value, bool cross_origin_isolated_capability, \
+      ExecutionContext* context);                                       \
   static DOMHighResTimeStamp RoundDOMHighResTimeStamp(                   \
       bool allow_fingerprinting, DOMHighResTimeStamp time_stamp);        \
   static DOMHighResTimeStamp RoundDOMHighResTimeStamp(                   \

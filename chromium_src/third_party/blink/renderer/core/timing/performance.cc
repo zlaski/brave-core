@@ -47,7 +47,7 @@ DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
       time_origin, monotonic_time, allow_negative_value,
       cross_origin_isolated_capability);
 }
-/*
+
 // static
 DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
   base::TimeTicks time_origin,
@@ -71,7 +71,6 @@ return RoundDOMHighResTimeStamp(context,
                          MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(time_origin,
 monotonic_time, allow_negative_value, cross_origin_isolated_capability));
 }
-*/
 
 DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
     base::TimeTicks monotonic_time) const {

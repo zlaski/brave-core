@@ -14,9 +14,7 @@
       allow_fingerprinting_(brave::AllowFingerprinting(window))
 
 #define MonotonicTimeToDOMHighResTimeStamp(...) \
-  RoundDOMHighResTimeStamp(                     \
-      allow_fingerprinting_,                    \
-      Performance::MonotonicTimeToDOMHighResTimeStamp(__VA_ARGS__))
+  Performance::MonotonicTimeToDOMHighResTimeStamp(__VA_ARGS__, allow_fingerprinting_)
 
 #include "src/third_party/blink/renderer/core/timing/performance_navigation_timing.cc"
 
