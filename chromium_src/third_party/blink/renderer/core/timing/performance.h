@@ -8,6 +8,15 @@
 #define BRAVE_CHROMIUM_SRC_THIRD_PARTY_BLINK_RENDERER_CORE_TIMING_PERFORMANCE_H_
 
 #include "third_party/blink/renderer/core/execution_context/execution_context.h"
+#include "third_party/blink/renderer/core/timing/performance_resource_timing.h"
+
+#define now() \
+  now_ChromiumImpl() const; \
+  DOMHighResTimeStamp now()
+
+#define cross_origin_isolated_capability_ \
+   cross_origin_isolated_capability_; \
+   bool allow_fingerprinting_
 
 #define ClampTimeResolution                                      \
   RoundDOMHighResTimeStamp(bool allowFingerprinting,             \
@@ -18,6 +27,8 @@
 
 #include "src/third_party/blink/renderer/core/timing/performance.h"
 
+#undef now
+#undef cross_origin_isolated_capability_
 #undef ClampTimeResolution
 
 #endif  // BRAVE_CHROMIUM_SRC_THIRD_PARTY_BLINK_RENDERER_CORE_TIMING_PERFORMANCE_H_
