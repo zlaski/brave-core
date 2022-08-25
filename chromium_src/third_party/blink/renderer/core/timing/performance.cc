@@ -25,7 +25,7 @@ DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
     bool allow_fingerprinting,
     DOMHighResTimeStamp time_stamp) {
   //  printf("allowFingerprinting: %d\n", allowFingerprinting);
-  return allow_fingerprinting ? time_stamp : floor(timeStamp + 0.5);
+  return allow_fingerprinting ? time_stamp : floor(time_stamp + 0.5);
 }
 
 // static
