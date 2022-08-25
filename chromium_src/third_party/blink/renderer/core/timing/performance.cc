@@ -21,21 +21,21 @@
 
 namespace blink {
 
-// static
-DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
-    bool allow_fingerprinting,
-    DOMHighResTimeStamp time_stamp) {
+namespace {
+
+DOMHighResTimeStamp RoundDOMHighResTimeStamp(bool allow_fingerprinting,
+                                             DOMHighResTimeStamp time_stamp) {
   //  printf("allowFingerprinting: %d\n", allowFingerprinting);
   return allow_fingerprinting ? time_stamp : floor(time_stamp + 0.5);
 }
 
-// static
-DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
-    ExecutionContext* context,
-    DOMHighResTimeStamp time_stamp) {
+DOMHighResTimeStamp RoundDOMHighResTimeStamp(ExecutionContext* context,
+                                             DOMHighResTimeStamp time_stamp) {
   return RoundDOMHighResTimeStamp(brave::AllowFingerprinting(context),
                                   time_stamp);
 }
+
+}  // namespace
 
 // static
 DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(

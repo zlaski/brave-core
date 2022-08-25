@@ -33,10 +33,6 @@
       base::TimeTicks time_origin, base::TimeTicks monotonic_time,       \
       bool allow_negative_value, bool cross_origin_isolated_capability,  \
       ExecutionContext* context);                                        \
-  static DOMHighResTimeStamp RoundDOMHighResTimeStamp(                   \
-      bool allow_fingerprinting, DOMHighResTimeStamp time_stamp);        \
-  static DOMHighResTimeStamp RoundDOMHighResTimeStamp(                   \
-      ExecutionContext* context, DOMHighResTimeStamp time_stamp);        \
   static DOMHighResTimeStamp ClampTimeResolution
 
 #include "src/third_party/blink/renderer/core/timing/performance.h"
