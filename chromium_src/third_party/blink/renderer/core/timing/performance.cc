@@ -23,16 +23,10 @@ namespace blink {
 
 namespace {
 
-DOMHighResTimeStamp RoundDOMHighResTimeStamp(bool allow_fingerprinting,
-                                             DOMHighResTimeStamp time_stamp) {
-  //  printf("allowFingerprinting: %d\n", allowFingerprinting);
+DOMHighResTimeStamp MaybeRoundDOMHighResTimeStamp(
+    bool allow_fingerprinting,
+    DOMHighResTimeStamp time_stamp) {
   return allow_fingerprinting ? time_stamp : floor(time_stamp + 0.5);
-}
-
-DOMHighResTimeStamp RoundDOMHighResTimeStamp(ExecutionContext* context,
-                                             DOMHighResTimeStamp time_stamp) {
-  return RoundDOMHighResTimeStamp(brave::AllowFingerprinting(context),
-                                  time_stamp);
 }
 
 }  // namespace
@@ -55,7 +49,7 @@ DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
     bool allow_negative_value,
     bool cross_origin_isolated_capability,
     bool allow_fingerprinting) {
-  return RoundDOMHighResTimeStamp(
+  return MaybeRoundDOMHighResTimeStamp(
       allow_fingerprinting,
       MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(
           time_origin, monotonic_time, allow_negative_value,
@@ -69,15 +63,14 @@ DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
     bool allow_negative_value,
     bool cross_origin_isolated_capability,
     ExecutionContext* context) {
-  return RoundDOMHighResTimeStamp(
-      context, MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(
-                   time_origin, monotonic_time, allow_negative_value,
-                   cross_origin_isolated_capability));
+  return Performance::MonotonicTimeToDOMHighResTimeStamp(
+      time_origin, monotonic_time, allow_negative_value,
+      cross_origin_isolated_capability, brave::AllowFingerprinting(context));
 }
 
 DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
     base::TimeTicks monotonic_time) const {
-  return RoundDOMHighResTimeStamp(
+  return MaybeRoundDOMHighResTimeStamp(
       allow_fingerprinting_,
       MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(monotonic_time));
 }
