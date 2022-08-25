@@ -5,16 +5,17 @@
 
 #include "third_party/blink/renderer/core/timing/performance.h"
 
-#define now() now_ChromiumImpl()
-
 #define cross_origin_isolated_capability_(...)    \
   cross_origin_isolated_capability_(__VA_ARGS__), \
       allow_fingerprinting_(brave::AllowFingerprinting(context))
 
+#define MonotonicTimeToDOMHighResTimeStamp \
+  MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl
+
 #include "src/third_party/blink/renderer/core/timing/performance.cc"
 
-#undef now
 #undef cross_origin_isolated_capability_
+#undef MonotonicTimeToDOMHighResTimeStamp
 
 #include "third_party/blink/renderer/core/execution_context/execution_context.h"
 
@@ -36,8 +37,42 @@ DOMHighResTimeStamp Performance::RoundDOMHighResTimeStamp(
                                   time_stamp);
 }
 
-DOMHighResTimeStamp Performance::now() const {
-  return RoundDOMHighResTimeStamp(allow_fingerprinting_, now_ChromiumImpl());
+// static
+DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
+    base::TimeTicks time_origin,
+    base::TimeTicks monotonic_time,
+    bool allow_negative_value,
+    bool cross_origin_isolated_capability) {
+  return MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(time_origin, monotonic_time, allow_negative_value, cross_origin_isolated_capability);
+}
+  /*
+// static
+DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
+    base::TimeTicks time_origin,
+    base::TimeTicks monotonic_time,
+    bool allow_negative_value,
+    bool cross_origin_isolated_capability,
+    bool allow_fingerprinting) {
+  return RoundDOMHighResTimeStamp(allow_fingerprinting,
+                           MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(time_origin, monotonic_time, allow_negative_value, cross_origin_isolated_capability));
+}
+
+// static
+DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
+    base::TimeTicks time_origin,
+    base::TimeTicks monotonic_time,
+    bool allow_negative_value,
+    bool cross_origin_isolated_capability,
+    ExecutionContext* context) {
+  return RoundDOMHighResTimeStamp(context,
+                           MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(time_origin, monotonic_time, allow_negative_value, cross_origin_isolated_capability));
+}
+  */
+
+DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
+    base::TimeTicks monotonic_time) const {
+  return RoundDOMHighResTimeStamp(allow_fingerprinting_,
+                                  MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(monotonic_time));
 }
 
 }  // namespace blink
