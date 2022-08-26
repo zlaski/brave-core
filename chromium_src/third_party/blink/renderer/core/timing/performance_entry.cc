@@ -9,10 +9,9 @@
 
 namespace blink {
 
-void PerformanceEntry::RoundOffTimes()
-{
+void PerformanceEntry::RoundOffTimes() {
   start_time_ = round(start_time_);
   duration_ = round(duration_);
-};
+}
 
 }  // namespace blink

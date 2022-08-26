@@ -10,7 +10,9 @@
 
 namespace blink {
 
-PerformanceObserver* PerformanceObserver::RoundOffTimes(PerformanceEntry& entry, bool allow_fingerprinting) {
+PerformanceObserver* PerformanceObserver::RoundOffTimes(
+    PerformanceEntry& entry,
+    bool allow_fingerprinting) {
   if (!allow_fingerprinting) {
     entry.RoundOffTimes();
   }

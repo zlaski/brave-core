@@ -7,14 +7,14 @@
 
 #define BRAVE_CHROMIUM_SRC_THIRD_PARTY_BLINK_RENDERER_CORE_TIMING_PERFORMANCE_ENTRY_H_
 
-#define IsResource              \
-  dummy_ = false;               \
-  virtual void RoundOffTimes(); \
+#define IsResource                 \
+  dummy_ [[maybe_unused]] = false; \
+  virtual void RoundOffTimes();    \
   bool isResource
 
 // Remove constness of start_time_.
-#define start_time_ \
-  dummy2_ [[maybe_unused]] = false;       \
+#define start_time_                 \
+  dummy2_ [[maybe_unused]] = false; \
   double start_time_
 
 #include "src/third_party/blink/renderer/core/timing/performance_entry.h"

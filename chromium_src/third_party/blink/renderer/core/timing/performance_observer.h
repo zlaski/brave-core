@@ -7,9 +7,10 @@
 
 #define BRAVE_CHROMIUM_SRC_THIRD_PARTY_BLINK_RENDERER_CORE_TIMING_PERFORMANCE_OBSERVER_H_
 
-#define takeRecords() \
-  takeRecords(); \
-  virtual PerformanceObserver* RoundOffTimes(PerformanceEntry& entry, bool allow_fingerprinting)
+#define takeRecords()                                                 \
+  takeRecords();                                                      \
+  virtual PerformanceObserver* RoundOffTimes(PerformanceEntry& entry, \
+                                             bool allow_fingerprinting)
 
 #include "src/third_party/blink/renderer/core/timing/performance_observer.h"
 
