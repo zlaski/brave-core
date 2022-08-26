@@ -4,6 +4,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "third_party/blink/renderer/core/timing/performance.h"
+#include "third_party/blink/renderer/core/timing/performance_observer.h"
 
 #define cross_origin_isolated_capability_(...)    \
   cross_origin_isolated_capability_(__VA_ARGS__), \
@@ -12,10 +13,14 @@
 #define MonotonicTimeToDOMHighResTimeStamp \
   MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl
 
+#define EnqueuePerformanceEntry \
+  RoundOffTimes(entry, allow_fingerprinting_)->EnqueuePerformanceEntry
+
 #include "src/third_party/blink/renderer/core/timing/performance.cc"
 
 #undef cross_origin_isolated_capability_
 #undef MonotonicTimeToDOMHighResTimeStamp
+#undef EnqueuePerformanceEntry
 
 #include "third_party/blink/renderer/core/execution_context/execution_context.h"
 
