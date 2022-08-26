@@ -14,7 +14,7 @@
 
 // Remove constness of start_time_.
 #define start_time_ \
-  dummy2_ = false; \
+  dummy2_ [[maybe_unused]] = false;       \
   double start_time_
 
 #include "src/third_party/blink/renderer/core/timing/performance_entry.h"
