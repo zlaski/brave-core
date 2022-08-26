@@ -19,7 +19,7 @@ void Gamepad::UpdateFromDeviceState(const device::Gamepad& device_gamepad,
   UpdateFromDeviceState_ChromiumImpl(device_gamepad,
                                      cross_origin_isolated_capability);
   if (!allow_fingerprinting) {
-    timestamp_ = floor(timestamp_ + 0.5);
+    timestamp_ = round(timestamp_);
   }
 }
 

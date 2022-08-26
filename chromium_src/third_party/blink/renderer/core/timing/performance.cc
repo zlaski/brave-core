@@ -31,7 +31,7 @@ namespace {
 DOMHighResTimeStamp MaybeRoundDOMHighResTimeStamp(
     DOMHighResTimeStamp time_stamp,
     bool allow_fingerprinting) {
-  return allow_fingerprinting ? time_stamp : floor(time_stamp + 0.5);
+  return allow_fingerprinting ? time_stamp : round(time_stamp);
 }
 
 }  // namespace
