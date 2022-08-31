@@ -16,11 +16,14 @@
 #define EnqueuePerformanceEntry \
   RoundOffTimes(entry, allow_fingerprinting_)->EnqueuePerformanceEntry
 
+#define now now_ChromiumImpl
+
 #include "src/third_party/blink/renderer/core/timing/performance.cc"
 
 #undef cross_origin_isolated_capability_
 #undef MonotonicTimeToDOMHighResTimeStamp
 #undef EnqueuePerformanceEntry
+#undef now
 
 #include "third_party/blink/renderer/core/execution_context/execution_context.h"
 
@@ -77,6 +80,12 @@ DOMHighResTimeStamp Performance::MonotonicTimeToDOMHighResTimeStamp(
     base::TimeTicks monotonic_time) const {
   return MaybeRoundDOMHighResTimeStamp(
       MonotonicTimeToDOMHighResTimeStamp_ChromiumImpl(monotonic_time),
+      allow_fingerprinting_);
+}
+
+DOMHighResTimeStamp Performance::now() const {
+  return MaybeRoundDOMHighResTimeStamp(
+      now_ChromiumImpl(),
       allow_fingerprinting_);
 }
 
