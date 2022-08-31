@@ -5,9 +5,13 @@
 
 #include <memory>
 #include <utility>
+#include <vector>
 
+#include "base/containers/span.h"
 #include "base/json/values_util.h"
 #include "base/memory/raw_ptr.h"
+#include "base/strings/stringprintf.h"
+#include "base/strings/string_util.h"
 #include "base/values.h"
 #include "brave/components/brave_shields/common/brave_shield_constants.h"
 #include "brave/components/constants/pref_names.h"
@@ -137,25 +141,43 @@ class ShieldsSetting {
     }
   }
 
-  void CheckSettingsAreDefault(const GURL& url) const {
-    CheckSettings(url, CONTENT_SETTING_DEFAULT);
+  testing::AssertionResult CheckSettingsAreDefault(const GURL& url) const {
+    return CheckSettings(url, CONTENT_SETTING_DEFAULT);
   }
 
-  void CheckSettingsWouldBlock(const GURL& url) const {
-    CheckSettings(url, CONTENT_SETTING_BLOCK);
+  testing::AssertionResult CheckSettingsWouldBlock(const GURL& url) const {
+    return CheckSettings(url, CONTENT_SETTING_BLOCK);
   }
 
-  void CheckSettingsWouldAllow(const GURL& url) const {
-    CheckSettings(url, CONTENT_SETTING_ALLOW);
+  testing::AssertionResult CheckSettingsWouldAllow(const GURL& url) const {
+    return CheckSettings(url, CONTENT_SETTING_ALLOW);
   }
 
  protected:
-  virtual void CheckSettings(const GURL& url, ContentSetting setting) const {
+  virtual testing::AssertionResult CheckSettings(const GURL& url,
+                                                 ContentSetting setting) const {
+    std::vector<std::string> results;
+    bool failure = false;
     for (const auto& url_source : urls_) {
-      EXPECT_EQ(setting,
-                TestUtils::GetContentSetting(provider_, url, url_source.first,
-                                             url_source.second, false));
+      ContentSetting url_setting = TestUtils::GetContentSetting(
+          provider_, url, url_source.first, url_source.second, false);
+      if (setting != url_setting) {
+        failure = true;
+      }
+      results.push_back(
+          FormatAssertionResult(url_source.first, url_setting, setting));
     }
+    std::string result = base::JoinString(base::make_span(results), "\n");
+    return failure ? testing::AssertionFailure() << result
+                   : testing::AssertionSuccess() << result;
+  }
+
+  std::string FormatAssertionResult(const GURL& url,
+                                    ContentSetting actual,
+                                    ContentSetting expected) const {
+    return base::StringPrintf(
+        "For url '%s' content setting value is %d. Expected: %d",
+        url.spec().c_str(), actual, expected);
   }
 
   raw_ptr<BravePrefProvider> provider_ = nullptr;
@@ -181,23 +203,32 @@ class ShieldsCookieSetting : public ShieldsSetting {
   }
 
  private:
-  void CheckSettings(const GURL& url, ContentSetting setting) const override {
+  testing::AssertionResult CheckSettings(
+      const GURL& url,
+      ContentSetting setting) const override {
     if (prefs_->GetInteger(kBraveShieldsSettingsVersion) < 3) {
       return ShieldsSetting::CheckSettings(url, setting);
     }
     // We need this because if version below than 3 brave cookies patterns
     // are reversed.
+    std::vector<std::string> results;
+    bool failure = false;
     for (const auto& url_source : urls_) {
-      if (url_source.second == ContentSettingsType::BRAVE_COOKIES) {
-        EXPECT_EQ(setting,
-                  TestUtils::GetContentSetting(provider_, url_source.first, url,
-                                               url_source.second, false));
-      } else {
-        EXPECT_EQ(setting,
-                  TestUtils::GetContentSetting(provider_, url, url_source.first,
-                                               url_source.second, false));
+      ContentSetting url_setting =
+          url_source.second == ContentSettingsType::BRAVE_COOKIES
+              ? TestUtils::GetContentSetting(provider_, url_source.first, url,
+                                             url_source.second, false)
+              : TestUtils::GetContentSetting(provider_, url, url_source.first,
+                                             url_source.second, false);
+      if (setting != url_setting) {
+        failure = true;
       }
+      results.push_back(
+          FormatAssertionResult(url_source.first, url_setting, setting));
     }
+    std::string result = base::JoinString(base::make_span(results), "\n");
+    return failure ? testing::AssertionFailure() << result
+                   : testing::AssertionSuccess() << result;
   }
 
   PrefService* prefs_ = nullptr;
@@ -254,10 +285,14 @@ class ShieldsScriptSetting : public ShieldsSetting {
   }
 
  private:
-  void CheckSettings(const GURL& url, ContentSetting setting) const override {
-    EXPECT_EQ(setting, TestUtils::GetContentSetting(
-                           provider_, url, GURL(),
-                           ContentSettingsType::JAVASCRIPT, false));
+  testing::AssertionResult CheckSettings(
+      const GURL& url,
+      ContentSetting setting) const override {
+    ContentSetting url_setting = TestUtils::GetContentSetting(
+        provider_, url, GURL(), ContentSettingsType::JAVASCRIPT, false);
+    std::string result = FormatAssertionResult(url, url_setting, setting);
+    return setting != url_setting ? testing::AssertionFailure() << result
+                                  : testing::AssertionSuccess() << result;
   }
 };
 
@@ -300,13 +335,13 @@ TEST_F(BravePrefProviderTest, TestShieldsSettingsMigration) {
   GURL url("http://brave.com:8080/");
   GURL url2("http://allowed.brave.com:3030");
   // Check that the settings for the url are default values.
-  cookie_settings.CheckSettingsAreDefault(url);
-  cookie_settings.CheckSettingsAreDefault(url2);
-  fp_settings.CheckSettingsAreDefault(url);
-  httpse_settings.CheckSettingsAreDefault(url);
-  ads_settings.CheckSettingsAreDefault(url);
-  enabled_settings.CheckSettingsAreDefault(url);
-  script_settings.CheckSettingsAreDefault(url);
+  EXPECT_TRUE(cookie_settings.CheckSettingsAreDefault(url));
+  EXPECT_TRUE(cookie_settings.CheckSettingsAreDefault(url2));
+  EXPECT_TRUE(fp_settings.CheckSettingsAreDefault(url));
+  EXPECT_TRUE(httpse_settings.CheckSettingsAreDefault(url));
+  EXPECT_TRUE(ads_settings.CheckSettingsAreDefault(url));
+  EXPECT_TRUE(enabled_settings.CheckSettingsAreDefault(url));
+  EXPECT_TRUE(script_settings.CheckSettingsAreDefault(url));
 
   // Set pre-migrtion patterns different from defaults.
   // ------------------------------------------------------
@@ -322,39 +357,45 @@ TEST_F(BravePrefProviderTest, TestShieldsSettingsMigration) {
       ContentSettingsPattern::FromString("*://help.brave.com/*"),
       CONTENT_SETTING_BLOCK);
   // Check that settings would block brave.com:8080, but not brave.com:5555.
-  cookie_settings.CheckSettingsWouldBlock(url);
-  cookie_settings.CheckSettingsWouldAllow(url2);
-  cookie_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555"));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldBlock(url));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldAllow(url2));
+  EXPECT_TRUE(
+      cookie_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555")));
 
   // Finterprinting.
   fp_settings.SetPreMigrationSettings(pattern, CONTENT_SETTING_ALLOW);
   // Check that settings would allow brave.com:8080, but not brave.com:5555.
-  fp_settings.CheckSettingsWouldAllow(url);
-  fp_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555"));
+  EXPECT_TRUE(fp_settings.CheckSettingsWouldAllow(url));
+  EXPECT_TRUE(
+      fp_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555")));
 
   // HTTPSE.
   httpse_settings.SetPreMigrationSettings(pattern, CONTENT_SETTING_BLOCK);
   // Check that settings would block brave.com:8080, but not brave.com:5555.
-  httpse_settings.CheckSettingsWouldBlock(url);
-  httpse_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555"));
+  EXPECT_TRUE(httpse_settings.CheckSettingsWouldBlock(url));
+  EXPECT_TRUE(
+      httpse_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555")));
 
   // Ads.
   ads_settings.SetPreMigrationSettings(pattern, CONTENT_SETTING_ALLOW);
   // Check that settings would allow brave.com:8080, but not brave.com:5555.
-  ads_settings.CheckSettingsWouldAllow(url);
-  ads_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555"));
+  EXPECT_TRUE(ads_settings.CheckSettingsWouldAllow(url));
+  EXPECT_TRUE(
+      ads_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555")));
 
   // Enabled.
   enabled_settings.SetPreMigrationSettings(pattern, CONTENT_SETTING_BLOCK);
   // Check that settings would block brave.com:8080, but not brave.com:5555.
-  httpse_settings.CheckSettingsWouldBlock(url);
-  httpse_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555"));
+  EXPECT_TRUE(httpse_settings.CheckSettingsWouldBlock(url));
+  EXPECT_TRUE(
+      httpse_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555")));
 
   // Scripts.
   script_settings.SetPreMigrationSettings(pattern, CONTENT_SETTING_BLOCK);
   // Check that settings would block brave.com:8080, but not brave.com:5555.
-  script_settings.CheckSettingsWouldBlock(url);
-  script_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555"));
+  EXPECT_TRUE(script_settings.CheckSettingsWouldBlock(url));
+  EXPECT_TRUE(
+      script_settings.CheckSettingsAreDefault(GURL("http://brave.com:5555")));
 
   // Migrate settings.
   // ------------------------------------------------------
@@ -365,56 +406,70 @@ TEST_F(BravePrefProviderTest, TestShieldsSettingsMigration) {
   // ------------------------------------------------------
   // Cookies.
   // Check that settings would block brave.com with any protocol and port.
-  cookie_settings.CheckSettingsWouldBlock(url);
-  cookie_settings.CheckSettingsWouldBlock(GURL("http://brave.com:5555"));
-  cookie_settings.CheckSettingsWouldBlock(GURL("https://brave.com"));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldBlock(url));
+  EXPECT_TRUE(
+      cookie_settings.CheckSettingsWouldBlock(GURL("http://brave.com:5555")));
+  EXPECT_TRUE(
+      cookie_settings.CheckSettingsWouldBlock(GURL("https://brave.com")));
   // Check that settings would allow allow.brave.com with any protocol and port.
-  cookie_settings.CheckSettingsWouldAllow(url2);
-  cookie_settings.CheckSettingsWouldAllow(GURL("https://allowed.brave.com"));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldAllow(url2));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldAllow(
+      GURL("https://allowed.brave.com")));
   // Check the pattern that didn't need to be migrated.
-  cookie_settings.CheckSettingsWouldBlock(
-      GURL("https://help.brave.com/article1.html"));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldBlock(
+      GURL("https://help.brave.com/article1.html")));
   // Would not block a different domain.
-  cookie_settings.CheckSettingsAreDefault(GURL("http://brave2.com"));
+  EXPECT_TRUE(
+      cookie_settings.CheckSettingsAreDefault(GURL("http://brave2.com")));
 
   // Fingerprinting.
   // Check that settings would allow brave.com with any protocol and port.
-  fp_settings.CheckSettingsWouldAllow(url);
-  fp_settings.CheckSettingsWouldAllow(GURL("http://brave.com:5555"));
-  fp_settings.CheckSettingsWouldAllow(GURL("https://brave.com"));
+  EXPECT_TRUE(fp_settings.CheckSettingsWouldAllow(url));
+  EXPECT_TRUE(
+      fp_settings.CheckSettingsWouldAllow(GURL("http://brave.com:5555")));
+  EXPECT_TRUE(fp_settings.CheckSettingsWouldAllow(GURL("https://brave.com")));
   // Would not allow a different domain.
-  fp_settings.CheckSettingsAreDefault(GURL("http://brave2.com"));
+  EXPECT_TRUE(fp_settings.CheckSettingsAreDefault(GURL("http://brave2.com")));
 
   // HTTPSE.
   // Check that settings would block brave.com with any protocol and port.
-  httpse_settings.CheckSettingsWouldBlock(url);
-  httpse_settings.CheckSettingsWouldBlock(GURL("http://brave.com:5555"));
+  EXPECT_TRUE(httpse_settings.CheckSettingsWouldBlock(url));
+  EXPECT_TRUE(
+      httpse_settings.CheckSettingsWouldBlock(GURL("http://brave.com:5555")));
   // Would not block a different domain.
-  httpse_settings.CheckSettingsAreDefault(GURL("http://brave2.com"));
+  EXPECT_TRUE(
+      httpse_settings.CheckSettingsAreDefault(GURL("http://brave2.com")));
 
   // Ads.
   // Check that settings would allow brave.com with any protocol and port.
-  ads_settings.CheckSettingsWouldAllow(url);
-  ads_settings.CheckSettingsWouldAllow(GURL("http://brave.com:5555"));
-  ads_settings.CheckSettingsWouldAllow(GURL("https://brave.com"));
+  EXPECT_TRUE(ads_settings.CheckSettingsWouldAllow(url));
+  EXPECT_TRUE(
+      ads_settings.CheckSettingsWouldAllow(GURL("http://brave.com:5555")));
+  EXPECT_TRUE(ads_settings.CheckSettingsWouldAllow(GURL("https://brave.com")));
   // Would not allow a different domain.
-  ads_settings.CheckSettingsAreDefault(GURL("http://brave2.com"));
+  EXPECT_TRUE(ads_settings.CheckSettingsAreDefault(GURL("http://brave2.com")));
 
   // Enabled.
   // Check that settings would block brave.com with any protocol and port.
-  httpse_settings.CheckSettingsWouldBlock(url);
-  httpse_settings.CheckSettingsWouldBlock(GURL("http://brave.com:5555"));
-  httpse_settings.CheckSettingsWouldBlock(GURL("https://brave.com"));
+  EXPECT_TRUE(httpse_settings.CheckSettingsWouldBlock(url));
+  EXPECT_TRUE(
+      httpse_settings.CheckSettingsWouldBlock(GURL("http://brave.com:5555")));
+  EXPECT_TRUE(
+      httpse_settings.CheckSettingsWouldBlock(GURL("https://brave.com")));
   // Would not block a different domain.
-  httpse_settings.CheckSettingsAreDefault(GURL("http://brave2.com"));
+  EXPECT_TRUE(
+      httpse_settings.CheckSettingsAreDefault(GURL("http://brave2.com")));
 
   // Scripts.
   // Check that settings would block brave.com with any protocol and port.
-  script_settings.CheckSettingsWouldBlock(url);
-  script_settings.CheckSettingsWouldBlock(GURL("http://brave.com:5555"));
-  script_settings.CheckSettingsWouldBlock(GURL("https://brave.com"));
+  EXPECT_TRUE(script_settings.CheckSettingsWouldBlock(url));
+  EXPECT_TRUE(
+      script_settings.CheckSettingsWouldBlock(GURL("http://brave.com:5555")));
+  EXPECT_TRUE(
+      script_settings.CheckSettingsWouldBlock(GURL("https://brave.com")));
   // Would not block a different domain.
-  script_settings.CheckSettingsAreDefault(GURL("http://brave2.com"));
+  EXPECT_TRUE(
+      script_settings.CheckSettingsAreDefault(GURL("http://brave2.com")));
 
   provider.ShutdownOnUIThread();
 }
@@ -593,24 +648,24 @@ TEST_F(BravePrefProviderTest, TestShieldsSettingsMigrationV2toV4) {
   testing_profile()->GetPrefs()->SetInteger(kBraveShieldsSettingsVersion, 2);
   provider.MigrateShieldsSettings(/*incognito*/ false);
 
-  shields_cookie_settings.CheckSettingsWouldAllow(allowed);
+  EXPECT_TRUE(shields_cookie_settings.CheckSettingsWouldAllow(allowed));
 
   // BRAVE_COOKIES blocked but COOKIES allowed.
-  shields_cookie_settings.CheckSettingsWouldBlock(blocked);
-  cookie_settings.CheckSettingsWouldAllow(blocked);
+  EXPECT_TRUE(shields_cookie_settings.CheckSettingsWouldBlock(blocked));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldAllow(blocked));
 
   // Enable shields -> cookies should be blocked according to settings.
   shields_enabled_settings.SetPreMigrationSettings(blocked_pattern,
                                                    CONTENT_SETTING_ALLOW);
-  shields_cookie_settings.CheckSettingsWouldBlock(blocked);
-  cookie_settings.CheckSettingsWouldBlock(blocked);
+  EXPECT_TRUE(shields_cookie_settings.CheckSettingsWouldBlock(blocked));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldBlock(blocked));
 
   // V3 to V4
   testing_profile()->GetPrefs()->SetInteger(kBraveShieldsSettingsVersion, 3);
   provider.MigrateShieldsSettings(/*incognito*/ false);
 
-  shields_cookie_settings.CheckSettingsWouldBlock(blocked);
-  cookie_settings.CheckSettingsWouldBlock(blocked);
+  EXPECT_TRUE(shields_cookie_settings.CheckSettingsWouldBlock(blocked));
+  EXPECT_TRUE(cookie_settings.CheckSettingsWouldBlock(blocked));
 
   provider.ShutdownOnUIThread();
 }
@@ -621,18 +676,18 @@ TEST_F(BravePrefProviderTest, EnsureNoWildcardEntries) {
       true /* store_last_modified */, false /* restore_session */);
   ShieldsEnabledSetting shields_enabled_settings(&provider);
   GURL example_url("https://example.com");
-  shields_enabled_settings.CheckSettingsAreDefault(example_url);
+  EXPECT_TRUE(shields_enabled_settings.CheckSettingsAreDefault(example_url));
   // Set wildcard entry
   auto pattern = ContentSettingsPattern::Wildcard();
   provider.SetWebsiteSetting(pattern, pattern,
                              ContentSettingsType::BRAVE_SHIELDS,
                              base::Value(CONTENT_SETTING_ALLOW), {});
   // Verify global has changed
-  shields_enabled_settings.CheckSettingsWouldAllow(example_url);
+  EXPECT_TRUE(shields_enabled_settings.CheckSettingsWouldAllow(example_url));
   // Remove wildcards
   provider.EnsureNoWildcardEntries(ContentSettingsType::BRAVE_SHIELDS);
   // Verify global has reset
-  shields_enabled_settings.CheckSettingsAreDefault(example_url);
+  EXPECT_TRUE(shields_enabled_settings.CheckSettingsAreDefault(example_url));
 
   // Simulate sync updates pref directly.
   base::Value::Dict value;
@@ -648,7 +703,7 @@ TEST_F(BravePrefProviderTest, EnsureNoWildcardEntries) {
       "profile.content_settings.exceptions.braveShields", std::move(update));
   base::RunLoop().RunUntilIdle();
   // Verify global has reset
-  shields_enabled_settings.CheckSettingsAreDefault(example_url);
+  EXPECT_TRUE(shields_enabled_settings.CheckSettingsAreDefault(example_url));
   provider.ShutdownOnUIThread();
 }
 
