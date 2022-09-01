@@ -157,19 +157,17 @@ class ShieldsSetting {
   virtual testing::AssertionResult CheckSettings(const GURL& url,
                                                  ContentSetting setting) const {
     std::vector<std::string> results;
-    bool failure = false;
     for (const auto& url_source : urls_) {
       ContentSetting url_setting = TestUtils::GetContentSetting(
           provider_, url, url_source.first, url_source.second, false);
       if (setting != url_setting) {
-        failure = true;
+        results.push_back(
+            FormatAssertionResult(url_source.first, url_setting, setting));
       }
-      results.push_back(
-          FormatAssertionResult(url_source.first, url_setting, setting));
     }
-    std::string result = base::JoinString(base::make_span(results), "\n");
-    return failure ? testing::AssertionFailure() << result
-                   : testing::AssertionSuccess() << result;
+    return results.empty() ? testing::AssertionSuccess()
+                           : testing::AssertionFailure() << base::JoinString(
+                                 base::make_span(results), " | ");
   }
 
   std::string FormatAssertionResult(const GURL& url,
@@ -212,7 +210,6 @@ class ShieldsCookieSetting : public ShieldsSetting {
     // We need this because if version below than 3 brave cookies patterns
     // are reversed.
     std::vector<std::string> results;
-    bool failure = false;
     for (const auto& url_source : urls_) {
       ContentSetting url_setting =
           url_source.second == ContentSettingsType::BRAVE_COOKIES
@@ -221,14 +218,13 @@ class ShieldsCookieSetting : public ShieldsSetting {
               : TestUtils::GetContentSetting(provider_, url, url_source.first,
                                              url_source.second, false);
       if (setting != url_setting) {
-        failure = true;
+        results.push_back(
+            FormatAssertionResult(url_source.first, url_setting, setting));
       }
-      results.push_back(
-          FormatAssertionResult(url_source.first, url_setting, setting));
     }
-    std::string result = base::JoinString(base::make_span(results), "\n");
-    return failure ? testing::AssertionFailure() << result
-                   : testing::AssertionSuccess() << result;
+    return results.empty() ? testing::AssertionSuccess()
+                           : testing::AssertionFailure() << base::JoinString(
+                                 base::make_span(results), " | ");
   }
 
   PrefService* prefs_ = nullptr;
@@ -290,9 +286,10 @@ class ShieldsScriptSetting : public ShieldsSetting {
       ContentSetting setting) const override {
     ContentSetting url_setting = TestUtils::GetContentSetting(
         provider_, url, GURL(), ContentSettingsType::JAVASCRIPT, false);
-    std::string result = FormatAssertionResult(url, url_setting, setting);
-    return setting != url_setting ? testing::AssertionFailure() << result
-                                  : testing::AssertionSuccess() << result;
+    return setting != url_setting
+               ? testing::AssertionFailure()
+                     << FormatAssertionResult(url, url_setting, setting)
+               : testing::AssertionSuccess();
   }
 };
 
