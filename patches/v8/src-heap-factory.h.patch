@@ -1,0 +1,13 @@
+diff --git a/src/heap/factory.h b/src/heap/factory.h
+index 1d27421d2b94b3baf41d2cd83c3e43e26deca9e3..b75e8577cf076deaa8a7ed6b1d3ad765e1a5beef 100644
+--- a/src/heap/factory.h
++++ b/src/heap/factory.h
+@@ -83,7 +83,7 @@ class StructType;
+ struct WasmElemSegment;
+ class WasmValue;
+ enum class OnResume : int;
+-enum Suspend : bool;
++enum Suspend : uint8_t;
+ }  // namespace wasm
+ #endif
+ 

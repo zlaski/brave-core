@@ -1,0 +1,13 @@
+diff --git a/src/wasm/wasm-objects.h b/src/wasm/wasm-objects.h
+index 962478cb69b0cf455b6e1c66ed5a7f16ddf611bb..6c683412c3bf39d98f8898ea7d9456a5836d0454 100644
+--- a/src/wasm/wasm-objects.h
++++ b/src/wasm/wasm-objects.h
+@@ -75,7 +75,7 @@ class V8_EXPORT_PRIVATE FunctionTargetAndRef {
+ };
+ 
+ namespace wasm {
+-enum Suspend : bool { kSuspend = true, kNoSuspend = false };
++enum Suspend : uint8_t { kSuspend = true, kNoSuspend = false };
+ enum class OnResume : int { kContinue, kThrow };
+ }  // namespace wasm
+ 

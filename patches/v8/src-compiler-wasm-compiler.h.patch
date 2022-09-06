@@ -1,0 +1,13 @@
+diff --git a/src/compiler/wasm-compiler.h b/src/compiler/wasm-compiler.h
+index 4fd2de587a7f01ee030bbf131ec753275d681ee1..39124af0a5e8ba3f4beab6f083562fb4d0b1eb75 100644
+--- a/src/compiler/wasm-compiler.h
++++ b/src/compiler/wasm-compiler.h
+@@ -54,7 +54,7 @@ class WasmCode;
+ class WasmFeatures;
+ class WireBytesStorage;
+ enum class LoadTransformationKind : uint8_t;
+-enum Suspend : bool;
++enum Suspend : uint8_t;
+ }  // namespace wasm
+ 
+ namespace compiler {
