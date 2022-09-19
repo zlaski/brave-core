@@ -111,8 +111,8 @@ BraveNewsController::BraveNewsController(
       base::BindRepeating(&BraveNewsController::ConditionallyStartOrStopTimer,
                           base::Unretained(this)));
 
-  auto* channels = prefs_->GetDictionary(prefs::kBraveNewsChannels);
-  if (channels->DictEmpty()) {
+  const auto& channels = prefs_->GetDict(prefs::kBraveNewsChannels);
+  if (channels.empty()) {
     publishers_controller_.GetLocale(base::BindOnce(
         [](ChannelsController* channels_controller, const std::string& locale) {
           channels_controller->SetChannelSubscribed(locale, kTopSourcesChannel,

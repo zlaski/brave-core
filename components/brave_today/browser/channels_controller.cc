@@ -33,7 +33,7 @@ Channels ChannelsController::GetChannelsFromPublishers(
     const Publishers& publishers,
     PrefService* prefs) {
   Channels channels;
-  auto* channel_subscriptions = prefs->GetDictionary(prefs::kBraveNewsChannels);
+  const auto& channel_subscriptions = prefs->GetDict(prefs::kBraveNewsChannels);
 
   for (const auto& it : publishers) {
     for (const auto& channel_id : it.second->channels) {
@@ -44,7 +44,7 @@ Channels ChannelsController::GetChannelsFromPublishers(
       auto channel = mojom::Channel::New();
       channel->channel_name = channel_id;
       channel->subscribed =
-          channel_subscriptions->FindBoolPath(locale + "." + channel_id)
+          channel_subscriptions.FindBoolByDottedPath(locale + "." + channel_id)
               .value_or(false);
 
       channels.insert({channel_id, std::move(channel)});
@@ -79,7 +79,8 @@ mojom::ChannelPtr ChannelsController::SetChannelSubscribed(
 
 bool ChannelsController::GetChannelSubscribed(const std::string& locale,
                                               const std::string& channel_id) {
-  auto* subscriptions = prefs_->GetDictionary(prefs::kBraveNewsChannels);
-  return subscriptions->FindBoolPath(locale + "." + channel_id).value_or(false);
+  const auto& subscriptions = prefs_->GetDict(prefs::kBraveNewsChannels);
+  return subscriptions.FindBoolByDottedPath(locale + "." + channel_id)
+      .value_or(false);
 }
 }  // namespace brave_news
