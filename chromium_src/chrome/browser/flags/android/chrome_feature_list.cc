@@ -28,6 +28,7 @@ namespace android {
 OVERRIDE_FEATURE_DEFAULT_STATES({{
     {kAddToHomescreenIPH, base::FEATURE_DISABLED_BY_DEFAULT},
     {kStartSurfaceAndroid, base::FEATURE_DISABLED_BY_DEFAULT},
+    {kTabSwitcherOnReturn, base::FEATURE_DISABLED_BY_DEFAULT},
 }});
 
 }  // namespace android
