@@ -234,7 +234,8 @@ IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, InitialUIRendered) {
   ASSERT_TRUE(EvalJs(wallet(), wallet_panel_js).ExtractBool());
 }
 
-IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, DISABLED_HideNetworkInSettings) {
+IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest,
+                       DISABLED_HideNetworkInSettings) {
   ActivateWalletTab();
   // Wait and click on select network button.
   ASSERT_TRUE(WaitAndClickElement(wallet(), QuerySelectorJS(NetworksButton())));
