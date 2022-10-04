@@ -18,7 +18,7 @@ std::string URLDataSource::GetContentSecurityPolicy(
     case network::mojom::CSPDirectiveName::ScriptSrc:
       // Note: Do not add 'unsafe-eval' here. Instead override CSP for the
       // specific pages that need it, see context http://crbug.com/525224.
-      return "script-src chrome://resources chrome://brave-resources 'self';";
+      return "script-src chrome://resources 'self';";
     default:
       return GetContentSecurityPolicy_ChromiumImpl(directive);
   }
