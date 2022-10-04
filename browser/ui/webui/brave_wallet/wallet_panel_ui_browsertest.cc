@@ -234,7 +234,7 @@ IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, InitialUIRendered) {
   ASSERT_TRUE(EvalJs(wallet(), wallet_panel_js).ExtractBool());
 }
 
-IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, HideNetworkInSettings) {
+IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, DISABLED_HideNetworkInSettings) {
   ActivateWalletTab();
   // Wait and click on select network button.
   ASSERT_TRUE(WaitAndClickElement(wallet(), QuerySelectorJS(NetworksButton())));
@@ -263,7 +263,8 @@ IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, HideNetworkInSettings) {
   ASSERT_TRUE(EvalJs(wallet(), QuerySelectorJS(CeloNetwork())).value.is_none());
 }
 
-IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, CustomNetworkInSettings) {
+IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest,
+                       DISABLED_CustomNetworkInSettings) {
   CreateSettingsTab();
 
   ActivateWalletTab();
@@ -308,7 +309,7 @@ IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, CustomNetworkInSettings) {
                                     "?.innerText === 'Custom Network'"));
 }
 
-IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, SelectRpcEndpoint) {
+IN_PROC_BROWSER_TEST_F(WalletPanelUIBrowserTest, DISABLED_SelectRpcEndpoint) {
   CreateSettingsTab();
   auto* prefs = browser()->profile()->GetPrefs();
 
