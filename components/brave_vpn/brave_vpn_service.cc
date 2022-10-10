@@ -343,9 +343,9 @@ void BraveVpnService::Connect() {
   // User can ask connect again when user want to change region.
   if (connection_state_ == ConnectionState::CONNECTED) {
     // Disconnect first and then create again to setup for new region.
-    needs_connect_ = true;
-    Disconnect();
-    return;
+    // needs_connect_ = true;
+    // Disconnect();
+    // return;
   }
 
   VLOG(2) << __func__ << " : start connecting!";

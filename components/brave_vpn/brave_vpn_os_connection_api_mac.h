@@ -38,6 +38,7 @@ class BraveVPNOSConnectionAPIMac : public BraveVPNOSConnectionAPI {
 
   id vpn_observer_ = nil;
   BraveVPNConnectionInfo info_;
+  BOOL ignore_connection_change_ = false;
 };
 
 }  // namespace brave_vpn

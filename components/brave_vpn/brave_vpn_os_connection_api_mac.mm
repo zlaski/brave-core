@@ -248,6 +248,10 @@ void BraveVPNOSConnectionAPIMac::Connect(const std::string& name) {
       return;
     }
 
+    ignore_connection_change_ = true;
+    [[vpn_manager connection] stopVPNTunnel];
+    ignore_connection_change_ = false;
+
     NEVPNStatus current_status = [[vpn_manager connection] status];
     // Early return if already connected.
     if (current_status == NEVPNStatusConnected) {
@@ -331,6 +335,8 @@ void BraveVPNOSConnectionAPIMac::ObserveVPNConnectionChange() {
                   object:nil
                    queue:nil
               usingBlock:^(NSNotification* notification) {
+                if (ignore_connection_change_)
+                  return;
                 VLOG(2) << "Received VPN connection status change notification";
                 CheckConnection(std::string());
               }];
