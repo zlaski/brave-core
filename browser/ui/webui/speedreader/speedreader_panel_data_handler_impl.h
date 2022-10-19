@@ -59,8 +59,12 @@ class SpeedreaderPanelDataHandlerImpl
 
   void GetCurrentSiteURL(GetCurrentSiteURLCallback callback) override;
 
-  void IsEnabled(IsEnabledCallback callback) override;
-  void SetEnabled(bool on) override;
+  void IsEnabledForCurrentSite(
+      IsEnabledForCurrentSiteCallback callback) override;
+  void EnableForCurrentSite(bool on) override;
+
+  void IsSpeedreaderEnabled(IsSpeedreaderEnabledCallback callback) override;
+  void EnabledSpeedreader(bool on) override;
 
  private:
   mojo::Receiver<speedreader::mojom::PanelDataHandler> receiver_;

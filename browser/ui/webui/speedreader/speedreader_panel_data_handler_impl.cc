@@ -74,12 +74,24 @@ void SpeedreaderPanelDataHandlerImpl::GetCurrentSiteURL(
   std::move(callback).Run(speedreader_tab_helper_->GetCurrentSiteURL());
 }
 
-void SpeedreaderPanelDataHandlerImpl::IsEnabled(IsEnabledCallback callback) {
+void SpeedreaderPanelDataHandlerImpl::IsEnabledForCurrentSite(
+    IsEnabledForCurrentSiteCallback callback) {
   DCHECK(speedreader_tab_helper_);
   std::move(callback).Run(speedreader_tab_helper_->IsEnabledForSite());
 }
 
-void SpeedreaderPanelDataHandlerImpl::SetEnabled(bool on) {
+void SpeedreaderPanelDataHandlerImpl::EnableForCurrentSite(bool on) {
   DCHECK(speedreader_tab_helper_);
   speedreader_tab_helper_->MaybeToggleEnabledForSite(on);
+}
+
+void SpeedreaderPanelDataHandlerImpl::IsSpeedreaderEnabled(
+    IsSpeedreaderEnabledCallback callback) {
+  DCHECK(speedreader_tab_helper_);
+  std::move(callback).Run(speedreader_tab_helper_->IsSpeedreaderEnabled());
+}
+
+void SpeedreaderPanelDataHandlerImpl::EnabledSpeedreader(bool on) {
+  DCHECK(speedreader_tab_helper_);
+  speedreader_tab_helper_->EnableSpeedreader(on);
 }

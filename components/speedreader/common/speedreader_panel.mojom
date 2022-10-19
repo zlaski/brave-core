@@ -30,8 +30,11 @@ interface PanelDataHandler {
 
   GetCurrentSiteURL() => (string site_url);
 
-  IsEnabled() => (bool on);
-  SetEnabled(bool on);
+  IsEnabledForCurrentSite() => (bool on);
+  EnableForCurrentSite(bool on);
+
+  IsSpeedreaderEnabled() => (bool on);
+  EnabledSpeedreader(bool on);
 };
 
 // Enum is used in prefs. Be careful when changing or extending.

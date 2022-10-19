@@ -381,6 +381,15 @@ std::string SpeedreaderTabHelper::GetCurrentSiteURL() {
   return web_contents()->GetLastCommittedURL().host();
 }
 
+void SpeedreaderTabHelper::EnableSpeedreader(bool on) {
+  if (auto* speedreader_service =
+          SpeedreaderServiceFactory::GetForProfile(GetProfile())) {
+    if (speedreader_service->IsEnabled() != on) {
+      speedreader_service->ToggleSpeedreader();
+    }
+  }
+}
+
 void SpeedreaderTabHelper::ClearPersistedData() {
   if (auto* entry = web_contents()->GetController().GetLastCommittedEntry()) {
     SpeedreaderExtendedInfoHandler::ClearPersistedData(entry);

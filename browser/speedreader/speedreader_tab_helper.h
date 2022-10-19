@@ -111,6 +111,8 @@ class SpeedreaderTabHelper
 
   std::string GetCurrentSiteURL();
 
+  void EnableSpeedreader(bool on);
+
  private:
   friend class content::WebContentsUserData<SpeedreaderTabHelper>;
   explicit SpeedreaderTabHelper(content::WebContents* web_contents);
