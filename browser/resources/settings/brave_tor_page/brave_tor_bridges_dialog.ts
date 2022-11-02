@@ -63,6 +63,8 @@ class RequestBridgesDialog extends RequestBridgesDialogBase {
       () => {
         this.requestCaptcha_()
       })
+
+    this.renewDisabled_ = true
     this.captchaResolve_ = ''
   }
 
@@ -72,20 +74,21 @@ class RequestBridgesDialog extends RequestBridgesDialogBase {
 
   requestCaptcha_() {
     this.captchaResolve_ = ''
+    this.renewDisabled_ = true
     this.status_ = this.i18n('torRequestBridgeDialogWaiting')
     this.captcha_ = ''
 
     this.browserProxy_.requestBridgesCaptcha().then((result) => {
       this.captcha_ = result.captcha
       this.status_ = this.i18n('torRequestBridgeDialogSolve')
-      this.renewDisabled_ = false;
+      this.renewDisabled_ = false
     }, () => {
       this.status_ = this.i18n('torRequestBridgeDialogError')
       this.renewDisabled_ = false
     })
   }
 
-  computeSubmitDisabled_(captchaResolve) {
+  computeSubmitDisabled_(captchaResolve: String) {
     return captchaResolve.length === 0
   }
 }
