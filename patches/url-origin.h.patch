@@ -1,0 +1,15 @@
+diff --git a/url/origin.h b/url/origin.h
+index 02a7bf6e0f1a955741ab123c03c50b3e3777323b..afc08143ac0fa6a881c8a5d17ca9faa3dcbe46d2 100644
+--- a/url/origin.h
++++ b/url/origin.h
+@@ -217,6 +217,10 @@ class COMPONENT_EXPORT(URL) Origin {
+ 
+   bool opaque() const { return nonce_.has_value(); }
+ 
++  const base::UnguessableToken* token() const {
++    return nonce_ ? &nonce_->token() : nullptr;
++  }
++
+   // An ASCII serialization of the Origin as per Section 6.2 of RFC 6454, with
+   // the addition that all Origins with a 'file' scheme serialize to "file://".
+   std::string Serialize() const;

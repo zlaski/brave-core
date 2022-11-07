@@ -1,0 +1,17 @@
+diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/browser/renderer_host/render_frame_host_impl.h
+index 77b0c575b6866a183e976cfed321940a5b296dca..bf62762d2ee41e4465a5ac2c35b4616ffdf3e3f2 100644
+--- a/content/browser/renderer_host/render_frame_host_impl.h
++++ b/content/browser/renderer_host/render_frame_host_impl.h
+@@ -2447,7 +2447,11 @@ class CONTENT_EXPORT RenderFrameHostImpl
+   RenderFrameHostImpl* GetParentOrOuterDocumentOrEmbedder() const;
+ 
+   // Computes the nonce to be used for isolation info and storage key.
+-  absl::optional<base::UnguessableToken> ComputeNonce(bool is_anonymous);
++  absl::optional<base::UnguessableToken> ComputeNonce(
++      const url::Origin& origin,
++      const net::SiteForCookies& site_for_cookies,
++      const absl::optional<url::Origin>& top_frame_origin,
++      bool is_anonymous);
+ 
+   // Return the frame immediately preceding this RenderFrameHost in its parent's
+   // children, or nullptr if there is no such node.

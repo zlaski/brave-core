@@ -1,0 +1,37 @@
+diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
+index a4469559156633d3ee47a71413bfca1c2c8df5f4..122c2d14eb475d34f6ab9ab2825bce5691c005ff 100644
+--- a/content/browser/renderer_host/render_frame_host_impl.cc
++++ b/content/browser/renderer_host/render_frame_host_impl.cc
+@@ -4049,13 +4049,17 @@ net::IsolationInfo RenderFrameHostImpl::ComputeIsolationInfoInternal(
+     candidate_site_for_cookies = net::SiteForCookies(top_frame_site);
+   }
+ 
+-  absl::optional<base::UnguessableToken> nonce = ComputeNonce(is_anonymous);
++  absl::optional<base::UnguessableToken> nonce = ComputeNonce(
++      frame_origin, candidate_site_for_cookies, top_frame_origin, is_anonymous);
+   return net::IsolationInfo::Create(
+       request_type, top_frame_origin, frame_origin, candidate_site_for_cookies,
+       std::move(party_context), nonce ? &nonce.value() : nullptr);
+ }
+ 
+ absl::optional<base::UnguessableToken> RenderFrameHostImpl::ComputeNonce(
++    const url::Origin& origin,
++    const net::SiteForCookies& site_for_cookies,
++    const absl::optional<url::Origin>& top_frame_origin,
+     bool is_anonymous) {
+   // If it's an anonymous frame tree, use its nonce even if it's within a fenced
+   // frame tree to maintain the guarantee that an anonymous frame tree has
+@@ -4070,6 +4074,13 @@ absl::optional<base::UnguessableToken> RenderFrameHostImpl::ComputeNonce(
+   // frame, we get the anonymous_iframes_nonce of the fenced frame root to
+   // prevent anonymous iframes embedded inside a fenced frame from sharing nonce
+   // with anonymous iframes outside the fenced frame.
++
++  if (auto nonce = GetContentClient()->browser()->GetEphemeralStorageNonce(
++          this, origin, site_for_cookies, top_frame_origin)) {
++    if (nonce)
++      return nonce;
++  }
++
+   if (is_anonymous) {
+     RenderFrameHostImpl* main_rfh = this;
+     while (main_rfh->parent_ && !main_rfh->IsFencedFrameRoot()) {

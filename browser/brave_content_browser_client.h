@@ -146,6 +146,12 @@ class BraveContentBrowserClient : public ChromeContentBrowserClient {
                            blink::web_pref::WebPreferences* prefs) override;
   blink::UserAgentMetadata GetUserAgentMetadata() override;
 
+  absl::optional<base::UnguessableToken> GetEphemeralStorageNonce(
+      content::RenderFrameHost* render_frame_host,
+      const url::Origin& origin,
+      const net::SiteForCookies& site_for_cookies,
+      const absl::optional<url::Origin>& top_frame_origin) override;
+
  private:
   void OnAllowGoogleAuthChanged();
 

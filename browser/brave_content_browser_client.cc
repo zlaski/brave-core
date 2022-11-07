@@ -120,6 +120,10 @@
 #include "third_party/widevine/cdm/buildflags.h"
 #include "ui/base/l10n/l10n_util.h"
 
+#include "chrome/browser/content_settings/cookie_settings_factory.h"
+#include "chrome/browser/profiles/profile.h"
+#include "components/content_settings/core/browser/cookie_settings.h"
+
 using blink::web_pref::WebPreferences;
 using brave_shields::BraveShieldsWebContentsObserver;
 using brave_shields::ControlType;
@@ -1138,4 +1142,20 @@ blink::UserAgentMetadata BraveContentBrowserClient::GetUserAgentMetadata() {
     metadata.brand_full_version_list = greased_brand_full_version_list;
   }
   return metadata;
+}
+
+absl::optional<base::UnguessableToken>
+BraveContentBrowserClient::GetEphemeralStorageNonce(
+    content::RenderFrameHost* render_frame_host,
+    const url::Origin& origin,
+    const net::SiteForCookies& site_for_cookies,
+    const absl::optional<url::Origin>& top_frame_origin) {
+  auto cookie_settings = CookieSettingsFactory::GetInstance()->GetForProfile(
+      Profile::FromBrowserContext(render_frame_host->GetBrowserContext()));
+  url::Origin storage_origin;
+  if (cookie_settings->ShouldUseEphemeralStorage(
+          origin, site_for_cookies, top_frame_origin, storage_origin)) {
+    return *storage_origin.token();
+  }
+  return absl::nullopt;
 }

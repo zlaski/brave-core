@@ -25,4 +25,13 @@ uint8_t ContentBrowserClient::WorkerGetBraveFarblingLevel(
   return 1 /* OFF */;
 }
 
+absl::optional<base::UnguessableToken>
+ContentBrowserClient::GetEphemeralStorageNonce(
+    content::RenderFrameHost* render_frame_host,
+    const url::Origin& origin,
+    const net::SiteForCookies& site_for_cookies,
+    const absl::optional<url::Origin>& top_frame_origin) {
+  return absl::nullopt;
+}
+
 }  // namespace content

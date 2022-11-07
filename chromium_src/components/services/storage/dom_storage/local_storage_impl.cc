@@ -40,6 +40,7 @@ void LocalStorageImpl::ShutDown(base::OnceClosure callback) {
 void LocalStorageImpl::BindStorageArea(
     const blink::StorageKey& storage_key,
     mojo::PendingReceiver<blink::mojom::StorageArea> receiver) {
+  LOG(ERROR) << "BindStorageArea " << storage_key.GetDebugString();
   if (storage_key.origin().opaque()) {
     in_memory_local_storage_->BindStorageArea(
         *GetStorageKeyWithNonOpaqueOrigin(storage_key, true),
