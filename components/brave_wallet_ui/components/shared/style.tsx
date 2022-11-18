@@ -427,3 +427,10 @@ export const InputLabelText = styled.label`
   text-align: left;
   width: 100%;
 `
+
+export const BannerWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 24px;
+  width: 100%;
+`
