@@ -147,10 +147,10 @@ void JSSolanaProvider::Install(bool allow_overwrite_window_solana,
           .Check();
     }
   } else {
-    render_frame->GetWebFrame()->AddMessageToConsole(
-        blink::WebConsoleMessage(blink::mojom::ConsoleMessageLevel::kWarning,
-                                 "Brave Wallet will not insert window.solana "
-                                 "because it already exists!"));
+    // render_frame->GetWebFrame()->AddMessageToConsole(
+    //     blink::WebConsoleMessage(blink::mojom::ConsoleMessageLevel::kWarning,
+    //                              "Brave Wallet will not insert window.solana "
+    //                              "because it already exists!"));
   }
 
   // Non-function properties are readonly guaranteed by gin::Wrappable

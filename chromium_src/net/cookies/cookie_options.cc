@@ -32,6 +32,12 @@ void FillEphemeralStorageParams(
     const CookieAccessDelegate* cookie_access_delegate,
     CookieOptions* cookie_options) {
   DCHECK(cookie_options);
+  if ((true))
+    return;
+  if (base::FeatureList::IsEnabled(
+          net::features::kThirdPartyStoragePartitioning)) {
+    return;
+  }
   if (!cookie_access_delegate) {
     return;
   }

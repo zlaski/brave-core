@@ -41,7 +41,7 @@ void LocalStorageImpl::BindStorageArea(
     const blink::StorageKey& storage_key,
     mojo::PendingReceiver<blink::mojom::StorageArea> receiver) {
   LOG(ERROR) << "BindStorageArea " << storage_key.GetDebugString();
-  if (storage_key.origin().opaque()) {
+  if (storage_key.origin().opaque() || storage_key.nonce()) {
     in_memory_local_storage_->BindStorageArea(
         *GetStorageKeyWithNonOpaqueOrigin(storage_key, true),
         std::move(receiver));
@@ -57,7 +57,7 @@ void LocalStorageImpl::GetUsage(GetUsageCallback callback) {
 void LocalStorageImpl::DeleteStorage(const blink::StorageKey& storage_key,
                                      DeleteStorageCallback callback) {
   const url::Origin& storage_key_origin = storage_key.origin();
-  if (storage_key_origin.opaque()) {
+  if (storage_key_origin.opaque() || storage_key.nonce()) {
     if (const auto* non_opaque_origins_storage_key =
             GetStorageKeyWithNonOpaqueOrigin(storage_key, false)) {
       in_memory_local_storage_->DeleteStorage(*non_opaque_origins_storage_key,
@@ -95,6 +95,10 @@ void LocalStorageImpl::ForceKeepSessionState() {
 const blink::StorageKey* LocalStorageImpl::GetStorageKeyWithNonOpaqueOrigin(
     const blink::StorageKey& storage_key,
     bool create) {
+  if (storage_key.nonce()) {
+    return &storage_key;
+  }
+
   const url::Origin& storage_key_origin = storage_key.origin();
   DCHECK(storage_key_origin.opaque());
   auto storage_keys_it =

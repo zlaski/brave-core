@@ -221,10 +221,10 @@ void JSEthereumProvider::Install(bool allow_overwrite_window_ethereum_provider,
     ExecuteScript(web_frame, *g_provider_script, kEthereumProviderScript);
     provider->ConnectEvent();
   } else {
-    render_frame->GetWebFrame()->AddMessageToConsole(
-        blink::WebConsoleMessage(blink::mojom::ConsoleMessageLevel::kWarning,
-                                 "Brave Wallet will not insert window.ethereum "
-                                 "because it already exists!"));
+    // render_frame->GetWebFrame()->AddMessageToConsole(
+    //     blink::WebConsoleMessage(blink::mojom::ConsoleMessageLevel::kWarning,
+    //                              "Brave Wallet will not insert window.ethereum "
+    //                              "because it already exists!"));
   }
 }
 

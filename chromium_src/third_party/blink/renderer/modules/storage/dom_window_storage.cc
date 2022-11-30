@@ -35,6 +35,11 @@ String StringToSessionStorageId(const String& string,
 }  // namespace
 
 const SecurityOrigin* GetEphemeralStorageOrigin(LocalDOMWindow* window) {
+  if (base::FeatureList::IsEnabled(
+          net::features::kThirdPartyStoragePartitioning)) {
+    return nullptr;
+  }
+
   auto* frame = window->GetFrame();
   if (!frame)
     return nullptr;

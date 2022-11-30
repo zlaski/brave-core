@@ -42,14 +42,12 @@ const SecurityOrigin* LocalDOMWindow::GetEphemeralStorageOrigin() const {
 
 const BlinkStorageKey& LocalDOMWindow::GetEphemeralStorageKeyOrStorageKey()
     const {
-  return ephemeral_storage_key_ ? *ephemeral_storage_key_ : storage_key_;
-}
-
-const SecurityOrigin*
-LocalDOMWindow::GetEphemeralStorageOriginOrSecurityOrigin() const {
-  return ephemeral_storage_key_
-             ? ephemeral_storage_key_->GetSecurityOrigin().get()
-             : GetSecurityOrigin();
+  if (base::FeatureList::IsEnabled(
+          net::features::kThirdPartyStoragePartitioning) ||
+      !ephemeral_storage_key_) {
+    return storage_key_;
+  }
+  return *ephemeral_storage_key_;
 }
 
 int LocalDOMWindow::outerWidth() const {

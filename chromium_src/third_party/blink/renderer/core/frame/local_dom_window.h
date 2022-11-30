@@ -12,7 +12,6 @@
   SetEphemeralStorageOrigin(const SecurityOrigin* ephemeral_storage_origin); \
   const SecurityOrigin* GetEphemeralStorageOrigin() const;                   \
   const BlinkStorageKey& GetEphemeralStorageKeyOrStorageKey() const;         \
-  const SecurityOrigin* GetEphemeralStorageOriginOrSecurityOrigin() const;   \
                                                                              \
  private:                                                                    \
   absl::optional<BlinkStorageKey> ephemeral_storage_key_;                    \
