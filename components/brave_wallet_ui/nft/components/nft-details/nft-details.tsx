@@ -42,7 +42,8 @@ import {
   StyledWrapper,
   TokenName,
   HighlightedDetailSectionValue,
-  Subdivider
+  Subdivider,
+  ProjectDetailName
 } from './nft-details-styles'
 import { isValidateUrl } from '../../../utils/string-utils'
 import { NftMultimedia } from '../nft-multimedia/nft-multimedia'
