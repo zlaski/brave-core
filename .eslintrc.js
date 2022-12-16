@@ -4,8 +4,8 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 module.exports = {
-  'root': true, /* Don't read chromium's eslint config (https://eslint.org/docs/user-guide/configuring/configuration-files#cascading-and-hierarchy) */
-  'extends': 'standard-with-typescript',
+  'root': true /* Don't read chromium's eslint config (https://eslint.org/docs/user-guide/configuring/configuration-files#cascading-and-hierarchy) */,
+  'extends': ['standard-with-typescript', 'prettier'],
   'ignorePatterns': [
     '.storybook/*',
     'build/*',
@@ -20,10 +20,7 @@ module.exports = {
     'es6': true,
     'jest/globals': true
   },
-  'plugins': [
-    'jest',
-    'licenses'
-  ],
+  'plugins': ['jest', 'licenses'],
   'globals': {
     'chrome': 'readonly'
   },
@@ -65,10 +62,6 @@ module.exports = {
           ]
         ]
       }
-    ],
-    'quote-props': [
-      'error',
-      'consistent'
     ],
     '@typescript-eslint/indent': 0,
     '@typescript-eslint/no-useless-constructor': 0,

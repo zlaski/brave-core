@@ -122,43 +122,6 @@ def override_canned_checks(canned_checks):
     apply_generic_check_overrides(canned_checks, CANNED_CHECKS_KEY)
 
     # Changes from upstream:
-    # 1. Replace suggested command from upstream-specific to 'npm run format'.
-    @override_check(canned_checks)
-    def CheckPatchFormatted(original_check, input_api, output_api, **kwargs):
-        kwargs = {
-            **kwargs,
-            'bypass_warnings': False,
-            'check_python': True,
-        }
-
-        # pylint: disable=import-outside-toplevel
-        import git_cl
-
-        def RunGitWithCode(original_function, args, **kwargs):
-            if input_api.PRESUBMIT_FIX and '--dry-run' in args:
-                args.remove('--dry-run')
-            return original_function(args, **kwargs)
-
-        with override_utils.override_scope_function(git_cl, RunGitWithCode):
-            result = original_check(input_api, output_api, **kwargs)
-
-        # If presubmit generates "Please run git cl format --js" message, we
-        # should replace the command with "npm run format -- --js". The
-        # order of these replacements ensure we do this properly.
-        replacements = [
-            (' format --', ' format -- --'),
-            ('git cl format', 'npm run format'),
-            ('gn format', 'npm run format'),
-            ('rust-fmt', 'rust'),
-            ('swift-format', 'swift'),
-        ]
-        for item in result:
-            for replacement in replacements:
-                item._message = item._message.replace(replacement[0],
-                                                      replacement[1])
-        return result
-
-    # Changes from upstream:
     # 1. Run pylint only on *changed* files instead of getting *all* files
     #    from the directory. Upstream does it to catch breakages in
     #    unmodified files, but it's very resource intensive, moreover for

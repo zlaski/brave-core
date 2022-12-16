@@ -6,7 +6,9 @@
 import os
 import sys
 
+import brave_node
 import chromium_presubmit_overrides
+import git_cl
 import override_utils
 
 USE_PYTHON3 = True
@@ -18,6 +20,88 @@ PRESUBMIT_VERSION = '2.0.0'
 # Adds support for chromium_presubmit_config.json5 and some helpers.
 def CheckToModifyInputApi(input_api, _output_api):
     chromium_presubmit_overrides.modify_input_api(input_api)
+    return []
+
+
+def CheckPatchFormatted(input_api, output_api):
+    # Use git cl format to format supported files with Chromium formatters.
+    git_cl_format_cmd = [
+        '-C',
+        input_api.change.RepositoryRoot(),
+        'cl',
+        'format',
+        '--presubmit',
+        '--python',
+    ]
+
+    # Make sure the passed --upstream branch is applied to git cl format.
+    if input_api.change.UpstreamBranch():
+        git_cl_format_cmd.extend(
+            ['--upstream', input_api.change.UpstreamBranch()])
+
+    # Do a dry run if --fix was not passed.
+    if not input_api.PRESUBMIT_FIX:
+        git_cl_format_cmd.append('--dry-run')
+
+    # Pass a path where the current PRESUBMIT.py file is located.
+    git_cl_format_cmd.append(input_api.PresubmitLocalPath())
+
+    # Run git cl format and get return code.
+    git_cl_format_code, _ = git_cl.RunGitWithCode(
+        git_cl_format_cmd, suppress_stderr=not input_api.PRESUBMIT_FIX)
+
+    is_format_required = git_cl_format_code == 2
+
+    if not is_format_required or input_api.PRESUBMIT_FIX:
+        # Use prettier to format other files.
+        prettier_files_to_check = (
+            r'.+\.ts$',
+            r'.+\.js$',
+        )
+        prettier_files_to_skip = input_api.DEFAULT_FILES_TO_SKIP
+
+        prettier_sources = lambda affected_file: input_api.FilterSourceFile(
+            affected_file,
+            files_to_check=prettier_files_to_check,
+            files_to_skip=prettier_files_to_skip)
+
+        node_args = [
+            brave_node.PathInNodeModules('prettier', 'bin-prettier'),
+            '--write' if input_api.PRESUBMIT_FIX else '--check',
+        ]
+
+        def PerformPrettierAction(files):
+            try:
+                brave_node.RunNode(node_args + files)
+                return True
+            except RuntimeError as err:
+                if 'Forgot to run Prettier?' in str(err):
+                    return False
+                # Raise on unexpected output. Could be node or prettier issues.
+                raise
+
+        if sys.platform == 'win32':
+            # Run prettier per file on Windows, because command line length is
+            # restricted.
+            for f in input_api.AffectedSourceFiles(prettier_sources):
+                if not PerformPrettierAction([f.AbsoluteLocalPath()]):
+                    is_format_required = True
+                    break
+        else:
+            is_format_required = not PerformPrettierAction([
+                f.AbsoluteLocalPath()
+                for f in input_api.AffectedSourceFiles(prettier_sources)
+            ])
+
+    if is_format_required:
+        if input_api.PRESUBMIT_FIX:
+            raise RuntimeError('--fix was passed, but format has failed')
+        short_path = input_api.basename(input_api.change.RepositoryRoot())
+        return [
+            output_api.PresubmitError(
+                f'The {short_path} directory requires source formatting. '
+                'Please run: npm run presubmit -- --fix')
+        ]
     return []
 
 
