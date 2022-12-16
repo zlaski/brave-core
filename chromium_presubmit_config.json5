@@ -28,6 +28,8 @@
       "CheckChangeWasUploaded",
       "CheckChangeHasBugField",
       "CheckTreeIsOpen",
+      // We run our own format check.
+      "CheckPatchFormatted",
     ],
   },
 
