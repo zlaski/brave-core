@@ -2880,7 +2880,3 @@ dependencies = [
  "syn",
  "synstructure",
 ]
-
-[[patch.unused]]
-name = "cxx"
-version = "1.0.68"
