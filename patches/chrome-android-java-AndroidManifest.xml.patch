@@ -1,5 +1,5 @@
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
-index e861de3a552a0ad5719f910a398898396e7d8674..62ab20aa7360d1d1233894c1ef54bbeacb7325b0 100644
+index e861de3a552a0ad5719f910a398898396e7d8674..87af4b19539e18c3cf5b92e9a79e612c6e241730 100644
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
 @@ -28,6 +28,7 @@ by a child template that "extends" this file.
@@ -79,8 +79,12 @@ index e861de3a552a0ad5719f910a398898396e7d8674..62ab20aa7360d1d1233894c1ef54bbea
              <meta-data android:name="android.app.searchable"
                  android:resource="@xml/searchable" />
          </activity-alias>
-@@ -888,6 +903,7 @@ by a child template that "extends" this file.
-         <receiver
+@@ -885,9 +900,10 @@ by a child template that "extends" this file.
+         </service>
+ 
+         <!-- Quick Action Search widget -->
+-        <receiver
++<!--         <receiver
              android:name="org.chromium.chrome.browser.quickactionsearchwidget.QuickActionSearchWidgetProvider$QuickActionSearchWidgetProviderSearch"
              android:label="@string/quick_action_search_widget_title"
 +            android:enabled="false"
@@ -95,6 +99,15 @@ index e861de3a552a0ad5719f910a398898396e7d8674..62ab20aa7360d1d1233894c1ef54bbea
              android:exported="true">
              <intent-filter>
                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+@@ -907,7 +924,7 @@ by a child template that "extends" this file.
+             <meta-data
+                 android:name="android.appwidget.provider"
+                 android:resource="@xml/quick_action_search_widget_dino_info" />
+-        </receiver>
++        </receiver> -->
+ 
+         <!-- Bookmarks widget -->
+         <receiver android:name="com.google.android.apps.chrome.appwidget.bookmarks.BookmarkThumbnailWidgetProvider"
 @@ -1183,6 +1200,7 @@ by a child template that "extends" this file.
              android:configChanges="orientation|keyboardHidden|keyboard|screenSize|mcc|mnc|screenLayout|smallestScreenSize" >
          </activity>
