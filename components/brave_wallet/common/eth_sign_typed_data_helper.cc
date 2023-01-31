@@ -7,6 +7,7 @@
 
 #include <limits>
 #include <utility>
+#include <vector>
 
 #include "base/logging.h"
 #include "base/strings/strcat.h"
@@ -105,6 +106,15 @@ std::string EthSignTypedDataHelper::EncodeTypes(
     base::StrAppend(&result, {EncodeType(type.second, type.first)});
   }
   return result;
+}
+
+bool EthSignTypedDataHelper::ValidateDomainData(const std::string chain_id,
+                                                const base::Value::Dict& domain_data) {
+  const auto chain_id_from_data = domain_data.FindString("chainId");
+  if (!chain_id_from_data)
+    return false;
+  
+  return chain_id_from_data == chain_id;
 }
 
 std::vector<uint8_t> EthSignTypedDataHelper::GetTypeHash(

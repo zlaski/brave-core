@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "base/containers/flat_map.h"
@@ -31,6 +32,10 @@ class EthSignTypedDataHelper {
 
   void SetTypes(base::Value::Dict types);
   void SetVersion(Version version);
+
+  bool EthSignTypedDataHelper::ValidateDomainData(
+      const std::string& chain_id,
+      base::Value::Dict& domain_data) const;
 
   std::vector<uint8_t> GetTypeHash(const std::string primary_type_name) const;
   absl::optional<std::vector<uint8_t>> HashStruct(

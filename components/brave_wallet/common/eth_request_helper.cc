@@ -439,6 +439,10 @@ bool ParseEthSignTypedDataParams(const std::string& json,
       EthSignTypedDataHelper::Create(std::move(*types), version);
   if (!helper)
     return false;
+  auto validated = helper->ValidateDomainData(*chain_id, *domain);
+  if (!validated) {
+    return false;
+  }
   auto domain_hash = helper->GetTypedDataDomainHash(*domain);
   if (!domain_hash)
     return false;
