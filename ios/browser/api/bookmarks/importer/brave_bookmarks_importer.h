@@ -33,7 +33,7 @@ OBJC_EXPORT
 
 - (void)cancel;
 
-- (void)importFromFile:(NSString*)filePath
+- (void)importFromFile:(NSURL*)filePath
     topLevelFolderName:(NSString*)folderName
        automaticImport:(bool)automaticImport
           withListener:

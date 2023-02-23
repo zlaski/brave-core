@@ -81,15 +81,15 @@ void BraveBookmarksExportObserver::OnExportFinished(Result result) {
 
 - (instancetype)init {
   if ((self = [super init])) {
-    export_thread_ = web::GetIOThreadTaskRunner({});
+    export_thread_ = web::GetIOThreadTaskRunner({base::MayBlock()});
   }
   return self;
 }
 
-- (void)exportToFile:(NSString*)filePath
+- (void)exportToFile:(NSURL*)filePath
         withListener:(void (^)(BraveBookmarksExporterState))listener {
   auto start_export =
-      [](BraveBookmarksExporter* weak_exporter, NSString* filePath,
+      [](BraveBookmarksExporter* weak_exporter, NSURL* filePath,
          std::function<void(BraveBookmarksExporterState)> listener) {
         // Export cancelled as the exporter has been deallocated
         __strong BraveBookmarksExporter* exporter = weak_exporter;
@@ -101,8 +101,10 @@ void BraveBookmarksExportObserver::OnExportFinished(Result result) {
 
         DCHECK(GetApplicationContext());
 
+        [filePath startAccessingSecurityScopedResource];
+
         base::FilePath destination_file_path =
-            base::mac::NSStringToFilePath(filePath);
+            base::mac::NSURLToFilePath(filePath);
 
         listener(BraveBookmarksExporterStateStarted);
 
@@ -117,6 +119,8 @@ void BraveBookmarksExportObserver::OnExportFinished(Result result) {
         bookmark_html_writer::WriteBookmarks(
             chromeBrowserState, destination_file_path,
             new BraveBookmarksExportObserver(listener));
+
+        [filePath stopAccessingSecurityScopedResource];
       };
 
   __weak BraveBookmarksExporter* weakSelf = self;
@@ -124,7 +128,7 @@ void BraveBookmarksExportObserver::OnExportFinished(Result result) {
       FROM_HERE, base::BindOnce(start_export, weakSelf, filePath, listener));
 }
 
-- (void)exportToFile:(NSString*)filePath
+- (void)exportToFile:(NSURL*)filePath
            bookmarks:(NSArray<IOSBookmarkNode*>*)bookmarks
         withListener:(void (^)(BraveBookmarksExporterState))listener {
   if ([bookmarks count] == 0) {
@@ -134,7 +138,7 @@ void BraveBookmarksExportObserver::OnExportFinished(Result result) {
   }
 
   auto start_export =
-      [](BraveBookmarksExporter* weak_exporter, NSString* filePath,
+      [](BraveBookmarksExporter* weak_exporter, NSURL* filePath,
          NSArray<IOSBookmarkNode*>* bookmarks,
          std::function<void(BraveBookmarksExporterState)> listener) {
         // Export cancelled as the exporter has been deallocated
@@ -146,8 +150,11 @@ void BraveBookmarksExportObserver::OnExportFinished(Result result) {
         }
 
         listener(BraveBookmarksExporterStateStarted);
+
+        [filePath startAccessingSecurityScopedResource];
+
         base::FilePath destination_file_path =
-            base::mac::NSStringToFilePath(filePath);
+            base::mac::NSURLToFilePath(filePath);
 
         // Create artificial nodes
         auto bookmark_bar_node = [exporter getBookmarksBarNode];
@@ -166,6 +173,8 @@ void BraveBookmarksExportObserver::OnExportFinished(Result result) {
         bookmark_html_writer::WriteBookmarks(
             std::move(encoded_bookmarks), destination_file_path,
             new BraveBookmarksExportObserver(listener));
+
+        [filePath stopAccessingSecurityScopedResource];
       };
 
   __weak BraveBookmarksExporter* weakSelf = self;

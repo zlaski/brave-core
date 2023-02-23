@@ -25,10 +25,10 @@ OBJC_EXPORT
 @interface BraveBookmarksExporter : NSObject
 - (instancetype)init;
 
-- (void)exportToFile:(NSString*)filePath
+- (void)exportToFile:(NSURL*)filePath
         withListener:(void (^)(BraveBookmarksExporterState))listener;
 
-- (void)exportToFile:(NSString*)filePath
+- (void)exportToFile:(NSURL*)filePath
            bookmarks:(NSArray<IOSBookmarkNode*>*)bookmarks
         withListener:(void (^)(BraveBookmarksExporterState))listener;
 @end
