@@ -1,7 +1,19 @@
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 6ee83a41a05488f016f86f90b026835f4b19ea54..8ad38f54d4333df734b49064673e07eabf2df6dc 100644
+index 6ee83a41a05488f016f86f90b026835f4b19ea54..b4598f0af91f2fded8166c0cda7484cda17ca690 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
+@@ -212,9 +212,9 @@ if (host_toolchain == "") {
+     # Windows ARM64 targets require an x64 host for cross build.
+     if (target_cpu == "x86" || target_cpu == "x64") {
+       if (is_clang) {
+-        host_toolchain = "//build/toolchain/win:win_clang_$target_cpu"
++        host_toolchain = "//build/toolchain/win:win_clang_$host_cpu"
+       } else {
+-        host_toolchain = "//build/toolchain/win:$target_cpu"
++        host_toolchain = "//build/toolchain/win:$host_cpu"
+       }
+     } else if (is_clang) {
+       host_toolchain = "//build/toolchain/win:win_clang_$host_cpu"
 @@ -329,6 +329,7 @@ is_posix = !is_win && !is_fuchsia
  
  # Holds all configs used for running the compiler.
