@@ -1,0 +1,10 @@
+diff --git a/tools/crates/gnrt/gn.rs b/tools/crates/gnrt/gn.rs
+index 4558e419c1448273eb50d15a2c7507bf15c88040..925cfb78ef0cfb12a6ac3af38ae0061ff41b6790 100644
+--- a/tools/crates/gnrt/gn.rs
++++ b/tools/crates/gnrt/gn.rs
+@@ -788,4 +788,4 @@ static COPYRIGHT_HEADER: &'static str = "# Copyright 2023 The Chromium Authors
+ static VISIBILITY_CONSTRAINT: &'static str =
+     "# Only for usage from third-party crates. Add the crate to
+ # third_party.toml to use it from first-party code.
+-visibility = [ \"//third_party/rust/*\" ]";
++visibility = [ \"//brave/third_party/rust/*\" ]";

@@ -1,0 +1,7 @@
+Name: addr
+URL: https://crates.io/crates/addr
+Description: A library for parsing domain names
+Version: 0.14.0
+Security Critical: yes
+License: Apache 2.0
+Revision: aa4f6800ca07e4b2e70d088bc42cf604cd1b6f91

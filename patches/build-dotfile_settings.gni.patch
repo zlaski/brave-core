@@ -1,0 +1,12 @@
+diff --git a/build/dotfile_settings.gni b/build/dotfile_settings.gni
+index 94b4fb0aba0c36a45d90f5aff44194e869dd5ace..f9d0f4384b7a360d29f106143917da88533cfdad 100644
+--- a/build/dotfile_settings.gni
++++ b/build/dotfile_settings.gni
+@@ -7,6 +7,7 @@
+ 
+ build_dotfile_settings = {
+   exec_script_whitelist = [
++    "//brave/build/rust/BUILD.gn",
+     "//build/config/android/rules.gni",
+     "//build/config/chromeos/rules.gni",
+     "//build/config/compiler/BUILD.gn",

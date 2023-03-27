@@ -11,7 +11,7 @@ import os
 import sys
 import subprocess
 
-def run_cargo(command, args):
+def run_cargo(command, args, out = subprocess.PIPE):
     # Set environment variables for rustup
     env = os.environ.copy()
 
@@ -51,29 +51,39 @@ def run_cargo(command, args):
     if rust_flags is not None:
         env['RUSTFLAGS'] = " ".join(rust_flags)
 
+    # env['RUSTC_WRAPPER'] = os.path.join(os.path.dirname(__file__), 'rustc_wrapper.py')
+
     try:
         cargo_args = []
         cargo_args.append(cargo_exe)
         cargo_args.append(command)
+        if command == "build":
+            cargo_args.append('--build-plan')
+            cargo_args.append('-Zunstable-options')
         if args.profile == "release":
             cargo_args.append("--release")
         cargo_args.append("--manifest-path=" + args.manifest_path)
         cargo_args.append("--target-dir=" + args.build_path)
         cargo_args.append("--target=" + args.target)
-        if command == "rustc" and args.features is not None:
+        if command != "clean" and args.features is not None:
             cargo_args.append("--features=" + args.features)
-        # use deployment target as a proxy for mac/ios target_os
-        if (args.mac_deployment_target is not None
-                or args.ios_deployment_target is not None):
-            cargo_args.append("-Z")
-            cargo_args.append("build-std=panic_" + args.panic + ",std")
+        # if command != "clean":
+        #     cargo_args.append("--frozen")
+        # if command != "clean":
+            # use deployment target as a proxy for mac/ios target_os
+            # if (args.mac_deployment_target is not None
+            #         or args.ios_deployment_target is not None):
+            #     cargo_args.append("-Z")
+            #     cargo_args.append("build-std=panic_" + args.panic + ",std")
+            # cargo_args.append('--lib')
         if command == "rustc":
-            cargo_args.append('--lib')
-            cargo_args.append('--crate-type=staticlib')
+            cargo_args.append('--crate-type=rlib')
             cargo_args.append('--')
+            # cargo_args.append('-L' + args.cxx_lib_dir)
+            # cargo_args.append('--emit=dep-info,link')
+            # cargo_args.append('--print=file-names')
             cargo_args += rust_flags
-        subprocess.check_call(cargo_args, env=env)
-
+        subprocess.check_call(cargo_args, env=env, stdout=out)
     except subprocess.CalledProcessError as e:
         print(e.output)
         raise e
@@ -100,12 +110,32 @@ def build(args):
                 clean = True
 
     if clean:
+        print('run cargo')
         run_cargo('clean', args)
 
     try:
+        # `cargo rustc` provides options that are not supported by `cargo build`
+        with open(os.path.join(args.build_path, 'build.json'), 'w', encoding="utf8") as out:
+            print('run build')
+            run_cargo('build', args, out)
+
+        print('run rustc')
         run_cargo('rustc', args)
         with open(build_args_cache_file, "w", encoding="utf8") as f:
             json.dump(args.__dict__, f)
+
+        outputs = []
+        with open(os.path.join(args.build_path, 'build.json'), 'r', encoding="utf8") as f:
+            build_plan = json.load(f)
+            for invocation in build_plan['invocations']:
+                for target_kind in invocation['target_kind']:
+                    if target_kind == 'rlib' or target_kind == 'lib':
+                        for output in invocation['outputs']:
+                            if output.endswith('.rlib'):
+                                outputs.append(output)
+
+        with open(os.path.join(args.build_path, 'cargo.d'), 'w', encoding="utf8") as out:
+            out.write("\n".join(outputs))
 
     except subprocess.CalledProcessError as e:
         print(e.output)
@@ -124,6 +154,8 @@ def parse_args():
     parser.add_option('--is_debug')
     parser.add_option('--profile')
     parser.add_option('--panic')
+    parser.add_option('--cxx_lib')
+    parser.add_option('--cxx_lib_dir')
     parser.add_option('--clang_bin_path')
     parser.add_option('--rust_version')
     parser.add_option('--mac_deployment_target')

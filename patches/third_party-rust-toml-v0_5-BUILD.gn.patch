@@ -1,0 +1,12 @@
+diff --git a/third_party/rust/toml/v0_5/BUILD.gn b/third_party/rust/toml/v0_5/BUILD.gn
+index e695b8e16bb07dd56acab3a1a95e450f168a3ea4..3a7d39bc005e1cc84f0ee04bc5b9724c5e170bb8 100644
+--- a/third_party/rust/toml/v0_5/BUILD.gn
++++ b/third_party/rust/toml/v0_5/BUILD.gn
+@@ -12,6 +12,7 @@ cargo_crate("lib") {
+   # Only for usage from third-party crates. Add the crate to
+   # third_party.toml to use it from first-party code.
+   visibility = [ "//third_party/rust/*" ]
++  visibility += [ "//brave/third_party/rust/*" ]
+   crate_root = "crate/src/lib.rs"
+ 
+   # Unit tests skipped. Generate with --with-tests to include them.

@@ -1,0 +1,13 @@
+diff --git a/third_party/rust/version_check/v0_9/BUILD.gn b/third_party/rust/version_check/v0_9/BUILD.gn
+index 970010e3e3fe905e91a78a90e3b062b197d5b6a1..77aa9f8202caf7934fbe63049563df28c4af90d8 100644
+--- a/third_party/rust/version_check/v0_9/BUILD.gn
++++ b/third_party/rust/version_check/v0_9/BUILD.gn
+@@ -11,7 +11,7 @@ cargo_crate("buildrs_support") {
+ 
+   # Only for usage from third-party crates. Add the crate to
+   # third_party.toml to use it from first-party code.
+-  visibility = [ "//third_party/rust/*" ]
++  visibility = [ "//third_party/rust/*", "//brave/third_party/rust/*" ]
+   crate_root = "crate/src/lib.rs"
+ 
+   # Unit tests skipped. Generate with --with-tests to include them.

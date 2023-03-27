@@ -985,6 +985,7 @@ Object.defineProperty(Config.prototype, 'defaultOptions', {
     env = this.addPythonPathToEnv(env, path.join(this.srcDir, 'build'))
     env = this.addPythonPathToEnv(env, path.join(this.srcDir, 'third_party', 'depot_tools'))
     env.PYTHONUNBUFFERED = '1'
+    env.RUSTC_BOOTSTRAP = '1'
     env.TARGET_ARCH = this.gypTargetArch // for brave scripts
 
     // Fix `gclient runhooks` - broken since depot_tools a7b20b34f85432b5958963b75edcedfef9cf01fd

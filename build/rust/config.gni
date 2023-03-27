@@ -36,7 +36,18 @@ default_rustflags = [
   "-Zmacro-backtrace",
   "-Zremap-cwd-prefix=.",
   "--cap-lints=allow",
+  # "-Csave-temps=yes",
+  "-Clink-args=" + rebase_path("$root_out_dir/obj/third_party/rust/cxx/v1/lib/libcxx.rlib"),
+  "-Ldependency=" + rebase_path("$root_out_dir/obj/build/rust/std"),
+  "-Ldependency=" + rebase_path("$root_out_dir/obj/third_party/rust/cxx/v1/lib"),
+  # "--extern", "cxx",
+  "--extern",
+        "cxx=" + rebase_path("$root_out_dir/obj/third_party/rust/cxx/v1/lib/libcxx.rlib"),
+  # "--extern", "std",
 ]
+
+#save-temps=yes
+#-Ztemps-dir
 
 if (enable_rust_lto) {
   default_rustflags += [ "-Cembed-bitcode=yes" ]
@@ -149,5 +160,5 @@ if (is_win) {
   cargo_lib_suffix = ".lib"
 } else {
   cargo_lib_prefix += "/lib"
-  cargo_lib_suffix = ".a"
+  cargo_lib_suffix = ".rlib"
 }

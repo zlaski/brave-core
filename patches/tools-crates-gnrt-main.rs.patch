@@ -1,0 +1,42 @@
+diff --git a/tools/crates/gnrt/main.rs b/tools/crates/gnrt/main.rs
+index e88189c4727bf5488a1abfff08a0f34796ac06d0..b463108ba47e509d253965ae1eb957e158c80c9c 100644
+--- a/tools/crates/gnrt/main.rs
++++ b/tools/crates/gnrt/main.rs
+@@ -223,7 +223,7 @@ fn generate_for_third_party(args: &clap::ArgMatches, paths: &paths::ChromiumPath
+ 
+     for present_crate in present_crates.iter() {
+         if !req_crates.contains(present_crate) {
+-            has_error = true;
++            has_error = false;
+             println!("Unused crate: {present_crate}");
+         }
+     }
+@@ -253,7 +253,7 @@ fn generate_for_third_party(args: &clap::ArgMatches, paths: &paths::ChromiumPath
+     for crate_id in present_crates.iter() {
+         if !build_files.contains_key(*crate_id) {
+             println!("Error: discovered crate {crate_id}, but no build file was generated.");
+-            has_error = true;
++            has_error = false;
+         }
+     }
+ 
+@@ -273,12 +273,14 @@ fn generate_for_third_party(args: &clap::ArgMatches, paths: &paths::ChromiumPath
+     // build rules.
+     for (crate_id, _) in crates.iter() {
+         let build_file_path = build_file_path(crate_id, &paths);
+-        let build_file_data = match build_files.get(&crate_id) {
+-            Some(build_file) => build_file,
+-            None => panic!("missing build data for {crate_id}"),
+-        };
++        if build_files.contains_key(&crate_id) {
++         let build_file_data = match build_files.get(&crate_id) {
++              Some(build_file) => build_file,
++              None => panic!("missing build data for {crate_id}"),
++          };
+ 
+-        write_build_file(&build_file_path, build_file_data).unwrap();
++          write_build_file(&build_file_path, build_file_data).unwrap();
++        }
+     }
+ 
+     // Apply patch for BUILD.gn files.

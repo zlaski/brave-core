@@ -1,0 +1,12 @@
+Name: zeroize
+URL: https://crates.io/crates/zeroize
+Description: Securely clear secrets from memory with a simple trait built on
+stable Rust primitives which guarantee memory is zeroed using an
+operation will not be 'optimized away' by the compiler.
+Uses a portable pure Rust implementation that works everywhere,
+even WASM!
+
+Version: 1.3.0
+Security Critical: yes
+License: Apache 2.0
+Revision: e46180104158c81a35c0232b44f30e1bd8f071a4

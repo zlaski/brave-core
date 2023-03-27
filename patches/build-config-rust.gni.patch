@@ -1,0 +1,28 @@
+diff --git a/build/config/rust.gni b/build/config/rust.gni
+index b3e501149adc5f41c28921c07cacfe88262a9365..2591557be4e94e8fcfcc782cc2a24f2a073a24d5 100644
+--- a/build/config/rust.gni
++++ b/build/config/rust.gni
+@@ -108,6 +108,8 @@ if (toolchain_has_rust && rust_sysroot_absolute == "") {
+     # Android toolchain version.
+     rustc_revision = "rustc 1.64.0-dev (Android Rust Toolchain version 9099361)"
+   }
++} else {
++  rustc_revision = "rustc 1.67.0 (fc594f156 2023-01-24)"
+ }
+ 
+ # TODO(crbug.com/1278030): To build unit tests for Android we need to build
+@@ -202,6 +204,14 @@ if (is_linux) {
+   rust_abi_target = "x86_64-pc-windows-msvc"
+ }
+ 
++if (is_mac) {
++  if (current_cpu == "x64") {
++    rust_abi_target = "x86_64-apple-darwin"
++  } else if (current_cpu == "arm64") {
++    rust_abi_target = "aarch64-apple-darwin"
++  }
++}
++
+ assert(!toolchain_has_rust || rust_abi_target != "")
+ 
+ # This variable is passed to the Rust libstd build.

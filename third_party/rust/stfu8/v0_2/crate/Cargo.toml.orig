@@ -1,0 +1,32 @@
+[package]
+name = "stfu8"
+version = "0.2.6"
+authors = ["Garrett Berg <googberg@gmail.com>"]
+description = "Sorta Text Format in UTF-8"
+keywords = [
+    "text",
+    "binary",
+    "repr",
+    "invalid",
+    "unicode",
+]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+documentation = "https://docs.rs/stfu8"
+repository = "https://github.com/vitiral/stfu8"
+
+[badges]
+travis-ci = { repository = "vitiral/stfu8" }
+appveyor = { repository = "vitiral/stfu8" }
+
+[dependencies]
+regex = ">=0.2.0"
+lazy_static = ">=1.0.0"
+
+[dev-dependencies]
+pretty_assertions = "1.1"
+proptest = "1.0"
+
+[features]
+default = ["testing"]
+testing = []

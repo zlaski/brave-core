@@ -13,7 +13,6 @@ use std::collections::HashSet;
 use std::ffi::CStr;
 use std::ffi::CString;
 use std::os::raw::c_char;
-use std::string::String;
 
 /// An external callback that receives a hostname and two out-parameters for start and end
 /// position. The callback should fill the start and end positions with the start and end indices
@@ -477,7 +476,7 @@ pub unsafe extern "C" fn engine_hidden_class_id_selectors(
             .map(|index| CStr::from_ptr(ids[index]).to_str().unwrap().to_owned())
             .collect()
     };
-    
+
     let exceptions = if exceptions_size == 0 {
         HashSet::new()
     } else {

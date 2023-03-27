@@ -4,6 +4,7 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 extern crate feed_rs;
+
 use feed_rs::parser;
 use lazy_static::lazy_static;
 use regex::Regex;

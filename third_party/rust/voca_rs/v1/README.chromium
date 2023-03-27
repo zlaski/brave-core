@@ -1,0 +1,7 @@
+Name: voca_rs
+URL: https://crates.io/crates/voca_rs
+Description: Voca_rs is a Rust library for manipulating [unicode] strings
+Version: 1.15.2
+Security Critical: yes
+License: MIT
+Revision: 61a2f2c87c31d0f448e1a23901a4aa9a9ceffd65
