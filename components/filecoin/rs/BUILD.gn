@@ -3,25 +3,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-# import("//brave/build/cargo.gni")
-# import("//brave/build/rust/rust_cxx.gni")
-
-# rust_crate("rust_lib") {
-#   visibility = [ "//brave/components/filecoin:rust_lib" ]
-
-#   inputs = [
-#     "Cargo.toml",
-#     "src/message.rs",
-#     "src/lib.rs",
-#     "src/signature.rs",
-#   ]
-# }
-
-# brave_rust_cxx("cxx") {
-#   sources = [ "src/lib.rs" ]
-#   # export_symbols = false
-# }
-
 import("//build/rust/rust_static_library.gni")
 
 rust_static_library("rust_lib") {
@@ -45,6 +26,5 @@ rust_static_library("rust_lib") {
     "//brave/third_party/rust/fvm_ipld_encoding/v0_2:lib",
     "//third_party/rust/serde/v1:lib",
     "//third_party/rust/serde_json/v1:lib",
-# num_bigint_chainsafe = { package = "forest_bigint", version = "0.1.2"}
   ]
 }

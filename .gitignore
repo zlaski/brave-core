@@ -4,6 +4,7 @@
 .brave_gclient_*
 .gclient_*
 .tags*
+.cipd
 /.idea/
 /components/brave_new_tab_ui/data/LICENSE
 /components/brave_webtorrent/extension/out/

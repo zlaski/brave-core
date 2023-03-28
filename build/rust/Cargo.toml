@@ -4,21 +4,12 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-challenge-bypass-ristretto-ffi = { path = "../../components/challenge_bypass_ristretto" }
 speedreader-ffi = { path = "../../components/speedreader/rust/ffi" }
 
 [lib]
 crate-type = [ "rlib" ]
 name = "brave_rust"
 path = "lib.rs"
-
-[patch.crates-io.sha2_v0_9]
-path = "../../third_party/rust/sha2/v0_9/crate"
-package = "sha2"
-
-[patch.crates-io.sha2_v0_10]
-path = "../../third_party/rust/sha2/v0_10/crate"
-package = "sha2"
 
 [patch.crates-io.rand_v0_7]
 path = "../../third_party/rust/rand/v0_7/crate"
