@@ -56,14 +56,8 @@ action("run_cargo") {
 
   manifest_path = "Cargo.toml"
 
-  # ensure that we rebuild when the dependent crates change
-  # TODO(bridiver) - selectively include these libraries based on buildflags,
-  # but in order to do that we have to dynamically create the brave rust lib
   deps = [
-    "//brave/components/filecoin:rust_lib",
-    "//brave/components/skus/browser/rs:rust_lib",
     "//brave/components/speedreader/rust/lib",
-    "//brave/third_party/challenge_bypass_ristretto_ffi:rust_lib",
   ]
 
   force_rebuild_inputs = [
@@ -89,7 +83,6 @@ action("run_cargo") {
   outputs = [
     "${rust_lib_build_path}/build.json",
     "${rust_lib_build_path}/cargo.d",
-    # rust_lib_output_path
   ]
 
   target = rustc_target  # defined by //brave/build/rust/config.gni,
