@@ -11,13 +11,285 @@ crate-type = [ "rlib" ]
 name = "brave_rust"
 path = "lib.rs"
 
+[patch.crates-io.adler_v1]
+path = "../../third_party/rust/adler/v1/crate"
+package = "adler"
+
+[patch.crates-io.byteorder_v1]
+path = "../../third_party/rust/byteorder/v1/crate"
+package = "byteorder"
+
+[patch.crates-io.derive_more_v0_99]
+path = "../../third_party/rust/derive_more/v0_99/crate"
+package = "derive_more"
+
+[patch.crates-io.dtoa-short_v0_3]
+path = "../../third_party/rust/dtoa_short/v0_3/crate"
+package = "dtoa-short"
+
+[patch.crates-io.dtoa_v0_4]
+path = "../../third_party/rust/dtoa/v0_4/crate"
+package = "dtoa"
+
+[patch.crates-io.encoding_rs_v0_8]
+path = "../../third_party/rust/encoding_rs/v0_8/crate"
+package = "encoding_rs"
+
+[patch.crates-io.flate2_v1]
+path = "../../third_party/rust/flate2/v1/crate"
+package = "flate2"
+
+[patch.crates-io.form_urlencoded_v1]
+path = "../../third_party/rust/form_urlencoded/v1/crate"
+package = "form_urlencoded"
+
+[patch.crates-io.fxhash_v0_2]
+path = "../../third_party/rust/fxhash/v0_2/crate"
+package = "fxhash"
+
+[patch.crates-io.getrandom_v0_1]
+path = "../../third_party/rust/getrandom/v0_1/crate"
+package = "getrandom"
+
+[patch.crates-io.getrandom_v0_2]
+path = "../../third_party/rust/getrandom/v0_2/crate"
+package = "getrandom"
+
+[patch.crates-io.idna_v0_3]
+path = "../../third_party/rust/idna/v0_3/crate"
+package = "idna"
+
+[patch.crates-io.itoa_v0_4]
+path = "../../../third_party/rust/itoa/v0_4/crate"
+package = "itoa"
+
+[patch.crates-io.itoa_v1]
+path = "../../../third_party/rust/itoa/v1/crate"
+package = "itoa"
+
+[patch.crates-io.libc_v0_2]
+path = "../../../third_party/rust/libc/v0_2/crate"
+package = "libc"
+
+[patch.crates-io.lifeguard_v0_6]
+path = "../../third_party/rust/lifeguard/v0_6/crate"
+package = "lifeguard"
+
+[patch.crates-io.log_v0_4]
+path = "../../../third_party/rust/log/v0_4/crate"
+package = "log"
+
+[patch.crates-io.matches_v0_1]
+path = "../../third_party/rust/matches/v0_1/crate"
+package = "matches"
+
+[patch.crates-io.miniz_oxide_v0_6]
+path = "../../third_party/rust/miniz_oxide/v0_6/crate"
+package = "miniz_oxide"
+
+[patch.crates-io.nodrop_v0_1]
+path = "../../third_party/rust/nodrop/v0_1/crate"
+package = "nodrop"
+
+[patch.crates-io.percent-encoding_v2]
+path = "../../third_party/rust/percent_encoding/v2/crate"
+package = "percent-encoding"
+
+[patch.crates-io.phf_codegen_v0_8]
+path = "../../third_party/rust/phf_codegen/v0_8/crate"
+package = "phf_codegen"
+
+[patch.crates-io.phf_generator_v0_8]
+path = "../../third_party/rust/phf_generator/v0_8/crate"
+package = "phf_generator"
+
+[patch.crates-io.phf_macros_v0_8]
+path = "../../third_party/rust/phf_macros/v0_8/crate"
+package = "phf_macros"
+
+[patch.crates-io.phf_shared_v0_8]
+path = "../../third_party/rust/phf_shared/v0_8/crate"
+package = "phf_shared"
+
+[patch.crates-io.phf_v0_8]
+path = "../../third_party/rust/phf/v0_8/crate"
+package = "phf"
+
+[patch.crates-io.ppv-lite86_v0_2]
+path = "../../third_party/rust/ppv_lite86/v0_2/crate"
+package = "ppv-lite86"
+
+[patch.crates-io.precomputed-hash_v0_1]
+path = "../../third_party/rust/precomputed_hash/v0_1/crate"
+package = "precomputed-hash"
+
+[patch.crates-io.proc-macro-hack_v0_5]
+path = "../../third_party/rust/proc_macro_hack/v0_5/crate"
+package = "proc-macro-hack"
+
+[patch.crates-io.proc-macro2_v1]
+path = "../../third_party/rust/proc_macro2/v1/crate"
+package = "proc-macro2"
+
+[patch.crates-io.quote_v1]
+path = "../../third_party/rust/quote/v1/crate"
+package = "quote"
+
+[patch.crates-io.rand_chacha_v0_2]
+path = "../../third_party/rust/rand_chacha/v0_2/crate"
+package = "rand_chacha"
+
+[patch.crates-io.rand_chacha_v0_3]
+path = "../../third_party/rust/rand_chacha/v0_3/crate"
+package = "rand_chacha"
+
+[patch.crates-io.rand_core_v0_5]
+path = "../../third_party/rust/rand_core/v0_5/crate"
+package = "rand_core"
+
+[patch.crates-io.rand_core_v0_6]
+path = "../../third_party/rust/rand_core/v0_6/crate"
+package = "rand_core"
+
+[patch.crates-io.rand_pcg_v0_2]
+path = "../../third_party/rust/rand_pcg/v0_2/crate"
+package = "rand_pcg"
+
 [patch.crates-io.rand_v0_7]
 path = "../../third_party/rust/rand/v0_7/crate"
 package = "rand"
 
+[patch.crates-io.crc32fast_v1]
+path = "../../third_party/rust/crc32fast/v1/crate"
+package = "crc32fast"
+
+[patch.crates-io.rand_v0_8]
+path = "../../third_party/rust/rand/v0_8/crate"
+package = "rand"
+
+[patch.crates-io.regex-syntax_v0_6]
+path = "../../third_party/rust/regex_syntax/v0_6/crate"
+package = "regex-syntax"
+
+[patch.crates-io.ryu_v1]
+path = "../../third_party/rust/ryu/v1/crate"
+package = "ryu"
+
+[patch.crates-io.safemem_v0_3]
+path = "../../third_party/rust/safemem/v0_3/crate"
+package = "safemem"
+
+[patch.crates-io.scopeguard_v1]
+path = "../../third_party/rust/scopeguard/v1/crate"
+package = "scopeguard"
+
+[patch.crates-io.semver_v1]
+path = "../../third_party/rust/semver/v1/crate"
+package = "semver"
+
+[patch.crates-io.servo_arc_v0_1]
+path = "../../third_party/rust/servo_arc/v0_1/crate"
+package = "servo_arc"
+
+[patch.crates-io.siphasher_v0_3]
+path = "../../third_party/rust/siphasher/v0_3/crate"
+package = "siphasher"
+
+[patch.crates-io.smallvec_v1]
+path = "../../third_party/rust/smallvec/v1/crate"
+package = "smallvec"
+
+[patch.crates-io.stable_deref_trait_v1]
+path = "../../third_party/rust/stable_deref_trait/v1/crate"
+package = "stable_deref_trait"
+
+[patch.crates-io.thiserror-impl_v1]
+path = "../../third_party/rust/thiserror_impl/v1/crate"
+package = "thiserror-impl"
+
+[patch.crates-io.tinyvec_macros_v0_1]
+path = "../../third_party/rust/tinyvec_macros/v0_1/crate"
+package = "tinyvec_macros"
+
+[patch.crates-io.tinyvec_v1]
+path = "../../third_party/rust/tinyvec/v1/crate"
+package = "tinyvec"
+
+[patch.crates-io.unicode-bidi_v0_3]
+path = "../../third_party/rust/unicode_bidi/v0_3/crate"
+package = "unicode-bidi"
+
+[patch.crates-io.unicode-ident_v1]
+path = "../../third_party/rust/unicode_ident/v1/crate"
+package = "unicode-ident"
+
+[patch.crates-io.unicode-normalization_v0_1]
+path = "../../third_party/rust/unicode_normalization/v0_1/crate"
+package = "unicode-normalization"
+
+[patch.crates-io.winapi_v0_3]
+path = "../../../third_party/rust/winapi/v0_3/crate"
+package = "winapi"
+
+[patch.crates-io.windows-targets_v0_42]
+path = "../../third_party/rust/windows_targets/v0_42/crate"
+package = "windows-targets"
+
+[patch.crates-io.windows_i686_msvc_v0_42]
+path = "../../third_party/rust/windows_i686_msvc/v0_42/crate"
+package = "windows_i686_msvc"
+
+[patch.crates-io.windows_x86_64_msvc_v0_42]
+path = "../../third_party/rust/windows_x86_64_msvc/v0_42/crate"
+package = "windows_x86_64_msvc"
+
+[patch.crates-io.aho-corasick_v0_7]
+path = "../../third_party/rust/aho_corasick/v0_7/crate"
+package = "aho-corasick"
+
+[patch.crates-io.selectors_v0_23]
+path = "../../third_party/rust/selectors/v0_23/crate"
+package = "selectors"
+
+[patch.crates-io.cssparser-macros_v0_6]
+path = "../../third_party/rust/cssparser_macros/v0_6/crate"
+package = "cssparser-macros"
+
+[patch.crates-io.cssparser_v0_28]
+path = "../../third_party/rust/cssparser/v0_28/crate"
+package = "cssparser"
+
+[patch.crates-io.url_v2]
+path = "../../third_party/rust/url/v2/crate"
+package = "url"
+
+[patch.crates-io.thiserror_v1]
+path = "../../third_party/rust/thiserror/v1/crate"
+package = "thiserror"
+
+[patch.crates-io.serde_json_v1]
+path = "../../../third_party/rust/serde_json/v1/crate"
+package = "serde_json"
+
+[patch.crates-io.syn_v1]
+path = "../../../third_party/rust/syn/v1/crate"
+package = "syn"
+
+[patch.crates-io.regex_v1]
+path = "../../../third_party/rust/regex/v1/crate"
+package = "regex"
+
+[patch.crates-io.convert_case_v0_4]
+path = "../../third_party/rust/convert_case/v0_4/crate"
+package = "convert_case"
+
 [patch.crates-io.autocfg_v1]
 path = "../../../third_party/rust/autocfg/v1/crate"
 package = "autocfg"
+
+[patch.crates-io.lazycell_v1]
+path = "../../../third_party/rust/lazycell/v1/crate"
+package = "lazycell"
 
 [patch.crates-io.bitflags_v1]
 path = "../../../third_party/rust/bitflags/v1/crate"
