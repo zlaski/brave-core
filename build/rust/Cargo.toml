@@ -227,10 +227,6 @@ package = "unicode-ident"
 path = "../../third_party/rust/unicode_normalization/v0_1/crate"
 package = "unicode-normalization"
 
-[patch.crates-io.winapi_v0_3]
-path = "../../../third_party/rust/winapi/v0_3/crate"
-package = "winapi"
-
 [patch.crates-io.windows-targets_v0_42]
 path = "../../third_party/rust/windows_targets/v0_42/crate"
 package = "windows-targets"
@@ -247,17 +243,9 @@ package = "windows_x86_64_msvc"
 path = "../../third_party/rust/aho_corasick/v0_7/crate"
 package = "aho-corasick"
 
-[patch.crates-io.selectors_v0_23]
-path = "../../third_party/rust/selectors/v0_23/crate"
-package = "selectors"
-
 [patch.crates-io.cssparser-macros_v0_6]
 path = "../../third_party/rust/cssparser_macros/v0_6/crate"
 package = "cssparser-macros"
-
-[patch.crates-io.cssparser_v0_28]
-path = "../../third_party/rust/cssparser/v0_28/crate"
-package = "cssparser"
 
 [patch.crates-io.url_v2]
 path = "../../third_party/rust/url/v2/crate"
@@ -318,3 +306,7 @@ package = "rustc_version"
 [patch.crates-io.serde_v1]
 path = "../../../third_party/rust/serde/v1/crate"
 package = "serde"
+
+[patch.crates-io.lol_html_v0_3]
+path = "../../third_party/rust/lol_html/v0_3/crate"
+package = "lol_html"

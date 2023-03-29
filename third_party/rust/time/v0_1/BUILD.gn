@@ -27,7 +27,10 @@ cargo_crate("lib") {
   library_configs += [ "//build/config/compiler:no_chromium_code" ]
   executable_configs -= [ "//build/config/compiler:chromium_code" ]
   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
-  deps = [ "//third_party/rust/libc/v0_2:lib" ]
+  deps = []
+  if (is_posix) {
+    deps += [ "//third_party/rust/libc/v0_2:lib" ]
+  }
   if (is_win) {
     deps += [ "//third_party/rust/winapi/v0_3:lib" ]
   }

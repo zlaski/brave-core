@@ -37,7 +37,6 @@ cargo_crate("lib") {
   build_deps = [
     "//third_party/rust/proc_macro2/v1:lib",
     "//third_party/rust/quote/v1:lib",
-    # TODO(bridiver) - change to brave/third_party with feature enabled build_support
     "//third_party/rust/syn/v1:lib",
   ]
   build_root = "crate/build.rs"

@@ -6,6 +6,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ansi_term = "0.12"
 async-trait = "0.1.64"
 base64 = "0.9.3"
 blake2b_simd = "1.0"
@@ -13,15 +14,29 @@ cpufeatures = "0.2"
 curve25519-dalek = "3.2.0"
 data-encoding = "2.1.2"
 ed25519-dalek-bip32 = "0.2.0"
+flate2 = "1.0"
 fvm_ipld_encoding = "0.2.0"
 git-version = "0.3.5"
 hmac = "0.10"
-libsecp256k1 = "0.7"
+html5ever = "0.25"
+lifeguard = "0.6"
+lock_api = "0.4"
 log = "0.4.14"
+lol_html = "0.3.0"
+markup5ever = "0.10"
+multihash = "0.16.2"
+phf = "0.8"
+regex-automata = "0.1"
 sha2 = "0.9"
+sharded-slab = "0.1"
+string_cache = "0.8"
+tendril = "0.4"
+thread_local = "1"
+tracing-serde = "0.1"
+tracing-subscriber = "0.2"
+url = "2.0"
 urlencoding = "1.1.1"
 voca_rs = "1.15.2"
-multihash = "0.16.2"
 
 [dependencies.adblock]
 version = "0.7.7"
@@ -43,6 +58,10 @@ features = ["serde_base64"]
 version = "0.4"
 features = ["clock", "serde"]
 
+[dependencies.crunchy]
+version = "0.2.2"
+build-script-outputs = ["lib.rs"]
+
 [dependencies.feed-rs]
 version = "1.2.0"
 
@@ -55,6 +74,10 @@ version = "0.7.0 "
 [dependencies.http]
 version = "0.1"
 
+[dependencies.libsecp256k1]
+version = "0.7.1"
+build-script-outputs = ["const.rs", "const_gen.rs"]
+
 [dependencies.rand]
 version = "0.7"
 features = ["wasm-bindgen"]
@@ -62,8 +85,12 @@ features = ["wasm-bindgen"]
 [dependencies.tracing]
 version = "0.1"
 
+[dependencies.tracing-log]
+version = "0.1"
+features = ["log-tracer", "std"]
+
 [dependencies.typenum]
-version = "1.16.0"
+version = "1"
 build-script-outputs = ["consts.rs"]
 
 [dependencies.uuid]
@@ -80,6 +107,10 @@ package = "addr"
 [patch.crates-io.adler_v1]
 path = "adler/v1/crate"
 package = "adler"
+
+[patch.crates-io.ahash_v0_7]
+path = "ahash/v0_7/crate"
+package = "ahash"
 
 [patch.crates-io.aho-corasick_v0_7]
 path = "aho_corasick/v0_7/crate"
@@ -145,6 +176,14 @@ package = "bitvec"
 path = "blake2b_simd/v1/crate"
 package = "blake2b_simd"
 
+[patch.crates-io.blake2s_simd_v1]
+path = "blake2s_simd/v1/crate"
+package = "blake2s_simd"
+
+[patch.crates-io.blake3_v1]
+path = "blake3/v1/crate"
+package = "blake3"
+
 [patch.crates-io.block-buffer_v0_10]
 path = "block_buffer/v0_10/crate"
 package = "block-buffer"
@@ -176,6 +215,10 @@ package = "bytes"
 [patch.crates-io.cbor4ii_v0_2]
 path = "cbor4ii/v0_2/crate"
 package = "cbor4ii"
+
+[patch.crates-io.cc_v1]
+path = "cc/v1/crate"
+package = "cc"
 
 [patch.crates-io.cfg-if_v1]
 path = "cfg_if/v1/crate"
@@ -261,6 +304,10 @@ package = "cs_serde_bytes"
 path = "cssparser_macros/v0_6/crate"
 package = "cssparser-macros"
 
+[patch.crates-io.cssparser_v0_27]
+path = "cssparser/v0_27/crate"
+package = "cssparser"
+
 [patch.crates-io.cssparser_v0_28]
 path = "cssparser/v0_28/crate"
 package = "cssparser"
@@ -341,6 +388,10 @@ package = "flate2"
 path = "fnv/v1/crate"
 package = "fnv"
 
+[patch.crates-io.forest_bigint_v0_1]
+path = "forest_bigint/v0_1/crate"
+package = "forest_bigint"
+
 [patch.crates-io.form_urlencoded_v1]
 path = "form_urlencoded/v1/crate"
 package = "form_urlencoded"
@@ -348,6 +399,10 @@ package = "form_urlencoded"
 [patch.crates-io.funty_v2]
 path = "funty/v2/crate"
 package = "funty"
+
+[patch.crates-io.futf_v0_1]
+path = "futf/v0_1/crate"
+package = "futf"
 
 [patch.crates-io.futures-channel_v0_3]
 path = "futures_channel/v0_3/crate"
@@ -429,6 +484,10 @@ package = "git-version"
 path = "group/v0_12/crate"
 package = "group"
 
+[patch.crates-io.hashbrown_v0_12]
+path = "hashbrown/v0_12/crate"
+package = "hashbrown"
+
 [patch.crates-io.hkdf_v0_11]
 path = "hkdf/v0_11/crate"
 package = "hkdf"
@@ -452,6 +511,10 @@ package = "hmac"
 [patch.crates-io.hmac_v0_8]
 path = "hmac/v0_8/crate"
 package = "hmac"
+
+[patch.crates-io.html5ever_v0_25]
+path = "html5ever/v0_25/crate"
+package = "html5ever"
 
 [patch.crates-io.http_v0_1]
 path = "http/v0_1/crate"
@@ -485,9 +548,17 @@ package = "itoa"
 path = "itoa/v1/crate"
 package = "itoa"
 
+[patch.crates-io.keccak_v0_1]
+path = "keccak/v0_1/crate"
+package = "keccak"
+
 [patch.crates-io.lazy_static_v1]
 path = "lazy_static/v1/crate"
 package = "lazy_static"
+
+[patch.crates-io.lazycell_v1]
+path = "lazycell/v1/crate"
+package = "lazycell"
 
 [patch.crates-io.libc_v0_2]
 path = "libc/v0_2/crate"
@@ -513,9 +584,25 @@ package = "libsecp256k1"
 path = "lifeguard/v0_6/crate"
 package = "lifeguard"
 
+[patch.crates-io.lock_api_v0_4]
+path = "lock_api/v0_4/crate"
+package = "lock_api"
+
 [patch.crates-io.log_v0_4]
 path = "log/v0_4/crate"
 package = "log"
+
+[patch.crates-io.lol_html_v0_3]
+path = "lol_html/v0_3/crate"
+package = "lol_html"
+
+[patch.crates-io.mac_v0_1]
+path = "mac/v0_1/crate"
+package = "mac"
+
+[patch.crates-io.markup5ever_v0_10]
+path = "markup5ever/v0_10/crate"
+package = "markup5ever"
 
 [patch.crates-io.matches_v0_1]
 path = "matches/v0_1/crate"
@@ -548,6 +635,10 @@ package = "multihash-derive"
 [patch.crates-io.multihash_v0_16]
 path = "multihash/v0_16/crate"
 package = "multihash"
+
+[patch.crates-io.new_debug_unreachable_v1]
+path = "new_debug_unreachable/v1/crate"
+package = "new_debug_unreachable"
 
 [patch.crates-io.nodrop_v0_1]
 path = "nodrop/v0_1/crate"
@@ -589,6 +680,14 @@ package = "opaque-debug"
 path = "pairing/v0_22/crate"
 package = "pairing"
 
+[patch.crates-io.parking_lot_core_v0_9]
+path = "parking_lot_core/v0_9/crate"
+package = "parking_lot_core"
+
+[patch.crates-io.parking_lot_v0_12]
+path = "parking_lot/v0_12/crate"
+package = "parking_lot"
+
 [patch.crates-io.paste_v1]
 path = "paste/v1/crate"
 package = "paste"
@@ -608,6 +707,10 @@ package = "phf_generator"
 [patch.crates-io.phf_macros_v0_8]
 path = "phf_macros/v0_8/crate"
 package = "phf_macros"
+
+[patch.crates-io.phf_shared_v0_10]
+path = "phf_shared/v0_10/crate"
+package = "phf_shared"
 
 [patch.crates-io.phf_shared_v0_8]
 path = "phf_shared/v0_8/crate"
@@ -765,6 +868,10 @@ package = "scopeguard"
 path = "seahash/v3/crate"
 package = "seahash"
 
+[patch.crates-io.selectors_v0_22]
+path = "selectors/v0_22/crate"
+package = "selectors"
+
 [patch.crates-io.selectors_v0_23]
 path = "selectors/v0_23/crate"
 package = "selectors"
@@ -821,6 +928,10 @@ package = "sha2"
 path = "sha2/v0_9/crate"
 package = "sha2"
 
+[patch.crates-io.sha3_v0_10]
+path = "sha3/v0_10/crate"
+package = "sha3"
+
 [patch.crates-io.sharded-slab_v0_1]
 path = "sharded_slab/v0_1/crate"
 package = "sharded-slab"
@@ -849,6 +960,14 @@ package = "stable_deref_trait"
 path = "stfu8/v0_2/crate"
 package = "stfu8"
 
+[patch.crates-io.string_cache_codegen_v0_5]
+path = "string_cache_codegen/v0_5/crate"
+package = "string_cache_codegen"
+
+[patch.crates-io.string_cache_v0_8]
+path = "string_cache/v0_8/crate"
+package = "string_cache"
+
 [patch.crates-io.subtle_v2]
 path = "subtle/v2/crate"
 package = "subtle"
@@ -868,6 +987,14 @@ package = "synstructure"
 [patch.crates-io.tap_v1]
 path = "tap/v1/crate"
 package = "tap"
+
+[patch.crates-io.tendril_v0_4]
+path = "tendril/v0_4/crate"
+package = "tendril"
+
+[patch.crates-io.thin-slice_v0_1]
+path = "thin_slice/v0_1/crate"
+package = "thin-slice"
 
 [patch.crates-io.thiserror-impl_v1]
 path = "thiserror_impl/v1/crate"
@@ -961,6 +1088,10 @@ package = "url"
 path = "urlencoding/v1/crate"
 package = "urlencoding"
 
+[patch.crates-io.utf-8_v0_7]
+path = "utf_8/v0_7/crate"
+package = "utf-8"
+
 [patch.crates-io.uuid_v0_8]
 path = "uuid/v0_8/crate"
 package = "uuid"
@@ -980,6 +1111,10 @@ package = "voca_rs"
 [patch.crates-io.winapi_v0_3]
 path = "winapi/v0_3/crate"
 package = "winapi"
+
+[patch.crates-io.windows-sys_v0_45]
+path = "windows_sys/v0_45/crate"
+package = "windows-sys"
 
 [patch.crates-io.windows-targets_v0_42]
 path = "windows_targets/v0_42/crate"

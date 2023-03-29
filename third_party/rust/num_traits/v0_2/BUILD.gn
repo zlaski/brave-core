@@ -27,7 +27,10 @@ cargo_crate("lib") {
   executable_configs -= [ "//build/config/compiler:chromium_code" ]
   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
   build_deps = [ "//third_party/rust/autocfg/v1:buildrs_support" ]
-  features = [ "std" ]
+  features = [
+    "i128",
+    "std",
+  ]
   build_root = "crate/build.rs"
   build_sources = [ "crate/build.rs" ]
 }

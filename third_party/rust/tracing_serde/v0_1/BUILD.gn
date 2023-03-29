@@ -26,6 +26,5 @@ cargo_crate("lib") {
   deps = [
     "//brave/third_party/rust/tracing_core/v0_1:lib",
     "//third_party/rust/serde/v1:lib",
-    "//third_party/rust/serde_json/v1:lib",
   ]
 }

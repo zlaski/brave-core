@@ -1,12 +1,12 @@
 diff --git a/third_party/rust/regex/v1/BUILD.gn b/third_party/rust/regex/v1/BUILD.gn
-index 5ebf3e8766da7100dde5e56f83bfaf9ff51e3b44..2963da7bf06230bbd6ccbd7d68e3c31e8c4bd858 100644
+index 5ebf3e8766da7100dde5e56f83bfaf9ff51e3b44..7cf9beb270ce88a73e7a479b9a6ac60b294a85b2 100644
 --- a/third_party/rust/regex/v1/BUILD.gn
 +++ b/third_party/rust/regex/v1/BUILD.gn
 @@ -12,6 +12,7 @@ cargo_crate("lib") {
    # Only for usage from third-party crates. Add the crate to
    # third_party.toml to use it from first-party code.
    visibility = [ "//third_party/rust/*" ]
-+  visibility += [ "//brave/third_party/rust/*", "//brave/components/brave_news/rust/*" ]
++  visibility += [ "//brave/third_party/rust/*", "//brave/components/*" ]
    crate_root = "crate/src/lib.rs"
  
    # Unit tests skipped. Generate with --with-tests to include them.

@@ -30,122 +30,122 @@ config("strip_rust_symbols") {
   }
 }
 
-if (enable_rust) {
-_clang_bin_path = rebase_path("$clang_base_path/bin/", root_build_dir)
+# if (enable_rust) {
+# _clang_bin_path = rebase_path("$clang_base_path/bin/", root_build_dir)
 
-_cxx = "${_clang_bin_path}/clang++"
+# _cxx = "${_clang_bin_path}/clang++"
 
-action("run_cargo") {
-  script = "//brave/script/cargo.py"
+# action("run_cargo") {
+#   script = "//brave/script/cargo.py"
 
-  rustc_wrapper = "//brave/script/rustc_wrapper.py"
-  cargo_bin = "$rustup_home/bin/cargo"
-  if (is_win) {
-    cargo_bin = cargo_bin + ".exe"
-  }
+#   rustc_wrapper = "//brave/script/rustc_wrapper.py"
+#   cargo_bin = "$rustup_home/bin/cargo"
+#   if (is_win) {
+#     cargo_bin = cargo_bin + ".exe"
+#   }
 
-  visibility = [ ":*" ]
-  inputs = [
-    # "Cargo.lock",
-    "Cargo.toml",
-    "lib.rs",
-  ]
+#   visibility = [ ":*" ]
+#   inputs = [
+#     # "Cargo.lock",
+#     "Cargo.toml",
+#     "lib.rs",
+#   ]
 
-  _rustflags = default_rustflags
-  _rustflags += [ "-Clinker=\"$_cxx\"" ]
+#   _rustflags = default_rustflags
+#   _rustflags += [ "-Clinker=\"$_cxx\"" ]
 
-  manifest_path = "Cargo.toml"
+#   manifest_path = "Cargo.toml"
 
-  deps = [
-    "//brave/components/speedreader/rust/lib",
-  ]
+#   deps = [
+#     "//brave/components/speedreader/rust/lib",
+#   ]
 
-  force_rebuild_inputs = [
-    rustc_wrapper,
-    script,
-    cargo_bin,
-    "Cargo.toml",
-    # "Cargo.lock",
-  ]
+#   force_rebuild_inputs = [
+#     rustc_wrapper,
+#     script,
+#     cargo_bin,
+#     "Cargo.toml",
+#     # "Cargo.lock",
+#   ]
 
-  if (is_apple) {
-    toolchain_home =
-        "$rustup_home/toolchains/$brave_rust_version-x86_64-apple-darwin"
-    std_src_home = "$toolchain_home/lib/rustlib/src/rust/library/std/src"
-    force_rebuild_inputs += [ "$std_src_home/personality/gcc.rs" ]
-  }
-  inputs += force_rebuild_inputs
+#   if (is_apple) {
+#     toolchain_home =
+#         "$rustup_home/toolchains/$brave_rust_version-x86_64-apple-darwin"
+#     std_src_home = "$toolchain_home/lib/rustlib/src/rust/library/std/src"
+#     force_rebuild_inputs += [ "$std_src_home/personality/gcc.rs" ]
+#   }
+#   inputs += force_rebuild_inputs
 
-  public_deps = [
-    "//build/rust:cxx_cppdeps",
-  ]
+#   public_deps = [
+#     "//build/rust:cxx_cppdeps",
+#   ]
 
-  outputs = [
-    "${rust_lib_build_path}/build.json",
-    "${rust_lib_build_path}/cargo.d",
-  ]
+#   outputs = [
+#     "${rust_lib_build_path}/build.json",
+#     "${rust_lib_build_path}/cargo.d",
+#   ]
 
-  target = rustc_target  # defined by //brave/build/rust/config.gni,
+#   target = rustc_target  # defined by //brave/build/rust/config.gni,
 
-  args = [
-    "--exe=" + rebase_path(cargo_bin),
-    "--rustup_home=" + rebase_path(rustup_home),
-    "--manifest_path=" + rebase_path(manifest_path, root_build_dir),
-    "--build_path=" + rebase_path(rust_lib_build_path, root_build_dir),
-    "--target=" + target,
-    "--clang_bin_path=" + _clang_bin_path,
-    "--is_debug=$is_debug",
-    "--profile=$cargo_profile",
-  ]
+#   args = [
+#     "--exe=" + rebase_path(cargo_bin),
+#     "--rustup_home=" + rebase_path(rustup_home),
+#     "--manifest_path=" + rebase_path(manifest_path, root_build_dir),
+#     "--build_path=" + rebase_path(rust_lib_build_path, root_build_dir),
+#     "--target=" + target,
+#     "--clang_bin_path=" + _clang_bin_path,
+#     "--is_debug=$is_debug",
+#     "--profile=$cargo_profile",
+#   ]
 
-  # See exclude_unwind_tables
-  # TODO(bridiver) Investigate whether we should use unwind on android
-  if (is_official_build) {
-    args += [ "--panic=abort" ]
-  } else {
-    args += [ "--panic=unwind" ]
-  }
+#   # See exclude_unwind_tables
+#   # TODO(bridiver) Investigate whether we should use unwind on android
+#   if (is_official_build) {
+#     args += [ "--panic=abort" ]
+#   } else {
+#     args += [ "--panic=unwind" ]
+#   }
 
-  if (rustc_toolchain != "") {
-    args += [ "--toolchain=$rustc_toolchain" ]
-  }
+#   if (rustc_toolchain != "") {
+#     args += [ "--toolchain=$rustc_toolchain" ]
+#   }
 
-  if (is_mac) {
-    args += [ "--mac_deployment_target=" + mac_deployment_target ]
-  }
+#   if (is_mac) {
+#     args += [ "--mac_deployment_target=" + mac_deployment_target ]
+#   }
 
-  if (is_ios) {
-    args += [ "--ios_deployment_target=" + ios_deployment_target ]
-  }
+#   if (is_ios) {
+#     args += [ "--ios_deployment_target=" + ios_deployment_target ]
+#   }
 
-  foreach(input, force_rebuild_inputs) {
-    args += [
-      "--inputs",
-      rebase_path(input),
-    ]
-  }
+#   foreach(input, force_rebuild_inputs) {
+#     args += [
+#       "--inputs",
+#       rebase_path(input),
+#     ]
+#   }
 
-  if (defined(_rustflags)) {
-    foreach(flag, _rustflags) {
-      args += [
-        "--rust_flag",
-        flag,
-      ]
-    }
-  }
-}
-} else {
-  group("run_cargo") {}
-}
+#   if (defined(_rustflags)) {
+#     foreach(flag, _rustflags) {
+#       args += [
+#         "--rust_flag",
+#         flag,
+#       ]
+#     }
+#   }
+# }
+# } else {
+#   group("run_cargo") {}
+# }
 
-config("dep_config") {
-  rlibs = exec_script("//brave/script/read_file.py",
-                                 [rebase_path("${rust_lib_build_path}/cargo.d")],
-                                 "list lines")
-  libs = rlibs
-}
+# config("dep_config") {
+#   rlibs = exec_script("//brave/script/read_file.py",
+#                                  [rebase_path("${rust_lib_build_path}/cargo.d")],
+#                                  "list lines")
+#   libs = rlibs
+# }
 
-static_library("rust_lib") {
-  public_configs = [ ":dep_config" ]
-  deps = [ ":run_cargo" ]
-}
+# static_library("rust_lib") {
+#   public_configs = [ ":dep_config" ]
+#   deps = [ ":run_cargo" ]
+# }

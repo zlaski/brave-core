@@ -1,0 +1,12 @@
+diff --git a/third_party/rust/lazycell/v1/BUILD.gn b/third_party/rust/lazycell/v1/BUILD.gn
+index 4564e1a2ad3d01d9ffebace90fa0c6c74f6e5b3c..537364aaa6aa2877b5ae4a2e6a0fc82e5b9b80e2 100644
+--- a/third_party/rust/lazycell/v1/BUILD.gn
++++ b/third_party/rust/lazycell/v1/BUILD.gn
+@@ -12,6 +12,7 @@ cargo_crate("lib") {
+   # Only for usage from third-party crates. Add the crate to
+   # third_party.toml to use it from first-party code.
+   visibility = [ "//third_party/rust/*" ]
++  visibility += [ "//brave/third_party/rust/*" ]
+   crate_root = "crate/src/lib.rs"
+ 
+   # Unit tests skipped. Generate with --with-tests to include them.
