@@ -25,6 +25,7 @@ deps = {
   "vendor/bip39wally-core-native": "https://github.com/brave-intl/bat-native-bip39wally-core.git@0d3a8713a2b388d2156fe49a70ef3f7cdb44b190",
   "vendor/bat-native-tweetnacl": "https://github.com/brave-intl/bat-native-tweetnacl.git@800f9d40b7409239ff192e0be634764e747c7a75",
   "third_party/rust/challenge_bypass_ristretto/v1/crate": "https://github.com/brave-intl/challenge-bypass-ristretto.git@a1da4641734adc8312215b38a8221962d2c8e045",
+  "third_party/rust/kuchiki/v0_8/crate": "https://github.com/brave/kuchiki.git@589eadca2c1d06ddda2919354590bfe1ace88a43",
   "vendor/gn-project-generators": "https://github.com/brave/gn-project-generators.git@b76e14b162aa0ce40f11920ec94bfc12da29e5d0",
   "vendor/web-discovery-project": "https://github.com/brave/web-discovery-project@6fe7beb9c534437a4afa28507424fea310979806",
   "third_party/ethash/src": "https://github.com/chfast/ethash.git@e4a15c3d76dc09392c7efd3e30d84ee3b871e9ce",
