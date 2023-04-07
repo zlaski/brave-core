@@ -1,8 +1,16 @@
 diff --git a/crypto/unexportable_key_metrics.cc b/crypto/unexportable_key_metrics.cc
-index 946be9bf57478391d39feb706c4f4b6ac920752e..730ce9dd7eb6c68a6d0c786a48424759f1eeac53 100644
+index cd4ed606447ee4f5b0aa0580496f8d844310773a..0611268c75f2a13468be958bcdbba78127d948ca 100644
 --- a/crypto/unexportable_key_metrics.cc
 +++ b/crypto/unexportable_key_metrics.cc
-@@ -95,6 +95,7 @@ void MeasureTpmOperationsInternal() {
+@@ -137,6 +137,7 @@ internal::TPMSupport MeasureVirtualTpmOperations() {
+   if (algo) {
+     switch (*algo) {
+       case SignatureVerifier::SignatureAlgorithm::ECDSA_SHA256:
++      case SignatureVerifier::SignatureAlgorithm::ECDSA_SHA384:
+         supported_virtual_algo = internal::TPMSupport::kECDSA;
+         break;
+       case SignatureVerifier::SignatureAlgorithm::RSA_PKCS1_SHA256:
+@@ -216,6 +217,7 @@ void MeasureTpmOperationsInternal() {
    if (algo) {
      switch (*algo) {
        case SignatureVerifier::SignatureAlgorithm::ECDSA_SHA256:
