@@ -24,7 +24,7 @@ std::string GetChannelSuffixForDataDir() {
 
 #if BUILDFLAG(IS_LINUX)
 std::string GetChannelSuffixForExtraFlagsEnvVarName() {
-#if BUILDFLAG(OFFICIAL_BUILD)
+#if defined(OFFICIAL_BUILD)
   const auto channel_state = GetChannelImpl();
   switch (channel_state.channel) {
     case version_info::Channel::DEV:
@@ -36,13 +36,13 @@ std::string GetChannelSuffixForExtraFlagsEnvVarName() {
     default:
       return std::string();
   }
-#else   // BUILDFLAG(OFFICIAL_BUILD)
+#else   // defined(OFFICIAL_BUILD)
   const char* const channel_name = getenv("CHROME_VERSION_EXTRA");
   return channel_name
              ? base::StrCat(
                    {"_", base::ToUpperASCII(base::StringPiece(channel_name))})
              : std::string();
-#endif  // BUILDFLAG(OFFICIAL_BUILD)
+#endif  // defined(OFFICIAL_BUILD)
 }
 #endif  // BUILDFLAG(IS_LINUX)
 
