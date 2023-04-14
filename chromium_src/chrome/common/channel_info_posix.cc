@@ -23,6 +23,30 @@ std::string GetChannelSuffixForDataDir() {
 }
 
 #if BUILDFLAG(IS_LINUX)
+std::string GetChannelSuffixForExtraFlagsEnvVarName() {
+#if BUILDFLAG(OFFICIAL_BUILD)
+  const auto channel_state = GetChannelImpl();
+  switch (channel_state.channel) {
+    case version_info::Channel::DEV:
+      return "_DEV";
+    case version_info::Channel::BETA:
+      return "_BETA";
+    case version_info::Channel::STABLE:
+      return "_STABLE";
+    default:
+      return std::string();
+  }
+#else   // BUILDFLAG(OFFICIAL_BUILD)
+  const char* const channel_name = getenv("CHROME_VERSION_EXTRA");
+  return channel_name
+             ? base::StrCat(
+                   {"_", base::ToUpperASCII(base::StringPiece(channel_name))})
+             : std::string();
+#endif  // BUILDFLAG(OFFICIAL_BUILD)
+}
+#endif  // BUILDFLAG(IS_LINUX)
+
+#if BUILDFLAG(IS_LINUX)
 std::string GetDesktopName(base::Environment* env) {
 #if defined(OFFICIAL_BUILD)
   version_info::Channel product_channel(chrome::GetChannel());
