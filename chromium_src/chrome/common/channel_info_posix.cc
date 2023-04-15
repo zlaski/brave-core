@@ -5,6 +5,7 @@
 #include "chrome/common/channel_info.h"
 
 #include "base/environment.h"
+#include "base/strings/strcat.h"
 #include "base/strings/string_util.h"
 #include "brave/common/brave_channel_info_posix.h"
 #include "build/build_config.h"
