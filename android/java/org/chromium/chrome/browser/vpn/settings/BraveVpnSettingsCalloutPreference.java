@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-package org.chromium.chrome.browser.settings;
+package org.chromium.chrome.browser.vpn.settings;
 
 import static org.chromium.ui.base.ViewUtils.dpToPx;
 
@@ -27,8 +27,8 @@ import org.chromium.chrome.browser.vpn.utils.BraveVpnUtils;
 import org.chromium.ui.base.DeviceFormFactor;
 import org.chromium.ui.widget.Toast;
 
-public class VpnCalloutPreference extends Preference {
-    public VpnCalloutPreference(Context context) {
+public class BraveVpnSettingsCalloutPreference extends Preference {
+    public BraveVpnSettingsCalloutPreference(Context context) {
         super(context);
         setLayoutResource(R.layout.vpn_settings_callout_modal_layout);
     }
