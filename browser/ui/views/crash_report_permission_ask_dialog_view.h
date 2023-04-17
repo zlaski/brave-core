@@ -8,6 +8,7 @@
 
 #include <memory>
 
+#include "base/memory/raw_ptr.h"
 #include "ui/views/window/dialog_delegate.h"
 
 class Browser;
@@ -39,7 +40,7 @@ class CrashReportPermissionAskDialogView : public views::DialogDelegateView {
   void OnWindowClosing();
   void CreateChildViews(views::Widget* parent);
 
-  views::Checkbox* dont_ask_again_checkbox_ = nullptr;
+  raw_ptr<views::Checkbox> dont_ask_again_checkbox_ = nullptr;
 };
 
 #endif  // BRAVE_BROWSER_UI_VIEWS_CRASH_REPORT_PERMISSION_ASK_DIALOG_VIEW_H_
