@@ -12,27 +12,29 @@ namespace browser_sync {
 namespace {
 namespace brave_syncable_prefs_ids {
 enum {
-  // Starts at 110000 to avoid clashing with the Chromium's syncable_prefs_ids.
-  kProfileContentSettingsExceptionsShieldsAds = 110000,
-  kProfileContentSettingsExceptionsTrackers = 110001,
-  kProfileContentSettingsExceptionsHttpsUpgrades = 110002,
-  kProfileContentSettingsExceptionsHttpUpgradableResources = 110003,
-  kProfileContentSettingsExceptionsReferrers = 110004,
-  kProfileContentSettingsExceptionsShieldsCookiesV3 = 110005,
-  kProfileContentSettingsExceptionsCosmeticFiltering = 110006,
-  kProfileContentSettingsExceptionsFingerprintingV2 = 110007,
-  kProfileContentSettingsExceptionsBraveShields = 110008,
-  kProfileContentSettingsExceptionsBraveSpeedreader = 110009,
-  kProfileDefaultContentSettingValuesShieldsAds = 110010,
-  kProfileDefaultContentSettingValuesTrackers = 110011,
-  kProfileDefaultContentSettingValuesHttpsUpgrades = 110012,
-  kProfileDefaultContentSettingValuesHttpUpgradableResources = 110013,
-  kProfileDefaultContentSettingValuesReferrers = 110014,
-  kProfileDefaultContentSettingValuesShieldsCookiesV3 = 110015,
-  kProfileDefaultContentSettingValuesCosmeticFiltering = 110016,
-  kProfileDefaultContentSettingValuesFingerprintingV2 = 110017,
-  kProfileDefaultContentSettingValuesBraveShields = 110018,
-  kProfileDefaultContentSettingValuesBraveSpeedreader = 110019,
+  // Starts at 300000 to avoid clashing with the Chromium's syncable_prefs_ids:
+  // chrome_syncable_prefs_database.cc starts at 100000
+  // ios_chrome_syncable_prefs_database.cc starts at 200000
+  kProfileContentSettingsExceptionsShieldsAds = 300000,
+  kProfileContentSettingsExceptionsTrackers = 300001,
+  kProfileContentSettingsExceptionsHttpsUpgrades = 300002,
+  kProfileContentSettingsExceptionsHttpUpgradableResources = 300003,
+  kProfileContentSettingsExceptionsReferrers = 300004,
+  kProfileContentSettingsExceptionsShieldsCookiesV3 = 300005,
+  kProfileContentSettingsExceptionsCosmeticFiltering = 300006,
+  kProfileContentSettingsExceptionsFingerprintingV2 = 300007,
+  kProfileContentSettingsExceptionsBraveShields = 300008,
+  kProfileContentSettingsExceptionsBraveSpeedreader = 300009,
+  kProfileDefaultContentSettingValuesShieldsAds = 300010,
+  kProfileDefaultContentSettingValuesTrackers = 300011,
+  kProfileDefaultContentSettingValuesHttpsUpgrades = 300012,
+  kProfileDefaultContentSettingValuesHttpUpgradableResources = 300013,
+  kProfileDefaultContentSettingValuesReferrers = 300014,
+  kProfileDefaultContentSettingValuesShieldsCookiesV3 = 300015,
+  kProfileDefaultContentSettingValuesCosmeticFiltering = 300016,
+  kProfileDefaultContentSettingValuesFingerprintingV2 = 300017,
+  kProfileDefaultContentSettingValuesBraveShields = 300018,
+  kProfileDefaultContentSettingValuesBraveSpeedreader = 300019,
 };
 }  // namespace brave_syncable_prefs_ids
 
