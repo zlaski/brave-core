@@ -53,6 +53,16 @@ void BraveVpnServiceFactory::BindForContext(
   }
 }
 
+#if BUILDFLAG(IS_ANDROID)
+// static
+mojo::PendingRemote<brave_vpn::mojom::ServiceHandler>
+BraveVpnServiceFactory::GetForContext(content::BrowserContext* context) {
+  return static_cast<BraveVpnService*>(
+             GetInstance()->GetServiceForBrowserContext(context, true))
+      ->MakeRemote();
+}
+#endif  // BUILDFLAG(IS_ANDROID)
+
 BraveVpnServiceFactory::BraveVpnServiceFactory()
     : BrowserContextKeyedServiceFactory(
           "BraveVpnService",

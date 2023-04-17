@@ -32,6 +32,9 @@
 #include "services/network/public/cpp/shared_url_loader_factory.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
 #include "url/gurl.h"
+#if BUILDFLAG(IS_ANDROID)
+#include "mojo/public/cpp/bindings/receiver_set.h"
+#endif  // BUILDFLAG(IS_ANDROID)
 
 namespace network {
 class SharedURLLoaderFactory;
@@ -71,6 +74,10 @@ class BraveVpnService :
 
   BraveVpnService(const BraveVpnService&) = delete;
   BraveVpnService& operator=(const BraveVpnService&) = delete;
+
+#if BUILDFLAG(IS_ANDROID)
+  mojo::PendingRemote<mojom::ServiceHandler> MakeRemote();
+#endif  // BUILDFLAG(IS_ANDROID)
 
   std::string GetCurrentEnvironment() const;
   bool is_purchased_user() const {

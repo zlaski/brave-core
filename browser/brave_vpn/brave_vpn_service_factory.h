@@ -10,6 +10,9 @@
 #include "brave/components/brave_vpn/common/mojom/brave_vpn.mojom.h"
 #include "build/build_config.h"
 #include "components/keyed_service/content/browser_context_keyed_service_factory.h"
+#if BUILDFLAG(IS_ANDROID)
+#include "mojo/public/cpp/bindings/pending_remote.h"
+#endif  // BUILDFLAG(IS_ANDROID)
 
 class Profile;
 
@@ -28,7 +31,10 @@ class BraveVpnServiceFactory : public BrowserContextKeyedServiceFactory {
   static void BindForContext(
       content::BrowserContext* context,
       mojo::PendingReceiver<brave_vpn::mojom::ServiceHandler> receiver);
-
+#if BUILDFLAG(IS_ANDROID)
+  static mojo::PendingRemote<brave_vpn::mojom::ServiceHandler> GetForContext(
+      content::BrowserContext* context);
+#endif  // BUILDFLAG(IS_ANDROID)
  private:
   friend struct base::DefaultSingletonTraits<BraveVpnServiceFactory>;
 

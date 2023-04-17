@@ -73,6 +73,14 @@ BraveVpnService::BraveVpnService(
 
 BraveVpnService::~BraveVpnService() = default;
 
+#if BUILDFLAG(IS_ANDROID)
+mojo::PendingRemote<mojom::ServiceHandler> BraveVpnService::MakeRemote() {
+  mojo::PendingRemote<mojom::ServiceHandler> remote;
+  receivers_.Add(this, remote.InitWithNewPipeAndPassReceiver());
+  return remote;
+}
+#endif  // BUILDFLAG(IS_ANDROID)
+
 bool BraveVpnService::IsBraveVPNEnabled() const {
   return ::brave_vpn::IsBraveVPNEnabled(profile_prefs_);
 }
