@@ -42,6 +42,7 @@ import org.chromium.chrome.browser.search_engines.TemplateUrlServiceFactory;
 import org.chromium.chrome.browser.settings.BravePreferenceFragment;
 import org.chromium.chrome.browser.settings.BraveStatsPreferences;
 import org.chromium.chrome.browser.toolbar.bottom.BottomToolbarConfiguration;
+import org.chromium.chrome.browser.vpn.settings.BraveVpnSettingsCalloutPreference;
 import org.chromium.chrome.browser.vpn.utils.BraveVpnPrefUtils;
 import org.chromium.chrome.browser.vpn.utils.BraveVpnUtils;
 import org.chromium.chrome.browser.vpn.utils.InAppPurchaseWrapper;
@@ -104,7 +105,7 @@ public class BraveMainPreferencesBase
     private static final String PREF_HOME_SCREEN_WIDGET = "home_screen_widget";
 
     private final HashMap<String, Preference> mRemovedPreferences = new HashMap<>();
-    private Preference mVpnCalloutPreference;
+    private Preference mBraveVpnSettingsCalloutPreference;
     private boolean mNotificationClicked;
 
     @Override
@@ -265,13 +266,14 @@ public class BraveMainPreferencesBase
         if (BraveVpnPrefUtils.shouldShowCallout() && !BraveVpnPrefUtils.isSubscriptionPurchase()
                 && BraveVpnUtils.isBraveVpnFeatureEnable()
                 && InAppPurchaseWrapper.getInstance().isSubscriptionSupported()) {
-            if (getActivity() != null && mVpnCalloutPreference == null) {
-                mVpnCalloutPreference = new VpnCalloutPreference(getActivity());
+            if (getActivity() != null && mBraveVpnSettingsCalloutPreference == null) {
+                mBraveVpnSettingsCalloutPreference =
+                        new BraveVpnSettingsCalloutPreference(getActivity());
             }
-            if (mVpnCalloutPreference != null) {
-                mVpnCalloutPreference.setKey(PREF_BRAVE_VPN_CALLOUT);
-                mVpnCalloutPreference.setOrder(firstSectionOrder);
-                getPreferenceScreen().addPreference(mVpnCalloutPreference);
+            if (mBraveVpnSettingsCalloutPreference != null) {
+                mBraveVpnSettingsCalloutPreference.setKey(PREF_BRAVE_VPN_CALLOUT);
+                mBraveVpnSettingsCalloutPreference.setOrder(firstSectionOrder);
+                getPreferenceScreen().addPreference(mBraveVpnSettingsCalloutPreference);
             }
         }
 
