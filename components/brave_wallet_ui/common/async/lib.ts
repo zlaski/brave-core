@@ -1160,3 +1160,9 @@ export const setNftDiscoveryEnabled = async (enabled: boolean) => {
   const { braveWalletService } = getAPIProxy()
   await braveWalletService.setNftDiscoveryEnabled(enabled)
 }
+
+export const getNftDiscoveryEnabledStatus = async () => {
+  const { braveWalletService } = getAPIProxy()
+  const result = await braveWalletService.getNftDiscoveryEnabled()
+  return result.enabled
+}

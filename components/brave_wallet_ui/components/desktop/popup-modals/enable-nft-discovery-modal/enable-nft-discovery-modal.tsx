@@ -5,7 +5,7 @@
 import * as React from 'react'
 
 // utils
-import { getLocale, splitStringForTag } from '../../../../../common/locale'
+import { getLocale } from '../../../../../common/locale'
 
 // components
 import { PopupModal } from '../..'
@@ -15,24 +15,17 @@ import {
   ButtonRow,
   CancelButton,
   ConfirmButton,
-  Description,
   Header,
-  Link,
-  StyledWrapper,
-  Underline
+  StyledWrapper
 } from './enable-nft-discovery-modal.style'
+import { NftAutoDiscoveryDescription } from '../../../shared/nft-auto-discovery-description/nft-auto-discovery-description'
 
 interface Props {
   onConfirm: () => void
   onCancel: () => void
 }
 
-const LEARN_MORE_LINK = 'https://github.com/brave/brave-browser/wiki/NFT-Discovery'
-
 export const EnableNftDiscoveryModal = ({ onConfirm, onCancel }: Props) => {
-  const { beforeTag, duringTag, afterTag } = splitStringForTag(getLocale('braveWalletEnableNftAutoDiscoveryModalDescription'), 1)
-  const { beforeTag: beforeLink, duringTag: learnMore } = splitStringForTag(afterTag || '', 3)
-
   return (
     <PopupModal
       title=''
@@ -42,12 +35,7 @@ export const EnableNftDiscoveryModal = ({ onConfirm, onCancel }: Props) => {
     >
       <StyledWrapper>
         <Header>{getLocale('braveWalletEnableNftAutoDiscoveryModalHeader')}</Header>
-        <Description>
-          {beforeTag}
-          <Underline>{duringTag}</Underline>
-          {beforeLink}
-          <Link target='_blank' rel='noreferrer' href={LEARN_MORE_LINK}>{learnMore}</Link>
-        </Description>
+        <NftAutoDiscoveryDescription />
         <ButtonRow>
           <ConfirmButton onClick={onConfirm}>{getLocale('braveWalletEnableNftAutoDiscoveryModalConfirm')}</ConfirmButton>
           <CancelButton onClick={onCancel}>{getLocale('braveWalletEnableNftAutoDiscoveryModalCancel')}</CancelButton>

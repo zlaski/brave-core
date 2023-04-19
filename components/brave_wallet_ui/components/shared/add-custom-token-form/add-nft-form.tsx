@@ -16,6 +16,7 @@ import {
   networkEntityAdapter,
   emptyNetworksRegistry
 } from '../../../common/slices/entities/network.entity'
+import { getNftDiscoveryEnabledStatus, setNftDiscoveryEnabled } from '../../../common/async/lib'
 
 // hooks
 import {
@@ -38,17 +39,22 @@ import { SelectNetworkDropdown } from '../../desktop'
 import { NavButton } from '../../extension'
 import Tooltip from '../tooltip'
 import { FormErrorsList } from './form-errors-list'
+import { Checkbox } from '../checkbox/checkbox'
+import { NftAutoDiscoveryDescription } from '../nft-auto-discovery-description/nft-auto-discovery-description'
 
 // styles
 import {
   ButtonRow,
-  ButtonRowSpacer,
+  CheckboxText,
+  CheckboxWrapper,
   ErrorText,
   FormWrapper,
   FullWidthFormColumn,
   Input,
-  InputLabel
+  InputLabel,
+  ButtonRowSpacer
 } from './add-custom-token-form-styles'
+import { Column } from '../style'
 
 interface Props {
   contractAddress: string
@@ -98,6 +104,8 @@ export const AddNftForm = (props: Props) => {
   const [customAssetsNetwork, setCustomAssetsNetwork] = React.useState<
     BraveWallet.NetworkInfo | undefined
   >(selectedAssetNetwork)
+  const [displayAutomatically, setDisplayAutomatically] = React.useState<boolean>(false)
+  const [isNftDiscoveryEnabled, setIsNftDiscoveryEnabled] = React.useState<boolean>(false)
 
 
   // custom hooks
@@ -226,6 +234,12 @@ export const AddNftForm = (props: Props) => {
     onHideForm()
   }, [resetInputFields, onHideForm])
 
+  const onEnableNftAutoDiscovery = React.useCallback(async (selected) => {
+    setDisplayAutomatically(selected)
+    await setNftDiscoveryEnabled(selected)
+    onHideForm()
+  }, [onHideForm, setNftDiscoveryEnabled])
+
   // computed
   const customAssetsNetworkError = !customAssetsNetwork?.chainId
   const tokenNameError = tokenName === ''
@@ -284,19 +298,32 @@ export const AddNftForm = (props: Props) => {
     onTokenFound
   ])
 
+  // effects
+  React.useEffect(() => {
+    const getStatus = () => {
+      getNftDiscoveryEnabledStatus()
+        .then((enabled) => {
+          setIsNftDiscoveryEnabled(enabled)
+        })
+        .catch(error => console.error(error))
+    }
+
+    getStatus()
+  }, [])
+
   return (
     <FormWrapper onClick={onHideNetworkDropDown}>
       <FullWidthFormColumn>
         <InputLabel>
           {customAssetsNetwork?.coin === BraveWallet.CoinType.SOL
             ? getLocale('braveWalletTokenMintAddress')
-            : getLocale('braveWalletWatchListTokenAddress')
-          }
+            : getLocale('braveWalletWatchListTokenAddress')}
         </InputLabel>
         <Input
           value={tokenContractAddress}
           onChange={handleTokenAddressChanged}
-          width='100%'
+          width="100%"
+          disabled={displayAutomatically}
         />
       </FullWidthFormColumn>
       <FullWidthFormColumn>
@@ -314,7 +341,8 @@ export const AddNftForm = (props: Props) => {
         <Input
           value={tokenName}
           onChange={handleTokenNameChanged}
-          width='100%'
+          width="100%"
+          disabled={displayAutomatically}
         />
       </FullWidthFormColumn>
       <FullWidthFormColumn>
@@ -322,46 +350,69 @@ export const AddNftForm = (props: Props) => {
         <Input
           value={tokenSymbol}
           onChange={handleTokenSymbolChanged}
-          width='100%'
+          width="100%"
+          disabled={displayAutomatically}
         />
       </FullWidthFormColumn>
       <FullWidthFormColumn>
-        {customAssetsNetwork?.coin !== BraveWallet.CoinType.SOL &&
+        {customAssetsNetwork?.coin !== BraveWallet.CoinType.SOL && (
           <>
             <InputLabel>{getLocale('braveWalletWatchListTokenId')}</InputLabel>
             <Input
               value={tokenID}
               onChange={handleTokenIDChanged}
-              type='number'
-              width='100%'
+              type="number"
+              width="100%"
+              disabled={displayAutomatically}
             />
           </>
-        }
+        )}
       </FullWidthFormColumn>
       <>
-        {showTokenIDRequired &&
+        {showTokenIDRequired && (
           <ErrorText>{getLocale('braveWalletWatchListTokenIdError')}</ErrorText>
-        }
+        )}
       </>
-      {hasError &&
+      {hasError && (
         <ErrorText>{getLocale('braveWalletWatchListError')}</ErrorText>
-      }
-      <ButtonRowSpacer />
-      <ButtonRow style={{ justifyContent: selectedAsset ? 'center' : 'flex-start' }}>
+      )}
+      {!isNftDiscoveryEnabled ? (
+        <Column margin="20px 0 20px 0" alignItems="flex-start">
+          <CheckboxWrapper>
+            <Checkbox
+              isChecked={displayAutomatically}
+              onChange={onEnableNftAutoDiscovery}
+              alignItems="flex-start"
+            >
+              <CheckboxText>{getLocale('braveWalletEnableNftAutoDiscoveryCheckLabel')}</CheckboxText>
+            </Checkbox>
+          </CheckboxWrapper>
+          <NftAutoDiscoveryDescription />
+        </Column>
+      ) : (
+        <ButtonRowSpacer />
+      )}
+      <ButtonRow
+        style={{ justifyContent: selectedAsset ? 'center' : 'flex-start' }}
+      >
         <NavButton
           onSubmit={onClickCancel}
           text={getLocale('braveWalletButtonCancel')}
-          buttonType='secondary'
+          buttonType="secondary"
         />
         <Tooltip
           text={<FormErrorsList errors={formErrors} />}
           isVisible={buttonDisabled}
-          verticalPosition='above'
+          verticalPosition="above"
         >
           <NavButton
             onSubmit={addOrUpdateToken}
-            text={selectedAsset ? 'Save changes' : getLocale('braveWalletWatchListAdd')}
-            buttonType='primary'
+            text={
+              selectedAsset
+                ? 'Save changes'
+                : getLocale('braveWalletImportNftModalTitle')
+            }
+            buttonType="primary"
             disabled={buttonDisabled}
           />
         </Tooltip>

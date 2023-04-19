@@ -6,6 +6,7 @@
 import styled from 'styled-components'
 import { WalletButton } from '../style'
 import { CaratStrongDownIcon } from 'brave-ui/components/icons'
+import * as leo from '@brave/leo/tokens/css'
 
 export const AdvancedButton = styled(WalletButton)`
   display: flex;
@@ -147,6 +148,24 @@ export const Input = styled.input`
 
 export const ButtonRowSpacer = styled.div`
   display: flex;
+  align-items: flex-start;
   width: 100% auto;
   margin-top: 14px;
+`
+
+export const CheckboxText = styled.p`
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  color: ${leo.color.text.primary};
+  margin: 5px 0 0 0;
+  padding: 0;
+`
+
+export const CheckboxWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin-left: -8px;
 `
