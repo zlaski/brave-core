@@ -45,6 +45,11 @@
 #include "brave/components/playlist/renderer/playlist_render_frame_observer.h"
 #endif
 
+BASE_DECLARE_FEATURE(kDisableBraveRendererFeatures);
+BASE_FEATURE(kDisableBraveRendererFeatures,
+             "DisableBraveRendererFeatures",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 BraveContentRendererClient::BraveContentRendererClient() = default;
 
 void BraveContentRendererClient::
@@ -73,10 +78,12 @@ BraveContentRendererClient::~BraveContentRendererClient() = default;
 void BraveContentRendererClient::RenderThreadStarted() {
   ChromeContentRendererClient::RenderThreadStarted();
 
-  brave_observer_ = std::make_unique<BraveRenderThreadObserver>();
-  content::RenderThread::Get()->AddObserver(brave_observer_.get());
-  brave_search_service_worker_holder_.SetBrowserInterfaceBrokerProxy(
-      browser_interface_broker_.get());
+  if (!base::FeatureList::IsEnabled(kDisableBraveRendererFeatures)) {
+    brave_observer_ = std::make_unique<BraveRenderThreadObserver>();
+    content::RenderThread::Get()->AddObserver(brave_observer_.get());
+    brave_search_service_worker_holder_.SetBrowserInterfaceBrokerProxy(
+        browser_interface_broker_.get());
+  }
 
   blink::WebScriptController::RegisterExtension(
       brave::SafeBuiltins::CreateV8Extension());
@@ -85,6 +92,9 @@ void BraveContentRendererClient::RenderThreadStarted() {
 void BraveContentRendererClient::RenderFrameCreated(
     content::RenderFrame* render_frame) {
   ChromeContentRendererClient::RenderFrameCreated(render_frame);
+  if (base::FeatureList::IsEnabled(kDisableBraveRendererFeatures)) {
+    return;
+  }
 
   if (base::FeatureList::IsEnabled(
           brave_shields::features::kBraveAdblockCosmeticFiltering)) {
@@ -137,20 +147,24 @@ void BraveContentRendererClient::RenderFrameCreated(
 
 void BraveContentRendererClient::RunScriptsAtDocumentStart(
     content::RenderFrame* render_frame) {
-  auto* observer =
-      cosmetic_filters::CosmeticFiltersJsRenderFrameObserver::Get(render_frame);
-  // Run this before any extensions
-  if (observer)
-    observer->RunScriptsAtDocumentStart();
+  if (!base::FeatureList::IsEnabled(kDisableBraveRendererFeatures)) {
+    auto* observer =
+        cosmetic_filters::CosmeticFiltersJsRenderFrameObserver::Get(
+            render_frame);
+    // Run this before any extensions
+    if (observer) {
+      observer->RunScriptsAtDocumentStart();
+    }
 
 #if BUILDFLAG(ENABLE_PLAYLIST)
-  if (base::FeatureList::IsEnabled(playlist::features::kPlaylist)) {
-    if (auto* playlist_observer =
-            playlist::PlaylistRenderFrameObserver::Get(render_frame)) {
-      playlist_observer->RunScriptsAtDocumentStart();
+    if (base::FeatureList::IsEnabled(playlist::features::kPlaylist)) {
+      if (auto* playlist_observer =
+              playlist::PlaylistRenderFrameObserver::Get(render_frame)) {
+        playlist_observer->RunScriptsAtDocumentStart();
+      }
     }
-  }
 #endif
+  }
 
   ChromeContentRendererClient::RunScriptsAtDocumentStart(render_frame);
 }
@@ -161,9 +175,12 @@ void BraveContentRendererClient::WillEvaluateServiceWorkerOnWorkerThread(
     int64_t service_worker_version_id,
     const GURL& service_worker_scope,
     const GURL& script_url) {
-  brave_search_service_worker_holder_.WillEvaluateServiceWorkerOnWorkerThread(
-      context_proxy, v8_context, service_worker_version_id,
-      service_worker_scope, script_url);
+  if (!base::FeatureList::IsEnabled(kDisableBraveRendererFeatures)) {
+    brave_search_service_worker_holder_.WillEvaluateServiceWorkerOnWorkerThread(
+        context_proxy, v8_context, service_worker_version_id,
+        service_worker_scope, script_url);
+  }
+
   ChromeContentRendererClient::WillEvaluateServiceWorkerOnWorkerThread(
       context_proxy, v8_context, service_worker_version_id,
       service_worker_scope, script_url);
@@ -174,10 +191,13 @@ void BraveContentRendererClient::WillDestroyServiceWorkerContextOnWorkerThread(
     int64_t service_worker_version_id,
     const GURL& service_worker_scope,
     const GURL& script_url) {
-  brave_search_service_worker_holder_
-      .WillDestroyServiceWorkerContextOnWorkerThread(
-          v8_context, service_worker_version_id, service_worker_scope,
-          script_url);
+  if (!base::FeatureList::IsEnabled(kDisableBraveRendererFeatures)) {
+    brave_search_service_worker_holder_
+        .WillDestroyServiceWorkerContextOnWorkerThread(
+            v8_context, service_worker_version_id, service_worker_scope,
+            script_url);
+  }
+
   ChromeContentRendererClient::WillDestroyServiceWorkerContextOnWorkerThread(
       v8_context, service_worker_version_id, service_worker_scope, script_url);
 }
