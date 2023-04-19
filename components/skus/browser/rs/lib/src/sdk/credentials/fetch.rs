@@ -11,7 +11,7 @@ use serde_json::Value;
 use sha2::Sha512;
 
 use crate::errors::{InternalError, SkusError};
-use crate::http::{HttpHandler, delay_from_response};
+use crate::http::{delay_from_response, HttpHandler};
 use crate::models::*;
 use crate::sdk::SDK;
 use crate::{HTTPClient, StorageClient};
@@ -72,12 +72,15 @@ where
     ) -> Result<Vec<BlindedToken>, SkusError> {
         let mut csprng = OsRng;
 
-        let creds: Vec<Token> =
-            iter::repeat_with(|| Token::random::<Sha512, _>(&mut csprng)).take(num_creds).collect();
+        let creds: Vec<Token> = iter::repeat_with(|| Token::random::<Sha512, _>(&mut csprng))
+            .take(num_creds)
+            .collect();
 
         let blinded_creds: Vec<BlindedToken> = creds.iter().map(|t| t.blind()).collect();
 
-        self.client.upsert_time_limited_v2_item_creds(item_id, creds).await?;
+        self.client
+            .upsert_time_limited_v2_item_creds(item_id, creds)
+            .await?;
 
         Ok(blinded_creds)
     }
@@ -105,8 +108,9 @@ where
 
                     let mut num_creds: usize = 0;
                     if let Some(ref metadata) = order.metadata {
-                        let num_intervals =
-                            metadata.num_intervals.ok_or(InternalError::OrderMisconfiguration)?;
+                        let num_intervals = metadata
+                            .num_intervals
+                            .ok_or(InternalError::OrderMisconfiguration)?;
                         let num_per_interval = metadata
                             .num_per_interval
                             .ok_or(InternalError::OrderMisconfiguration)?;
@@ -163,7 +167,10 @@ where
                     // request.  this happens if we currently are full with credentials
 
                     if !blinded_creds.is_empty() {
-                        let claim_req = ItemCredentialsRequest { item_id: item.id, blinded_creds };
+                        let claim_req = ItemCredentialsRequest {
+                            item_id: item.id,
+                            blinded_creds,
+                        };
 
                         let request_with_retries = FutureRetry::new(
                             || async {
@@ -212,12 +219,17 @@ where
                                 let blinded_creds: Vec<BlindedToken> =
                                     creds.iter().map(|t| t.blind()).collect();
 
-                                self.client.init_single_use_item_creds(&item.id, creds).await?;
+                                self.client
+                                    .init_single_use_item_creds(&item.id, creds)
+                                    .await?;
                                 blinded_creds
                             }
                         };
 
-                    let claim_req = ItemCredentialsRequest { item_id: item.id, blinded_creds };
+                    let claim_req = ItemCredentialsRequest {
+                        item_id: item.id,
+                        blinded_creds,
+                    };
 
                     let request_with_retries = FutureRetry::new(
                         || async {
@@ -287,9 +299,10 @@ where
 
         let request_with_retries = FutureRetry::new(
             || async move {
-                let mut builder = http::Request::builder();
-                builder.method("GET");
-                builder.uri(format!("{}/v1/orders/{}/credentials", self.base_url, order_id));
+                let builder = http::Request::builder().method("GET").uri(format!(
+                    "{}/v1/orders/{}/credentials",
+                    self.base_url, order_id
+                ));
 
                 let req = builder.body(vec![]).unwrap();
 
@@ -297,7 +310,9 @@ where
 
                 match resp.status() {
                     http::StatusCode::OK => Ok(resp),
-                    http::StatusCode::ACCEPTED => Err(InternalError::RetryLater(delay_from_response(&resp))),
+                    http::StatusCode::ACCEPTED => {
+                        Err(InternalError::RetryLater(delay_from_response(&resp)))
+                    }
                     http::StatusCode::NOT_FOUND => Err(InternalError::NotFound),
                     _ => Err(resp.into()),
                 }
@@ -373,12 +388,13 @@ where
                                 // for batch verification
                                 if bc.encode_base64() == sbc.encode_base64() {
                                     bucket_blinded_creds.push(*bc);
-                                    for t in &item_creds.creds{
+                                    for t in &item_creds.creds {
                                         // find the original token from our list of creds
                                         // that matches up with this blinded token so we can
                                         // add to our bucket creds for verification
-                                        if t.blind().encode_base64() == bc.encode_base64(){
-                                            bucket_creds.push(Token::from_bytes(&t.to_bytes()).unwrap());
+                                        if t.blind().encode_base64() == bc.encode_base64() {
+                                            bucket_creds
+                                                .push(Token::from_bytes(&t.to_bytes()).unwrap());
                                         }
                                     }
                                 }
@@ -390,10 +406,10 @@ where
                         // are the unblinded form of the bucket_blinded_creds
                         let unblinded_creds = batch_proof
                             .verify_and_unblind::<Sha512, _>(
-                                &bucket_creds, // just the creds server says it signed
+                                &bucket_creds,         // just the creds server says it signed
                                 &bucket_blinded_creds, // the blinded creds
-                                &signed_creds, // the signed creds from server
-                                &public_key, // the server's public key
+                                &signed_creds,         // the signed creds from server
+                                &public_key,           // the server's public key
                             )
                             .or(Err(InternalError::InvalidProof))?;
 
@@ -454,7 +470,7 @@ where
                                 )
                             })?
                             .and_hms_opt(0, 0, 0)
-                            .unwrap(),  //  guaranteed to succeed because of (0, 0, 0)
+                            .unwrap(), //  guaranteed to succeed because of (0, 0, 0)
                         expires_at: NaiveDate::parse_from_str(&expires_at, "%Y-%m-%d")
                             .map_err(|_| {
                                 InternalError::InvalidResponse(
@@ -462,7 +478,7 @@ where
                                 )
                             })?
                             .and_hms_opt(0, 0, 0)
-                            .unwrap(),  //  guaranteed to succeed because of (0, 0, 0)
+                            .unwrap(), //  guaranteed to succeed because of (0, 0, 0)
                         token,
                     };
                     if let Some(item_creds) = time_limited_creds.get_mut(&item_id) {
@@ -475,7 +491,9 @@ where
         }
 
         for (item_id, item_creds) in time_limited_creds.into_iter() {
-            self.client.store_time_limited_creds(&item_id, item_creds).await?;
+            self.client
+                .store_time_limited_creds(&item_id, item_creds)
+                .await?;
         }
 
         Ok(())
