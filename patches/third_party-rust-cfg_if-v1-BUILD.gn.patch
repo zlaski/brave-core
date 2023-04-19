@@ -1,5 +1,5 @@
 diff --git a/third_party/rust/cfg_if/v1/BUILD.gn b/third_party/rust/cfg_if/v1/BUILD.gn
-index 8c4d2b0838600cbf298153a156a860d86d3b1e55..ba94f0454e42fced8061e63bab122607ede4fbd1 100644
+index 0128b39cf9ee8945634ecd1cc3f04842169aa7f0..b55c2d030c09c5e6bae50db691d9367218d7ee5d 100644
 --- a/third_party/rust/cfg_if/v1/BUILD.gn
 +++ b/third_party/rust/cfg_if/v1/BUILD.gn
 @@ -12,6 +12,7 @@ cargo_crate("lib") {

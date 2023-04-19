@@ -1,5 +1,5 @@
 diff --git a/third_party/rust/toml/v0_5/BUILD.gn b/third_party/rust/toml/v0_5/BUILD.gn
-index e695b8e16bb07dd56acab3a1a95e450f168a3ea4..3a7d39bc005e1cc84f0ee04bc5b9724c5e170bb8 100644
+index 5c202e7de085e4f5d921b113680e21745901760e..9dc83ae106bba8aea4bbe22424833f6d4cb7ef85 100644
 --- a/third_party/rust/toml/v0_5/BUILD.gn
 +++ b/third_party/rust/toml/v0_5/BUILD.gn
 @@ -12,6 +12,7 @@ cargo_crate("lib") {

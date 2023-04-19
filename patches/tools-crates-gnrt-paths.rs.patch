@@ -1,8 +1,8 @@
 diff --git a/tools/crates/gnrt/paths.rs b/tools/crates/gnrt/paths.rs
-index d7b24ac72a5830fb0137b87a9e202633ef1f818e..092d4582bd19ba0388064d67ec423a12e0daa576 100644
+index d587de5f3b7e313c9a475e1e799d06cfcf83bbbd..7b72f069fe4c89d432bdb37890760be960d0f1e0 100644
 --- a/tools/crates/gnrt/paths.rs
 +++ b/tools/crates/gnrt/paths.rs
-@@ -69,10 +69,10 @@ fn check_path<'a>(root: &Path, p_str: &'a str) -> io::Result<&'a Path> {
+@@ -66,10 +66,10 @@ fn check_path<'a>(root: &Path, p_str: &'a str) -> io::Result<&'a Path> {
      Ok(p)
  }
  

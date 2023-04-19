@@ -22,6 +22,7 @@ source_set("wrapper") {
 rust_static_library("rust_lib") {
   crate_name = "challenge_bypass_ristretto_ffi"
   crate_root = "src/lib.rs"
+  allow_unsafe = true
   sources = [
     "src/lib.rs",
   ]

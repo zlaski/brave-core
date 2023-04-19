@@ -26,6 +26,7 @@ rust_static_library("lib") {
   crate_name = "speedreader_ffi"
   crate_root = "lib.rs"
   edition = "2018"
+  allow_unsafe = true
   sources = [
     "charbuf.rs",
     "lib.rs",

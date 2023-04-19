@@ -18,6 +18,7 @@ source_set("ffi") {
 rust_static_library("rust_lib") {
   crate_name = "adblock_ffi"
   crate_root = "src/lib.rs"
+  allow_unsafe = true
   sources = [
     "src/lib.rs",
   ]

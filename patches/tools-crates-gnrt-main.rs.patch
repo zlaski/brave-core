@@ -1,5 +1,5 @@
 diff --git a/tools/crates/gnrt/main.rs b/tools/crates/gnrt/main.rs
-index e88189c4727bf5488a1abfff08a0f34796ac06d0..b463108ba47e509d253965ae1eb957e158c80c9c 100644
+index fdd399fda55ba644025bfa13b0d4472e7b41f4b6..96709f53c5710b5741e87dc8a05a7b6580ade05a 100644
 --- a/tools/crates/gnrt/main.rs
 +++ b/tools/crates/gnrt/main.rs
 @@ -223,7 +223,7 @@ fn generate_for_third_party(args: &clap::ArgMatches, paths: &paths::ChromiumPath

@@ -44,6 +44,7 @@ deps = {
   },
   "third_party/playlist_component/src": "https://github.com/brave/playlist-component.git@5434730bf7342f1ba5c057f1640882bb38604a85",
   "third_party/constellation/crate": "https://github.com/brave/constellation.git@b6b8396abd98cc87a187e051c32a291c9faa43f7",
+  "third_party/sta_rs/crate": "https://github.com/brave/sta-rs.git@a0381f242314a906425e39f73656717e024636f3",
 }
 
 recursedeps = [
