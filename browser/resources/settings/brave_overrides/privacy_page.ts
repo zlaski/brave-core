@@ -420,9 +420,11 @@ RegisterPolymerTemplateModifications({
       }
     }
 
-    const showPrivacyGuideEntryPointTemplate = templateContent.querySelector(`template[if*='isPrivacyGuideAvailable']`)
+    const showPrivacyGuideEntryPointTemplate =
+        templateContent.querySelector(`template[if*='isPrivacyGuideAvailable']`)
     if (!showPrivacyGuideEntryPointTemplate) {
-      console.error('[Brave Settings Overrides] Could not find template with if*=isPrivacyGuideAvailable on privacy page.')
+      console.error(
+          '[Brave Settings Overrides] Could not find template with if*=isPrivacyGuideAvailable on privacy page.')
     } else {
       const privacyGuideLinkRow = showPrivacyGuideEntryPointTemplate.content.getElementById('privacyGuideLinkRow')
       if (!privacyGuideLinkRow) {
