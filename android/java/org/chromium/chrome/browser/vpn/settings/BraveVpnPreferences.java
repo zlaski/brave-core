@@ -28,6 +28,7 @@ import com.wireguard.crypto.KeyPair;
 
 import org.chromium.base.BraveFeatureList;
 import org.chromium.base.Log;
+import org.chromium.brave_vpn.mojom.ServiceHandler;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.ChromeTabbedActivity;
 import org.chromium.chrome.browser.InternetConnection;
@@ -37,6 +38,7 @@ import org.chromium.chrome.browser.flags.ChromeFeatureList;
 import org.chromium.chrome.browser.settings.BravePreferenceFragment;
 import org.chromium.chrome.browser.vpn.BraveVpnNativeWorker;
 import org.chromium.chrome.browser.vpn.BraveVpnObserver;
+import org.chromium.chrome.browser.vpn.BraveVpnServiceFactoryAndroid;
 import org.chromium.chrome.browser.vpn.activities.BraveVpnProfileActivity;
 import org.chromium.chrome.browser.vpn.models.BraveVpnPrefModel;
 import org.chromium.chrome.browser.vpn.models.BraveVpnServerRegion;
@@ -50,6 +52,8 @@ import org.chromium.chrome.browser.vpn.wireguard.WireguardConfigUtils;
 import org.chromium.components.browser_ui.settings.ChromeBasePreference;
 import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
 import org.chromium.components.browser_ui.settings.SettingsUtils;
+import org.chromium.mojo.bindings.ConnectionErrorHandler;
+import org.chromium.mojo.system.MojoException;
 import org.chromium.ui.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -58,7 +62,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class BraveVpnPreferences extends BravePreferenceFragment implements BraveVpnObserver {
+public class BraveVpnPreferences
+        extends BravePreferenceFragment implements BraveVpnObserver, ConnectionErrorHandler {
     private static final String TAG = "BraveVPN";
     public static final String PREF_VPN_SWITCH = "vpn_switch";
     public static final String PREF_SUBSCRIPTION_MANAGE = "subscription_manage";
@@ -89,6 +94,30 @@ public class BraveVpnPreferences extends BravePreferenceFragment implements Brav
     private ChromeBasePreference mServerHost;
     private ChromeBasePreference mLinkSubscriptionPreference;
     private BraveVpnPrefModel mBraveVpnPrefModel;
+
+    private ServiceHandler mServiceHandler;
+
+    @Override
+    public void onDestroy() {
+        if (mServiceHandler != null) {
+            mServiceHandler.close();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onConnectionError(MojoException e) {
+        mServiceHandler = null;
+        initServiceHandler();
+    }
+
+    private void initServiceHandler() {
+        if (mServiceHandler != null) {
+            return;
+        }
+
+        mServiceHandler = BraveVpnServiceFactoryAndroid.getInstance().getServiceHandler(this);
+    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -217,6 +246,7 @@ public class BraveVpnPreferences extends BravePreferenceFragment implements Brav
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        initServiceHandler();
         if (context != null) {
             ConnectivityManager connectivityManager =
                     (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -227,21 +257,21 @@ public class BraveVpnPreferences extends BravePreferenceFragment implements Brav
                             .build();
             connectivityManager.registerNetworkCallback(networkRequest, mNetworkCallback);
         }
-        BraveVpnNativeWorker.getInstance().getAllServerRegions();
+        if (mServiceHandler != null) {
+            mServiceHandler.getAllServerRegions((isSuccess, regions) -> {
+                if (isSuccess) {
+                    BraveVpnPrefUtils.setServerRegions(regions);
+                    new Handler().post(() -> updateSummaries());
+                } else {
+                    Toast.makeText(getActivity(), R.string.fail_to_get_server_locations,
+                                 Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+        }
         if (!InternetConnection.isNetworkAvailable(getActivity())) {
             Toast.makeText(getActivity(), R.string.no_internet, Toast.LENGTH_SHORT).show();
             getActivity().finish();
-        }
-    }
-
-    @Override
-    public void onGetAllServerRegions(String jsonResponse, boolean isSuccess) {
-        if (isSuccess) {
-            BraveVpnPrefUtils.setServerRegions(jsonResponse);
-            new Handler().post(() -> updateSummaries());
-        } else {
-            Toast.makeText(getActivity(), R.string.fail_to_get_server_locations, Toast.LENGTH_LONG)
-                    .show();
         }
     }
 

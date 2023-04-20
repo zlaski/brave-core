@@ -627,6 +627,20 @@ void BraveVpnService::GetPurchaseToken(GetPurchaseTokenCallback callback) {
 
   std::move(callback).Run(encoded_response_json);
 }
+
+void BraveVpnService::GetAllServerRegions(ApiResponseCallback callback) {
+  auto internal_callback =
+      base::BindOnce(&BraveVpnService::OnApiResponseCallback,
+                     weak_ptr_factory_.GetWeakPtr(), std::move(callback));
+  api_request_.GetAllServerRegions(std::move(internal_callback));
+}
+
+void BraveVpnService::OnApiResponseCallback(ApiResponseCallback callback,
+                                            bool success,
+                                            const std::string& json_response) {
+  LOG(ERROR) << "NTP" << json_response;
+  std::move(callback).Run(success, json_response);
+}
 #endif  // BUILDFLAG(IS_ANDROID)
 
 void BraveVpnService::AddObserver(
@@ -1006,10 +1020,6 @@ void BraveVpnService::Shutdown() {
   observed_.Reset();
   receivers_.Clear();
 #endif  // !BUILDFLAG(IS_ANDROID)
-}
-
-void BraveVpnService::GetAllServerRegions(ResponseCallback callback) {
-  api_request_.GetAllServerRegions(std::move(callback));
 }
 
 void BraveVpnService::GetTimezonesForRegions(ResponseCallback callback) {

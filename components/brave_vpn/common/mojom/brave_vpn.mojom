@@ -75,6 +75,9 @@ interface ServiceHandler {
 
   [EnableIf=is_android]
   GetPurchaseToken() => (string token);
+
+  [EnableIf=is_android]
+  GetAllServerRegions() => (bool success, string regions);
 };
 
 // WebUI-side handler for requests from the browser.

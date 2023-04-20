@@ -109,6 +109,12 @@ class BraveVpnService :
 #else
   // mojom::vpn::ServiceHandler
   void GetPurchaseToken(GetPurchaseTokenCallback callback) override;
+  using ApiResponseCallback =
+      base::OnceCallback<void(bool success, const std::string&)>;
+  void GetAllServerRegions(ApiResponseCallback callback) override;
+  void OnApiResponseCallback(ApiResponseCallback callback,
+                             bool success,
+                             const std::string& json_response);
 #endif  // !BUILDFLAG(IS_ANDROID)
 
   using ResponseCallback =
@@ -120,7 +126,6 @@ class BraveVpnService :
   void GetPurchasedState(GetPurchasedStateCallback callback) override;
   void LoadPurchasedState(const std::string& domain) override;
 
-  void GetAllServerRegions(ResponseCallback callback);
   void GetTimezonesForRegions(ResponseCallback callback);
   void GetHostnamesForRegion(ResponseCallback callback,
                              const std::string& region);
