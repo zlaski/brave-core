@@ -1,0 +1,14 @@
+# Copyright 2018 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/config/android/config.gni")
+import("//build/config/android/rules.gni")
+
+android_library("ulp_delegate_public_java") {
+  sources = [
+    "java/src/org/chromium/components/language/BraveLocaleManagerDelegateImpl.java",
+  ]
+
+  deps = [ ":ulp_delegate_java" ]
+}

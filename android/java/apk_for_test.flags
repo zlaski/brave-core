@@ -326,6 +326,11 @@
     public <init>(...);
 }
 
+-keep class org.chromium.components.language.BraveLocaleManagerDelegateImpl {
+    *** getApplicationLocale(...);
+    *** setApplicationLocale(...);
+}
+
 -keep class org.chromium.chrome.browser.notifications.BraveNotificationManagerProxyImpl {
     public <init>(...);
 }
