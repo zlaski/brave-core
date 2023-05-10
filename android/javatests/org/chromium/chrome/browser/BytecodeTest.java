@@ -264,6 +264,10 @@ public class BytecodeTest {
                 "org/chromium/chrome/browser/partnercustomizations/CustomizationProviderDelegateImpl"));
         Assert.assertTrue(classExists(
                 "org/chromium/chrome/browser/partnercustomizations/BraveCustomizationProviderDelegateImpl"));
+        Assert.assertTrue(
+                classExists("org/chromium/components/language/LocaleManagerDelegateImpl"));
+        Assert.assertTrue(
+                classExists("org/chromium/components/language/BraveLocaleManagerDelegateImpl"));
         Assert.assertTrue(classExists(
                 "org/chromium/chrome/browser/share/send_tab_to_self/ManageAccountDevicesLinkView"));
         Assert.assertTrue(
@@ -678,6 +682,9 @@ public class BytecodeTest {
         Assert.assertTrue(constructorsMatch(
                 "org/chromium/chrome/browser/partnercustomizations/CustomizationProviderDelegateImpl",
                 "org/chromium/chrome/browser/partnercustomizations/BraveCustomizationProviderDelegateImpl"));
+        Assert.assertTrue(
+                constructorsMatch("org/chromium/components/language/LocaleManagerDelegateImpl",
+                        "org/chromium/components/language/BraveLocaleManagerDelegateImpl"));
         Assert.assertTrue(constructorsMatch(
                 "org/chromium/chrome/browser/share/send_tab_to_self/ManageAccountDevicesLinkView",
                 "org/chromium/chrome/browser/share/send_tab_to_self/BraveManageAccountDevicesLinkView",

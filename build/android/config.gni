@@ -69,6 +69,7 @@ brave_chrome_java_deps = [
 brave_chrome_all_java_deps = [
   "//brave/android/features/tab_ui:java",
   "//brave/browser/partnercustomizations:delegate_public_impl_java",
+  "//brave/components/language/android:ulp_delegate_public_java",
 ]
 
 # To use our overrided enum in java, put the header file of our overrided enum

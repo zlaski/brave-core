@@ -144,6 +144,7 @@ android_only_test_deps = [
   ":test_support",
   "//android_webview/common",
   "//brave/browser/partnercustomizations:delegate_public_impl_java",
+  "//brave/components/language/android:ulp_delegate_public_java",
   "//chrome:chrome_android_core",
   "//chrome/android:app_hooks_java",
   "//chrome/android:delegate_public_impl_java",

@@ -5,7 +5,10 @@
 package org.chromium.components.language;
 
 import android.app.LocaleManager;
+import android.os.Build;
 import android.os.LocaleList;
+
+import androidx.annotation.RequiresApi;
 
 import org.chromium.base.ContextUtils;
 import org.chromium.base.Log;
@@ -15,9 +18,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class BraveLocaleManagerDelegateImpl extends LocaleManagerDelegateImpl {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @Override
     public Locale getApplicationLocale() {
-
         Log.e("tapan", "BraveLocaleManagerDelegateImpl getApplicationLocale");
         // TODO(https://crbug.com/1293523): Replace with calls to {@link LocaleManager} once the T
         // SDK is available.
@@ -30,13 +33,14 @@ public class BraveLocaleManagerDelegateImpl extends LocaleManagerDelegateImpl {
         return null;
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @Override
     public void setApplicationLocale(String languageName) {
         // TODO(https://crbug.com/1293523): Replace with calls to {@link LocaleManager} once the T
         // SDK is available.
-        Log.e("tapan", "BraveLocaleManagerDelegateImpl setApplicationLocale:"+languageName);
-        /*ContextUtils.getApplicationContext()
+        Log.e("tapan", "BraveLocaleManagerDelegateImpl setApplicationLocale:" + languageName);
+        ContextUtils.getApplicationContext()
                 .getSystemService(LocaleManager.class)
-                .setApplicationLocales(new LocaleList(Locale.forLanguageTag(languageName)));*/
+                .setApplicationLocales(new LocaleList(Locale.forLanguageTag(languageName)));
     }
 }
