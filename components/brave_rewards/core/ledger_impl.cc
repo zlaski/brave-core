@@ -479,7 +479,7 @@ void LedgerImpl::GetRecurringTips(GetRecurringTipsCallback callback) {
 
 void LedgerImpl::GetOneTimeTips(GetOneTimeTipsCallback callback) {
   WhenReady([this, callback = ToLegacyCallback(std::move(callback))]() mutable {
-    database()->GetOneTimeTips(util::GetCurrentMonth(), util::GetCurrentYear(),
+    database()->GetOneTimeTips(util::GetUTCDateTimeRangeForCurrentLocalMonth(),
                                std::move(callback));
   });
 }

@@ -100,9 +100,9 @@ class Database {
   virtual void GetContributionInfo(const std::string& contribution_id,
                                    GetContributionInfoCallback callback);
 
-  void GetOneTimeTips(const mojom::ActivityMonth month,
-                      const int year,
-                      GetOneTimeTipsCallback callback);
+  void GetOneTimeTips(
+      const std::pair<base::Time::Exploded, base::Time::Exploded> time_range,
+      GetOneTimeTipsCallback callback);
 
   void GetContributionReport(const mojom::ActivityMonth month,
                              const int year,

@@ -6,10 +6,47 @@
 #include "brave/components/brave_rewards/core/common/time_util.h"
 
 #include <algorithm>
+
+#include "base/time/time.h"
 #include "brave_base/random.h"
+#include "third_party/icu/source/i18n/unicode/timezone.h"
 
 namespace brave_rewards::internal {
 namespace util {
+
+std::pair<base::Time::Exploded, base::Time::Exploded>
+GetUTCDateTimeRangeForCurrentLocalMonth() {
+  base::Time now = base::Time::Now();
+  // Local time
+  base::Time::Exploded start;
+  now.LocalExplode(&start);
+
+  // Set the start value to the beginning of the current month
+  start.day_of_month = 1;
+  start.hour = 0;
+  start.minute = 0;
+  start.second = 0;
+  start.millisecond = 0;
+
+  // Set the end value to the beginning of the next month
+  base::Time::Exploded end = start;
+  end.month = end.month == 12 ? 1 : end.month + 1;
+
+  // Convert to UTC
+  base::Time utcStart, utcEnd;
+  if (base::Time::FromLocalExploded(start, &utcStart) &&
+      base::Time::FromLocalExploded(end, &utcEnd)) {
+    // Adjust the end time by 1 millisecond to set it to the last millisecond
+    // of the current month
+    utcEnd -= base::Milliseconds(1);
+
+    // Explode in UTC
+    utcStart.UTCExplode(&start);
+    utcEnd.UTCExplode(&end);
+  }
+
+  return {start, end};
+}
 
 mojom::ActivityMonth GetCurrentMonth() {
   base::Time now = base::Time::Now();

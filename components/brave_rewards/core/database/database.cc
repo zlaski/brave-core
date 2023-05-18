@@ -137,10 +137,10 @@ void Database::GetAllContributions(ContributionInfoListCallback callback) {
   contribution_info_.GetAllRecords(callback);
 }
 
-void Database::GetOneTimeTips(const mojom::ActivityMonth month,
-                              const int year,
-                              GetOneTimeTipsCallback callback) {
-  contribution_info_.GetOneTimeTips(month, year, callback);
+void Database::GetOneTimeTips(
+    const std::pair<base::Time::Exploded, base::Time::Exploded> time_range,
+    GetOneTimeTipsCallback callback) {
+  contribution_info_.GetOneTimeTips(time_range, callback);
 }
 
 void Database::GetContributionReport(const mojom::ActivityMonth month,

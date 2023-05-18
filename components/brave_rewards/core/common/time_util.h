@@ -6,11 +6,16 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_REWARDS_CORE_COMMON_TIME_UTIL_H_
 #define BRAVE_COMPONENTS_BRAVE_REWARDS_CORE_COMMON_TIME_UTIL_H_
 
+#include <utility>
+
 #include "base/time/time.h"
 #include "brave/components/brave_rewards/core/mojom_structs.h"
 
 namespace brave_rewards::internal {
 namespace util {
+
+std::pair<base::Time::Exploded, base::Time::Exploded>
+GetUTCDateTimeRangeForCurrentLocalMonth();
 
 mojom::ActivityMonth GetCurrentMonth();
 

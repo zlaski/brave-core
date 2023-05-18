@@ -42,6 +42,12 @@ mojom::ReportType ConvertRewardsTypeToReportType(
   }
 }
 
+std::string FormatExplodedTime(const base::Time::Exploded& exploded) {
+  return base::StringPrintf("%04d-%02d-%02d %02d:%02d:%02d", exploded.year,
+                            exploded.month, exploded.day_of_month,
+                            exploded.hour, exploded.minute, exploded.second);
+}
+
 }  // namespace
 
 DatabaseContributionInfo::DatabaseContributionInfo(LedgerImpl& ledger)
@@ -207,15 +213,9 @@ void DatabaseContributionInfo::GetAllRecords(
   ledger_->RunDBTransaction(std::move(transaction), transaction_callback);
 }
 
-void DatabaseContributionInfo::GetOneTimeTips(const mojom::ActivityMonth month,
-                                              const int year,
-                                              GetOneTimeTipsCallback callback) {
-  if (year == 0) {
-    BLOG(1, "Year is 0");
-    callback({});
-    return;
-  }
-
+void DatabaseContributionInfo::GetOneTimeTips(
+    const std::pair<base::Time::Exploded, base::Time::Exploded> time_range,
+    GetOneTimeTipsCallback callback) {
   auto transaction = mojom::DBTransaction::New();
 
   const std::string query = base::StringPrintf(
@@ -227,8 +227,10 @@ void DatabaseContributionInfo::GetOneTimeTips(const mojom::ActivityMonth month,
       "INNER JOIN publisher_info AS pi ON cp.publisher_key = pi.publisher_id "
       "LEFT JOIN server_publisher_info AS spi "
       "ON spi.publisher_key = pi.publisher_id "
-      "WHERE strftime('%%m',  datetime(ci.created_at, 'unixepoch')) = ? AND "
-      "strftime('%%Y', datetime(ci.created_at, 'unixepoch')) = ? "
+      "WHERE "
+      "strftime('%%Y-%%m-%%d %%H:%%M:%%S', "
+      "datetime(ci.created_at, 'unixepoch')) "
+      "BETWEEN ? AND ? "
       "AND ci.type = ? AND ci.step = ?",
       kTableName, kChildTableName);
 
@@ -236,10 +238,11 @@ void DatabaseContributionInfo::GetOneTimeTips(const mojom::ActivityMonth month,
   command->type = mojom::DBCommand::Type::READ;
   command->command = query;
 
-  const std::string formatted_month = base::StringPrintf("%02d", month);
+  const std::string formatted_start = FormatExplodedTime(time_range.first);
+  const std::string formatted_end = FormatExplodedTime(time_range.second);
 
-  BindString(command.get(), 0, formatted_month);
-  BindString(command.get(), 1, std::to_string(year));
+  BindString(command.get(), 0, formatted_start);
+  BindString(command.get(), 1, formatted_end);
   BindInt(command.get(), 2, static_cast<int>(mojom::RewardsType::ONE_TIME_TIP));
   BindInt(command.get(), 3,
           static_cast<int>(mojom::ContributionStep::STEP_COMPLETED));
