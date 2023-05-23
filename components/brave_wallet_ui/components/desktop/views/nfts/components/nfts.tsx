@@ -54,6 +54,7 @@ import {
 import { Row, ScrollableColumn } from '../../../../shared/style'
 import { AddOrEditNftModal } from '../../../popup-modals/add-edit-nft-modal/add-edit-nft-modal'
 import { NftsEmptyState } from './nfts-empty-state/nfts-empty-state'
+import { Tooltip } from '../../../../shared'
 
 interface Props {
   networks: BraveWallet.NetworkInfo[]
@@ -198,9 +199,11 @@ export const Nfts = (props: Props) => {
         />
         <NetworkFilterSelector networkListSubset={networks} />
         {isNftPinningFeatureEnabled && nonFungibleTokens.length > 0 && (
-          <IpfsButton onClick={onClickIpfsButton}>
-            <IpfsIcon />
-          </IpfsButton>
+          <Tooltip text="Show/hide NFT pinning banner" verticalPosition='above'>
+            <IpfsButton onClick={onClickIpfsButton}>
+              <IpfsIcon />
+            </IpfsButton>
+          </Tooltip>
         )}
         <AddButton onClick={toggleShowAddNftModal}>
           <AddIcon />

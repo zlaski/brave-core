@@ -39,23 +39,34 @@ export const NftIpfsBanner = ({ onDismiss }: Props) => {
   const history = useHistory()
 
   // redux
-  const { pinnableNftsCount, pinnedNftsCount, pinningStatusSummary: status } = useNftPin()
+  const { pinnedNftsCount, pinningStatusSummary: status } = useNftPin()
   const isAutoPinEnabled = useSafePageSelector(PageSelectors.isAutoPinEnabled)
 
   // memos
-  const bannerStatus: BannerStatus = React.useMemo(() => {
-    if (!isAutoPinEnabled) return 'start'
+  const [bannerStatus, bannerText]: [BannerStatus, string] =
+    React.useMemo(() => {
+      if (!isAutoPinEnabled)
+        return ['start', getLocale('braveWalletNftPinningBannerStart')]
 
-    switch (status) {
-      case OverallPinningStatus.PINNING_FINISHED:
-        return 'success'
-      case OverallPinningStatus.PINNING_IN_PROGRESS:
-        return 'uploading'
-      default:
-        return 'hidden'
-    }
-  }, [status, pinnableNftsCount, isAutoPinEnabled])
-
+      switch (status) {
+        case OverallPinningStatus.PINNING_FINISHED:
+          return [
+            'success',
+            getLocale('braveWalletNftPinningBannerSuccess').replace(
+              '$1',
+              `${pinnedNftsCount}`
+            )
+          ]
+        case OverallPinningStatus.PINNING_IN_PROGRESS:
+          return [
+            'uploading',
+            getLocale('braveWalletNftPinningBannerUploading')
+          ]
+        default:
+          return ['hidden', getLocale('braveWalletNftPinningBannerNothingToPin')]
+      }
+    }, [status, pinnedNftsCount, isAutoPinEnabled])
+    console.log(bannerText, bannerStatus, status)
   // methods
   const onLearnMore = React.useCallback(() => {
     history.push(WalletRoutes.LocalIpfsNode)
@@ -70,16 +81,7 @@ export const NftIpfsBanner = ({ onDismiss }: Props) => {
           isAutopinEnabled={isAutoPinEnabled}
         />
         <Text status={bannerStatus}>
-          {bannerStatus === 'start' ? (
-            <>
-              {getLocale('braveWalletNftPinningBannerStart')}
-            </>
-          ) : bannerStatus === 'success' ? (
-            `${getLocale('braveWalletNftPinningBannerSuccess')
-              .replace('$1', `${pinnedNftsCount}`)}`
-          ) : (
-            `${getLocale('braveWalletNftPinningBannerUploading')}`
-          )}
+          {bannerText}
         </Text>
         {bannerStatus === 'start' &&
           <LearnMore onClick={onLearnMore}>

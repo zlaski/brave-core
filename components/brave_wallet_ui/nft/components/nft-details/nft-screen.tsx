@@ -121,6 +121,8 @@ export const NftScreen = (props: Props) => {
   const { getNftPinningStatus } = useNftPin()
   const onClickViewOnBlockExplorer = useExplorer(tokenNetwork || new BraveWallet.NetworkInfo())
 
+  console.log(nftMetadata?.attributes)
+
   // memos
   const currentNftPinningStatus = React.useMemo(() => {
     if (!isAutoPinEnabled) {
@@ -447,19 +449,25 @@ export const NftScreen = (props: Props) => {
           </SectionWrapper>
         </>
       )}
-      <Divider />
+      {nftMetadata?.attributes && nftMetadata?.attributes.length > 0 &&
+        <Divider />
+      }
       <SectionTitle>
         {isFetchingNFTMetadata ? (
           <Skeleton {...createSkeletonProps(200, 20)} />
         ) : (
-          getLocale('braveWalletNFTDetailsProperties')
+          <>
+            {nftMetadata?.attributes && nftMetadata?.attributes.length > 0 &&
+              getLocale('braveWalletNFTDetailsProperties')
+            }
+          </>
         )}
       </SectionTitle>
       {isFetchingNFTMetadata ? (
         <Skeleton {...createSkeletonProps('100%', 100)} />
       ) : (
         <>
-          {nftMetadata?.attributes && (
+          {nftMetadata?.attributes && nftMetadata?.attributes.length > 0 && (
             <Properties>
               {nftMetadata.attributes.map((attr, idx) => (
                 <Property key={idx}>

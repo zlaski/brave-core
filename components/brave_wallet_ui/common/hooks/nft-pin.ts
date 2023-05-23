@@ -84,10 +84,8 @@ export function useNftPin () {
   )
 
   const isIpfsBannerVisible = React.useMemo(() => {
-    return isIpfsBannerEnabled &&
-      (pinningStatusSummary !== OverallPinningStatus.NO_PINNED_ITEMS ||
-       !isAutoPinEnabled)
-  }, [isIpfsBannerEnabled, pinningStatusSummary, isAutoPinEnabled])
+    return isIpfsBannerEnabled && isAutoPinEnabled
+  }, [isIpfsBannerEnabled, isAutoPinEnabled])
 
   // methods
   const onToggleShowIpfsBanner = React.useCallback(() => {

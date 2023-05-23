@@ -894,6 +894,7 @@ provideStrings({
   braveWalletNftPinningBannerStart: 'Enable IPFS in Brave to automatically back up your NFTs for extra security.',
   braveWalletNftPinningBannerUploading: 'NFTs are being pinned to your local IPFS node.',
   braveWalletNftPinningBannerSuccess: '$1 supported NFTs are pinned to your local IPFS node.',
+  braveWalletNftPinningBannerNothingToPin: 'Nothing to pin yet',
   braveWalletNftPinningBannerLearnMore: 'Learn more',
   braveWalletNftPinningInspectHeading: '$1 out of $2 are available!',
   braveWalletNftPinningUnableToPin: 'Unable to pin',

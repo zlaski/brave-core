@@ -23,7 +23,7 @@ export const StyledWrapper = styled.div<{ status: BannerStatus }>`
       --uploading-background: #063256;
   }
   background: ${(p) =>
-    p.status === 'start'
+    p.status === 'start' || p.status === 'hidden'
       ? `url(${BannerBackground}) right 80px center/contain no-repeat, #1A1C3B`
       : p.status === 'uploading'
       ? 'var(--uploading-background)'

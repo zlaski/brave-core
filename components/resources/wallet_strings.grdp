@@ -883,6 +883,7 @@
   <message name="IDS_BRAVE_WALLET_NFT_PINNING_BANNER_START" desc="NFT IPFS banner initial text">Enable IPFS in Brave to automatically back up your NFTs for extra security.</message>
   <message name="IDS_BRAVE_WALLET_NFT_PINNING_BANNER_UPLOADING" desc="NFT IPFS banner uploading text">NFTs are being pinned to your local IPFS node.</message>
   <message name="IDS_BRAVE_WALLET_NFT_PINNING_BANNER_SUCCESS" desc="NFT IPFS banner success text"><ph name="PINNED">$1<ex>1</ex></ph> supported NFTs are pinned to your local IPFS node.</message>
+  <message name="IDS_BRAVE_WALLET_NFT_PINNING_BANNER_NOTHING_TO_PIN" desc="NFT IPFS banner nothing to pin text">Nothing to pin yet</message>
   <message name="IDS_BRAVE_WALLET_NFT_PINNING_BANNER_LEARN_MORE" desc="NFT IPFS banner learn more text">Learn more</message>
   <message name="IDS_BRAVE_WALLET_NFT_PINNING_INSPECT_HEADING" desc="Inspect page heading"><ph name="PINNABLE">$1<ex>1</ex></ph> out of <ph name="TOTAL">$2<ex>3</ex></ph> are available!</message>
   <message name="IDS_BRAVE_WALLET_NFT_PINNING_UNABLE_TO_PIN" desc="Inspect page unable to pin text">Unable to pin</message>

@@ -10,7 +10,7 @@ import PlusIcon from '../../../../../assets/svg-icons/plus-icon.svg'
 
 export const FilterTokenRow = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   flex-direction: row;
   width: 100%;
