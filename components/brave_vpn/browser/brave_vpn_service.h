@@ -112,9 +112,39 @@ class BraveVpnService :
   using ApiResponseCallback =
       base::OnceCallback<void(bool success, const std::string&)>;
   void GetAllServerRegions(ApiResponseCallback callback) override;
+  void GetTimezonesForRegions(ApiResponseCallback callback) override;
+  void GetHostnamesForRegion(const std::string& region,
+                             ApiResponseCallback callback) override;
+  void GetSubscriberCredential(const std::string& product_type,
+                               const std::string& product_id,
+                               const std::string& validation_method,
+                               const std::string& purchase_token,
+                               const std::string& bundle_id,
+                               ApiResponseCallback callback) override;
+  void GetSubscriberCredentialV12(ApiResponseCallback callback) override;
+  void GetWireguardProfileCredentials(const std::string& subscriber_credential,
+                                      const std::string& public_key,
+                                      const std::string& hostname,
+                                      ApiResponseCallback callback) override;
+  void VerifyCredentials(const std::string& hostname,
+                         const std::string& client_id,
+                         const std::string& subscriber_credential,
+                         const std::string& api_auth_token,
+                         ApiResponseCallback callback) override;
+  void InvalidateCredentials(const std::string& hostname,
+                             const std::string& client_id,
+                             const std::string& subscriber_credential,
+                             const std::string& api_auth_token,
+                             ApiResponseCallback callback) override;
+  void VerifyPurchaseToken(const std::string& purchase_token,
+                           const std::string& product_id,
+                           const std::string& product_type,
+                           const std::string& bundle_id,
+                           ApiResponseCallback callback) override;
+  void IsPurchasedUser(IsPurchasedUserCallback callback) override;
   void OnApiResponseCallback(ApiResponseCallback callback,
-                             bool success,
-                             const std::string& json_response);
+                             const std::string& json_response,
+                             bool success);
 #endif  // !BUILDFLAG(IS_ANDROID)
 
   using ResponseCallback =
@@ -126,38 +156,39 @@ class BraveVpnService :
   void GetPurchasedState(GetPurchasedStateCallback callback) override;
   void LoadPurchasedState(const std::string& domain) override;
 
-  void GetTimezonesForRegions(ResponseCallback callback);
-  void GetHostnamesForRegion(ResponseCallback callback,
-                             const std::string& region);
+  // void GetTimezonesForRegions(ResponseCallback callback);
+  // void GetHostnamesForRegion(ResponseCallback callback,
+  //                            const std::string& region);
   void GetProfileCredentials(ResponseCallback callback,
                              const std::string& subscriber_credential,
                              const std::string& hostname);
-  void GetWireguardProfileCredentials(ResponseCallback callback,
-                                      const std::string& subscriber_credential,
-                                      const std::string& public_key,
-                                      const std::string& hostname);
-  void VerifyCredentials(ResponseCallback callback,
-                         const std::string& hostname,
-                         const std::string& client_id,
-                         const std::string& subscriber_credential,
-                         const std::string& api_auth_token);
-  void InvalidateCredentials(ResponseCallback callback,
-                             const std::string& hostname,
-                             const std::string& client_id,
-                             const std::string& subscriber_credential,
-                             const std::string& api_auth_token);
-  void GetSubscriberCredential(ResponseCallback callback,
-                               const std::string& product_type,
-                               const std::string& product_id,
-                               const std::string& validation_method,
-                               const std::string& purchase_token,
-                               const std::string& bundle_id);
-  void VerifyPurchaseToken(ResponseCallback callback,
-                           const std::string& purchase_token,
-                           const std::string& product_id,
-                           const std::string& product_type,
-                           const std::string& bundle_id);
-  void GetSubscriberCredentialV12(ResponseCallback callback);
+  // void GetWireguardProfileCredentials(ResponseCallback callback,
+  //                                     const std::string&
+  //                                     subscriber_credential, const
+  //                                     std::string& public_key, const
+  //                                     std::string& hostname);
+  // void VerifyCredentials(ResponseCallback callback,
+  //                        const std::string& hostname,
+  //                        const std::string& client_id,
+  //                        const std::string& subscriber_credential,
+  //                        const std::string& api_auth_token);
+  // void InvalidateCredentials(ResponseCallback callback,
+  //                            const std::string& hostname,
+  //                            const std::string& client_id,
+  //                            const std::string& subscriber_credential,
+  //                            const std::string& api_auth_token);
+  // void GetSubscriberCredential(ResponseCallback callback,
+  //                              const std::string& product_type,
+  //                              const std::string& product_id,
+  //                              const std::string& validation_method,
+  //                              const std::string& purchase_token,
+  //                              const std::string& bundle_id);
+  // void VerifyPurchaseToken(ResponseCallback callback,
+  //                          const std::string& purchase_token,
+  //                          const std::string& product_id,
+  //                          const std::string& product_type,
+  //                          const std::string& bundle_id);
+  // void GetSubscriberCredentialV12(ResponseCallback callback);
 
   // new_usage should be set to true if a new VPN connection was just
   // established.

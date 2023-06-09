@@ -77,7 +77,49 @@ interface ServiceHandler {
   GetPurchaseToken() => (string token);
 
   [EnableIf=is_android]
-  GetAllServerRegions() => (bool success, string regions);
+  GetAllServerRegions() => (bool success, string regions_json);
+
+  [EnableIf=is_android]
+  GetTimezonesForRegions() => (bool success, string timezones_json);
+
+  [EnableIf=is_android]
+  IsPurchasedUser() => (bool is_purchased_user);
+
+  [EnableIf=is_android]
+  GetHostnamesForRegion(string region) => (bool success, string hostnames_json);
+
+  [EnableIf=is_android]
+  GetSubscriberCredential(string product_type,
+    string product_id,
+    string validation_method,
+    string purchase_token,
+    string bundle_id) => (bool success, string subscriber_credential_json);
+
+  [EnableIf=is_android]
+  GetSubscriberCredentialV12() => (bool success, string subscriber_credentials_response_json);
+
+  [EnableIf=is_android]
+  GetWireguardProfileCredentials(string subscriber_credential,
+                                      string public_key,
+                                      string hostname) => (bool success, string wireguard_profile_credentials_json);
+
+  [EnableIf=is_android]
+  VerifyCredentials(string hostname,
+                         string client_id,
+                         string subscriber_credential,
+                         string api_auth_token) => (bool success, string verify_credentials_response_json);
+
+  [EnableIf=is_android]
+  InvalidateCredentials(string hostname,
+                             string client_id,
+                             string subscriber_credential,
+                             string api_auth_token) => (bool success, string invalidate_credentials_response_json);
+  [EnableIf=is_android]
+  VerifyPurchaseToken(string purchase_token,
+                           string product_id,
+                           string product_type,
+                           string bundle_id) => (bool success, string verify_purchase_token_response_json);
+
 };
 
 // WebUI-side handler for requests from the browser.

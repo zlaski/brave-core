@@ -25,71 +25,73 @@ class BraveVpnNativeWorker {
   void Destroy(JNIEnv* env,
                const base::android::JavaParamRef<jobject>& jcaller);
 
-  void GetTimezonesForRegions(JNIEnv* env);
+  // void GetTimezonesForRegions(JNIEnv* env);
 
-  void OnGetTimezonesForRegions(const std::string& timezones_json,
-                                bool success);
+  // void OnGetTimezonesForRegions(const std::string& timezones_json,
+  //                               bool success);
 
-  void GetHostnamesForRegion(
-      JNIEnv* env,
-      const base::android::JavaParamRef<jstring>& region);
+  // void GetHostnamesForRegion(
+  //     JNIEnv* env,
+  //     const base::android::JavaParamRef<jstring>& region);
 
-  void OnGetHostnamesForRegion(const std::string& hostname_json, bool success);
+  // void OnGetHostnamesForRegion(const std::string& hostname_json, bool
+  // success);
 
-  void GetWireguardProfileCredentials(
-      JNIEnv* env,
-      const base::android::JavaParamRef<jstring>& subscriber_credential,
-      const base::android::JavaParamRef<jstring>& public_key,
-      const base::android::JavaParamRef<jstring>& hostname);
+  // void GetSubscriberCredential(
+  //     JNIEnv* env,
+  //     const base::android::JavaParamRef<jstring>& product_type,
+  //     const base::android::JavaParamRef<jstring>& product_id,
+  //     const base::android::JavaParamRef<jstring>& validation_method,
+  //     const base::android::JavaParamRef<jstring>& purchase_token,
+  //     const base::android::JavaParamRef<jstring>& bundle_id);
 
-  void OnGetWireguardProfileCredentials(
-      const std::string& wireguard_profile_credentials_json,
-      bool success);
+  // void GetSubscriberCredentialV12(JNIEnv* env);
 
-  void VerifyCredentials(
-      JNIEnv* env,
-      const base::android::JavaParamRef<jstring>& hostname,
-      const base::android::JavaParamRef<jstring>& client_id,
-      const base::android::JavaParamRef<jstring>& subscriber_credential,
-      const base::android::JavaParamRef<jstring>& api_auth_token);
+  // void OnGetSubscriberCredential(const std::string& subscriber_credential,
+  //                                bool success);
 
-  void OnVerifyCredentials(const std::string& verify_credentials_json,
-                           bool success);
-  void InvalidateCredentials(
-      JNIEnv* env,
-      const base::android::JavaParamRef<jstring>& hostname,
-      const base::android::JavaParamRef<jstring>& client_id,
-      const base::android::JavaParamRef<jstring>& subscriber_credential,
-      const base::android::JavaParamRef<jstring>& api_auth_token);
+  // void GetWireguardProfileCredentials(
+  //     JNIEnv* env,
+  //     const base::android::JavaParamRef<jstring>& subscriber_credential,
+  //     const base::android::JavaParamRef<jstring>& public_key,
+  //     const base::android::JavaParamRef<jstring>& hostname);
 
-  void OnInvalidateCredentials(const std::string& invalidate_credentials_json,
-                               bool success);
+  // void OnGetWireguardProfileCredentials(
+  //     const std::string& wireguard_profile_credentials_json,
+  //     bool success);
 
-  void GetSubscriberCredential(
-      JNIEnv* env,
-      const base::android::JavaParamRef<jstring>& product_type,
-      const base::android::JavaParamRef<jstring>& product_id,
-      const base::android::JavaParamRef<jstring>& validation_method,
-      const base::android::JavaParamRef<jstring>& purchase_token,
-      const base::android::JavaParamRef<jstring>& bundle_id);
+  // void VerifyCredentials(
+  //     JNIEnv* env,
+  //     const base::android::JavaParamRef<jstring>& hostname,
+  //     const base::android::JavaParamRef<jstring>& client_id,
+  //     const base::android::JavaParamRef<jstring>& subscriber_credential,
+  //     const base::android::JavaParamRef<jstring>& api_auth_token);
 
-  void GetSubscriberCredentialV12(JNIEnv* env);
+  // void OnVerifyCredentials(const std::string& verify_credentials_json,
+  //                          bool success);
+  // void InvalidateCredentials(
+  //     JNIEnv* env,
+  //     const base::android::JavaParamRef<jstring>& hostname,
+  //     const base::android::JavaParamRef<jstring>& client_id,
+  //     const base::android::JavaParamRef<jstring>& subscriber_credential,
+  //     const base::android::JavaParamRef<jstring>& api_auth_token);
 
-  void OnGetSubscriberCredential(const std::string& subscriber_credential,
-                                 bool success);
+  // void OnInvalidateCredentials(const std::string&
+  // invalidate_credentials_json,
+  //                              bool success);
 
-  void VerifyPurchaseToken(
-      JNIEnv* env,
-      const base::android::JavaParamRef<jstring>& purchase_token,
-      const base::android::JavaParamRef<jstring>& product_id,
-      const base::android::JavaParamRef<jstring>& product_type,
-      const base::android::JavaParamRef<jstring>& bundle_id);
+  // void VerifyPurchaseToken(
+  //     JNIEnv* env,
+  //     const base::android::JavaParamRef<jstring>& purchase_token,
+  //     const base::android::JavaParamRef<jstring>& product_id,
+  //     const base::android::JavaParamRef<jstring>& product_type,
+  //     const base::android::JavaParamRef<jstring>& bundle_id);
 
-  void OnVerifyPurchaseToken(const std::string& json_response, bool success);
+  // void OnVerifyPurchaseToken(const std::string& json_response, bool success);
 
   void ReloadPurchasedState(JNIEnv* env);
 
-  jboolean IsPurchasedUser(JNIEnv* env);
+  // jboolean IsPurchasedUser(JNIEnv* env);
 
   void ReportForegroundP3A(JNIEnv* env);
   void ReportBackgroundP3A(JNIEnv* env,

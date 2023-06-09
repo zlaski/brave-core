@@ -143,23 +143,46 @@ public class BraveVpnPreferences
                             getActivity(), getResources().getString(R.string.vpn_disconnect_text));
                     BraveVpnProfileUtils.getInstance().stopVpn(getActivity());
                 } else {
-                    if (BraveVpnNativeWorker.getInstance().isPurchasedUser()) {
-                        BraveVpnPrefUtils.setSubscriptionPurchase(true);
-                        if (WireguardConfigUtils.isConfigExist(getActivity())) {
-                            BraveVpnProfileUtils.getInstance().startVpn(getActivity());
-                        } else {
-                            BraveVpnUtils.openBraveVpnProfileActivity(getActivity());
-                        }
-                    } else {
-                        BraveVpnUtils.showProgressDialog(
-                                getActivity(), getResources().getString(R.string.vpn_connect_text));
-                        if (BraveVpnPrefUtils.isSubscriptionPurchase()) {
-                            verifyPurchase(true);
-                        } else {
-                            BraveVpnUtils.openBraveVpnPlansActivity(getActivity());
-                            BraveVpnUtils.dismissProgressDialog();
-                        }
+                    if (mServiceHandler != null) {
+                        mServiceHandler.isPurchasedUser(isPurchasedUser -> {
+                            if (isPurchasedUser) {
+                                BraveVpnPrefUtils.setSubscriptionPurchase(true);
+                                if (WireguardConfigUtils.isConfigExist(getActivity())) {
+                                    BraveVpnProfileUtils.getInstance().startVpn(getActivity());
+                                } else {
+                                    BraveVpnUtils.openBraveVpnProfileActivity(getActivity());
+                                }
+                            } else {
+                                BraveVpnUtils.showProgressDialog(getActivity(),
+                                        getResources().getString(R.string.vpn_connect_text));
+                                if (BraveVpnPrefUtils.isSubscriptionPurchase()) {
+                                    verifyPurchase(true);
+                                } else {
+                                    BraveVpnUtils.openBraveVpnPlansActivity(getActivity());
+                                    BraveVpnUtils.dismissProgressDialog();
+                                }
+                            }
+                        });
                     }
+
+                    // if (BraveVpnNativeWorker.getInstance().isPurchasedUser()) {
+                    //     BraveVpnPrefUtils.setSubscriptionPurchase(true);
+                    //     if (WireguardConfigUtils.isConfigExist(getActivity())) {
+                    //         BraveVpnProfileUtils.getInstance().startVpn(getActivity());
+                    //     } else {
+                    //         BraveVpnUtils.openBraveVpnProfileActivity(getActivity());
+                    //     }
+                    // } else {
+                    //     BraveVpnUtils.showProgressDialog(
+                    //             getActivity(),
+                    //             getResources().getString(R.string.vpn_connect_text));
+                    //     if (BraveVpnPrefUtils.isSubscriptionPurchase()) {
+                    //         verifyPurchase(true);
+                    //     } else {
+                    //         BraveVpnUtils.openBraveVpnPlansActivity(getActivity());
+                    //         BraveVpnUtils.dismissProgressDialog();
+                    //     }
+                    // }
                 }
                 return false;
             }
@@ -240,7 +263,10 @@ public class BraveVpnPreferences
         PreferenceCategory preferenceCategory =
                 (PreferenceCategory) findPreference(PREF_BRAVE_VPN_SUBSCRIPTION_SECTION);
         preferenceCategory.addPreference(mLinkSubscriptionPreference);
-        preferenceCategory.setVisible(!BraveVpnNativeWorker.getInstance().isPurchasedUser());
+        if (mServiceHandler != null) {
+            mServiceHandler.isPurchasedUser(
+                    isPurchasedUser -> { preferenceCategory.setVisible(!isPurchasedUser); });
+        }
     }
 
     @Override
@@ -281,12 +307,22 @@ public class BraveVpnPreferences
         if (BraveVpnUtils.mIsServerLocationChanged) {
             BraveVpnUtils.showProgressDialog(
                     getActivity(), getResources().getString(R.string.vpn_connect_text));
-            if (BraveVpnNativeWorker.getInstance().isPurchasedUser()) {
-                mBraveVpnPrefModel = new BraveVpnPrefModel();
-                BraveVpnNativeWorker.getInstance().getSubscriberCredentialV12();
-            } else {
-                verifyPurchase(false);
+            if (mServiceHandler != null) {
+                mServiceHandler.isPurchasedUser(isPurchasedUser -> {
+                    if (isPurchasedUser) {
+                        mBraveVpnPrefModel = new BraveVpnPrefModel();
+                        BraveVpnNativeWorker.getInstance().getSubscriberCredentialV12();
+                    } else {
+                        verifyPurchase(false);
+                    }
+                });
             }
+            // if (BraveVpnNativeWorker.getInstance().isPurchasedUser()) {
+            //     mBraveVpnPrefModel = new BraveVpnPrefModel();
+            //     BraveVpnNativeWorker.getInstance().getSubscriberCredentialV12();
+            // } else {
+            //     verifyPurchase(false);
+            // }
         } else if (BraveVpnUtils.mUpdateProfileAfterSplitTunnel) {
             BraveVpnUtils.mUpdateProfileAfterSplitTunnel = false;
             BraveVpnUtils.showProgressDialog(

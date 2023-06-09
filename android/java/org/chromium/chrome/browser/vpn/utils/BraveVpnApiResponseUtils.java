@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import org.chromium.brave_vpn.mojom.ServiceHandler;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.vpn.BraveVpnNativeWorker;
 import org.chromium.chrome.browser.vpn.models.BraveVpnPrefModel;
@@ -36,13 +37,17 @@ public class BraveVpnApiResponseUtils {
         BraveVpnUtils.dismissProgressDialog();
     }
 
-    public static void handleOnGetSubscriberCredential(Activity activity, boolean isSuccess) {
+    public static void handleOnGetSubscriberCredential(
+            ServiceHandler serviceHandler, Activity activity, boolean isSuccess) {
         if (isSuccess) {
             if (!BraveVpnNativeWorker.getInstance().isPurchasedUser()) {
                 InAppPurchaseWrapper.getInstance().processPurchases(
                         activity, InAppPurchaseWrapper.getInstance().queryPurchases());
             }
-            BraveVpnNativeWorker.getInstance().getTimezonesForRegions();
+            mServiceHandler.getTimezonesForRegions((isSuccess, regions)
+                                                           -> {
+
+                                                           });
         } else {
             Toast.makeText(activity, R.string.vpn_profile_creation_failed, Toast.LENGTH_SHORT)
                     .show();
