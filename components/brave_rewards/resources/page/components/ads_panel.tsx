@@ -41,6 +41,7 @@ export function AdsPanel () {
   const data = useRewardsData((state) => ({
     adsData: state.adsData,
     adsHistory: state.adsHistory,
+    savedAdsHistory: state.savedAdsHistory,
     currentCountryCode: state.currentCountryCode,
     externalWallet: state.externalWallet,
     externalWalletProviderList: state.externalWalletProviderList,
@@ -53,6 +54,7 @@ export function AdsPanel () {
   React.useEffect(() => {
     if (data.modalAdsHistory) {
       actions.getAdsHistory()
+      actions.getSavedAdsHistory()
     }
   }, [data.modalAdsHistory])
 
@@ -393,14 +395,10 @@ export function AdsPanel () {
     )
   }
 
-  function renderModal() {
-    if (!data.modalAdsHistory) {
-      return null
-    }
-
+  function groupHistory (adsHistory: Rewards.AdsHistory[]) {
     const groupedHistory: Rewards.AdsHistory[] = []
 
-    for (const history of data.adsHistory) {
+    for (const history of adsHistory) {
       const flooredDate = new Date(history.timestampInMilliseconds)
       flooredDate.setHours(0, 0, 0, 0)
       const flooredDateString = flooredDate.toLocaleDateString()
@@ -457,9 +455,17 @@ export function AdsPanel () {
       }
     }
 
-    const hasSavedEntries = groupedHistory.some((adHistoryItem) => {
-      return adHistoryItem.adDetailRows.some((row) => row.adContent.savedAd)
-    })
+    return groupedHistory
+  }
+
+  function renderModal () {
+    if (!data.modalAdsHistory) {
+      return null
+    }
+
+    const groupedHistory: Rewards.AdsHistory[] = groupHistory(data.adsHistory)
+    const groupedSavedHistory: Rewards.AdsHistory[] =
+      groupHistory(data.savedAdsHistory)
 
     const hasLikedEntries = groupedHistory.some((adHistoryItem) => {
       return adHistoryItem.adDetailRows.some(
@@ -471,7 +477,7 @@ export function AdsPanel () {
         onClose={toggleModal}
         adsPerHour={adsData.adsPerHour}
         rows={groupedHistory}
-        hasSavedEntries={hasSavedEntries}
+        savedRows={groupedSavedHistory}
         hasLikedEntries={hasLikedEntries}
         totalDays={30}
       />

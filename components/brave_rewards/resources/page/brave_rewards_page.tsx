@@ -116,6 +116,10 @@ function adsHistory (adsHistory: Rewards.AdsHistory[]) {
   actions.onAdsHistory(adsHistory)
 }
 
+function savedAdsHistory(savedAdsHistory: Rewards.AdsHistory[]) {
+  actions.onSavedAdsHistory(savedAdsHistory)
+}
+
 function onToggleAdThumbUp (result: Rewards.ToggleLikeAction) {
   actions.onToggleAdThumbUp(result)
 }
@@ -265,6 +269,7 @@ Object.defineProperty(window, 'brave_rewards', {
     autoContributeProperties,
     adsData,
     adsHistory,
+    savedAdsHistory,
     onToggleAdThumbUp,
     onToggleAdThumbDown,
     onToggleAdOptIn,

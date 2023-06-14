@@ -210,6 +210,16 @@ void BatAdsImpl::GetHistory(const base::Time from_time,
   std::move(callback).Run(brave_ads::HistoryItemsToUIValue(history_items));
 }
 
+void BatAdsImpl::GetSavedHistory(const base::Time from_time,
+                                 const base::Time to_time,
+                                 GetHistoryCallback callback) {
+  const brave_ads::HistoryItemList history_items = GetAds()->GetHistory(
+      brave_ads::HistoryFilterType::kSaved,
+      brave_ads::HistorySortType::kDescendingOrder, from_time, to_time);
+
+  std::move(callback).Run(brave_ads::HistoryItemsToUIValue(history_items));
+}
+
 void BatAdsImpl::GetStatementOfAccounts(
     GetStatementOfAccountsCallback callback) {
   GetAds()->GetStatementOfAccounts(std::move(callback));

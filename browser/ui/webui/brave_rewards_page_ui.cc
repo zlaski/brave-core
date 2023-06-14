@@ -125,6 +125,8 @@ class RewardsDOMHandler
   void GetAdsData(const base::Value::List& args);
   void GetAdsHistory(const base::Value::List& args);
   void OnGetAdsHistory(base::Value::List history);
+  void GetSavedAdsHistory(const base::Value::List& args);
+  void OnGetSavedAdsHistory(base::Value::List history);
   void ToggleAdThumbUp(const base::Value::List& args);
   void OnToggleAdThumbUp(base::Value::Dict dict);
   void ToggleAdThumbDown(const base::Value::List& args);
@@ -390,6 +392,10 @@ void RewardsDOMHandler::RegisterMessages() {
   web_ui()->RegisterMessageCallback(
       "brave_rewards.getAdsHistory",
       base::BindRepeating(&RewardsDOMHandler::GetAdsHistory,
+                          base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+      "brave_rewards.getSavedAdsHistory",
+      base::BindRepeating(&RewardsDOMHandler::GetSavedAdsHistory,
                           base::Unretained(this)));
   web_ui()->RegisterMessageCallback(
       "brave_rewards.toggleAdThumbUp",
@@ -1212,6 +1218,29 @@ void RewardsDOMHandler::OnGetAdsHistory(base::Value::List ads_history) {
   }
 
   CallJavascriptFunction("brave_rewards.adsHistory", ads_history);
+}
+
+void RewardsDOMHandler::GetSavedAdsHistory(const base::Value::List& args) {
+  if (!ads_service_) {
+    return;
+  }
+
+  AllowJavascript();
+
+  const base::Time now = base::Time::Now();
+  ads_service_->GetSavedHistory(
+      base::Time(), now,
+      base::BindOnce(&RewardsDOMHandler::OnGetSavedAdsHistory,
+                     weak_factory_.GetWeakPtr()));
+}
+
+void RewardsDOMHandler::OnGetSavedAdsHistory(
+    base::Value::List saved_ads_history) {
+  if (!IsJavascriptAllowed()) {
+    return;
+  }
+
+  CallJavascriptFunction("brave_rewards.savedAdsHistory", saved_ads_history);
 }
 
 void RewardsDOMHandler::ToggleAdThumbUp(const base::Value::List& args) {

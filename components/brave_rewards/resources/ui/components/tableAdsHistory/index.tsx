@@ -79,6 +79,7 @@ export interface Props {
   children?: React.ReactNode
   headerColor?: boolean
   rows?: DetailRow[]
+  savedRows?: DetailRow[]
   allItems: number
 }
 
@@ -226,18 +227,28 @@ export default class TableAdsHistory extends React.PureComponent<Props, {}> {
     })
   }
 
-  render () {
-    const { id, testId, header, rows } = this.props
+  getNoAdsHistory = () => {
+  return (
+    <StyledNoAdHistoryDiv>
+      {
+        getLocale('noAdsHistory')
+      }
+    </StyledNoAdHistoryDiv>
+    )
+  }
+
+  render() {
+    const { id, testId, header, rows, savedRows } = this.props
     return (
       <div id={id} data-test-id={testId} key={id}>
       {
-        rows
-          ? this.getAdsHistoryTable(header, rows)
-          : <StyledNoAdHistoryDiv>
-            {
-              getLocale('noAdsHistory')
-            }
-          </StyledNoAdHistoryDiv>
+          this.props.allItems === 1
+            ? savedRows
+              ? this.getAdsHistoryTable(header, savedRows)
+              : this.getNoAdsHistory()
+            : rows
+              ? this.getAdsHistoryTable(header, rows)
+              : this.getNoAdsHistory()
       }
       </div>
 

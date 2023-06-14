@@ -125,6 +125,7 @@ export const reduxState: Rewards.ApplicationState = {
       adsMaxEarningsLastMonth: 0
     },
     adsHistory: [],
+    savedAdsHistory: [],
     promotions: [],
     inlineTipsEnabled: true,
     inlineTip: {

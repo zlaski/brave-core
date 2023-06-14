@@ -875,6 +875,8 @@ source_set("internal") {
     "history/filters/history_filter_factory.cc",
     "history/filters/history_filter_factory.h",
     "history/filters/history_filter_interface.h",
+    "history/filters/saved_history_filter.cc",
+    "history/filters/saved_history_filter.h",
     "history/history_constants.h",
     "history/history_item_info.cc",
     "history/history_item_util.cc",

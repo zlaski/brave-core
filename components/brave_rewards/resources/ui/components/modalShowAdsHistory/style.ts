@@ -43,6 +43,10 @@ export const StyledText = styled('span')<{}>`
   display: inline-block;
   color: ${p => p.theme.color.text};
   margin: 0 10px 0;
+
+  a {
+    color: ${p => p.theme.palette.grey300};
+  }
 `
 
 export const StyledAdsHistoryTitle = styled('div')<{}>`

@@ -34,6 +34,7 @@ export interface State {
   userType: UserType
   adsData: AdsData
   adsHistory: AdsHistory[]
+  savedAdsHistory: AdsHistory[]
   autoContributeList: Publisher[]
   balance: Optional<number>
   balanceReport?: BalanceReport

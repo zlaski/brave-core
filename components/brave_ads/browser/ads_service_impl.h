@@ -260,6 +260,9 @@ class AdsServiceImpl : public AdsService,
   void GetHistory(base::Time from_time,
                   base::Time to_time,
                   GetHistoryCallback callback) override;
+  void GetSavedHistory(base::Time from_time,
+                       base::Time to_time,
+                       GetHistoryCallback callback) override;
 
   void ToggleLikeAd(base::Value::Dict value,
                     ToggleLikeAdCallback callback) override;

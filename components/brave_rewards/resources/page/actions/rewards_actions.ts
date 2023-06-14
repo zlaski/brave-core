@@ -155,6 +155,12 @@ export const onAdsHistory = (adsHistory: Rewards.AdsHistory[]) => action(types.O
   adsHistory
 })
 
+export const getSavedAdsHistory = () => action(types.GET_SAVED_ADS_HISTORY)
+
+export const onSavedAdsHistory = (savedAdsHistory: Rewards.AdsHistory[]) => action(types.ON_SAVED_ADS_HISTORY, {
+  savedAdsHistory
+})
+
 export const toggleAdThumbUp = (adContent: Rewards.AdContent) => action(types.TOGGLE_AD_THUMB_UP, {
   adContent
 })

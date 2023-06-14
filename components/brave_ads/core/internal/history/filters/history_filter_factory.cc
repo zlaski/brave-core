@@ -9,6 +9,7 @@
 
 #include "base/notreached.h"
 #include "brave/components/brave_ads/core/internal/history/filters/confirmation_history_filter.h"
+#include "brave/components/brave_ads/core/internal/history/filters/saved_history_filter.h"
 
 namespace brave_ads {
 
@@ -21,6 +22,10 @@ std::unique_ptr<HistoryFilterInterface> HistoryFilterFactory::Build(
 
     case HistoryFilterType::kConfirmationType: {
       return std::make_unique<ConfirmationHistoryFilter>();
+    }
+
+    case HistoryFilterType::kSaved: {
+      return std::make_unique<SavedHistoryFilter>();
     }
   }
 

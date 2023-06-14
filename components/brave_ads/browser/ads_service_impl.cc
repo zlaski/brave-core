@@ -1300,6 +1300,14 @@ void AdsServiceImpl::GetHistory(const base::Time from_time,
   }
 }
 
+void AdsServiceImpl::GetSavedHistory(const base::Time from_time,
+                                     const base::Time to_time,
+                                     GetHistoryCallback callback) {
+  if (bat_ads_.is_bound()) {
+    bat_ads_->GetSavedHistory(from_time, to_time, std::move(callback));
+  }
+}
+
 void AdsServiceImpl::ToggleLikeAd(base::Value::Dict value,
                                   ToggleLikeAdCallback callback) {
   if (bat_ads_.is_bound()) {

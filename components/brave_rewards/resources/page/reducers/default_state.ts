@@ -49,6 +49,7 @@ export function defaultState (): Rewards.State {
       adsMaxEarningsLastMonth: 0
     },
     adsHistory: [],
+    savedAdsHistory: [],
     promotions: [],
     inlineTipsEnabled: true,
     inlineTip: {

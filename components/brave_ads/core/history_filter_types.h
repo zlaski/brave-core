@@ -8,7 +8,7 @@
 
 namespace brave_ads {
 
-enum class HistoryFilterType { kNone = 0, kConfirmationType };
+enum class HistoryFilterType { kNone = 0, kConfirmationType, kSaved };
 
 }  // namespace brave_ads
 

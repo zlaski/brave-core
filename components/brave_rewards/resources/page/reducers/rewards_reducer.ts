@@ -241,6 +241,19 @@ const rewardsReducer: Reducer<Rewards.State | undefined> = (state: Rewards.State
       state.adsHistory = action.payload.adsHistory
       break
     }
+    case types.GET_SAVED_ADS_HISTORY: {
+      chrome.send('brave_rewards.getSavedAdsHistory')
+      break
+    }
+    case types.ON_SAVED_ADS_HISTORY: {
+      if (!action.payload.savedAdsHistory) {
+        break
+      }
+
+      state = { ...state }
+      state.savedAdsHistory = action.payload.savedAdsHistory
+      break
+    }
     case types.TOGGLE_AD_THUMB_UP: {
       chrome.send('brave_rewards.toggleAdThumbUp', [action.payload.adContent])
       break
@@ -281,6 +294,7 @@ const rewardsReducer: Reducer<Rewards.State | undefined> = (state: Rewards.State
     }
     case types.ON_TOGGLE_SAVED_AD: {
       chrome.send('brave_rewards.getAdsHistory')
+      chrome.send('brave_rewards.getSavedAdsHistory')
       break
     }
     case types.TOGGLE_FLAGGED_AD: {

@@ -32,7 +32,7 @@ export interface Props {
   id?: string
   adsPerHour?: number
   totalDays?: number
-  hasSavedEntries?: boolean
+  savedRows?: DetailRow[]
   hasLikedEntries?: boolean
   onSavedFilterClick?: () => void
   onAllFilterClick?: () => void
@@ -90,7 +90,7 @@ export default class ModalShowAdsHistory extends React.PureComponent<Props, Stat
   }
 
   render () {
-    const { id, onClose, adsPerHour, hasSavedEntries, hasLikedEntries, rows, totalDays } = this.props
+    const { id, onClose, adsPerHour, savedRows, hasLikedEntries, rows, totalDays } = this.props
 
     return (
       <StyledModalWrapper>
@@ -112,7 +112,8 @@ export default class ModalShowAdsHistory extends React.PureComponent<Props, Stat
                 </StyledAdsPerHourText>
               </StyledAdsInfoTextWrapper>
               {
-                rows && (hasSavedEntries || hasLikedEntries || this.state.filterStatus !== 0)
+                (rows && hasLikedEntries) || (savedRows && savedRows.length) ||
+                  (this.state.filterStatus !== 0)
                   ? <StyledAdsSaveFiltered>
                     <StyledText>
                       {
@@ -163,6 +164,7 @@ export default class ModalShowAdsHistory extends React.PureComponent<Props, Stat
             </StyledAdsHeaderWrapper>
             <TableAdsHistory
               rows={rows}
+              savedRows={savedRows}
               allItems={this.state.filterStatus}
               header={this.headers}
             />
