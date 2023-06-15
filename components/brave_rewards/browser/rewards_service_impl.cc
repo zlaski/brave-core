@@ -51,7 +51,7 @@
 #include "brave/components/brave_rewards/core/global_constants.h"
 #include "brave/components/brave_rewards/core/ledger_database.h"
 #include "brave/components/brave_rewards/resources/grit/brave_rewards_resources.h"
-#include "brave/components/services/bat_ledger/public/interfaces/ledger_factory.mojom.h"
+#include "brave/components/services/bat_ledger/ledger_factory_impl.h"
 #include "brave/grit/brave_generated_resources.h"
 #include "chrome/browser/bitmap_fetcher/bitmap_fetcher_service_factory.h"
 #include "chrome/browser/favicon/favicon_service_factory.h"
@@ -345,8 +345,7 @@ void RewardsServiceImpl::ConnectionClosed() {
 
   base::SingleThreadTaskRunner::GetCurrentDefault()->PostDelayedTask(
       FROM_HERE,
-      base::BindOnce(&RewardsServiceImpl::StartLedgerProcessIfNecessary,
-                     AsWeakPtr()),
+      base::BindOnce(&RewardsServiceImpl::StartLedgerIfNecessary, AsWeakPtr()),
       base::Seconds(10));
 }
 
@@ -438,35 +437,28 @@ void RewardsServiceImpl::CheckPreferences() {
 
 void RewardsServiceImpl::StartLedgerIfNecessary() {
   if (Connected()) {
-    BLOG(1, "Ledger process is already running");
+    BLOG(1, "Ledger is already started");
     return;
   }
 
   ledger_database_ = base::SequenceBound<internal::LedgerDatabase>(
       file_task_runner_, publisher_info_db_path_);
 
-  BLOG(1, "Starting ledger process");
-
-  static mojo::Remote<mojom::LedgerFactory> ledger_factory;
-  if (!ledger_factory.is_bound()) {
-    ledger_factory = content::ServiceProcessHost::Launch<mojom::LedgerFactory>(
-        content::ServiceProcessHost::Options()
-            .WithDisplayName(IDS_UTILITY_PROCESS_LEDGER_NAME)
-            .Pass());
-    ledger_factory.reset_on_disconnect();
+  if (!ledger_factory_.is_bound()) {
+    BLOG(1, "Creating rewards engine factory");
+    ledger_factory_ = internal::LedgerFactoryImpl::CreateSelfOwnedReceiver();
+    DCHECK(ledger_factory_.is_bound());
   }
 
   BLOG(1, "Creating rewards engine instance");
 
-  ledger_factory->CreateLedger(
-      ledger_.BindNewEndpointAndPassReceiver(),
-      receiver_.BindNewEndpointAndPassRemote(),
+  ledger_factory_->CreateLedger(
+      ledger_.BindNewPipeAndPassReceiver(),
+      receiver_.BindNewPipeAndPassRemote(),
       base::BindOnce(&RewardsServiceImpl::OnLedgerCreated, AsWeakPtr()));
 
   ledger_.set_disconnect_handler(
       base::BindOnce(&RewardsServiceImpl::ConnectionClosed, AsWeakPtr()));
-
-  receiver_.reset_on_disconnect();
 }
 
 void RewardsServiceImpl::OnLedgerCreated() {
