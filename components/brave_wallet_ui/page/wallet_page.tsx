@@ -7,7 +7,7 @@ import * as React from 'react'
 import { render } from 'react-dom'
 // import { Provider } from 'react-redux'
 import { initLocale } from 'brave-ui'
-import { BrowserRouter, NavLink, Redirect, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 
 // assets
 import faveiconUrl from '../assets/svg-icons/brave-icon.svg'
@@ -86,14 +86,15 @@ function Routes() {
     <Switch>
       <Route path={WalletRoutes.Unlock} exact>
         Unlock
-        <NavLink
+        {/* <NavLink
           to={WalletRoutes.Portfolio}
           key={WalletRoutes.Portfolio}
           isActive={() => false}
           activeClassName='active'
         >
           Unlock
-        </NavLink>
+        </NavLink> */}
+        <a href={WalletRoutes.Portfolio}>Unlock</a>
         {/* <button
           onClick={() => {
             alert('unlock')
@@ -105,14 +106,15 @@ function Routes() {
       </Route>
       <Route path={WalletRoutes.Portfolio} exact>
         Portfolio
-        <NavLink
+        {/* <NavLink
           to={WalletRoutes.Accounts}
           key={WalletRoutes.Accounts}
           isActive={() => false}
           activeClassName='active'
         >
           Accounts
-        </NavLink>
+        </NavLink> */}
+        <a href={WalletRoutes.Accounts}>Accounts</a>
         {/* <button onClick={() => history.push(WalletRoutes.Accounts)}>
           Accounts
         </button> */}
@@ -122,14 +124,16 @@ function Routes() {
         {/* <button onClick={() => history.push(WalletRoutes.Portfolio)}>
           Portfolio
         </button> */}
-        <NavLink
+        {/* <NavLink
           to={WalletRoutes.Portfolio}
           key={WalletRoutes.Portfolio}
           isActive={() => false}
           activeClassName='active'
         >
           Portfolio
-        </NavLink>
+        </NavLink> */}
+        <a href={WalletRoutes.Portfolio}>Portfolio</a>
+
       </Route>
       <Redirect to={WalletRoutes.Unlock} />
     </Switch>
