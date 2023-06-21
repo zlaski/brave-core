@@ -7,7 +7,7 @@ import * as React from 'react'
 import { render } from 'react-dom'
 // import { Provider } from 'react-redux'
 import { initLocale } from 'brave-ui'
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, NavLink, Redirect, Route, Switch } from 'react-router-dom'
 
 // assets
 import faveiconUrl from '../assets/svg-icons/brave-icon.svg'
@@ -71,7 +71,8 @@ function App () {
 
   return (
     <div style={{ height: '100vh', width: '100vw', color: 'black' }}>
-    APP
+      APP
+      <br />
       <BrowserRouter>
         <Routes />
       </BrowserRouter>
@@ -86,15 +87,17 @@ function Routes() {
     <Switch>
       <Route path={WalletRoutes.Unlock} exact>
         Unlock
-        {/* <NavLink
+        <br />
+        <NavLink
           to={WalletRoutes.Portfolio}
           key={WalletRoutes.Portfolio}
           isActive={() => false}
           activeClassName='active'
         >
-          Unlock
-        </NavLink> */}
-        <a href={WalletRoutes.Portfolio}>Unlock</a>
+          Unlock -- NavLink
+        </NavLink>
+        <br />
+        <a href={WalletRoutes.Portfolio}>Unlock - HTML Link</a>
         {/* <button
           onClick={() => {
             alert('unlock')
@@ -106,33 +109,37 @@ function Routes() {
       </Route>
       <Route path={WalletRoutes.Portfolio} exact>
         Portfolio
-        {/* <NavLink
+        <br />
+        <NavLink
           to={WalletRoutes.Accounts}
           key={WalletRoutes.Accounts}
           isActive={() => false}
           activeClassName='active'
         >
-          Accounts
-        </NavLink> */}
-        <a href={WalletRoutes.Accounts}>Accounts</a>
+          Accounts -- NavLink
+        </NavLink>
+        <br />
+        <a href={WalletRoutes.Accounts}>Accounts - HTML Link</a>
         {/* <button onClick={() => history.push(WalletRoutes.Accounts)}>
           Accounts
         </button> */}
       </Route>
       <Route path={WalletRoutes.Accounts} exact>
         Accounts
+        <br />
         {/* <button onClick={() => history.push(WalletRoutes.Portfolio)}>
           Portfolio
         </button> */}
-        {/* <NavLink
+        <NavLink
           to={WalletRoutes.Portfolio}
           key={WalletRoutes.Portfolio}
           isActive={() => false}
           activeClassName='active'
         >
-          Portfolio
-        </NavLink> */}
-        <a href={WalletRoutes.Portfolio}>Portfolio</a>
+          Portfolio -- NavLink
+        </NavLink>
+        <br />
+        <a href={WalletRoutes.Portfolio}>Portfolio - HTML Link</a>
 
       </Route>
       <Redirect to={WalletRoutes.Unlock} />
