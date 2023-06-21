@@ -36,8 +36,8 @@ cargo_crate("lib") {
     "//brave/third_party/rust/servo_arc/v0_1:lib",
     "//brave/third_party/rust/smallvec/v1:lib",
     "//brave/third_party/rust/thin_slice/v0_1:lib",
-    "//third_party/rust/log/v0_4:lib",
     "//third_party/rust/bitflags/v1:lib",
+    "//third_party/rust/log/v0_4:lib",
   ]
   build_deps = [ "//brave/third_party/rust/phf_codegen/v0_8:buildrs_support" ]
   build_root = "crate/build.rs"
