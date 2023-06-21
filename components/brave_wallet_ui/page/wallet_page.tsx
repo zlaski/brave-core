@@ -5,43 +5,49 @@
 
 import * as React from 'react'
 import { render } from 'react-dom'
-import { Provider } from 'react-redux'
+// import { Provider } from 'react-redux'
 import { initLocale } from 'brave-ui'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Redirect, Route, Switch, useHistory } from 'react-router-dom'
 
 // assets
 import faveiconUrl from '../assets/svg-icons/brave-icon.svg'
 
 // utils
 import { loadTimeData } from '../../common/loadTimeData'
-import * as Lib from '../common/async/lib'
+// import * as Lib from '../common/async/lib'
 import { removeDeprecatedLocalStorageKeys } from '../common/constants/local-storage-keys'
 
 // actions
-import * as WalletActions from '../common/actions/wallet_actions'
+// import * as WalletActions from '../common/actions/wallet_actions'
 
 // contexts
-import { LibContext } from '../common/context/lib.context'
-import { ApiProxyContext } from '../common/context/api-proxy.context'
+// import { LibContext } from '../common/context/lib.context'
+// import { ApiProxyContext } from '../common/context/api-proxy.context'
 
 // components
-import BraveCoreThemeProvider from '../../common/BraveCoreThemeProvider'
-import Container from './container'
-import { store, walletPageApiProxy } from './store'
+// import BraveCoreThemeProvider from '../../common/BraveCoreThemeProvider'
+// import Container from './container'
+// import {
+//   store,
+//   // walletPageApiProxy
+// } from './store'
 
 // style
-import walletDarkTheme from '../theme/wallet-dark'
-import walletLightTheme from '../theme/wallet-light'
+// import walletDarkTheme from '../theme/wallet-dark'
+// import walletLightTheme from '../theme/wallet-light'
 import 'emptykit.css'
 
 import { setIconBasePath } from '@brave/leo/react/icon'
+import { WalletRoutes } from '../constants/types'
 setIconBasePath('chrome://resources/brave-icons')
 
 function App () {
-  const [initialThemeType, setInitialThemeType] = React.useState<chrome.braveTheme.ThemeType>()
-  React.useEffect(() => {
-    chrome.braveTheme.getBraveThemeType(setInitialThemeType)
-  }, [])
+  // const [
+    // initialThemeType,
+    // setInitialThemeType] = React.useState<chrome.braveTheme.ThemeType>()
+  // React.useEffect(() => {
+  //   chrome.braveTheme.getBraveThemeType(setInitialThemeType)
+  // }, [])
 
   React.useEffect(() => {
     /** Sets FAVICON for Wallet Pages */
@@ -58,30 +64,57 @@ function App () {
     removeDeprecatedLocalStorageKeys()
   }, [])
 
+  console.log({
+    history,
+    location: window.location
+  })
+
   return (
-    <Provider store={store}>
+    <div style={{ height: '100vh', width: '100vw', color: 'black' }}>
+    APP
       <BrowserRouter>
-        {initialThemeType &&
-          <BraveCoreThemeProvider
-            initialThemeType={initialThemeType}
-            dark={walletDarkTheme}
-            light={walletLightTheme}
-          >
-            <ApiProxyContext.Provider value={walletPageApiProxy}>
-              <LibContext.Provider value={Lib}>
-                <Container />
-              </LibContext.Provider>
-            </ApiProxyContext.Provider>
-          </BraveCoreThemeProvider>
-        }
+        <Routes />
       </BrowserRouter>
-    </Provider>
+    </div>
+  )
+}
+
+function Routes() {
+  const history = useHistory()
+
+  return (
+    <Switch>
+      <Route path={WalletRoutes.Unlock} exact>
+        Unlock
+        <button
+          onClick={() => {
+            alert('unlock')
+            history.push(WalletRoutes.Portfolio)
+          }}
+        >
+          Unlock
+        </button>
+      </Route>
+      <Route path={WalletRoutes.Portfolio} exact>
+        Portfolio
+        <button onClick={() => history.push(WalletRoutes.Accounts)}>
+          Accounts
+        </button>
+      </Route>
+      <Route path={WalletRoutes.Accounts} exact>
+        Accounts
+        <button onClick={() => history.push(WalletRoutes.Portfolio)}>
+          Portfolio
+        </button>
+      </Route>
+      <Redirect to={WalletRoutes.Unlock} />
+    </Switch>
   )
 }
 
 function initialize () {
   initLocale(loadTimeData.data_)
-  store.dispatch(WalletActions.initialize({}))
+  // store.dispatch(WalletActions.initialize({}))
   render(<App />, document.getElementById('root'))
 }
 
