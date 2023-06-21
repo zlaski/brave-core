@@ -343,7 +343,7 @@ pub unsafe extern "C" fn filter_list_metadata_title(
 }
 
 #[no_mangle]
-pub const SUBSCRIPTION_DEFAULT_EXPIRES_HOURS: u16 = 7 * 24;
+pub static SUBSCRIPTION_DEFAULT_EXPIRES_HOURS: u16 = 7 * 24;
 
 /// Returns the amount of time this filter list should be considered valid for,
 /// in hours. Defaults to 168 (i.e. 7 days) if unspecified by the
