@@ -7,7 +7,7 @@ import * as React from 'react'
 import { render } from 'react-dom'
 // import { Provider } from 'react-redux'
 import { initLocale } from 'brave-ui'
-import { BrowserRouter, Redirect, Route, Switch, useHistory } from 'react-router-dom'
+import { BrowserRouter, NavLink, Redirect, Route, Switch } from 'react-router-dom'
 
 // assets
 import faveiconUrl from '../assets/svg-icons/brave-icon.svg'
@@ -80,32 +80,56 @@ function App () {
 }
 
 function Routes() {
-  const history = useHistory()
+  // const history = useHistory()
 
   return (
     <Switch>
       <Route path={WalletRoutes.Unlock} exact>
         Unlock
-        <button
+        <NavLink
+          to={WalletRoutes.Portfolio}
+          key={WalletRoutes.Portfolio}
+          isActive={() => false}
+          activeClassName='active'
+        >
+          Unlock
+        </NavLink>
+        {/* <button
           onClick={() => {
             alert('unlock')
             history.push(WalletRoutes.Portfolio)
           }}
         >
           Unlock
-        </button>
+        </button> */}
       </Route>
       <Route path={WalletRoutes.Portfolio} exact>
         Portfolio
-        <button onClick={() => history.push(WalletRoutes.Accounts)}>
+        <NavLink
+          to={WalletRoutes.Accounts}
+          key={WalletRoutes.Accounts}
+          isActive={() => false}
+          activeClassName='active'
+        >
           Accounts
-        </button>
+        </NavLink>
+        {/* <button onClick={() => history.push(WalletRoutes.Accounts)}>
+          Accounts
+        </button> */}
       </Route>
       <Route path={WalletRoutes.Accounts} exact>
         Accounts
-        <button onClick={() => history.push(WalletRoutes.Portfolio)}>
+        {/* <button onClick={() => history.push(WalletRoutes.Portfolio)}>
           Portfolio
-        </button>
+        </button> */}
+        <NavLink
+          to={WalletRoutes.Portfolio}
+          key={WalletRoutes.Portfolio}
+          isActive={() => false}
+          activeClassName='active'
+        >
+          Portfolio
+        </NavLink>
       </Route>
       <Redirect to={WalletRoutes.Unlock} />
     </Switch>
