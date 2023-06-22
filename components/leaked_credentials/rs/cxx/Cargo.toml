@@ -5,7 +5,7 @@ edition = "2018"
 
 [dependencies]
 cxx = "1.0"
-leaked_credentials = { path = "..\lib" }
+frodo-pir = { path = "../lib" }
 
 [build-dependencies]
 cxx-build = "1.0"
