@@ -3,18 +3,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/leaked_credentials/leaked_credentials_api.h"
-
-#include "brave/components/leaked_credentials/rs/cxx/src/lib.rs.h"
-#include "third_party/rust/cxx/v1/crate/include/cxx.h"
+#include "brave/components/leaked_credentials/leaked_credentials_client.h"
 
 #include "testing/gtest/include/gtest/gtest.h"
 
 namespace leaked_credentials {
 
-TEST(LeakedCredentialsUnittest, TestHelloCPlusPlus) {
+TEST(LeakedCredentialsUnittest, TestHelloWorld2) {
   // EXPECT_EQ(expected, actual)
-  EXPECT_EQ(42, leaked_credentials::HelloCPlusPlus());
+  EXPECT_EQ(leaked_credentials::client(), 0);
 }
 
 } // namespace leaked_credentials

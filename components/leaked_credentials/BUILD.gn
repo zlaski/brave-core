@@ -3,10 +3,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-static_library("browser") {
+static_library("leaked_credentials") {
   sources = [
     "leaked_credentials_api.cc",
     "leaked_credentials_api.h",
+    "leaked_credentials_client.cc",
+    "leaked_credentials_client.h",
+  ]
+
+  public_deps = [
+    "rs/cxx"
   ]
 
   deps = [
@@ -19,6 +25,7 @@ source_set("unit_tests") {
 
   sources = [
     "leaked_credentials_api_unittest.cc",
+    "leaked_credentials_client_unittest.cc",
   ]
 
   deps = [

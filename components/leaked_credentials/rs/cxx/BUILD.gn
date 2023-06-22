@@ -3,10 +3,17 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-group("rust_lib") {
-  visibility = [ "//brave/build/rust:*" ]
-  deps = [
-    "cxx:rust_lib", 
-    "lib:rust_lib",
+import("//brave/build/rust/rust_cxx.gni")
+
+rust_crate("rust_lib") {
+  visibility = [ "//brave/components/leaked_credentials/rs:rust_lib" ]
+
+  inputs = [
+    "Cargo.toml",
+    "src/lib.rs",
   ]
-}   
+}
+
+rust_cxx("cxx") {
+  input = [ "src/lib.rs" ]
+}

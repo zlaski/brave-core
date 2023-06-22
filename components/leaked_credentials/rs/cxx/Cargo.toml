@@ -1,0 +1,15 @@
+[package]
+name = "leaked-credentials-cxx"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+cxx = "1.0"
+leaked_credentials = { path = "..\lib" }
+
+[build-dependencies]
+cxx-build = "1.0"
+
+[lib]
+name = "leaked_credentials_cxx"
+crate-type = ["rlib"]
