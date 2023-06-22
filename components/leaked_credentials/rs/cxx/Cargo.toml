@@ -7,9 +7,6 @@ edition = "2018"
 cxx = "1.0"
 frodo-pir = { path = "../lib" }
 
-[build-dependencies]
-cxx-build = "1.0"
-
 [lib]
 name = "leaked_credentials_cxx"
 crate-type = ["rlib"]
