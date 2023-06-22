@@ -9,6 +9,8 @@ pub use challenge_bypass_ristretto_ffi;
 
 pub use constellation_cxx;
 
+pub use leaked_credentials_cxx;
+
 pub use speedreader_ffi;
 
 pub use skus_cxx;
