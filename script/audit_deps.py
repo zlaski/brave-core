@@ -86,7 +86,7 @@ def audit_path(path, args):
 
     if os.path.isfile(os.path.join(path, 'Cargo.toml')) and \
         os.path.isfile(os.path.join(path, 'Cargo.lock')) and \
-        any(full_path.startswith(os.path.join(args.source_root, p, ""))
+        any(path.endswith(os.path.join(args.source_root, p, ""))
             for p in CARGO_INCLUDE_PATHS):
         print(f'Auditing (cargo) {path}')
         return cargo_audit_deps(path, args)
