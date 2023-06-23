@@ -1,5 +1,5 @@
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..3ea0d93e3e8b1d5aa59bf579268a2d598a516158 100644
+index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..74eb9ee665a68aee124395e7e2adb5d7fec41f41 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
 @@ -772,8 +772,12 @@ config("compiler") {
@@ -143,3 +143,12 @@ index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..3ea0d93e3e8b1d5aa59bf579268a2d59
      cflags = [ "-Wshadow" ]
    }
  }
+@@ -2534,7 +2627,7 @@ config("symbols") {
+       if (use_dwarf5) {
+         cflags += [ "-gdwarf-5" ]
+         rustflags += [ "-Zdwarf-version=5" ]
+-      } else if (!is_apple) {
++      } else {
+         # Recent clang versions default to DWARF5 on Linux, and Android is about
+         # to switch. TODO: Adopt that in controlled way.
+         # Apple platforms still default to 4, so the flag is not needed there.

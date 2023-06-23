@@ -1,5 +1,5 @@
 diff --git a/build/toolchain/win/toolchain.gni b/build/toolchain/win/toolchain.gni
-index cb4e939c3b258ca08baba96a4e96d0281fd58024..19c0222704c1e0df5f8b3d4f033eb6f7addd9495 100644
+index cb4e939c3b258ca08baba96a4e96d0281fd58024..4088b8c3b8ce186fb40881a0563671fe7a4da739 100644
 --- a/build/toolchain/win/toolchain.gni
 +++ b/build/toolchain/win/toolchain.gni
 @@ -114,6 +114,10 @@ template("single_msvc_toolchain") {
@@ -96,37 +96,34 @@ index cb4e939c3b258ca08baba96a4e96d0281fd58024..19c0222704c1e0df5f8b3d4f033eb6f7
          rust_sysroot = rust_sysroot_relative_to_out
        }
  
-@@ -367,7 +396,8 @@ template("single_msvc_toolchain") {
+@@ -367,7 +396,7 @@ template("single_msvc_toolchain") {
          runtime_outputs = outputs
  
          rspfile_content = "{{rustdeps}} {{externs}}"
 -        command = "\"$python_path\" \"$rustc_wrapper\" --rustc=$rustc --depfile=$depfile --rsp=$rspfile -- $rustc_windows_args --emit=dep-info=$depfile,link -o $exename LDFLAGS {{ldflags}} $sys_lib_flags /PDB:$pdbname RUSTENV {{rustenv}}"
-+        dynamic_link_switch = ""
 +        command = "\"$python_path\" \"$rustc_wrapper\" --target-windows --rustc=$rustc --depfile=$depfile --rsp=$rspfile -- $rustc_windows_args --emit=dep-info=$depfile,link -o $exename LDFLAGS {{ldflags}} $sys_lib_flags /PDB:$pdbname RUSTENV {{rustenv}}"
          rust_sysroot = rust_sysroot_relative_to_out
        }
  
-@@ -398,7 +428,8 @@ template("single_msvc_toolchain") {
+@@ -398,7 +427,7 @@ template("single_msvc_toolchain") {
          ]
  
          rspfile_content = "{{rustdeps}} {{externs}}"
 -        command = "\"$python_path\" \"$rustc_wrapper\" --rustc=$rustc --depfile=$depfile --rsp=$rspfile -- $rustc_windows_args --emit=dep-info=$depfile,link -o $dllname LDFLAGS {{ldflags}} $sys_lib_flags /PDB:$pdbname /IMPLIB:$libname RUSTENV {{rustenv}}"
-+        dynamic_link_switch = ""
 +        command = "\"$python_path\" \"$rustc_wrapper\" --target-windows --rustc=$rustc --depfile=$depfile --rsp=$rspfile -- $rustc_windows_args --emit=dep-info=$depfile,link -o $dllname LDFLAGS {{ldflags}} $sys_lib_flags /PDB:$pdbname /IMPLIB:$libname RUSTENV {{rustenv}}"
          rust_sysroot = rust_sysroot_relative_to_out
  
          # Since the above commands only updates the .lib file when it changes,
-@@ -432,7 +463,8 @@ template("single_msvc_toolchain") {
+@@ -432,7 +461,7 @@ template("single_msvc_toolchain") {
          runtime_outputs = outputs
  
          rspfile_content = "{{rustdeps}} {{externs}}"
 -        command = "\"$python_path\" \"$rustc_wrapper\" --rustc=$rustc --depfile=$depfile --rsp=$rspfile -- $rustc_windows_args --emit=dep-info=$depfile,link -o $dllname LDFLAGS {{ldflags}} $sys_lib_flags /PDB:$pdbname RUSTENV {{rustenv}}"
-+        dynamic_link_switch = ""
 +        command = "\"$python_path\" \"$rustc_wrapper\" --target-windows --rustc=$rustc --depfile=$depfile --rsp=$rspfile -- $rustc_windows_args --emit=dep-info=$depfile,link -o $dllname LDFLAGS {{ldflags}} $sys_lib_flags /PDB:$pdbname RUSTENV {{rustenv}}"
          rust_sysroot = rust_sysroot_relative_to_out
  
          # Since the above commands only updates the .lib file when it changes,
-@@ -444,8 +476,7 @@ template("single_msvc_toolchain") {
+@@ -444,8 +473,7 @@ template("single_msvc_toolchain") {
  
      tool("alink") {
        rspfile = "{{output}}.rsp"
@@ -136,7 +133,7 @@ index cb4e939c3b258ca08baba96a4e96d0281fd58024..19c0222704c1e0df5f8b3d4f033eb6f7
        description = "LIB {{output}}"
        outputs = [
          # Ignore {{output_extension}} and always use .lib, there's no reason to
-@@ -468,7 +499,7 @@ template("single_msvc_toolchain") {
+@@ -468,7 +496,7 @@ template("single_msvc_toolchain") {
        rspfile = "${dllname}.rsp"
        pool = "//build/toolchain:link_pool($default_toolchain)"
  
@@ -145,7 +142,7 @@ index cb4e939c3b258ca08baba96a4e96d0281fd58024..19c0222704c1e0df5f8b3d4f033eb6f7
  
        default_output_extension = ".dll"
        default_output_dir = "{{root_out_dir}}"
-@@ -503,7 +534,7 @@ template("single_msvc_toolchain") {
+@@ -503,7 +531,7 @@ template("single_msvc_toolchain") {
        rspfile = "${dllname}.rsp"
        pool = "//build/toolchain:link_pool($default_toolchain)"
  
@@ -154,7 +151,7 @@ index cb4e939c3b258ca08baba96a4e96d0281fd58024..19c0222704c1e0df5f8b3d4f033eb6f7
  
        default_output_extension = ".dll"
        default_output_dir = "{{root_out_dir}}"
-@@ -526,7 +557,7 @@ template("single_msvc_toolchain") {
+@@ -526,7 +554,7 @@ template("single_msvc_toolchain") {
        rspfile = "$exename.rsp"
        pool = "//build/toolchain:link_pool($default_toolchain)"
  
@@ -163,7 +160,7 @@ index cb4e939c3b258ca08baba96a4e96d0281fd58024..19c0222704c1e0df5f8b3d4f033eb6f7
  
        default_output_extension = ".exe"
        default_output_dir = "{{root_out_dir}}"
-@@ -610,6 +641,19 @@ template("msvc_toolchain") {
+@@ -610,6 +638,19 @@ template("msvc_toolchain") {
          is_debug = false
          is_component_build = false
          is_official_build = false
@@ -183,7 +180,7 @@ index cb4e939c3b258ca08baba96a4e96d0281fd58024..19c0222704c1e0df5f8b3d4f033eb6f7
        }
      }
    }
-@@ -674,20 +718,6 @@ template("win_toolchains") {
+@@ -674,20 +715,6 @@ template("win_toolchains") {
      if (use_lld) {
        sys_lib_flags =
            "-libpath:$_clang_lib_dir ${win_toolchain_data.libpath_lldlink_flags}"
