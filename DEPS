@@ -89,8 +89,10 @@ hooks = [
     'action': [
       'vpython3', 'script/download_rust_deps.py',
       '--rust_version={brave_rust_version}',
-      '--checkout_linux={checkout_linux or checkout_android}',
-      '--checkout_mac={checkout_mac or checkout_ios}',
+      '--checkout_android={checkout_android}',
+      '--checkout_ios={checkout_ios}',
+      '--checkout_linux={checkout_linux}',
+      '--checkout_mac={checkout_mac}',
       '--checkout_win={checkout_win}',
     ]
   },

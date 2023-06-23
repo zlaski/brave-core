@@ -122,13 +122,13 @@ def main():
 
     rustup_targets = set()
 
-    if args.checkout_linux:
+    if args.checkout_linux or args.checkout_android:
         rustup_targets.update([
             'aarch64-unknown-linux-gnu',
             'x86_64-unknown-linux-gnu',
         ])
 
-    if args.checkout_mac:
+    if args.checkout_mac or args.checkout_ios:
         rustup_targets.update([
             'aarch64-apple-darwin',
             'x86_64-apple-darwin',
