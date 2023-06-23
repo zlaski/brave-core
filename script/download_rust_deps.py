@@ -122,23 +122,6 @@ def main():
 
     rustup_targets = set()
 
-    if args.checkout_android:
-        rustup_targets.update([
-            'aarch64-linux-android',
-            'arm-linux-androideabi',
-            'armv7-linux-androideabi',
-            'aarch64-linux-android',
-            'i686-linux-android',
-            'x86_64-linux-android',
-        ])
-
-    if args.checkout_ios:
-        rustup_targets.update([
-            'aarch64-apple-ios',
-            'aarch64-apple-ios-sim',
-            'x86_64-apple-ios',
-        ])
-
     if args.checkout_linux:
         rustup_targets.update([
             'aarch64-unknown-linux-gnu',
@@ -154,19 +137,11 @@ def main():
     if args.checkout_win:
         rustup_targets.update([
             'aarch64-pc-windows-msvc',
-            'i686-pc-windows-msvc',
             'x86_64-pc-windows-msvc',
         ])
 
     for rustup_target in rustup_targets:
         rustup_add_target(rustup_target, rustup_home)
-
-    if args.checkout_mac:
-        toolchain = host_rust_toolchain(rust_version)
-        run_rust_tool(
-            'rustup',
-            ['component', 'add', 'rust-src', '--toolchain', toolchain],
-            rustup_home)
 
     tools = [{
         "name": "cbindgen",
