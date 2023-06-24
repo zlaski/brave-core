@@ -1,5 +1,5 @@
 diff --git a/build/rust/rustc_wrapper.py b/build/rust/rustc_wrapper.py
-index 212ad44d023b3015e5507cdcb0de27e0b59192c1..acd79e773cd8cf48a0393577f9b3ba705eb796bc 100755
+index 212ad44d023b3015e5507cdcb0de27e0b59192c1..d05f0399d3980fe5193c63088264610fcecff5e3 100755
 --- a/build/rust/rustc_wrapper.py
 +++ b/build/rust/rustc_wrapper.py
 @@ -94,6 +94,7 @@ def main():
@@ -19,13 +19,3 @@ index 212ad44d023b3015e5507cdcb0de27e0b59192c1..acd79e773cd8cf48a0393577f9b3ba70
  
    rustc_args.extend(["-Clink-arg=%s" % arg for arg in ldflags])
  
-@@ -115,9 +116,6 @@ def main():
-     with open(args.rsp) as rspfile:
-       rsp_args = [l.rstrip() for l in rspfile.read().split(' ') if l.rstrip()]
-     if is_windows:
--      # Work around for hard-coded string in gn; full fix will come from
--      # https://gn-review.googlesource.com/c/gn/+/12460
--      rsp_args = [arg for arg in rsp_args if not arg.endswith("-Bdynamic")]
-       # Work around for "-l<foo>.lib", where ".lib" suffix is undesirable.
-       # Full fix will come from https://gn-review.googlesource.com/c/gn/+/12480
-       rsp_args = [remove_lib_suffix_from_l_args(arg) for arg in rsp_args]
