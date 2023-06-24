@@ -277,10 +277,6 @@ dependencies = [
 
 [[package]]
 name = "cfg-if"
-version = "0.1.10"
-
-[[package]]
-name = "cfg-if"
 version = "1.0.0"
 
 [[package]]
@@ -335,13 +331,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cloudabi"
-version = "0.0.3"
-dependencies = [
- "bitflags",
-]
-
-[[package]]
 name = "constant_time_eq"
 version = "0.1.5"
 
@@ -379,7 +368,7 @@ dependencies = [
 name = "crc32fast"
 version = "1.3.2"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if",
 ]
 
 [[package]]
@@ -427,30 +416,13 @@ dependencies = [
 
 [[package]]
 name = "cssparser"
-version = "0.25.9"
-dependencies = [
- "autocfg 0.1.8",
- "cssparser-macros 0.3.6",
- "dtoa-short",
- "itoa 0.4.8",
- "matches",
- "phf 0.7.24",
- "proc-macro2",
- "procedural-masquerade",
- "quote",
- "smallvec 0.6.14",
- "syn",
-]
-
-[[package]]
-name = "cssparser"
 version = "0.27.2"
 dependencies = [
  "cssparser-macros 0.6.0",
  "dtoa-short",
  "itoa 0.4.8",
  "matches",
- "phf 0.8.0",
+ "phf",
  "proc-macro2",
  "quote",
  "smallvec 1.8.0",
@@ -465,21 +437,10 @@ dependencies = [
  "dtoa-short",
  "itoa 0.4.8",
  "matches",
- "phf 0.8.0",
+ "phf",
  "proc-macro2",
  "quote",
  "smallvec 1.8.0",
- "syn",
-]
-
-[[package]]
-name = "cssparser-macros"
-version = "0.3.6"
-dependencies = [
- "phf_codegen 0.7.24",
- "proc-macro2",
- "procedural-masquerade",
- "quote",
  "syn",
 ]
 
@@ -619,7 +580,7 @@ version = "1.6.1"
 name = "encoding_rs"
 version = "0.8.30"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if",
 ]
 
 [[package]]
@@ -663,7 +624,7 @@ name = "ff_derive"
 version = "0.13.0"
 dependencies = [
  "addchain",
- "cfg-if 1.0.0",
+ "cfg-if",
  "num-bigint 0.3.3",
  "num-integer",
  "num-traits",
@@ -717,10 +678,6 @@ version = "1.1.0"
 dependencies = [
  "percent-encoding",
 ]
-
-[[package]]
-name = "fuchsia-cprng"
-version = "0.1.1"
 
 [[package]]
 name = "funty"
@@ -889,20 +846,16 @@ dependencies = [
 name = "getrandom"
 version = "0.1.16"
 dependencies = [
- "cfg-if 1.0.0",
- "js-sys",
+ "cfg-if",
  "libc",
- "wasi 0.9.0+wasi-snapshot-preview1",
- "wasm-bindgen",
 ]
 
 [[package]]
 name = "getrandom"
 version = "0.2.4"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if",
  "libc",
- "wasi 0.10.2+wasi-snapshot-preview1",
 ]
 
 [[package]]
@@ -931,6 +884,10 @@ dependencies = [
  "rand_core 0.6.3",
  "subtle",
 ]
+
+[[package]]
+name = "hashbrown"
+version = "0.12"
 
 [[package]]
 name = "hkdf"
@@ -1007,8 +964,6 @@ version = "0.1.50"
 dependencies = [
  "android_system_properties",
  "core-foundation-sys",
- "js-sys",
- "wasm-bindgen",
  "winapi",
 ]
 
@@ -1033,7 +988,7 @@ dependencies = [
 name = "instant"
 version = "0.1.12"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if",
 ]
 
 [[package]]
@@ -1057,13 +1012,6 @@ version = "0.4.8"
 [[package]]
 name = "itoa"
 version = "1.0.5"
-
-[[package]]
-name = "js-sys"
-version = "0.3.56"
-dependencies = [
- "wasm-bindgen",
-]
 
 [[package]]
 name = "json-cxx"
@@ -1163,22 +1111,22 @@ dependencies = [
 name = "log"
 version = "0.4.17"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if",
 ]
 
 [[package]]
 name = "lol_html"
-version = "0.2.0"
+version = "0.3.1"
 dependencies = [
  "bitflags",
- "cfg-if 0.1.10",
- "cssparser 0.25.9",
+ "cfg-if",
+ "cssparser 0.27.2",
  "encoding_rs",
  "lazy_static",
  "lazycell",
  "memchr",
  "safemem",
- "selectors 0.21.0",
+ "selectors 0.22.0",
  "thiserror",
 ]
 
@@ -1191,8 +1139,8 @@ name = "markup5ever"
 version = "0.10.1"
 dependencies = [
  "log",
- "phf 0.8.0",
- "phf_codegen 0.8.0",
+ "phf",
+ "phf_codegen",
  "string_cache",
  "string_cache_codegen",
  "tendril",
@@ -1355,7 +1303,7 @@ dependencies = [
 name = "parking_lot_core"
 version = "0.8.5"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if",
  "instant",
  "libc",
  "redox_syscall",
@@ -1369,13 +1317,6 @@ version = "2.2.0"
 
 [[package]]
 name = "phf"
-version = "0.7.24"
-dependencies = [
- "phf_shared 0.7.24",
-]
-
-[[package]]
-name = "phf"
 version = "0.8.0"
 dependencies = [
  "phf_macros",
@@ -1385,26 +1326,10 @@ dependencies = [
 
 [[package]]
 name = "phf_codegen"
-version = "0.7.24"
-dependencies = [
- "phf_generator 0.7.24",
- "phf_shared 0.7.24",
-]
-
-[[package]]
-name = "phf_codegen"
 version = "0.8.0"
 dependencies = [
  "phf_generator 0.8.0",
  "phf_shared 0.8.0",
-]
-
-[[package]]
-name = "phf_generator"
-version = "0.7.24"
-dependencies = [
- "phf_shared 0.7.24",
- "rand 0.6.5",
 ]
 
 [[package]]
@@ -1425,13 +1350,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "phf_shared"
-version = "0.7.24"
-dependencies = [
- "siphasher 0.2.3",
 ]
 
 [[package]]
@@ -1562,31 +1480,14 @@ version = "0.7.0"
 
 [[package]]
 name = "rand"
-version = "0.6.5"
-dependencies = [
- "autocfg 0.1.8",
- "libc",
- "rand_chacha 0.1.1",
- "rand_core 0.4.2",
- "rand_hc 0.1.0",
- "rand_isaac",
- "rand_jitter",
- "rand_os",
- "rand_pcg 0.1.2",
- "rand_xorshift",
- "winapi",
-]
-
-[[package]]
-name = "rand"
 version = "0.7.3"
 dependencies = [
  "getrandom 0.1.16",
  "libc",
  "rand_chacha 0.2.2",
  "rand_core 0.5.1",
- "rand_hc 0.2.0",
- "rand_pcg 0.2.1",
+ "rand_hc",
+ "rand_pcg",
 ]
 
 [[package]]
@@ -1596,14 +1497,6 @@ dependencies = [
  "libc",
  "rand_chacha 0.3.1",
  "rand_core 0.6.3",
-]
-
-[[package]]
-name = "rand_chacha"
-version = "0.1.1"
-dependencies = [
- "autocfg 0.1.8",
- "rand_core 0.3.1",
 ]
 
 [[package]]
@@ -1624,17 +1517,6 @@ dependencies = [
 
 [[package]]
 name = "rand_core"
-version = "0.3.1"
-dependencies = [
- "rand_core 0.4.2",
-]
-
-[[package]]
-name = "rand_core"
-version = "0.4.2"
-
-[[package]]
-name = "rand_core"
 version = "0.5.1"
 dependencies = [
  "getrandom 0.1.16",
@@ -1649,52 +1531,9 @@ dependencies = [
 
 [[package]]
 name = "rand_hc"
-version = "0.1.0"
-dependencies = [
- "rand_core 0.3.1",
-]
-
-[[package]]
-name = "rand_hc"
 version = "0.2.0"
 dependencies = [
  "rand_core 0.5.1",
-]
-
-[[package]]
-name = "rand_isaac"
-version = "0.1.1"
-dependencies = [
- "rand_core 0.3.1",
-]
-
-[[package]]
-name = "rand_jitter"
-version = "0.1.4"
-dependencies = [
- "libc",
- "rand_core 0.4.2",
- "winapi",
-]
-
-[[package]]
-name = "rand_os"
-version = "0.1.3"
-dependencies = [
- "cloudabi",
- "fuchsia-cprng",
- "libc",
- "rand_core 0.4.2",
- "rdrand",
- "winapi",
-]
-
-[[package]]
-name = "rand_pcg"
-version = "0.1.2"
-dependencies = [
- "autocfg 0.1.8",
- "rand_core 0.4.2",
 ]
 
 [[package]]
@@ -1702,20 +1541,6 @@ name = "rand_pcg"
 version = "0.2.1"
 dependencies = [
  "rand_core 0.5.1",
-]
-
-[[package]]
-name = "rand_xorshift"
-version = "0.1.1"
-dependencies = [
- "rand_core 0.3.1",
-]
-
-[[package]]
-name = "rdrand"
-version = "0.4.0"
-dependencies = [
- "rand_core 0.3.1",
 ]
 
 [[package]]
@@ -1811,23 +1636,6 @@ version = "3.0.7"
 
 [[package]]
 name = "selectors"
-version = "0.21.0"
-dependencies = [
- "bitflags",
- "cssparser 0.25.9",
- "fxhash",
- "log",
- "matches",
- "phf 0.7.24",
- "phf_codegen 0.7.24",
- "precomputed-hash",
- "servo_arc",
- "smallvec 0.6.14",
- "thin-slice",
-]
-
-[[package]]
-name = "selectors"
 version = "0.22.0"
 dependencies = [
  "bitflags",
@@ -1836,8 +1644,8 @@ dependencies = [
  "fxhash",
  "log",
  "matches",
- "phf 0.8.0",
- "phf_codegen 0.8.0",
+ "phf",
+ "phf_codegen",
  "precomputed-hash",
  "servo_arc",
  "smallvec 1.8.0",
@@ -1853,8 +1661,8 @@ dependencies = [
  "derive_more",
  "fxhash",
  "log",
- "phf 0.8.0",
- "phf_codegen 0.8.0",
+ "phf",
+ "phf_codegen",
  "precomputed-hash",
  "servo_arc",
  "smallvec 1.8.0",
@@ -1952,7 +1760,7 @@ name = "sha2"
 version = "0.9.9"
 dependencies = [
  "block-buffer 0.9.0",
- "cfg-if 1.0.0",
+ "cfg-if",
  "cpufeatures",
  "digest 0.9.0",
  "opaque-debug",
@@ -1962,7 +1770,7 @@ dependencies = [
 name = "sha2"
 version = "0.10.1"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if",
  "cpufeatures",
  "digest 0.10.3",
 ]
@@ -2038,13 +1846,6 @@ dependencies = [
 [[package]]
 name = "slab"
 version = "0.4.5"
-
-[[package]]
-name = "smallvec"
-version = "0.6.14"
-dependencies = [
- "maybe-uninit",
-]
 
 [[package]]
 name = "smallvec"
@@ -2246,7 +2047,7 @@ dependencies = [
 name = "tracing"
 version = "0.1.30"
 dependencies = [
- "cfg-if 1.0.0",
+ "cfg-if",
  "pin-project-lite",
  "tracing-attributes",
  "tracing-core",
@@ -2371,58 +2172,6 @@ version = "0.1.0"
 [[package]]
 name = "version_check"
 version = "0.9.4"
-
-[[package]]
-name = "wasi"
-version = "0.9.0+wasi-snapshot-preview1"
-
-[[package]]
-name = "wasi"
-version = "0.10.2+wasi-snapshot-preview1"
-
-[[package]]
-name = "wasm-bindgen"
-version = "0.2.79"
-dependencies = [
- "cfg-if 1.0.0",
- "wasm-bindgen-macro",
-]
-
-[[package]]
-name = "wasm-bindgen-backend"
-version = "0.2.79"
-dependencies = [
- "bumpalo",
- "lazy_static",
- "log",
- "proc-macro2",
- "quote",
- "syn",
- "wasm-bindgen-shared",
-]
-
-[[package]]
-name = "wasm-bindgen-macro"
-version = "0.2.79"
-dependencies = [
- "quote",
- "wasm-bindgen-macro-support",
-]
-
-[[package]]
-name = "wasm-bindgen-macro-support"
-version = "0.2.79"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
- "wasm-bindgen-backend",
- "wasm-bindgen-shared",
-]
-
-[[package]]
-name = "wasm-bindgen-shared"
-version = "0.2.79"
 
 [[package]]
 name = "winapi"

@@ -26,13 +26,13 @@ cargo_crate("lib") {
   deps = [
     "//brave/third_party/rust/ansi_term/v0_12:lib",
     "//brave/third_party/rust/chrono/v0_4:lib",
-    "//brave/third_party/rust/regex/v1:lib",
     "//brave/third_party/rust/sharded_slab/v0_1:lib",
     "//brave/third_party/rust/thread_local/v1:lib",
     "//brave/third_party/rust/tracing/v0_1:lib",
     "//brave/third_party/rust/tracing_core/v0_1:lib",
     "//brave/third_party/rust/tracing_serde/v0_1:lib",
     "//third_party/rust/lazy_static/v1:lib",
+    "//third_party/rust/regex/v1:lib",
     "//third_party/rust/serde/v1:lib",
     "//third_party/rust/serde_json/v1:lib",
   ]
