@@ -1,5 +1,5 @@
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..74eb9ee665a68aee124395e7e2adb5d7fec41f41 100644
+index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..01f842a3aaaea6a7d9e8b2b445cd5bda3c0c7d42 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
 @@ -772,8 +772,12 @@ config("compiler") {
@@ -25,7 +25,7 @@ index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..74eb9ee665a68aee124395e7e2adb5d7
  }
  
  # The BUILDCONFIG file sets this config on targets by default, which means when
-@@ -1554,6 +1559,85 @@ config("compiler_arm") {
+@@ -1554,6 +1559,87 @@ config("compiler_arm") {
    }
  }
  
@@ -51,6 +51,8 @@ index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..74eb9ee665a68aee124395e7e2adb5d7
 +      _suffix = "-x86_64"
 +    } else if (current_cpu == "x86") {
 +      _suffix = "-i386"
++    } else if (current_cpu == "arm64") {
++      _suffix = "-arm64"
 +    } else {
 +      assert(false)  # Unhandled cpu type
 +    }
@@ -111,7 +113,7 @@ index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..74eb9ee665a68aee124395e7e2adb5d7
  # runtime_library -------------------------------------------------------------
  #
  # Sets the runtime library and associated options.
-@@ -1575,6 +1659,10 @@ config("runtime_library") {
+@@ -1575,6 +1661,10 @@ config("runtime_library") {
      configs += [ "//build/config/c++:runtime_library" ]
    }
  
@@ -122,7 +124,7 @@ index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..74eb9ee665a68aee124395e7e2adb5d7
    # TODO(crbug.com/830987): Come up with a better name for is POSIX + Fuchsia
    # configuration.
    if (is_posix || is_fuchsia) {
-@@ -1746,6 +1834,11 @@ config("default_warnings") {
+@@ -1746,6 +1836,11 @@ config("default_warnings") {
            # TODO(crbug.com/1412713) Evaluate and possibly enable.
            "-Wno-deprecated-this-capture",
          ]
@@ -134,7 +136,7 @@ index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..74eb9ee665a68aee124395e7e2adb5d7
        }
      }
    }
-@@ -1951,7 +2044,7 @@ config("no_chromium_code") {
+@@ -1951,7 +2046,7 @@ config("no_chromium_code") {
  config("noshadowing") {
    # This flag has to be disabled for nacl because the nacl compiler is too
    # strict about shadowing.
@@ -143,7 +145,7 @@ index 23a8da453c3d29ab8efeacbb7da6e01e280afd55..74eb9ee665a68aee124395e7e2adb5d7
      cflags = [ "-Wshadow" ]
    }
  }
-@@ -2534,7 +2627,7 @@ config("symbols") {
+@@ -2534,7 +2629,7 @@ config("symbols") {
        if (use_dwarf5) {
          cflags += [ "-gdwarf-5" ]
          rustflags += [ "-Zdwarf-version=5" ]
