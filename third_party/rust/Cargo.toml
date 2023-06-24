@@ -15,27 +15,27 @@ json-cxx = { path = "../../components/json/rs" }
 filecoin-cxx = { path = "../../components/filecoin/rs" }
 
 [patch.crates-io.star-constellation]
-path = "../../third_party/constellation/crate"
+path = "../constellation/crate"
 package = "star-constellation"
 
 [patch.crates-io.adblock_v0_7]
-path = "../../../third_party/rust/adblock/v0_7/crate"
+path = "adblock/v0_7/crate"
 package = "adblock"
 
 [patch.crates-io.addchain_v0_2]
-path = "../../../third_party/rust/addchain/v0_2/crate"
+path = "addchain/v0_2/crate"
 package = "addchain"
 
 [patch.crates-io.kuchiki_v0_8]
-path = "../../../third_party/rust/kuchiki/v0_8/crate"
+path = "kuchiki/v0_8/crate"
 package = "kuchiki"
 
 [patch.crates-io.futures_v0_3]
-path = "../../../third_party/rust/futures/v0_3/crate"
+path = "futures/v0_3/crate"
 package = "futures"
 
 [patch.crates-io.futures-retry_v0_5]
-path = "../../../third_party/rust/futures_retry/v0_5/crate"
+path = "futures_retry/v0_5/crate"
 package = "futures-retry"
 
 [patch.crates-io.aho-corasick_v0_7]
