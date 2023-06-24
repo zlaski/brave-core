@@ -3,12 +3,28 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import("//brave/build/cargo.gni")
 import("//build/config/coverage/coverage.gni")
 import("//build/config/sanitizers/sanitizers.gni")
 
-if (is_mac) {
-  import("//build/config/mac/mac_sdk.gni")
+group("framework_exports") {
+  output = [
+    "_ChromeAppModeStart_v7",
+    "_ChromeMain",
+  ]
+
+  # Should match build/config/sanitizers:options_sources
+  if (is_asan || is_lsan || is_msan || is_tsan || is_ubsan || is_ubsan_vptr ||
+      is_ubsan_security) {
+    output += [ "___asan_default_options" ]
+  }
+  if (use_clang_coverage) {
+    output += [
+      "_lprofDirMode",
+      "___llvm_profile_raw_version",
+      "___llvm_profile_filename",
+    ]
+  }
+  write_file("$root_out_dir/framework.exports", output)
 }
 
 config("strip_rust_symbols") {
@@ -18,15 +34,7 @@ config("strip_rust_symbols") {
     ldflags = [
       # prevent export of all rust symbols
       "-Wl,-exported_symbols_list," +
-          rebase_path("//brave/app/framework.exports", root_out_dir),
+          rebase_path("${root_out_dir}/framework.exports", root_out_dir),
     ]
-    # if (use_clang_coverage) {
-    # framework_with_coverage.exports
-    #   ldflags += [
-    #     "-Wl,-export_symbol,lprofDirMode",
-    #     "-Wl,-export_symbol,__llvm_profile_raw_version",
-    #     "-Wl,-export_symbol,__llvm_profile_filename",
-    #   ]
-    # }
   }
 }

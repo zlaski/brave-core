@@ -3,23 +3,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import("//brave/build/cargo.gni")
 import("//build/rust/rust_static_library.gni")
-
-# Generate FFI header from Rust source
-cargo_cbindgen("speedreader_ffi_header") {
-  visibility = [ ":*" ]
-  config = "cbindgen.toml"
-  output = "${target_gen_dir}/speedreader_ffi.h"
-
-  sources = [
-    "Cargo.toml",
-    "cbindgen.toml",
-    "charbuf.rs",
-    "lib.rs",
-    "speedreader.rs",
-  ]
-}
 
 rust_static_library("lib") {
   visibility = [ ":*" ]
@@ -43,11 +27,11 @@ source_set("ffi") {
   sources = [
     "speedreader.cc",
     "speedreader.h",
+    "speedreader_ffi.h",
   ]
 
   deps = [
     ":lib",
-    ":speedreader_ffi_header",
     "//base",
     "//build/rust:cxx_cppdeps",
   ]

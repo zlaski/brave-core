@@ -144,10 +144,6 @@ def main():
         rustup_add_target(rustup_target, rustup_home)
 
     tools = [{
-        "name": "cbindgen",
-        "version": "0.14.2",
-        "locked": True,
-    }, {
         "name": "cargo-audit",
         "version": "0.17.5",
         "locked": True,
