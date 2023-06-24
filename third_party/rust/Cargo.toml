@@ -86,9 +86,9 @@ package = "uuid"
 path = "uuid/v0_8/crate"
 package = "uuid"
 
-[patch.crates-io.utf_8_v0_7]
+[patch.crates-io.utf-8_v0_7]
 path = "utf_8/v0_7/crate"
-package = "utf_8"
+package = "utf-8"
 
 [patch.crates-io.urlencoding_v1]
 path = "urlencoding/v1/crate"
@@ -182,17 +182,17 @@ package = "time"
 path = "thread_local/v1/crate"
 package = "thread_local"
 
-[patch.crates-io.thiserror_impl_v1]
+[patch.crates-io.thiserror-impl_v1]
 path = "thiserror_impl/v1/crate"
-package = "thiserror_impl"
+package = "thiserror-impl"
 
 [patch.crates-io.thiserror_v1]
 path = "thiserror/v1/crate"
 package = "thiserror"
 
-[patch.crates-io.thin_slice_v0_1]
+[patch.crates-io.thin-slice_v0_1]
 path = "thin_slice/v0_1/crate"
-package = "thin_slice"
+package = "thin-slice"
 
 [patch.crates-io.tendril_v0_4]
 path = "tendril/v0_4/crate"
@@ -542,17 +542,17 @@ package = "lock_api"
 path = "lifeguard/v0_6/crate"
 package = "lifeguard"
 
-[patch.crates-io.libsecp256k1_gen_genmult_v0_3]
+[patch.crates-io.libsecp256k1-gen-genmult_v0_3]
 path = "libsecp256k1_gen_genmult/v0_3/crate"
-package = "libsecp256k1_gen_genmult"
+package = "libsecp256k1-gen-genmult"
 
-[patch.crates-io.libsecp256k1_gen_ecmult_v0_3]
+[patch.crates-io.libsecp256k1-gen-ecmult_v0_3]
 path = "libsecp256k1_gen_ecmult/v0_3/crate"
-package = "libsecp256k1_gen_ecmult"
+package = "libsecp256k1-gen-ecmult"
 
-[patch.crates-io.libsecp256k1_core_v0_3]
+[patch.crates-io.libsecp256k1-core_v0_3]
 path = "libsecp256k1_core/v0_3/crate"
-package = "libsecp256k1_core"
+package = "libsecp256k1-core"
 
 [patch.crates-io.libsecp256k1_v0_7]
 path = "libsecp256k1/v0_7/crate"
