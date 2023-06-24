@@ -23,16 +23,21 @@ rust_static_library("lib") {
   ]
 }
 
+source_set("ffi_header") {
+  configs += [ "//build/config/compiler:no_chromium_code" ]
+  sources = [ "speedreader_ffi.h" ]
+}
+
 source_set("ffi") {
   sources = [
     "speedreader.cc",
     "speedreader.h",
-    "speedreader_ffi.h",
   ]
 
   deps = [
     ":lib",
     "//base",
-    "//build/rust:cxx_cppdeps",
   ]
+
+  public_deps = [ ":ffi_header" ]
 }
