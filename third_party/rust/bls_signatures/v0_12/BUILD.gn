@@ -28,10 +28,10 @@ cargo_crate("lib") {
     "//brave/third_party/rust/group/v0_12:lib",
     "//brave/third_party/rust/hkdf/v0_11:lib",
     "//brave/third_party/rust/pairing/v0_22:lib",
-    "//brave/third_party/rust/rand_core/v0_6:lib",
     "//brave/third_party/rust/sha2/v0_9:lib",
     "//brave/third_party/rust/subtle/v2:lib",
     "//brave/third_party/rust/thiserror/v1:lib",
+    "//third_party/rust/rand_core/v0_6:lib",
   ]
   aliased_deps = {
     pairing_lib = "//brave/third_party/rust/pairing/v0_22:lib__rlib"

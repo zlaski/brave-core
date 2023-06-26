@@ -30,8 +30,8 @@ cargo_crate("lib") {
   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
   deps = [
     "//brave/third_party/rust/bitvec/v1:lib",
-    "//brave/third_party/rust/rand_core/v0_6:lib",
     "//brave/third_party/rust/subtle/v2:lib",
+    "//third_party/rust/rand_core/v0_6:lib",
   ]
   features = [
     "alloc",

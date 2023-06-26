@@ -29,7 +29,7 @@ cargo_crate("lib") {
   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
   deps = [ "//third_party/rust/once_cell/v1:lib" ]
   if (is_linux || is_chromeos || is_android || is_win || is_ios || is_fuchsia) {
-    deps += [ "//brave/third_party/rust/getrandom/v0_2:lib" ]
+    deps += [ "//third_party/rust/getrandom/v0_2:lib" ]
   }
   build_deps = [ "//brave/third_party/rust/version_check/v0_9:buildrs_support" ]
   build_root = "crate/build.rs"

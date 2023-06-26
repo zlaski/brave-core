@@ -25,7 +25,6 @@ cargo_crate("lib") {
   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
 
   deps = [
-    "//brave/third_party/rust/base64/v0_13:lib",
     "//brave/third_party/rust/cssparser/v0_28:lib",
     "//brave/third_party/rust/flate2/v1:lib",
     "//brave/third_party/rust/idna/v0_2:lib",
@@ -38,6 +37,7 @@ cargo_crate("lib") {
     "//brave/third_party/rust/selectors/v0_23:lib",
     "//brave/third_party/rust/thiserror/v1:lib",
     "//brave/third_party/rust/url/v2:lib",
+    "//third_party/rust/base64/v0_13:lib",
     "//third_party/rust/bitflags/v1:lib",
     "//third_party/rust/memchr/v2:lib",
     "//third_party/rust/once_cell/v1:lib",

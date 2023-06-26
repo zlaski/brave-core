@@ -23,7 +23,6 @@ cargo_crate("lib") {
   executable_configs -= [ "//build/config/compiler:chromium_code" ]
   executable_configs += [ "//build/config/compiler:no_chromium_code" ]
   deps = [
-    "//brave/third_party/rust/base64/v0_13:lib",
     "//brave/third_party/rust/crypto_mac/v0_10:lib",
     "//brave/third_party/rust/curve25519_dalek/v3:lib",
     "//brave/third_party/rust/digest/v0_9:lib",
@@ -33,6 +32,7 @@ cargo_crate("lib") {
     "//brave/third_party/rust/rand_core/v0_5:lib",
     "//brave/third_party/rust/subtle/v2:lib",
     "//brave/third_party/rust/zeroize/v1:lib",
+    "//third_party/rust/base64/v0_13:lib",
     "//third_party/rust/serde/v1:lib",
   ]
   features = [

@@ -12,8 +12,8 @@ rust_static_library("sharks_rust_lib") {
     "//brave/third_party/rust/byteorder/v1:lib",
     "//brave/third_party/rust/ff/v0_13:lib",
     "//brave/third_party/rust/rand/v0_8:lib",
-    "//brave/third_party/rust/rand_core/v0_6:lib",
     "//brave/third_party/rust/zeroize/v1:lib",
+    "//third_party/rust/rand_core/v0_6:lib",
   ]
 
   features = [ "zeroize_memory" ]
@@ -27,8 +27,8 @@ rust_static_library("strobe_rng_rust_lib") {
   sources = [ "crate/strobe-rng/src/lib.rs" ]
 
   deps = [
-    "//brave/third_party/rust/rand_core/v0_6:lib",
     "//brave/third_party/rust/strobe_rs/v0_8:lib",
+    "//third_party/rust/rand_core/v0_6:lib",
   ]
 }
 
@@ -59,16 +59,16 @@ rust_static_library("ppoprf_rust_lib") {
 
   deps = [
     ":strobe_rng_rust_lib",
-    "//brave/third_party/rust/base64/v0_13:lib",
     "//brave/third_party/rust/bincode/v1:lib",
     "//brave/third_party/rust/bitvec/v1:lib",
     "//brave/third_party/rust/curve25519_dalek/v3:lib",
     "//brave/third_party/rust/derive_more/v0_99:lib",
     "//brave/third_party/rust/rand/v0_8:lib",
     "//brave/third_party/rust/rand_core/v0_5:lib",
-    "//brave/third_party/rust/rand_core/v0_6:lib",
     "//brave/third_party/rust/strobe_rs/v0_8:lib",
     "//brave/third_party/rust/zeroize/v1:lib",
+    "//third_party/rust/base64/v0_13:lib",
+    "//third_party/rust/rand_core/v0_6:lib",
     "//third_party/rust/serde/v1:lib",
   ]
 
@@ -88,8 +88,8 @@ rust_static_library("rust_lib") {
     ":adss_rs_rust_lib",
     ":ppoprf_rust_lib",
     ":strobe_rng_rust_lib",
-    "//brave/third_party/rust/rand_core/v0_6:lib",
     "//brave/third_party/rust/strobe_rs/v0_8:lib",
     "//brave/third_party/rust/zeroize/v1:lib",
+    "//third_party/rust/rand_core/v0_6:lib",
   ]
 }
