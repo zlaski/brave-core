@@ -110,10 +110,6 @@ package = "unicode-xid"
 path = "unicode_normalization/v0_1/crate"
 package = "unicode-normalization"
 
-[patch.crates-io.unicode-ident_v1]
-path = "unicode_ident/v1/crate"
-package = "unicode-ident"
-
 [patch.crates-io.unicode-bidi_v0_3]
 path = "unicode_bidi/v0_3/crate"
 package = "unicode-bidi"
@@ -145,10 +141,6 @@ package = "tracing_attributes"
 [patch.crates-io.tracing_v0_1]
 path = "tracing/v0_1/crate"
 package = "tracing"
-
-[patch.crates-io.toml_v0_5]
-path = "toml/v0_5/crate"
-package = "toml"
 
 [patch.crates-io.tokio_v0_2]
 path = "tokio/v0_2/crate"
@@ -310,10 +302,6 @@ package = "safemem"
 path = "ryu/v1/crate"
 package = "ryu"
 
-[patch.crates-io.rustc_version_v0_4]
-path = "rustc_version/v0_4/crate"
-package = "rustc_version"
-
 [patch.crates-io.rmp-serde_v0_15]
 path = "rmp_serde/v0_15/crate"
 package = "rmp-serde"
@@ -334,17 +322,9 @@ package = "regex-automata"
 path = "rand_pcg/v0_2/crate"
 package = "rand_pcg"
 
-[patch.crates-io.rand_core_v0_6]
-path = "rand_core/v0_6/crate"
-package = "rand_core"
-
 [patch.crates-io.rand_core_v0_5]
 path = "rand_core/v0_5/crate"
 package = "rand_core"
-
-[patch.crates-io.rand_chacha_v0_3]
-path = "rand_chacha/v0_3/crate"
-package = "rand_chacha"
 
 [patch.crates-io.rand_chacha_v0_2]
 path = "rand_chacha/v0_2/crate"
@@ -385,10 +365,6 @@ package = "proc-macro-crate"
 [patch.crates-io.precomputed-hash_v0_1]
 path = "precomputed_hash/v0_1/crate"
 package = "precomputed-hash"
-
-[patch.crates-io.ppv-lite86_v0_2]
-path = "ppv_lite86/v0_2/crate"
-package = "ppv-lite86"
 
 [patch.crates-io.pin-utils_v0_1]
 path = "pin_utils/v0_1/crate"
@@ -562,20 +538,12 @@ package = "libsecp256k1"
 path = "lazycell/v1/crate"
 package = "lazycell"
 
-[patch.crates-io.lazy_static_v1]
-path = "lazy_static/v1/crate"
-package = "lazy_static"
-
 [patch.crates-io.keccak_v0_1]
 path = "keccak/v0_1/crate"
 package = "keccak"
 
 [patch.crates-io.itoa_v1]
 path = "itoa/v1/crate"
-package = "itoa"
-
-[patch.crates-io.itoa_v0_4]
-path = "itoa/v0_4/crate"
 package = "itoa"
 
 [patch.crates-io.itertools_v0_10]
@@ -645,10 +613,6 @@ package = "git-version-macro"
 [patch.crates-io.git-version_v0_3]
 path = "git_version/v0_3/crate"
 package = "git-version"
-
-[patch.crates-io.getrandom_v0_2]
-path = "getrandom/v0_2/crate"
-package = "getrandom"
 
 [patch.crates-io.getrandom_v0_1]
 path = "getrandom/v0_1/crate"
@@ -818,10 +782,6 @@ package = "curve25519-dalek"
 path = "cssparser_macros/v0_6/crate"
 package = "cssparser-macros"
 
-[patch.crates-io.cssparser-macros_v0_6]
-path = "cssparser_macros/v0_6/crate"
-package = "cssparser-macros"
-
 [patch.crates-io.cssparser_v0_28]
 path = "cssparser/v0_28/crate"
 package = "cssparser"
@@ -958,10 +918,6 @@ package = "base-x"
 path = "base64/v0_9/crate"
 package = "base64"
 
-[patch.crates-io.base64_v0_13]
-path = "base64/v0_13/crate"
-package = "base64"
-
 [patch.crates-io.async-trait_v0_1]
 path = "async_trait/v0_1/crate"
 package = "async-trait"
@@ -1094,10 +1050,6 @@ package = "indexmap"
 path = "../../../third_party/rust/itoa/v0_4/crate"
 package = "itoa"
 
-[patch.crates-io.itoa_v1]
-path = "../../../third_party/rust/itoa/v1/crate"
-package = "itoa"
-
 [patch.crates-io.lazy_static_v1]
 path = "../../../third_party/rust/lazy_static/v1/crate"
 package = "lazy_static"
@@ -1154,10 +1106,6 @@ package = "rand_core"
 path = "../../../third_party/rust/rand_pcg/v0_3/crate"
 package = "rand_pcg"
 
-[patch.crates-io.rand_v0_8]
-path = "../../../third_party/rust/rand/v0_8/crate"
-package = "rand"
-
 [patch.crates-io.regex-syntax_v0_6]
 path = "../../../third_party/rust/regex_syntax/v0_6/crate"
 package = "regex-syntax"
@@ -1189,14 +1137,6 @@ package = "rustc_version"
 [patch.crates-io.rustversion_v1]
 path = "../../../third_party/rust/rustversion/v1/crate"
 package = "rustversion"
-
-[patch.crates-io.ryu_v1]
-path = "../../../third_party/rust/ryu/v1/crate"
-package = "ryu"
-
-[patch.crates-io.semver_v1]
-path = "../../../third_party/rust/semver/v1/crate"
-package = "semver"
 
 [patch.crates-io.serde_derive_v1]
 path = "../../../third_party/rust/serde_derive/v1/crate"
