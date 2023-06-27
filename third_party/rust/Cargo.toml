@@ -542,6 +542,10 @@ package = "lazycell"
 path = "keccak/v0_1/crate"
 package = "keccak"
 
+[patch.crates-io.itoa_v0_4]
+path = "itoa/v0_4/crate"
+package = "itoa"
+
 [patch.crates-io.itoa_v1]
 path = "itoa/v1/crate"
 package = "itoa"
@@ -1045,10 +1049,6 @@ package = "hex"
 [patch.crates-io.indexmap_v1]
 path = "../../../third_party/rust/indexmap/v1/crate"
 package = "indexmap"
-
-[patch.crates-io.itoa_v0_4]
-path = "../../../third_party/rust/itoa/v0_4/crate"
-package = "itoa"
 
 [patch.crates-io.lazy_static_v1]
 path = "../../../third_party/rust/lazy_static/v1/crate"
