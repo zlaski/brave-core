@@ -678,9 +678,9 @@ dependencies = [
 
 [[package]]
 name = "digest"
-version = "0.10.3"
+version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f2fb860ca6fafa5552fb6d0e816a69c8e49f0908bf524e30a90d97c85892d506"
+checksum = "9ed9a281f7bc9b7576e61468ba615a66a5c8cfdff42420a70aa82701a3b1e292"
 dependencies = [
  "block-buffer 0.10.2",
  "crypto-common",
@@ -734,7 +734,7 @@ dependencies = [
  "derivation-path",
  "ed25519-dalek",
  "hmac 0.12.0",
- "sha2 0.10.1",
+ "sha2 0.10.7",
 ]
 
 [[package]]
@@ -1180,7 +1180,7 @@ version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ddca131f3e7f2ce2df364b57949a9d47915cfbd35e46cfee355ccebbf794d6a2"
 dependencies = [
- "digest 0.10.3",
+ "digest 0.10.7",
 ]
 
 [[package]]
@@ -1347,6 +1347,7 @@ version = "0.1.0"
 dependencies = [
  "cxx",
  "frodo-pir",
+ "sha2 0.10.7",
 ]
 
 [[package]]
@@ -2412,13 +2413,13 @@ dependencies = [
 
 [[package]]
 name = "sha2"
-version = "0.10.1"
+version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99c3bd8169c58782adad9290a9af5939994036b76187f7b4f0e6de91dbbfc0ec"
+checksum = "479fb9d862239e610720565ca91403019f2f00410f1864c5aa7479b950a76ed8"
 dependencies = [
  "cfg-if 1.0.0",
  "cpufeatures",
- "digest 0.10.3",
+ "digest 0.10.7",
 ]
 
 [[package]]

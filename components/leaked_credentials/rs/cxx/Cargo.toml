@@ -6,6 +6,7 @@ edition = "2018"
 [dependencies]
 cxx = "1.0"
 frodo-pir = { path = "../lib" }
+sha2 = "0.10.2"
 
 [lib]
 name = "leaked_credentials_cxx"

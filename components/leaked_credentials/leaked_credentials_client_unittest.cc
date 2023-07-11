@@ -9,9 +9,10 @@
 
 namespace leaked_credentials {
 
-TEST(LeakedCredentialsUnittest, TestHelloWorld2) {
-  // EXPECT_EQ(expected, actual)
-  EXPECT_EQ(leaked_credentials::client(), 0);
+TEST(LeakedCredentialsUnittest, TestBucketInfo) {
+  BucketInfo info = BucketInfo(0);
+  EXPECT_EQ("http://ec2-54-184-23-71.us-west-2.compute.amazonaws.com:8080/params", info.params_url);
+  EXPECT_EQ("http://ec2-54-184-23-71.us-west-2.compute.amazonaws.com:8080/query", info.query_url);
 }
 
 } // namespace leaked_credentials

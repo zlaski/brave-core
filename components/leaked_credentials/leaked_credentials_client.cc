@@ -12,12 +12,38 @@
 
 namespace leaked_credentials {
 
+    ClientLocalStorage::ClientLocalStorage() {
+        // TODO inititalize elements
+    }
+
+    ClientLocalStorage::~ClientLocalStorage() {
+        // TODO 
+    }
+
     BucketInfo::BucketInfo(size_t id) {
-        // TODO implement
+        std::string instance_urls[] = INSTANCE_URLS;
+        std::string base_url = "http://";
+        if (id >= BUCKETS_PER_INSTANCE * (sizeof(instance_urls)/sizeof(instance_urls[0]))) {
+            // TODO panic!
+            std::cout << "Bad index mapping selected" << std::endl;
+        }
+
+        uint8_t i = 0;
+        for (auto &instance: instance_urls) {
+            if (id < BUCKETS_PER_INSTANCE * (i+1)) {
+                base_url += instance; 
+                break;
+            }
+            i++;
+        }
+        base_url += ":";
+        base_url += PORT;
+
+        this->params_url = base_url + "/params";
+        this->query_url = base_url + "/query";
     }
 
     int client() {
-
         Credential cred;
         cred.username = "test";
         cred.password = "password";
@@ -33,7 +59,7 @@ namespace leaked_credentials {
 
         // attempt to read parameters locally or retrieve from server
         std::string bmd_path = LOCAL_DATA_DIR + std::to_string(bucket_id);
-        ClientLocalStorage cls = ClientLocalStorage();
+        ClientLocalStorage cls;// = ClientLocalStorage();
 
         // todo file system check
         /*if (true == true) {

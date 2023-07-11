@@ -12,7 +12,7 @@
 namespace leaked_credentials {
 
   std::size_t client_get_bucket_id(std::string &username, std::size_t bucket_prefix_len, uint32_t total_buckets);
-  uint32_t get_mod_prefix(uint8_t bytes[], std::size_t hex_prefix_len, uint32_t bound);
+  uint32_t get_mod_prefix(uint8_t bytes[], std::size_t bytes_len, std::size_t hex_prefix_len, uint32_t bound);
 
   class LocalHashPrefixTable {
       std::vector<uint32_t> prefixes;

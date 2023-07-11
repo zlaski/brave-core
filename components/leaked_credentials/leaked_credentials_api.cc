@@ -4,25 +4,44 @@
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 #include "brave/components/leaked_credentials/leaked_credentials_api.h"
+#include "brave/components/leaked_credentials/rs/cxx/src/lib.rs.h"
+#include "third_party/rust/cxx/v1/crate/include/cxx.h"
 
-// TODO further includes here
 #include <iostream>
+#include <string>
+#include <sstream>
+#include <iomanip>
 
 namespace leaked_credentials {
+
+    std::string uint8_to_hex_string(const uint8_t *v, const int s) {
+        std::stringstream ss;
+        ss << std::hex << std::setfill('0');
+        for (int i = 0; i < s; i++) {
+            ss << std::hex << std::setw(2) << static_cast<int>(v[i]);
+        }
+        return ss.str();
+    }
 
     // The `client_get_bucket_id` function returns the bucket index that
     // should be queried, based on the queried username and the
     // `bucket_prefix_len` which corresponds to the number of hex
     // characters that are used.
     std::size_t client_get_bucket_id(std::string &username, std::size_t bucket_prefix_len, uint32_t total_buckets) {
-        // TODO implement
-        // calls get_mod_prefix
-        return 0;
+        std::vector<uint8_t> username_vector;
+        rust::Vec<std::uint8_t> hashresult = leaked_credentials::sha256(username);
+        std::copy(hashresult.begin(), hashresult.end(), std::back_inserter(username_vector));
+
+        return static_cast<std::size_t>(get_mod_prefix(username_vector.data(), 
+                                                       username_vector.size(), 
+                                                       bucket_prefix_len, 
+                                                       total_buckets));
     }
 
-    uint32_t get_mod_prefix(uint8_t bytes[], std::size_t hex_prefix_len, uint32_t bound) {
-        // TODO implement
-        return 0;
+    uint32_t get_mod_prefix(uint8_t bytes[], std::size_t bytes_len, std::size_t hex_prefix_len, uint32_t bound) {
+        std::string h = uint8_to_hex_string(bytes, bytes_len);
+        uint64_t val = std::stoull(h.substr(0, hex_prefix_len), nullptr, 16);
+        return static_cast<uint32_t>(val % bound);
     }
 
     LocalHashPrefixTable::LocalHashPrefixTable() {

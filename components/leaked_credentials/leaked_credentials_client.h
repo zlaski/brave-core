@@ -7,7 +7,11 @@
 #define BRAVE_COMPONENTS_LEAKED_CREDENTIALS_CLIENT_H_
 
 #include "brave/components/leaked_credentials/leaked_credentials_api.h"
+#include "brave/components/leaked_credentials/rs/cxx/src/lib.rs.h"
+#include "third_party/rust/cxx/v1/crate/include/cxx.h"
+
 #include <string>
+#include <vector>
 
 namespace leaked_credentials {
 
@@ -15,7 +19,7 @@ namespace leaked_credentials {
     #define BUCKETS_TOTAL 16
     #define BUCKETS_PER_INSTANCE 4
     #define LOCAL_DATA_DIR "bucket_metadata"
-    #define INSTANCE_URLS ["ec2-54-184-23-71.us-west-2.compute.amazonaws.com", "ec2-52-89-9-75.us-west-2.compute.amazonaws.com", "ec2-54-201-141-198.us-west-2.compute.amazonaws.com","ec2-54-212-69-254.us-west-2.compute.amazonaws.com"]
+    #define INSTANCE_URLS {"ec2-54-184-23-71.us-west-2.compute.amazonaws.com", "ec2-52-89-9-75.us-west-2.compute.amazonaws.com", "ec2-54-201-141-198.us-west-2.compute.amazonaws.com","ec2-54-212-69-254.us-west-2.compute.amazonaws.com"}
     #define PORT "8080"
 
     struct Credential {
@@ -25,16 +29,20 @@ namespace leaked_credentials {
     }; 
 
     struct ClientLocalStorage {
-        // base BaseParams -> from FrodoPIR TODO
+        leaked_credentials::BaseParams base;  
         leaked_credentials::LocalHashPrefixTable local_hpt;
-        // preprocessed queries -> from FRODOPIR TODO
+        std::vector<leaked_credentials::QueryParams> preprocessed_queries;
+        // Option<Vec<PIRQueryParams>> TODO optional fix me?
+
+        ClientLocalStorage(); 
+        ~ClientLocalStorage();
     };
 
     class BucketInfo {
-        std::string params_url;
-        std::string query_url;
-
         public:
+            std::string params_url;
+            std::string query_url;
+
             BucketInfo(std::size_t id);
     };
 
