@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -55,24 +56,36 @@ namespace leaked_credentials {
         BucketInfo bucket_info = BucketInfo(bucket_id);
 
         // If no params directory then create it
-        // TODO implement
+        std::filesystem::directory_entry entry{LOCAL_DATA_DIR};
+        if (entry.exists() == false) {
+            std::filesystem::create_directories(LOCAL_DATA_DIR);
+        }
 
         // attempt to read parameters locally or retrieve from server
-        std::string bmd_path = LOCAL_DATA_DIR + std::to_string(bucket_id);
         ClientLocalStorage cls;// = ClientLocalStorage();
+        std::string bmd_path = LOCAL_DATA_DIR + std::to_string(bucket_id);
+        std::ifstream file(bmd_path);
+        
+        if (file.is_open()) {
+            std::string content;
+            std::string line;
+            while (getline(file, line)) {
+                content += line;
+            }
+            file.close();
 
-        // todo file system check
-        /*if (true == true) {
             std::cout << ">> Reading existing params from file for bucket: " << bucket_id << std::endl;
             // TODO json string to ClientLocalStorage
         } else {
-            std::cout << "> Retrieving params to check credential with username=" << cred.username << "(bucket:" << bucket_id << ")" << std::endl;
+            std::cout << "> Retrieving params to check credential with username=" << cred.username 
+            << "(bucket:" << bucket_id << ")" << std::endl;
 
             // ServerOfflineReponse
+            //TODO do request, extract response
 
             std::cout << "> Deserializing response" << std::endl;
             // ClientLocalstorage
-        }*/
+        }
 
         // online phase
         std::cout << "******* LOCAL ONLINE PHASE *******" ;
@@ -93,8 +106,51 @@ namespace leaked_credentials {
             std::cout << "> Credential is a potential match, launching online query" ;
 
             // preprocess queries
-            //TODO
+            std::vector<QueryParams> query_params;
+            if (cls.preprocessed_queries.empty() == false) {
+                // attempt to use existing preprocessed data
+                if (cls.preprocessed_queries.size() < indices.size()) {
+                    // preprocess minimum amount of extra queries
+                    std::cout << "> Have " << cls.preprocessed_queries.size() <<  
+                                 " preprocessed queries, but need " << indices.size() << "." << std::endl;
+
+                    std::size_t n = cred.n_preprocess - cls.preprocessed_queries.size();
+
+                    // TODO extra preprocess queries
+                    // TODO -> FrodoPIR preprocess_queries
+                } else {
+                    // use existing preprocessed data
+                    std::cout << "> Using previously derived preprocessed query data." << std::endl;
+                    query_params = cls.preprocessed_queries;
+                }
+            } else {
+                std::cout << "> Need to preprocess query parameters." << std::endl;
+                // derive a whole new set of preprocessed queries
+                std::size_t n = 0;
+                if (cred.n_preprocess < indices.size()) {
+                    n = indices.size();
+                } else {
+                    n = cred.n_preprocess;
+                }
+                // TODO preprocess_queries frodopir
+            }
+
+            std::cout << "******* REMOTE ONLINE PHASE *******" << std::endl;
+            std::vector<QueryParams> params_to_use (query_params.begin(), query_params.begin() + indices.size());
+            std::vector<QueryParams> unused_params (query_params.begin() + indices.size(), query_params.end());
             
+            // TODO client_prepare_queries
+
+            // TODO ClientOnlineRequest
+
+            std::cout << "> Sending query to " << bucket_info.query_url << std::endl;
+
+            // TODO chromium networking stuff
+
+            std::cout << "> Parsing results from server" << std::endl;
+            // TODO client_process_output
+
+            // TODO update cls.
         }
 
         // write local storage params back to file
