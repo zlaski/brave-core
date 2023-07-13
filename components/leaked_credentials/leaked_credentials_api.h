@@ -6,14 +6,13 @@
 #ifndef BRAVE_COMPONENTS_LEAKED_CREDENTIALS_API_H_
 #define BRAVE_COMPONENTS_LEAKED_CREDENTIALS_API_H_
 
+#include "brave/components/leaked_credentials/rs/cxx/src/lib.rs.h"
+#include "third_party/rust/cxx/v1/crate/include/cxx.h"
+
 #include <vector>
 #include <string>
 
 namespace leaked_credentials {
-
-  std::size_t client_get_bucket_id(std::string &username, std::size_t bucket_prefix_len, uint32_t total_buckets);
-  uint32_t get_mod_prefix(uint8_t bytes[], std::size_t bytes_len, std::size_t hex_prefix_len, uint32_t bound);
-
   class LocalHashPrefixTable {
       std::vector<uint32_t> prefixes;
       //uint32_t prefix_bit_len;
@@ -29,15 +28,15 @@ namespace leaked_credentials {
         std::vector<std::size_t> get_indices(uint8_t *keyword[]);
   };
 
-// TODO remove?
-  /*class BucketInfo {
-    std::string params_url;
-    std::string query_url;
+  struct ClientBucketParams {
+        leaked_credentials::BaseParams base; 
+        leaked_credentials::CommonParams common;
+  };
 
-    public:
-      BucketInfo(std::size_t id);
-  };*/
-
+  std::size_t client_get_bucket_id(std::string &username, std::size_t bucket_prefix_len, uint32_t total_buckets);
+  uint32_t get_mod_prefix(uint8_t bytes[], std::size_t bytes_len, std::size_t hex_prefix_len, uint32_t bound);
+  std::vector<leaked_credentials::QueryParams> preprocess_queries(leaked_credentials::BaseParams base_params, std::size_t n);
+  std::vector<leaked_credentials::QueryParams> client_preproc_n_queries(leaked_credentials::ClientBucketParams cbp, std::size_t n);
 } // namespace leaked_credentials
 
 #endif // BRAVE_COMPONENTS_LEAKED_CREDENTIALS_API_H_

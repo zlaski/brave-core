@@ -44,6 +44,22 @@ namespace leaked_credentials {
         return static_cast<uint32_t>(val % bound);
     }
 
+    std::vector<leaked_credentials::QueryParams> preprocess_queries(leaked_credentials::BaseParams base_params, 
+                                                                     std::size_t n) {
+        std::cout << "> Deriving full set of parameters." << std::endl;    
+        leaked_credentials::ClientBucketParams cbp; // = ClientBucketParams.from (base_params)
+        std::cout << "> Preprocessing " << n << " queries." << std::endl;
+        return client_preproc_n_queries(cbp, n);
+    }
+
+    std::vector<leaked_credentials::QueryParams> client_preproc_n_queries(leaked_credentials::ClientBucketParams cbp, std::size_t n) {
+        std::vector<leaked_credentials::QueryParams> query_params;
+        for (std::size_t i = 0; i < n; i++) {
+            query_params.push_back(QueryParams());  // TODO from clientbucketparams -> make another constructor for that
+        }
+        return query_params;
+    }
+
     LocalHashPrefixTable::LocalHashPrefixTable() {
         //TODO implement
     }

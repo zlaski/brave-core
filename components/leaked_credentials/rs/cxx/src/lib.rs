@@ -7,6 +7,9 @@ use sha2::{Digest, Sha256};
 #[cxx::bridge(namespace = leaked_credentials)]
 mod ffi {
     // Shared functions/datatypes between rust/c++ go in here directly
+    struct VecU32 {
+        v: Vec<u32>,
+    }
 
     // from rs/lib/db.rs
     struct BaseParams {
@@ -25,6 +28,11 @@ mod ffi {
         ele_size: usize,
         plaintext_bits: usize,
         pub used: bool,
+    }
+
+    // from rs/lib/api.rs
+    struct CommonParams {
+        param: Vec<VecU32>,
     }
 
     // functions that are only known to rust go in here

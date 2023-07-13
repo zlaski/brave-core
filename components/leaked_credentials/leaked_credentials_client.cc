@@ -62,7 +62,7 @@ namespace leaked_credentials {
         }
 
         // attempt to read parameters locally or retrieve from server
-        ClientLocalStorage cls;// = ClientLocalStorage();
+        ClientLocalStorage cls;// = ClientLocalStorage();   // TODO FIX ME
         std::string bmd_path = LOCAL_DATA_DIR + std::to_string(bucket_id);
         std::ifstream file(bmd_path);
         
@@ -81,6 +81,7 @@ namespace leaked_credentials {
             << "(bucket:" << bucket_id << ")" << std::endl;
 
             // ServerOfflineReponse
+            // TODO chromium networking part
             //TODO do request, extract response
 
             std::cout << "> Deserializing response" << std::endl;
@@ -115,9 +116,13 @@ namespace leaked_credentials {
                                  " preprocessed queries, but need " << indices.size() << "." << std::endl;
 
                     std::size_t n = cred.n_preprocess - cls.preprocessed_queries.size();
+                    std::vector<leaked_credentials::QueryParams> extra_qps = preprocess_queries(cls.base, n);
 
-                    // TODO extra preprocess queries
-                    // TODO -> FrodoPIR preprocess_queries
+                    std::vector<leaked_credentials::QueryParams> qps;
+                    qps.reserve(cred.n_preprocess);
+                    qps.insert(qps.end(), cls.preprocessed_queries.begin(), cls.preprocessed_queries.end());
+                    qps.insert(qps.end(), extra_qps.begin(), extra_qps.end());
+                    query_params = qps;
                 } else {
                     // use existing preprocessed data
                     std::cout << "> Using previously derived preprocessed query data." << std::endl;
@@ -132,7 +137,8 @@ namespace leaked_credentials {
                 } else {
                     n = cred.n_preprocess;
                 }
-                // TODO preprocess_queries frodopir
+                
+                query_params = preprocess_queries(cls.base, n);
             }
 
             std::cout << "******* REMOTE ONLINE PHASE *******" << std::endl;
@@ -140,6 +146,7 @@ namespace leaked_credentials {
             std::vector<QueryParams> unused_params (query_params.begin() + indices.size(), query_params.end());
             
             // TODO client_prepare_queries
+            // function needs to be in rust as it contains a lot of cryptography code
 
             // TODO ClientOnlineRequest
 
@@ -149,8 +156,10 @@ namespace leaked_credentials {
 
             std::cout << "> Parsing results from server" << std::endl;
             // TODO client_process_output
+            // TODO the function need to be in rust as it contains a lot of cryptography code
 
-            // TODO update cls.
+            // update preprocessed query data to remove used parameters
+            cls.preprocessed_queries = unused_params;
         }
 
         // write local storage params back to file
