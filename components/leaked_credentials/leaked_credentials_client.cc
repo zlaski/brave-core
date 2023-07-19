@@ -83,6 +83,10 @@ namespace leaked_credentials {
             // ServerOfflineReponse
             // TODO chromium networking part
             //TODO do request, extract response
+            
+            // 1. send GET request
+            // 2. expect ServerOfflineResponse
+            // 3. Extract OfflineResponseResult
 
             std::cout << "> Deserializing response" << std::endl;
             // ClientLocalstorage

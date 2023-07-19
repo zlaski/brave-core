@@ -8,12 +8,36 @@
 #include "brave/components/leaked_credentials/rs/cxx/src/lib.rs.h"
 #include "third_party/rust/cxx/v1/crate/include/cxx.h"
 
+// chromium networking test
+
+// profile specific url loader
+/*#include "content/public/browser/browser_context.h"
+#include "content/public/browser/browser_thread.h"
+#include "content/public/browser/storage_partition.h"*/
+
+// system-wide url loader
+#include "chrome/browser/net/system_network_context_manager.h"
+
 #include "testing/gtest/include/gtest/gtest.h"
+#include "testing/gmock/include/gmock/gmock.h"
 
 #include <string>
 #include <vector>
 
-namespace leaked_credentials {
+using ::testing::Return;
+
+namespace leaked_credentials { 
+
+class Server {
+  //virtual Server() {}
+  virtual ~Server() = delete;// {}
+  virtual std::string Response() const = 0;
+};
+
+class MockServer: public Server {
+    public: 
+        MOCK_METHOD(std::string, Response, (), (const, override));
+};
 
 TEST(LeakedCredentialsUnittest, TestSha256) {
   // EXPECT_EQ(expected, actual)
@@ -34,14 +58,21 @@ TEST(LeakedCredentialsUnittest, TestClientGetBucketId) {
   EXPECT_EQ(bucket_id, leaked_credentials::client_get_bucket_id(username, 15, 16));
 }
 
-//struct BlobMetadata;
-/*
-TEST(LeakedCredentialsUnittest, TestHelloMetadata) {
+/*TEST(LeakedCredentialsUnittest, TestClientSendBlockingGetRequest) {
   // EXPECT_EQ(expected, actual)
-  BlobMetadata metadata{};
-  metadata.size = 5;
-  //EXPECT_EQ(metadata.size, leaked_credentials::HelloMetadata().size);
-  EXPECT_EQ(5, leaked_credentials::HelloMetadata());
+  std::string url = "http://www.google.com";
+  std::string response = "TODO";
+
+  LeakedCredentialsNetworkCalls network_request = LeakedCredentialsNetworkCalls(
+    g_browser_process->system_network_context_manager()->GetSharedURLLoaderFactory());
+  network_request.send_blocking_get_request(url);
+
+  MockServer server;
+  EXPECT_CALL(server, Response()).WillOnce(Return(response));
+
+  std::unique_ptr<std::string> s(&response);
+  EXPECT_EQ(response, network_request.OnSimpleLoaderComplete(s));
 }*/
+
 
 } // namespace leaked_credentials
