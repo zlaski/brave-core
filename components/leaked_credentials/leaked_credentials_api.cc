@@ -7,16 +7,6 @@
 #include "brave/components/leaked_credentials/rs/cxx/src/lib.rs.h"
 #include "third_party/rust/cxx/v1/crate/include/cxx.h"
 
-/*#include "base/run_loop.h"
-#include "net/base/net_errors.h"
-#include "net/base/url_request.h"
-#include "net/base/url_request_context.h"
-#include "net/url_request/url_request_context_getter.h"
-#include "net/url_request/url_request_context_builder.h"
-#include "net/url_request/url_request_context_storage.h"
-#include "net/url_request/url_fetcher.h"
-#include "net/url_request/url_fetcher_delegate.h"*/
-
 #include "services/network/public/cpp/resource_request.h"
 #include "net/base/load_flags.h"
 #include "net/traffic_annotation/network_traffic_annotation.h"
@@ -26,6 +16,9 @@
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/browser_thread.h"
 #include "content/public/browser/storage_partition.h"
+
+#include "base/logging.h"
+#include "base/json/json_reader.h"
 
 #include <iostream>
 #include <string>
@@ -67,7 +60,7 @@ namespace leaked_credentials {
     std::vector<leaked_credentials::QueryParams> preprocess_queries(leaked_credentials::BaseParams base_params, 
                                                                      std::size_t n) {
         std::cout << "> Deriving full set of parameters." << std::endl;    
-        leaked_credentials::ClientBucketParams cbp; // = ClientBucketParams.from (base_params)
+        leaked_credentials::ClientBucketParams cbp; // = ClientBucketParams.from (base_params)  TODO FIX ME
         std::cout << "> Preprocessing " << n << " queries." << std::endl;
         return client_preproc_n_queries(cbp, n);
     }
@@ -80,13 +73,9 @@ namespace leaked_credentials {
         return query_params;
     }
 
-    LocalHashPrefixTable::LocalHashPrefixTable() {
-        //TODO implement
-    }
-
-    LocalHashPrefixTable::~LocalHashPrefixTable() {
-        //TODO implement
-    }
+    LocalHashPrefixTable::LocalHashPrefixTable() = default;
+    LocalHashPrefixTable::LocalHashPrefixTable(const LocalHashPrefixTable& other) = default;
+    LocalHashPrefixTable::~LocalHashPrefixTable() = default;
 
     LocalHashPrefixTable LocalHashPrefixTable::new_from_file(std::string path, uint32_t prefix_bit_len) {
         // TODO implement
@@ -122,6 +111,9 @@ namespace leaked_credentials {
     LeakedCredentialsNetworkCalls::LeakedCredentialsNetworkCalls(
         scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory)
         : url_loader_factory_(std::move(url_loader_factory)) {}
+
+    LeakedCredentialsNetworkCalls::LeakedCredentialsNetworkCalls() = default;
+    LeakedCredentialsNetworkCalls::~LeakedCredentialsNetworkCalls() = default;
 
     // This is a blocking request and might block the main thread.  
     void LeakedCredentialsNetworkCalls::send_blocking_get_request(const std::string& url) {
@@ -176,16 +168,50 @@ namespace leaked_credentials {
     }
 
     void LeakedCredentialsNetworkCalls::OnSimpleLoaderComplete(std::unique_ptr<std::string> response_body) {
-        // TODO does not compile - TODO implement correctly
-        /*int response_code = -1;
-        if (simple_url_loader_->ResponseInfo() &&
-            simple_url_loader_->ResponseInfo()->headers) {
-            response_code = simple_url_loader_->ResponseInfo()->headers->response_code();
+        std::cout << "Response body: " << response_body.get() << std::endl;
+
+        if (!response_body || response_body->empty()) {
+            std::string error_str = net::ErrorToShortString(simple_url_loader_->NetError());
+            LOG(ERROR) << "no response body. net error: " << error_str;
+            return;
         }
 
-        std::cout << "Response code: " << response_code << std::endl;*/
-        std::cout << "Response body: " << response_body.get() << std::endl;
-        // TODO do something with the body
+        base::JSONReader::Result parsed_value =
+            base::JSONReader::ReadAndReturnValueWithError(
+                *response_body, base::JSONParserOptions::JSON_PARSE_RFC);
+        if (!parsed_value.has_value() || !parsed_value.value().is_dict()) {
+            LOG(ERROR) << "LeakedCredentials: failed to parse get request json: "
+               << parsed_value.error().message;
+            return;
+        }
+
+        base::Value::Dict& root = parsed_value->GetDict();
+        absl::optional<int> value = root.FindInt("life");
+
+        //std::cout << "value: " << value << std::endl;
+
+        this->test = value.value_or(21);
+
+        // TODO build struct
+
+        // signal URL load complete for blocking requests
+        SignalUrlLoadCompleted();
+    }
+
+    void LeakedCredentialsNetworkCalls::WaitForUrlLoadToComplete() {
+        if (url_loaded_) {
+            return;
+        }
+
+        run_loop_ = std::make_unique<base::RunLoop>();
+        run_loop_->Run();
+    }
+
+    void LeakedCredentialsNetworkCalls::SignalUrlLoadCompleted() {
+        url_loaded_ = true;
+        if (run_loop_) {
+            run_loop_->Quit();
+        }
     }
 
     /*void LeakedCredentialsURLFetcherDelegate::OnURLFetchComplete(const net::URLFetcher* source) {
@@ -206,5 +232,71 @@ namespace leaked_credentials {
         run_loop_ = nullptr;
         return response_;
     }*/
+
+    KeywordIndexingMappingMessage KeywordIndexingMappingMessage::from_local_hpt(LocalHashPrefixTable hpt) {
+        // TODO implement
+        KeywordIndexingMappingMessage message = KeywordIndexingMappingMessage();
+        return message;
+    }
+
+    OfflineResponseResult::OfflineResponseResult(BaseParams bp, KeywordIndexingMappingMessage kimm) {
+        this->base_params_ = ""; //bp; TODO json to string + base64 encode
+        this->kimm_ = kimm;
+    }
+
+    std::pair<BaseParams, LocalHashPrefixTable> OfflineResponseResult::deseralize_local_hpt() {
+        if (this->kimm_.method_ != "local_hpt") {
+            //throw exception   // TODO
+        }
+        std::vector<uint8_t> sbp; //=  TODO decode base params
+        BaseParams bp; //= from json?
+
+        LocalHashPrefixTable local_hpt; // TODO from json
+
+        return std::make_pair(bp, local_hpt);
+    }
+
+    ServerOfflineResponse::ServerOfflineResponse() = default;
+    ServerOfflineResponse::ServerOfflineResponse(const ServerOfflineResponse& other) = default;
+    ServerOfflineResponse::~ServerOfflineResponse() = default;
+
+    ServerOfflineResponse ServerOfflineResponse::from_local_hpt(BaseParams base_params, LocalHashPrefixTable hpt, std::size_t id) {
+        std::string jsonrpc = "2.0";
+        
+        ServerOfflineResponse err_resp;
+        err_resp.jsonrpc_ = jsonrpc;
+        err_resp.id_ = id;
+        err_resp.error_ = ResponseError();   // TODO responseerror.offline_internal()
+        err_resp.result_ = {};
+
+        KeywordIndexingMappingMessage kimm_res;
+        /*try
+        {
+            // TODO FIX ME
+            // = KeywordIndexingMappingMessage::from_local_hpt(hpt);
+        }
+        catch(const std::exception& e)
+        {
+            return err_resp;
+        }*/
+
+        OfflineResponseResult prr_res;
+        /*try
+        {
+            prr_res = OfflineResponseResult(base_params, kimm_res);
+        }
+        catch(const std::exception& e)
+        {
+            return err_resp;
+        }*/
+
+        ServerOfflineResponse response;
+        response.jsonrpc_ = jsonrpc;
+        response.id_ = id;
+        response.result_ = prr_res;
+        response.error_ = {};
+
+        return response;
+    }
 
 } // namespace leaked_credentials

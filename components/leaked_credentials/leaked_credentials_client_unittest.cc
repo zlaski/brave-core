@@ -11,8 +11,8 @@ namespace leaked_credentials {
 
 TEST(LeakedCredentialsUnittest, TestBucketInfo) {
   BucketInfo info = BucketInfo(0);
-  EXPECT_EQ("http://ec2-54-184-23-71.us-west-2.compute.amazonaws.com:8080/params", info.params_url);
-  EXPECT_EQ("http://ec2-54-184-23-71.us-west-2.compute.amazonaws.com:8080/query", info.query_url);
+  EXPECT_EQ("http://ec2-54-184-23-71.us-west-2.compute.amazonaws.com:8080/params", info.params_url_);
+  EXPECT_EQ("http://ec2-54-184-23-71.us-west-2.compute.amazonaws.com:8080/query", info.query_url_);
 }
 
 } // namespace leaked_credentials

@@ -17,6 +17,9 @@ static_library("leaked_credentials") {
 
   deps = [
     "//base",
+    "//net",
+    "//services/network/public/cpp",
+    "//url",
   ]
 }
 
@@ -31,6 +34,8 @@ source_set("unit_tests") {
   deps = [
     "//base",
     "//brave/components/leaked_credentials",
+    "//net:test_support",
+    "//services/network:test_support",
     "//testing/gtest",
   ]
 }

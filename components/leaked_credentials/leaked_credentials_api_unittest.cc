@@ -16,7 +16,12 @@
 #include "content/public/browser/storage_partition.h"*/
 
 // system-wide url loader
-#include "chrome/browser/net/system_network_context_manager.h"
+//#include "chrome/browser/net/system_network_context_manager.h"
+
+// url loader for testing
+#include "base/memory/scoped_refptr.h"
+#include "services/network/public/cpp/weak_wrapper_shared_url_loader_factory.h"
+#include "services/network/test/test_url_loader_factory.h"
 
 #include "testing/gtest/include/gtest/gtest.h"
 #include "testing/gmock/include/gmock/gmock.h"
@@ -64,7 +69,8 @@ TEST(LeakedCredentialsUnittest, TestClientGetBucketId) {
   std::string response = "TODO";
 
   LeakedCredentialsNetworkCalls network_request = LeakedCredentialsNetworkCalls(
-    g_browser_process->system_network_context_manager()->GetSharedURLLoaderFactory());
+    base::MakeRefCounted<network::WeakWrapperSharedURLLoaderFactory>(
+                &url_loader_factory_));
   network_request.send_blocking_get_request(url);
 
   MockServer server;
@@ -73,6 +79,15 @@ TEST(LeakedCredentialsUnittest, TestClientGetBucketId) {
   std::unique_ptr<std::string> s(&response);
   EXPECT_EQ(response, network_request.OnSimpleLoaderComplete(s));
 }*/
+
+TEST(LeakedCredentialsUnittest, TestClientParseJSON) {
+  leaked_credentials::LeakedCredentialsNetworkCalls network_request = leaked_credentials::LeakedCredentialsNetworkCalls();
+
+  std::unique_ptr<std::string> response_body (new std::string("{\"life\": 42}")); 
+  network_request.OnSimpleLoaderComplete(std::move(response_body));
+  // EXPECT_EQ(expected, actual)
+  EXPECT_EQ(42, network_request.test);
+}
 
 
 } // namespace leaked_credentials

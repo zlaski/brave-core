@@ -5,9 +5,12 @@
 
 #include "brave/components/leaked_credentials/leaked_credentials_client.h"
 
+#include "chrome/browser/net/system_network_context_manager.h"
+
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -38,20 +41,20 @@ namespace leaked_credentials {
             i++;
         }
         base_url += ":";
-        base_url += PORT;
+        base_url += INSTANCE_PORT;
 
-        this->params_url = base_url + "/params";
-        this->query_url = base_url + "/query";
+        this->params_url_ = base_url + "/params";
+        this->query_url_ = base_url + "/query";
     }
 
     int client() {
         Credential cred;
-        cred.username = "test";
-        cred.password = "password";
-        cred.n_preprocess = 5;
+        cred.username_ = "test";
+        cred.password_ = "password";
+        cred.n_preprocess_ = 5;
 
         std::cout << "******* OFFLINE PHASE *******" ;
-        std::size_t bucket_id = leaked_credentials::client_get_bucket_id(cred.username, HEX_PREFIX_LEN, BUCKETS_TOTAL);
+        std::size_t bucket_id = leaked_credentials::client_get_bucket_id(cred.username_, HEX_PREFIX_LEN, BUCKETS_TOTAL);
         std::cout << "bucket id: " << bucket_id << std::endl;
         BucketInfo bucket_info = BucketInfo(bucket_id);
 
@@ -77,26 +80,37 @@ namespace leaked_credentials {
             std::cout << ">> Reading existing params from file for bucket: " << bucket_id << std::endl;
             // TODO json string to ClientLocalStorage
         } else {
-            std::cout << "> Retrieving params to check credential with username=" << cred.username 
+            std::cout << "> Retrieving params to check credential with username=" << cred.username_ 
             << "(bucket:" << bucket_id << ")" << std::endl;
 
             // ServerOfflineReponse
-            // TODO chromium networking part
-            //TODO do request, extract response
-            
-            // 1. send GET request
-            // 2. expect ServerOfflineResponse
+            // 1. send GET request TODO
+            //scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory;
+            // TODO where do I get the url_loader_factory from?
+            //url_loader_factory = context->GetDefaultStoragePartition()->GetURLLoaderFactoryForBrowserProcess();
+            LeakedCredentialsNetworkCalls network_request;// = LeakedCredentialsNetworkCalls(url_loader_factory);
+            std::stringstream server_url;
+            server_url << bucket_info.params_url_ << "/" << bucket_id;
+            network_request.send_blocking_get_request(server_url.str());
+            network_request.WaitForUrlLoadToComplete();
+
             // 3. Extract OfflineResponseResult
+            ServerOfflineResponse sor;  // TODO construct from JSON result of GET request
+            OfflineResponseResult result = sor.result_.value();
 
             std::cout << "> Deserializing response" << std::endl;
-            // ClientLocalstorage
+            std::pair<BaseParams, LocalHashPrefixTable> res = result.deseralize_local_hpt();
+
+            cls.base_ = res.first;
+            cls.local_hpt_ = res.second;
+            cls.preprocessed_queries_ = {};
         }
 
         // online phase
         std::cout << "******* LOCAL ONLINE PHASE *******" ;
         std::cout << "> Checking credential locally" ;
 
-        std::string data_to_hash = cred.username + cred.password;
+        std::string data_to_hash = cred.username_ + cred.password_;
         // TODO FIX ME
         std::vector<std::size_t> indices;// = cls.local_hpt.get_indices(&reinterpret_cast<const uint8_t*>(&data_to_hash[0]));
         bool do_remote = true;
@@ -112,37 +126,37 @@ namespace leaked_credentials {
 
             // preprocess queries
             std::vector<QueryParams> query_params;
-            if (cls.preprocessed_queries.empty() == false) {
+            if (cls.preprocessed_queries_.value().empty() == false) {
                 // attempt to use existing preprocessed data
-                if (cls.preprocessed_queries.size() < indices.size()) {
+                if (cls.preprocessed_queries_.value().size() < indices.size()) {
                     // preprocess minimum amount of extra queries
-                    std::cout << "> Have " << cls.preprocessed_queries.size() <<  
+                    std::cout << "> Have " << cls.preprocessed_queries_.value().size() <<  
                                  " preprocessed queries, but need " << indices.size() << "." << std::endl;
 
-                    std::size_t n = cred.n_preprocess - cls.preprocessed_queries.size();
-                    std::vector<leaked_credentials::QueryParams> extra_qps = preprocess_queries(cls.base, n);
+                    std::size_t n = cred.n_preprocess_ - cls.preprocessed_queries_.value().size();
+                    std::vector<leaked_credentials::QueryParams> extra_qps = preprocess_queries(cls.base_, n);
 
                     std::vector<leaked_credentials::QueryParams> qps;
-                    qps.reserve(cred.n_preprocess);
-                    qps.insert(qps.end(), cls.preprocessed_queries.begin(), cls.preprocessed_queries.end());
+                    qps.reserve(cred.n_preprocess_);
+                    qps.insert(qps.end(), cls.preprocessed_queries_.value().begin(), cls.preprocessed_queries_.value().end());
                     qps.insert(qps.end(), extra_qps.begin(), extra_qps.end());
                     query_params = qps;
                 } else {
                     // use existing preprocessed data
                     std::cout << "> Using previously derived preprocessed query data." << std::endl;
-                    query_params = cls.preprocessed_queries;
+                    query_params = cls.preprocessed_queries_.value();
                 }
             } else {
                 std::cout << "> Need to preprocess query parameters." << std::endl;
                 // derive a whole new set of preprocessed queries
                 std::size_t n = 0;
-                if (cred.n_preprocess < indices.size()) {
+                if (cred.n_preprocess_ < indices.size()) {
                     n = indices.size();
                 } else {
-                    n = cred.n_preprocess;
+                    n = cred.n_preprocess_;
                 }
                 
-                query_params = preprocess_queries(cls.base, n);
+                query_params = preprocess_queries(cls.base_, n);
             }
 
             std::cout << "******* REMOTE ONLINE PHASE *******" << std::endl;
@@ -154,7 +168,7 @@ namespace leaked_credentials {
 
             // TODO ClientOnlineRequest
 
-            std::cout << "> Sending query to " << bucket_info.query_url << std::endl;
+            std::cout << "> Sending query to " << bucket_info.query_url_ << std::endl;
 
             // TODO chromium networking stuff
 
@@ -163,7 +177,7 @@ namespace leaked_credentials {
             // TODO the function need to be in rust as it contains a lot of cryptography code
 
             // update preprocessed query data to remove used parameters
-            cls.preprocessed_queries = unused_params;
+            cls.preprocessed_queries_ = unused_params;
         }
 
         // write local storage params back to file

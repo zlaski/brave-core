@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <optional>
 
 namespace leaked_credentials {
 
@@ -20,19 +21,18 @@ namespace leaked_credentials {
     #define BUCKETS_PER_INSTANCE 4
     #define LOCAL_DATA_DIR "bucket_metadata"
     #define INSTANCE_URLS {"ec2-54-184-23-71.us-west-2.compute.amazonaws.com", "ec2-52-89-9-75.us-west-2.compute.amazonaws.com", "ec2-54-201-141-198.us-west-2.compute.amazonaws.com","ec2-54-212-69-254.us-west-2.compute.amazonaws.com"}
-    #define PORT "8080"
+    #define INSTANCE_PORT "8080"
 
     struct Credential {
-        std::string username;
-        std::string password;
-        std::size_t n_preprocess;
+        std::string username_;
+        std::string password_;
+        std::size_t n_preprocess_;
     }; 
 
     struct ClientLocalStorage {
-        leaked_credentials::BaseParams base;  
-        leaked_credentials::LocalHashPrefixTable local_hpt;
-        std::vector<leaked_credentials::QueryParams> preprocessed_queries;
-        // Option<Vec<PIRQueryParams>> TODO optional fix me?
+        leaked_credentials::BaseParams base_;  
+        leaked_credentials::LocalHashPrefixTable local_hpt_;
+        std::optional<std::vector<leaked_credentials::QueryParams>> preprocessed_queries_;
 
         ClientLocalStorage(); 
         ~ClientLocalStorage();
@@ -40,8 +40,8 @@ namespace leaked_credentials {
 
     class BucketInfo {
         public:
-            std::string params_url;
-            std::string query_url;
+            std::string params_url_;
+            std::string query_url_;
 
             BucketInfo(std::size_t id);
     };
