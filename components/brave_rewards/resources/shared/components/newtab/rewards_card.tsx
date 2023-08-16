@@ -56,6 +56,7 @@ export function RewardsCardHeader () {
 
 interface Props {
   rewardsEnabled: boolean
+  earningsDisabled: boolean
   userType: UserType
   vbatDeadline: number | undefined
   isUnsupportedRegion: boolean
@@ -301,6 +302,27 @@ export function RewardsCard (props: Props) {
     )
   }
 
+  function renderAlerts () {
+    if (props.earningsDisabled) {
+      return (
+        <style.alert>
+          {
+            formatMessage(getString('rewardsEarningsDisabledText'), {
+              tags: {
+                $1: (content) => (
+                  <NewTabLink key='link' href='https://brave.com'>
+                    {content}
+                  </NewTabLink>
+                )
+              }
+            })
+          }
+        </style.alert>
+      )
+    }
+    return null
+  }
+
   function renderSettingsLink () {
     return (
       <style.settings>
@@ -439,6 +461,7 @@ export function RewardsCard (props: Props) {
       <RewardsCardHeader />
       {renderBalance()}
       {renderEarnings()}
+      {renderAlerts()}
       {renderSettingsLink()}
     </style.root>
   )

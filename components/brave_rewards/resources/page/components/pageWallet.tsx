@@ -539,7 +539,6 @@ class PageWallet extends React.Component<Props, State> {
         {
           userType !== 'unconnected' &&
             <WalletCard
-              userType={userType}
               balance={balance}
               externalWallet={externalWalletInfo}
               providerPayoutStatus={'off'}
