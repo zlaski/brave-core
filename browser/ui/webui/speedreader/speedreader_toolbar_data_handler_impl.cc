@@ -8,7 +8,6 @@
 #include <memory>
 #include <utility>
 
-#include "base/strings/string_number_conversions.h"
 #include "brave/browser/speedreader/speedreader_service_factory.h"
 #include "brave/browser/speedreader/speedreader_tab_helper.h"
 #include "brave/browser/ui/brave_browser_window.h"
@@ -22,7 +21,6 @@
 #include "chrome/browser/ui/browser_window.h"
 #include "chrome/browser/ui/color/chrome_color_id.h"
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
-#include "chrome/common/chrome_isolated_world_ids.h"
 #include "ui/color/color_provider.h"
 
 #if BUILDFLAG(ENABLE_AI_CHAT)
@@ -37,13 +35,14 @@ class TtsPlayerDelegate : public speedreader::TtsPlayer::Delegate {
 
   void RequestReadingContent(
       content::WebContents* web_contents,
-      base::OnceCallback<void(base::Value content)> result_cb) override {
+      base::OnceCallback<void(bool success, std::string content)> result_cb)
+      override {
     auto* page_distiller =
         speedreader::SpeedreaderTabHelper::GetPageDistiller(web_contents);
     if (page_distiller) {
-      page_distiller->GetTextToSpeak(std::move(result_cb));
+      page_distiller->GetDistilledText(std::move(result_cb));
     } else {
-      std::move(result_cb).Run(base::Value());
+      std::move(result_cb).Run(false, {});
     }
   }
 };
@@ -73,11 +72,6 @@ SpeedreaderToolbarDataHandlerImpl::SpeedreaderToolbarDataHandlerImpl(
 
   speedreader::TtsPlayer::GetInstance()->set_delegate(
       std::make_unique<TtsPlayerDelegate>());
-
-  const auto& tts_settings = GetSpeedreaderService()->GetTtsSettings();
-  speedreader::TtsPlayer::GetInstance()->SetSpeed(
-      static_cast<double>(tts_settings.speed) / 100.0);
-  speedreader::TtsPlayer::GetInstance()->SetVoice(tts_settings.voice);
 }
 
 SpeedreaderToolbarDataHandlerImpl::~SpeedreaderToolbarDataHandlerImpl() =
@@ -249,24 +243,9 @@ void SpeedreaderToolbarDataHandlerImpl::OnReadingStop(
 
 void SpeedreaderToolbarDataHandlerImpl::OnReadingProgress(
     content::WebContents* web_contents,
-    int paragraph_index,
+    const std::string& element_id,
     int char_index,
-    int length) {
-  if (!web_contents) {
-    return;
-  }
-
-  constexpr const char16_t kHighlight[] = uR"js( highlightText($1, $2, $3) )js";
-
-  const auto script = base::ReplaceStringPlaceholders(
-      kHighlight,
-      {base::NumberToString16(paragraph_index),
-       base::NumberToString16(char_index), base::NumberToString16(length)},
-      nullptr);
-
-  web_contents->GetPrimaryMainFrame()->ExecuteJavaScriptInIsolatedWorld(
-      script, base::DoNothing(), ISOLATED_WORLD_ID_BRAVE_INTERNAL);
-}
+    int length) {}
 
 void SpeedreaderToolbarDataHandlerImpl::OnTabStripModelChanged(
     TabStripModel* tab_strip_model,
