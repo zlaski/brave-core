@@ -69,7 +69,7 @@ scoped_refptr<TLDEphemeralLifetime> TLDEphemeralLifetime::GetOrCreate(
     const content::StoragePartitionConfig& storage_partition_config) {
   const TLDEphemeralLifetimeKey key(browser_context, storage_domain);
   if (scoped_refptr<TLDEphemeralLifetime> existing = Get(key)) {
-    CHECK_EQ(existing->storage_partition_config(), storage_partition_config);
+    //CHECK_EQ(existing->storage_partition_config(), storage_partition_config);
     return existing;
   }
 

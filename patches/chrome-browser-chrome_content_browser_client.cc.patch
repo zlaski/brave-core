@@ -1,0 +1,19 @@
+diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
+index 6f989cff781d71e2ea534d5592bf3d6fcaa0e95f..c343fc68310e386523cbfe8e9b0f20a195325ca9 100644
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -1854,6 +1854,14 @@ ChromeContentBrowserClient::GetStoragePartitionConfigForSite(
+   content::StoragePartitionConfig default_storage_partition_config =
+       content::StoragePartitionConfig::CreateDefault(browser_context);
+ 
++  LOG(ERROR) << site;
++  if (site.host_piece().ends_with("youtube.com")/* &&
++      site.path_piece().starts_with("/watch")*/) {
++    LOG(ERROR) << "almost set watch partition";
++    // return content::StoragePartitionConfig::Create(browser_context, site.host(),
++    //                                                "watch", false);
++  }
++
+   // A non-default storage partition is used in the following situations:
+   // - To enforce process isolation between a more-trusted content (Chrome Apps,
+   // Extensions, and Isolated Web Apps) and regular web content.

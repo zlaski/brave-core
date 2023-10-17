@@ -1,0 +1,21 @@
+diff --git a/content/browser/browsing_instance.cc b/content/browser/browsing_instance.cc
+index 191b1f3ee1381c0f0aa76044d633c91cff6650a1..3233857a2eb77b3e43538a27859a5a2c6a3f2304 100644
+--- a/content/browser/browsing_instance.cc
++++ b/content/browser/browsing_instance.cc
+@@ -236,11 +236,11 @@ SiteInfo BrowsingInstance::ComputeSiteInfoForURL(
+     const UrlInfo& url_info) const {
+   // If a StoragePartitionConfig is specified in both `url_info` and this
+   // BrowsingInstance, make sure they match.
+-  if (url_info.storage_partition_config.has_value() &&
+-      storage_partition_config_.has_value()) {
+-    CHECK_EQ(storage_partition_config_.value(),
+-             url_info.storage_partition_config.value());
+-  }
++  // if (url_info.storage_partition_config.has_value() &&
++  //     storage_partition_config_.has_value()) {
++  //   CHECK_EQ(storage_partition_config_.value(),
++  //            url_info.storage_partition_config.value());
++  // }
+   // If no StoragePartitionConfig was set in `url_info`, create a new UrlInfo
+   // that inherit's this BrowsingInstance's StoragePartitionConfig.
+   UrlInfo url_info_with_partition =

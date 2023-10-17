@@ -1,0 +1,23 @@
+diff --git a/content/browser/site_instance_impl.cc b/content/browser/site_instance_impl.cc
+index a478ec236b193a42296aa30be384b54973f2ff89..16e555b1c595cfa7681512b80ebc7d9bad0ef695 100644
+--- a/content/browser/site_instance_impl.cc
++++ b/content/browser/site_instance_impl.cc
+@@ -870,8 +870,17 @@ scoped_refptr<SiteInstanceImpl> SiteInstanceImpl::CreateForURL(
+     BrowserContext* browser_context,
+     const GURL& url) {
+   DCHECK(browser_context);
++  UrlInfoInit uii(url);
++  if (url.host_piece().ends_with("youtube.com") &&
++      url.path_piece().starts_with("/watch")) {
++    LOG(ERROR) << "setting watch partition";
++    uii.WithStoragePartitionConfig(StoragePartitionConfig::Create(
++        browser_context, url.host(), "watch", false));
++  }
++  // uii.WithStoragePartitionConfig(
++  //     GetContentClient()->browser()->GetStoragePartitionConfigForSite(browser_context, url));
+   return SiteInstanceImpl::CreateForUrlInfo(
+-      browser_context, UrlInfo(UrlInfoInit(url)), /*is_guest=*/false,
++      browser_context, UrlInfo(uii), /*is_guest=*/false,
+       /*is_fenced=*/false);
+ }
+ 

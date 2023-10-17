@@ -1,0 +1,21 @@
+diff --git a/content/browser/site_info.cc b/content/browser/site_info.cc
+index 20056e6a2047498fa48b3ba156f20db1d34a521d..6e7fb5d69b01a82deecccc33cdff1ca831549ecb 100644
+--- a/content/browser/site_info.cc
++++ b/content/browser/site_info.cc
+@@ -779,6 +779,16 @@ GURL SiteInfo::GetSiteForURLInternal(const IsolationContext& isolation_context,
+ 
+     site_url = GetSiteForOrigin(origin);
+ 
++    // LOG(ERROR) << url;
++    // if (url.host_piece().ends_with("youtube.com") &&
++    //     url.path_piece().starts_with("/watch")) {
++    //   LOG(ERROR) << "setting /watch site_url";
++    //   GURL::Replacements r;
++    //   r.ClearQuery();
++    //   r.ClearRef();
++    //   site_url = site_url.ReplaceComponents(r);
++    // }
++
+     // Isolated origins should use the full origin as their site URL. A
+     // subdomain of an isolated origin should also use that isolated origin's
+     // site URL. It is important to check |origin| (based on |url|) rather than

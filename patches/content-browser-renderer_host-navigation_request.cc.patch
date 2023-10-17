@@ -1,5 +1,5 @@
 diff --git a/content/browser/renderer_host/navigation_request.cc b/content/browser/renderer_host/navigation_request.cc
-index 5cf177fc73dd2b3038754b11d23ad637e7709f88..12d8a7794339327f3436ccdee8570a5b5e224728 100644
+index 5cf177fc73dd2b3038754b11d23ad637e7709f88..b2c741484b1396e6cf0b1d466244459ff30ad46b 100644
 --- a/content/browser/renderer_host/navigation_request.cc
 +++ b/content/browser/renderer_host/navigation_request.cc
 @@ -3268,6 +3268,7 @@ void NavigationRequest::OnRequestRedirected(
@@ -10,7 +10,23 @@ index 5cf177fc73dd2b3038754b11d23ad637e7709f88..12d8a7794339327f3436ccdee8570a5b
    common_params_->referrer = Referrer::SanitizeForRequest(
        common_params_->url, *common_params_->referrer);
  
-@@ -4883,6 +4884,7 @@ void NavigationRequest::OnStartChecksComplete(
+@@ -3793,6 +3794,15 @@ UrlInfo NavigationRequest::GetUrlInfo() {
+     url_info_init.WithCommonCoopOrigin(common_coop_origin.value());
+   }
+ 
++  if (GetURL().host_piece().ends_with("youtube.com") &&
++      GetURL().path_piece().starts_with("/watch")) {
++    LOG(ERROR) << "setting watch partition";
++    BrowserContext* browser_context =
++        frame_tree_node_->navigator().controller().GetBrowserContext();
++    url_info_init.WithStoragePartitionConfig(StoragePartitionConfig::Create(
++        browser_context, GetURL().host(), "watch", false));
++  }
++
+   // Navigations within guests should always stay in the guest's
+   // StoragePartition.
+   SiteInstanceImpl* current_instance =
+@@ -4883,6 +4893,7 @@ void NavigationRequest::OnStartChecksComplete(
    headers.MergeFrom(TakeModifiedRequestHeaders());
    begin_params_->headers = headers.ToString();
  
