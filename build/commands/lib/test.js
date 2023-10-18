@@ -186,8 +186,8 @@ const runTests = (passthroughArgs, suite, buildConfig, options) => {
       // Don't run other tests if one has failed already, especially because
       // this would overwrite the --output file (if given).
       return prog.status === 0
-    })
-  }
+    }
+  })
 }
 
 const runChromiumTestLauncherTeamcityReporterIntegrationTests = () => {
