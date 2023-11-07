@@ -131,8 +131,6 @@ function Container() {
   const hasInitialized = useSafeWalletSelector(WalletSelectors.hasInitialized)
   const isWalletCreated = useSafeWalletSelector(WalletSelectors.isWalletCreated)
   const isWalletLocked = useSafeWalletSelector(WalletSelectors.isWalletLocked)
-  const isPanelV2FeatureEnabled = useSafeWalletSelector(
-    WalletSelectors.isPanelV2FeatureEnabled
   )
 
   // wallet selectors (unsafe)
@@ -397,7 +395,6 @@ function Container() {
   const canInitializePageRouter =
     !isWalletLocked &&
     !hasInitializedRouter &&
-    isPanelV2FeatureEnabled &&
     hasInitialized &&
     isWalletCreated
 
@@ -424,21 +421,12 @@ function Container() {
   }
 
   if (isWalletLocked) {
-    return isPanelV2FeatureEnabled ? (
+    return (
       <PanelWrapper
         width={390}
         height={650}
       >
         <PageContainer />
-      </PanelWrapper>
-    ) : (
-      <PanelWrapper isLonger={false}>
-        <StyledExtensionWrapper>
-          <LockPanel
-            onSubmit={unlockWallet}
-            onClickRestore={onRestore}
-          />
-        </StyledExtensionWrapper>
       </PanelWrapper>
     )
   }
@@ -787,20 +775,12 @@ function Container() {
     )
   }
 
-  if (isPanelV2FeatureEnabled) {
-    return (
-      <PanelWrapper
-        width={390}
-        height={650}
-      >
-        <PageContainer />
-      </PanelWrapper>
-    )
-  }
-
   return (
-    <PanelWrapper isLonger={false}>
-      <ConnectedPanel navAction={navigateTo} />
+    <PanelWrapper
+      width={390}
+      height={650}
+    >
+    <PageContainer />
     </PanelWrapper>
   )
 }
