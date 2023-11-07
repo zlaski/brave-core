@@ -11,7 +11,6 @@
 
 #include "base/base64.h"
 #include "base/check.h"
-#include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/no_destructor.h"
 #include "base/notreached.h"
@@ -42,7 +41,6 @@
 #include "brave/components/brave_wallet/common/common_utils.h"
 #include "brave/components/brave_wallet/common/eth_abi_utils.h"
 #include "brave/components/brave_wallet/common/eth_address.h"
-#include "brave/components/brave_wallet/common/features.h"
 #include "brave/components/brave_wallet/common/hash_utils.h"
 #include "brave/components/brave_wallet/common/hex_utils.h"
 #include "brave/components/decentralized_dns/core/constants.h"
@@ -122,11 +120,6 @@ net::NetworkTrafficAnnotationTag GetENSOffchainNetworkTrafficAnnotationTag() {
           "Not implemented."
       }
     )");
-}
-
-bool EnsL2FeatureEnabled() {
-  return base::FeatureList::IsEnabled(
-      brave_wallet::features::kBraveWalletENSL2Feature);
 }
 
 bool EnsOffchainPrefEnabled(PrefService* local_state_prefs) {
@@ -287,10 +280,8 @@ JsonRpcService::JsonRpcService(
       prefs_(prefs),
       local_state_prefs_(local_state_prefs),
       weak_ptr_factory_(this) {
-  if (EnsL2FeatureEnabled()) {
-    api_request_helper_ens_offchain_ = std::make_unique<APIRequestHelper>(
-        GetENSOffchainNetworkTrafficAnnotationTag(), url_loader_factory);
-  }
+  api_request_helper_ens_offchain_ = std::make_unique<APIRequestHelper>(
+      GetENSOffchainNetworkTrafficAnnotationTag(), url_loader_factory);
 
   nft_metadata_fetcher_ =
       std::make_unique<NftMetadataFetcher>(url_loader_factory, this, prefs_);
@@ -308,10 +299,8 @@ void JsonRpcService::SetAPIRequestHelperForTesting(
     scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory) {
   api_request_helper_ = std::make_unique<APIRequestHelper>(
       GetNetworkTrafficAnnotationTag(), url_loader_factory);
-  if (EnsL2FeatureEnabled()) {
-    api_request_helper_ens_offchain_ = std::make_unique<APIRequestHelper>(
-        GetENSOffchainNetworkTrafficAnnotationTag(), url_loader_factory);
-  }
+  api_request_helper_ens_offchain_ = std::make_unique<APIRequestHelper>(
+      GetENSOffchainNetworkTrafficAnnotationTag(), url_loader_factory);
 }
 
 JsonRpcService::~JsonRpcService() = default;
@@ -1509,37 +1498,29 @@ void JsonRpcService::OnEnsRegistryGetResolver(
 
 void JsonRpcService::EnsGetContentHash(const std::string& domain,
                                        EnsGetContentHashCallback callback) {
-  if (EnsL2FeatureEnabled()) {
-    if (ens_get_content_hash_tasks_.ContainsTaskForDomain(domain)) {
-      ens_get_content_hash_tasks_.AddCallbackForDomain(domain,
-                                                       std::move(callback));
-      return;
-    }
-
-    absl::optional<bool> allow_offchain;
-    if (EnsOffchainPrefEnabled(local_state_prefs_)) {
-      allow_offchain = true;
-    } else if (EnsOffchainPrefDisabled(local_state_prefs_)) {
-      allow_offchain = false;
-    }
-
-    // JsonRpcService owns EnsResolverTask instance, so Unretained is safe here.
-    auto done_callback = base::BindOnce(
-        &JsonRpcService::OnEnsGetContentHashTaskDone, base::Unretained(this));
-
-    ens_get_content_hash_tasks_.AddTask(
-        std::make_unique<EnsResolverTask>(
-            std::move(done_callback), api_request_helper_.get(),
-            api_request_helper_ens_offchain_.get(), MakeContentHashCall(domain),
-            domain, GetEnsRpcUrl(), allow_offchain),
-        std::move(callback));
+  if (ens_get_content_hash_tasks_.ContainsTaskForDomain(domain)) {
+    ens_get_content_hash_tasks_.AddCallbackForDomain(domain,
+                                                     std::move(callback));
     return;
   }
 
-  auto internal_callback = base::BindOnce(
-      &JsonRpcService::ContinueEnsGetContentHash,
-      weak_ptr_factory_.GetWeakPtr(), domain, std::move(callback));
-  EnsRegistryGetResolver(domain, std::move(internal_callback));
+  absl::optional<bool> allow_offchain;
+  if (EnsOffchainPrefEnabled(local_state_prefs_)) {
+    allow_offchain = true;
+  } else if (EnsOffchainPrefDisabled(local_state_prefs_)) {
+    allow_offchain = false;
+  }
+
+  // JsonRpcService owns EnsResolverTask instance, so Unretained is safe here.
+  auto done_callback = base::BindOnce(
+      &JsonRpcService::OnEnsGetContentHashTaskDone, base::Unretained(this));
+
+  ens_get_content_hash_tasks_.AddTask(
+      std::make_unique<EnsResolverTask>(
+          std::move(done_callback), api_request_helper_.get(),
+          api_request_helper_ens_offchain_.get(), MakeContentHashCall(domain),
+          domain, GetEnsRpcUrl(), allow_offchain),
+      std::move(callback));
 }
 
 void JsonRpcService::ContinueEnsGetContentHash(
@@ -1649,36 +1630,28 @@ void JsonRpcService::EnsGetEthAddr(const std::string& domain,
     return;
   }
 
-  if (EnsL2FeatureEnabled()) {
-    if (ens_get_eth_addr_tasks_.ContainsTaskForDomain(domain)) {
-      ens_get_eth_addr_tasks_.AddCallbackForDomain(domain, std::move(callback));
-      return;
-    }
-
-    absl::optional<bool> allow_offchain;
-    if (EnsOffchainPrefEnabled(local_state_prefs_)) {
-      allow_offchain = true;
-    } else if (EnsOffchainPrefDisabled(local_state_prefs_)) {
-      allow_offchain = false;
-    }
-
-    // JsonRpcService owns EnsResolverTask instance, so Unretained is safe here.
-    auto done_callback = base::BindOnce(
-        &JsonRpcService::OnEnsGetEthAddrTaskDone, base::Unretained(this));
-
-    ens_get_eth_addr_tasks_.AddTask(
-        std::make_unique<EnsResolverTask>(
-            std::move(done_callback), api_request_helper_.get(),
-            api_request_helper_ens_offchain_.get(), MakeAddrCall(domain),
-            domain, GetEnsRpcUrl(), allow_offchain),
-        std::move(callback));
+  if (ens_get_eth_addr_tasks_.ContainsTaskForDomain(domain)) {
+    ens_get_eth_addr_tasks_.AddCallbackForDomain(domain, std::move(callback));
     return;
   }
 
-  auto internal_callback = base::BindOnce(
-      &JsonRpcService::ContinueEnsGetEthAddr, weak_ptr_factory_.GetWeakPtr(),
-      domain, std::move(callback));
-  EnsRegistryGetResolver(domain, std::move(internal_callback));
+  absl::optional<bool> allow_offchain;
+  if (EnsOffchainPrefEnabled(local_state_prefs_)) {
+    allow_offchain = true;
+  } else if (EnsOffchainPrefDisabled(local_state_prefs_)) {
+    allow_offchain = false;
+  }
+
+  // JsonRpcService owns EnsResolverTask instance, so Unretained is safe here.
+  auto done_callback = base::BindOnce(&JsonRpcService::OnEnsGetEthAddrTaskDone,
+                                      base::Unretained(this));
+
+  ens_get_eth_addr_tasks_.AddTask(
+      std::make_unique<EnsResolverTask>(
+          std::move(done_callback), api_request_helper_.get(),
+          api_request_helper_ens_offchain_.get(), MakeAddrCall(domain), domain,
+          GetEnsRpcUrl(), allow_offchain),
+      std::move(callback));
 }
 
 void JsonRpcService::OnEnsGetEthAddrTaskDone(
@@ -1721,13 +1694,6 @@ void JsonRpcService::OnEnsGetEthAddrTaskDone(
 
 void JsonRpcService::SnsGetSolAddr(const std::string& domain,
                                    SnsGetSolAddrCallback callback) {
-  if (!base::FeatureList::IsEnabled(features::kBraveWalletSnsFeature)) {
-    std::move(callback).Run(
-        "", mojom::SolanaProviderError::kInvalidParams,
-        l10n_util::GetStringUTF8(IDS_WALLET_INVALID_PARAMETERS));
-    return;
-  }
-
   if (!IsValidDomain(domain)) {
     std::move(callback).Run(
         "", mojom::SolanaProviderError::kInvalidParams,
@@ -1781,13 +1747,6 @@ void JsonRpcService::OnSnsGetSolAddrTaskDone(
 
 void JsonRpcService::SnsResolveHost(const std::string& domain,
                                     SnsResolveHostCallback callback) {
-  if (!base::FeatureList::IsEnabled(features::kBraveWalletSnsFeature)) {
-    std::move(callback).Run(
-        absl::nullopt, mojom::SolanaProviderError::kInvalidParams,
-        l10n_util::GetStringUTF8(IDS_WALLET_INVALID_PARAMETERS));
-    return;
-  }
-
   if (!IsValidDomain(domain)) {
     std::move(callback).Run(
         absl::nullopt, mojom::SolanaProviderError::kInvalidParams,

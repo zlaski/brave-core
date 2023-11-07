@@ -1901,9 +1901,6 @@ TEST_F(JsonRpcServiceUnitTest, GetHiddenNetworks) {
 }
 
 TEST_F(JsonRpcServiceUnitTest, EnsGetContentHash) {
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitAndDisableFeature(features::kBraveWalletENSL2Feature);
-
   {
     base::MockCallback<JsonRpcService::EnsGetContentHashCallback> callback;
     EXPECT_CALL(
@@ -1952,9 +1949,6 @@ TEST_F(JsonRpcServiceUnitTest, EnsGetContentHash) {
 }
 
 TEST_F(JsonRpcServiceUnitTest, EnsGetEthAddr) {
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitAndDisableFeature(features::kBraveWalletENSL2Feature);
-
   SetUDENSInterceptor(mojom::kMainnetChainId);
   EXPECT_TRUE(
       SetNetwork(mojom::kMainnetChainId, mojom::CoinType::ETH, absl::nullopt));
@@ -1967,9 +1961,6 @@ TEST_F(JsonRpcServiceUnitTest, EnsGetEthAddr) {
 }
 
 TEST_F(JsonRpcServiceUnitTest, EnsGetEthAddr_ZeroAddress) {
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitAndDisableFeature(features::kBraveWalletENSL2Feature);
-
   SetENSZeroAddressInterceptor(mojom::kMainnetChainId);
   EXPECT_TRUE(
       SetNetwork(mojom::kMainnetChainId, mojom::CoinType::ETH, absl::nullopt));
@@ -5641,12 +5632,6 @@ class ENSL2JsonRpcServiceUnitTest : public JsonRpcServiceUnitTest {
   std::unique_ptr<OffchainCallbackHandler> ensip10_resolve_callback_handler_;
   std::unique_ptr<JsonRpcEnpointHandler> json_rpc_endpoint_handler_;
   std::unique_ptr<OffchainGatewayHandler> offchain_gateway_handler_;
-
- private:
-#if BUILDFLAG(IS_ANDROID)
-  base::test::ScopedFeatureList feature_list_{
-      features::kBraveWalletENSL2Feature};
-#endif
 };
 
 TEST_F(ENSL2JsonRpcServiceUnitTest, GetWalletAddr) {
@@ -6113,9 +6098,6 @@ class SnsJsonRpcServiceUnitTest : public JsonRpcServiceUnitTest {
   std::unique_ptr<GetAccountInfoHandler> default_handler_;
 
   std::unique_ptr<JsonRpcEnpointHandler> json_rpc_endpoint_handler_;
-
- private:
-  base::test::ScopedFeatureList feature_list_{features::kBraveWalletSnsFeature};
 };
 
 TEST_F(SnsJsonRpcServiceUnitTest, GetWalletAddr_NftOwner) {
