@@ -1121,11 +1121,6 @@ TEST_F(KeyringServiceUnitTest, ValidatePassword) {
 }
 
 TEST_F(KeyringServiceUnitTest, LockAndUnlock) {
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitWithFeatures({features::kBraveWalletFilecoinFeature,
-                                 features::kBraveWalletSolanaFeature},
-                                {});
-
   {
     KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
     // No encryptor but there is no keyring created so they should be unlocked.
@@ -1235,9 +1230,6 @@ TEST_F(KeyringServiceUnitTest, BackupComplete) {
 }
 
 TEST_F(KeyringServiceUnitTest, AccountMetasForKeyring) {
-  base::test::ScopedFeatureList feature_list{
-      features::kBraveWalletFilecoinFeature};
-
   KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
 
   ASSERT_TRUE(RestoreWallet(&service, kMnemonicDivideCruise, "brave", false));
@@ -1310,9 +1302,6 @@ TEST_F(KeyringServiceUnitTest, AccountMetasForKeyring) {
 }
 
 TEST_F(KeyringServiceUnitTest, MigrateDerivedAccountIndex) {
-  base::test::ScopedFeatureList feature_list{
-      features::kBraveWalletFilecoinFeature};
-
   {
     KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
     ASSERT_TRUE(RestoreWallet(&service, kMnemonicDivideCruise, "brave", false));
@@ -1440,16 +1429,6 @@ TEST_F(KeyringServiceUnitTest, MigrateDerivedAccountIndex) {
 }
 
 TEST_F(KeyringServiceUnitTest, CreateAndRestoreWallet) {
-  base::test::ScopedFeatureList feature_list;
-  base::FieldTrialParams parameters;
-  parameters[features::kCreateDefaultSolanaAccount.name] = "false";
-
-  std::vector<base::test::FeatureRefAndParams> enabled_features;
-  enabled_features.emplace_back(features::kBraveWalletSolanaFeature,
-                                parameters);
-
-  feature_list.InitWithFeaturesAndParameters(enabled_features, {});
-
   KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
 
   NiceMock<TestKeyringServiceObserver> observer(service);
@@ -1824,16 +1803,6 @@ TEST_F(KeyringServiceUnitTest, ImportedAccountFromJson) {
 }
 
 TEST_F(KeyringServiceUnitTest, EncodePrivateKeyForExport) {
-  base::test::ScopedFeatureList feature_list;
-  base::FieldTrialParams parameters;
-  parameters[features::kCreateDefaultSolanaAccount.name] = "false";
-
-  std::vector<base::test::FeatureRefAndParams> enabled_features;
-  enabled_features.emplace_back(features::kBraveWalletSolanaFeature,
-                                parameters);
-
-  feature_list.InitWithFeaturesAndParameters(enabled_features, {});
-
   KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
   ASSERT_TRUE(RestoreWallet(&service, kMnemonicDivideCruise, "brave", false));
 
@@ -2107,9 +2076,6 @@ TEST_F(KeyringServiceUnitTest, RestoreLegacyBraveWallet) {
 }
 
 TEST_F(KeyringServiceUnitTest, HardwareAccounts) {
-  base::test::ScopedFeatureList feature_list{
-      features::kBraveWalletFilecoinFeature};
-
   KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
   SetNetwork(mojom::kFilecoinMainnet, mojom::CoinType::FIL);
 
@@ -2457,16 +2423,6 @@ TEST_F(KeyringServiceUnitTest, NotifyUserInteraction) {
 }
 
 TEST_F(KeyringServiceUnitTest, SelectAddedAccount) {
-  base::test::ScopedFeatureList feature_list;
-  base::FieldTrialParams parameters;
-  parameters[features::kCreateDefaultSolanaAccount.name] = "false";
-
-  std::vector<base::test::FeatureRefAndParams> enabled_features;
-  enabled_features.emplace_back(features::kBraveWalletSolanaFeature,
-                                parameters);
-
-  feature_list.InitWithFeaturesAndParameters(enabled_features, {});
-
   KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
   ASSERT_TRUE(CreateWallet(&service, "brave"));
 
@@ -2589,11 +2545,6 @@ TEST_F(KeyringServiceUnitTest, SelectHardwareAccount) {
 }
 
 TEST_F(KeyringServiceUnitTest, SetSelectedAccount) {
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitWithFeatures({features::kBraveWalletFilecoinFeature,
-                                 features::kBraveWalletSolanaFeature},
-                                {});
-
   const mojom::AccountInfoPtr empty_account;
 
   KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
@@ -3176,9 +3127,6 @@ TEST_F(KeyringServiceUnitTest, AddFilecoinAccounts) {
     service.Reset();
   }
 
-  base::test::ScopedFeatureList feature_list{
-      features::kBraveWalletFilecoinFeature};
-
   ASSERT_TRUE(CreateWallet(&service, "brave"));
 
   ASSERT_TRUE(ImportAccount(
@@ -3223,9 +3171,6 @@ TEST_F(KeyringServiceUnitTest, AddFilecoinAccounts) {
 }
 
 TEST_F(KeyringServiceUnitTest, ImportFilecoinAccounts) {
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitAndEnableFeature(features::kBraveWalletFilecoinFeature);
-
   KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
 
   ASSERT_TRUE(CreateWallet(&service, "brave"));
@@ -3382,33 +3327,8 @@ TEST_F(KeyringServiceUnitTest, ImportFilecoinAccounts) {
 }
 
 TEST_F(KeyringServiceUnitTest, PreCreateEncryptors) {
-  base::test::ScopedFeatureList feature_list;
-  base::FieldTrialParams parameters;
-  parameters[features::kCreateDefaultSolanaAccount.name] = "false";
-
-  std::vector<base::test::FeatureRefAndParams> enabled_features;
-  enabled_features.emplace_back(features::kBraveWalletSolanaFeature,
-                                parameters);
-
-  feature_list.InitWithFeaturesAndParameters(enabled_features, {});
-
   {
-    // Create default wallet with disabled filecoin feature.
-    // Solana feature is enabled on desktop and disabled on Android.
-    KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
-    ASSERT_TRUE(CreateWallet(&service, "brave"));
-    EXPECT_NE(service.encryptors_.at(mojom::kDefaultKeyringId), nullptr);
-    EXPECT_NE(service.encryptors_.at(mojom::kSolanaKeyringId), nullptr);
-    EXPECT_NE(service.encryptors_.at(mojom::kFilecoinKeyringId), nullptr);
-    service.Reset();
-  }
-  {
-    // Create wallet with enabled filecoin & solana
-    base::test::ScopedFeatureList local_feature_list;
-    local_feature_list.InitWithFeatures({features::kBraveWalletFilecoinFeature,
-                                         features::kBraveWalletSolanaFeature},
-                                        {});
-
+    // Create wallet
     KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
     ASSERT_TRUE(CreateWallet(&service, "brave"));
     EXPECT_NE(service.encryptors_.at(mojom::kDefaultKeyringId), nullptr);
@@ -3417,17 +3337,13 @@ TEST_F(KeyringServiceUnitTest, PreCreateEncryptors) {
     service.Reset();
   }
   {
-    // Create wallet and enable filecoin & solana before unlock
+    // Create wallet and unlock
     KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
     ASSERT_TRUE(CreateWallet(&service, "brave"));
     EXPECT_NE(service.encryptors_.at(mojom::kDefaultKeyringId), nullptr);
     EXPECT_NE(service.encryptors_.at(mojom::kSolanaKeyringId), nullptr);
     EXPECT_NE(service.encryptors_.at(mojom::kFilecoinKeyringId), nullptr);
     service.Lock();
-    base::test::ScopedFeatureList local_feature_list;
-    local_feature_list.InitWithFeatures({features::kBraveWalletFilecoinFeature,
-                                         features::kBraveWalletSolanaFeature},
-                                        {});
 
     ASSERT_TRUE(Unlock(&service, "brave"));
     EXPECT_NE(service.encryptors_.at(mojom::kDefaultKeyringId), nullptr);
@@ -3436,7 +3352,7 @@ TEST_F(KeyringServiceUnitTest, PreCreateEncryptors) {
     service.Reset();
   }
   {
-    // Create default wallet and enable filecoin solana before restore
+    // Create default wallet and restore
     KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
     absl::optional<std::string> mnemonic_to_be_restored =
         CreateWallet(&service, "brave");
@@ -3448,19 +3364,6 @@ TEST_F(KeyringServiceUnitTest, PreCreateEncryptors) {
     EXPECT_NE(service.encryptors_.at(mojom::kDefaultKeyringId), nullptr);
     EXPECT_NE(service.encryptors_.at(mojom::kSolanaKeyringId), nullptr);
     EXPECT_NE(service.encryptors_.at(mojom::kFilecoinKeyringId), nullptr);
-
-    base::test::ScopedFeatureList local_feature_list;
-    base::FieldTrialParams local_parameters;
-    local_parameters[features::kCreateDefaultSolanaAccount.name] = "false";
-
-    std::vector<base::test::FeatureRefAndParams> local_enabled_features;
-    local_enabled_features.emplace_back(features::kBraveWalletSolanaFeature,
-                                        local_parameters);
-    local_enabled_features.emplace_back(features::kBraveWalletFilecoinFeature,
-                                        base::FieldTrialParams());
-
-    local_feature_list.InitWithFeaturesAndParameters(local_enabled_features,
-                                                     {});
 
     service.Reset();
 
@@ -3478,16 +3381,6 @@ TEST_F(KeyringServiceUnitTest, PreCreateEncryptors) {
 }
 
 TEST_F(KeyringServiceUnitTest, SolanaKeyring) {
-  base::test::ScopedFeatureList feature_list;
-  base::FieldTrialParams parameters;
-  parameters[features::kCreateDefaultSolanaAccount.name] = "false";
-
-  std::vector<base::test::FeatureRefAndParams> enabled_features;
-  enabled_features.emplace_back(features::kBraveWalletSolanaFeature,
-                                parameters);
-
-  feature_list.InitWithFeaturesAndParameters(enabled_features, {});
-
   {
     KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
     NiceMock<TestKeyringServiceObserver> observer(service);
@@ -4092,11 +3985,7 @@ TEST_F(KeyringServiceAccountDiscoveryUnitTest, RestoreWalletTwice) {
 class KeyringServiceEncryptionKeysMigrationUnitTest
     : public KeyringServiceUnitTest {
  public:
-  KeyringServiceEncryptionKeysMigrationUnitTest() {
-    feature_list_.InitWithFeatures({features::kBraveWalletFilecoinFeature,
-                                    features::kBraveWalletSolanaFeature},
-                                   {});
-  }
+  KeyringServiceEncryptionKeysMigrationUnitTest() {}
 
   void SetupKeyring() {
     KeyringService service(json_rpc_service(), GetPrefs(), GetLocalState());
@@ -4229,7 +4118,6 @@ class KeyringServiceEncryptionKeysMigrationUnitTest
 
  private:
   std::string saved_mnemonic_;
-  base::test::ScopedFeatureList feature_list_;
 };
 
 TEST_F(KeyringServiceEncryptionKeysMigrationUnitTest, NoMigration) {
