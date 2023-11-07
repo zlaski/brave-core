@@ -210,8 +210,6 @@ export interface UIState {
 
 export interface WalletState {
   hasInitialized: boolean
-  isFilecoinEnabled: boolean
-  isSolanaEnabled: boolean
   isBitcoinEnabled: boolean
   isZCashEnabled: boolean
   isWalletCreated: boolean

@@ -127,14 +127,10 @@ TEST(CommonUtils, GetSupportedKeyrings) {
 
     EXPECT_EQ(keyrings[last_pos++], mojom::KeyringId::kDefault);
 
-    if (IsFilecoinEnabled()) {
-      EXPECT_EQ(keyrings[last_pos++], mojom::KeyringId::kFilecoin);
-      EXPECT_EQ(keyrings[last_pos++], mojom::KeyringId::kFilecoinTestnet);
-    }
+    EXPECT_EQ(keyrings[last_pos++], mojom::KeyringId::kFilecoin);
+    EXPECT_EQ(keyrings[last_pos++], mojom::KeyringId::kFilecoinTestnet);
 
-    if (IsSolanaEnabled()) {
-      EXPECT_EQ(keyrings[last_pos++], mojom::KeyringId::kSolana);
-    }
+    EXPECT_EQ(keyrings[last_pos++], mojom::KeyringId::kSolana);
 
     if (IsBitcoinEnabled()) {
       EXPECT_EQ(keyrings[last_pos++], mojom::KeyringId::kBitcoin84);
