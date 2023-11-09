@@ -37,13 +37,15 @@ struct MatchedRule {
 //     ],
 //     "exclude": [
 //     ],
+//     "name": "twitter",
 //     "version": 1,
-//     "test_script": "twitter/test.js",
-//     "policy_script": "twitter/policy.js"
+//     "test_script": "test.js",
+//     "policy_script": "policy.js"
 //   }, ...
 // ]
 // Note that "test_script" and "policy_script" give paths
-// relative to the component under scripts/
+// relative to the component under scripts/<name>/, NOT script contents.
+
 // This class describes a single rule in the psst.json file.
 class PsstRule {
  public:
@@ -63,6 +65,7 @@ class PsstRule {
   bool ShouldInsertScript(const GURL& url) const;
 
   // Getters.
+  std::string GetName() const { return name_; }
   const base::FilePath& GetPolicyScript() const { return policy_script_path_; }
   const base::FilePath& GetTestScript() const { return test_script_path_; }
   int GetVersion() const { return version_; }
@@ -70,6 +73,7 @@ class PsstRule {
  private:
   extensions::URLPatternSet include_pattern_set_;
   extensions::URLPatternSet exclude_pattern_set_;
+  std::string name_;
   // These are paths (not contents!) relative to the component under scripts/.
   base::FilePath policy_script_path_;
   base::FilePath test_script_path_;

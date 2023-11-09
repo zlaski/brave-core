@@ -92,9 +92,10 @@ IN_PROC_BROWSER_TEST_F(PsstTabHelperBrowserTest, RuleMatchTestScriptTrue) {
             ],
             "exclude": [
             ],
+            "name": "a",
             "version": 1,
-            "test_script": "a/test.js",
-            "policy_script": "a/policy.js"
+            "test_script": "test.js",
+            "policy_script": "policy.js"
         }
       ]
       )";
@@ -118,9 +119,10 @@ IN_PROC_BROWSER_TEST_F(PsstTabHelperBrowserTest, RuleMatchTestScriptFalse) {
             ],
             "exclude": [
             ],
+            "name": "b",
             "version": 1,
-            "test_script": "b/test.js",
-            "policy_script": "b/policy.js"
+            "test_script": "test.js",
+            "policy_script": "policy.js"
         }
       ]
       )";
@@ -144,9 +146,36 @@ IN_PROC_BROWSER_TEST_F(PsstTabHelperBrowserTest, NoMatch) {
             ],
             "exclude": [
             ],
+            "name" : "c",
             "version": 1,
-            "test_script": "a/test.js",
-            "policy_script": "a/policy.js"
+            "test_script": "test.js",
+            "policy_script": "policy.js"
+        }
+      ]
+      )";
+  psst::PsstRuleRegistry::GetInstance()->OnLoadRules(rules);
+
+  std::u16string expected_title(u"OK");
+  content::TitleWatcher watcher(web_contents(), expected_title);
+  ASSERT_TRUE(content::NavigateToURL(web_contents(), url));
+  EXPECT_EQ(expected_title, watcher.WaitAndGetTitle());
+}
+
+IN_PROC_BROWSER_TEST_F(PsstTabHelperBrowserTest, NoInsertIfNoName) {
+  const GURL url = https_server_.GetURL("c.com", "/simple.html");
+
+  const char rules[] =
+      R"(
+      [
+        {
+            "include": [
+                "https://c.com/*"
+            ],
+            "exclude": [
+            ],
+            "version": 1,
+            "test_script": "test.js",
+            "policy_script": "policy.js"
         }
       ]
       )";
