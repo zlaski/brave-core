@@ -20,11 +20,6 @@
 class GURL;
 
 namespace psst {
-// Needed for testing private methods in PsstTabHelperBrowserTest.
-FORWARD_DECLARE_TEST(PsstTabHelperBrowserTest, NoMatch);
-FORWARD_DECLARE_TEST(PsstTabHelperBrowserTest, RuleMatchTestScriptFalse);
-FORWARD_DECLARE_TEST(PsstTabHelperBrowserTest, RuleMatchTestScriptTrue);
-
 // This class loads and stores the rules from the psst.json file.
 // It is also used for matching based on the URL.
 class COMPONENT_EXPORT(PSST_BROWSER_CORE) PsstRuleRegistry {
@@ -56,6 +51,7 @@ class COMPONENT_EXPORT(PSST_BROWSER_CORE) PsstRuleRegistry {
 
   // Needed for testing private methods in PsstTabHelperBrowserTest.
   FRIEND_TEST_ALL_PREFIXES(PsstTabHelperBrowserTest, NoMatch);
+  FRIEND_TEST_ALL_PREFIXES(PsstTabHelperBrowserTest, NoInsertIfNoName);
   FRIEND_TEST_ALL_PREFIXES(PsstTabHelperBrowserTest, RuleMatchTestScriptFalse);
   FRIEND_TEST_ALL_PREFIXES(PsstTabHelperBrowserTest, RuleMatchTestScriptTrue);
   friend class PsstTabHelperBrowserTest;
