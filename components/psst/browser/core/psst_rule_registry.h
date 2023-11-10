@@ -52,13 +52,8 @@ class COMPONENT_EXPORT(PSST_BROWSER_CORE) PsstRuleRegistry {
 
   base::WeakPtrFactory<PsstRuleRegistry> weak_factory_{this};
 
-  // Needed for testing private methods in PsstTabHelperBrowserTest.
-  FRIEND_TEST_ALL_PREFIXES(PsstTabHelperBrowserTest, NoMatch);
-  FRIEND_TEST_ALL_PREFIXES(PsstTabHelperBrowserTest, NoInsertIfNoName);
-  FRIEND_TEST_ALL_PREFIXES(PsstTabHelperBrowserTest, RuleMatchTestScriptFalse);
-  FRIEND_TEST_ALL_PREFIXES(PsstTabHelperBrowserTest, RuleMatchTestScriptTrue);
+  // Needed for testing private methods.
   friend class PsstTabHelperBrowserTest;
-
   friend struct base::DefaultSingletonTraits<PsstRuleRegistry>;
 };
 

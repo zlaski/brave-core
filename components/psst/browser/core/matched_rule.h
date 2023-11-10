@@ -8,25 +8,25 @@
 
 #include <string>
 
-#include "base/files/file_path.h"
 #include "base/component_export.h"
+#include "base/files/file_path.h"
 
 namespace psst {
 
 // Used to hold the loaded script contents for a matched PsstRule.
 class COMPONENT_EXPORT(PSST_BROWSER_CORE) MatchedRule {
  public:
-  static const MatchedRule CreateMatchedRule(const base::FilePath& component_path,
-                              const std::string& name,
-                              const base::FilePath& user_script_path,
-                              const base::FilePath& test_script_path,
-                              const base::FilePath& policy_script_path,
-                              const int version);
+  static const MatchedRule CreateMatchedRule(
+      const base::FilePath& component_path,
+      const std::string& name,
+      const base::FilePath& user_script_path,
+      const base::FilePath& test_script_path,
+      const base::FilePath& policy_script_path,
+      const int version);
 
   ~MatchedRule();
   MatchedRule(const MatchedRule&);
   MatchedRule& operator=(const MatchedRule&) = delete;
-
 
   // Getters.
   const std::string& UserScript() const { return user_script_; }
@@ -35,7 +35,7 @@ class COMPONENT_EXPORT(PSST_BROWSER_CORE) MatchedRule {
   int Version() const { return version_; }
 
  private:
- MatchedRule(const std::string& user_script,
+  MatchedRule(const std::string& user_script,
               const std::string& test_script,
               const std::string& policy_script,
               int version);
@@ -46,6 +46,6 @@ class COMPONENT_EXPORT(PSST_BROWSER_CORE) MatchedRule {
   int version_;
 };
 
-}
+}  // namespace psst
 
 #endif  // BRAVE_COMPONENTS_PSST_BROWSER_CORE_MATCHED_RULE_H_
