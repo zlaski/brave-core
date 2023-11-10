@@ -11,11 +11,13 @@
 #include <vector>
 
 #include "base/component_export.h"
+#include "base/functional/callback.h"
 #include "base/gtest_prod_util.h"
 #include "base/memory/raw_ptr.h"
 #include "base/memory/singleton.h"
 #include "base/memory/weak_ptr.h"
 #include "brave/components/psst/browser/core/matched_rule.h"
+#include "brave/components/psst/browser/core/psst_rule.h"
 #include "third_party/abseil-cpp/absl/types/optional.h"
 
 class GURL;
@@ -31,7 +33,7 @@ class COMPONENT_EXPORT(PSST_BROWSER_CORE) PsstRuleRegistry {
   static PsstRuleRegistry* GetInstance();  // singleton
   // Returns the matched PSST rule, if any.
   void CheckIfMatch(const GURL& url,
-                    base::OnceCallback<void(MatchedRule)> cb) const;
+                    base::OnceCallback<void(const MatchedRule&)> cb) const;
   // Given a path to psst.json, loads the rules from the file into memory.
   void LoadRules(const base::FilePath& path);
 

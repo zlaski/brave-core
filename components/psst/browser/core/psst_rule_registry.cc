@@ -17,6 +17,7 @@
 #include "base/functional/callback_forward.h"
 #include "base/logging.h"
 #include "base/memory/singleton.h"
+#include "base/memory/weak_ptr.h"
 #include "base/task/thread_pool.h"
 #include "brave/components/psst/browser/core/matched_rule.h"
 #include "brave/components/psst/browser/core/psst_rule.h"
@@ -30,7 +31,6 @@ namespace psst {
 namespace {
 
 const base::FilePath::CharType kJsonFile[] = FILE_PATH_LITERAL("psst.json");
-const base::FilePath::CharType kScriptsDir[] = FILE_PATH_LITERAL("scripts");
 
 std::string ReadFile(const base::FilePath& file_path) {
   std::string contents;
@@ -59,14 +59,15 @@ PsstRuleRegistry::~PsstRuleRegistry() = default;
 
 void PsstRuleRegistry::CheckIfMatch(
     const GURL& url,
-    base::OnceCallback<void(MatchedRule)> cb) const {
+    base::OnceCallback<void(const MatchedRule&)> cb) const {
   for (const PsstRule& rule : rules_) {
     if (rule.ShouldInsertScript(url)) {
       base::ThreadPool::PostTaskAndReplyWithResult(
           FROM_HERE, {base::MayBlock()},
-          base::BindOnce(&CreateMatchedRule, component_path_, rule.Name(),
-                         rule.UserScriptPath(), rule.TestScriptPath(),
-                         rule.PolicyScriptPath(), rule.Version()),
+          base::BindOnce(MatchedRule::CreateMatchedRule, component_path_,
+                         rule.Name(), rule.UserScriptPath(),
+                         rule.TestScriptPath(), rule.PolicyScriptPath(),
+                         rule.Version()),
           std::move(cb));
       // Only ever find one matching rule.
       return;

@@ -49,9 +49,9 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
   // 3. if we can make changes, insert policy script to make changes.
   void InsertUserScript(
       const content::GlobalRenderFrameHostId& render_frame_host_id,
-      MatchedRule rule);
+      const MatchedRule& rule);
   void OnUserScriptResult(
-      MatchedRule rule,
+      const MatchedRule& rule,
       const content::GlobalRenderFrameHostId& render_frame_host_id,
       base::Value value);
   void OnTestScriptResult(

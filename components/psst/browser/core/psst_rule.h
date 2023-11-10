@@ -59,7 +59,7 @@ class PsstRule {
   bool ShouldInsertScript(const GURL& url) const;
 
   // Getters.
-  std::string Name() const { return name_; }
+  const std::string& Name() const { return name_; }
   const base::FilePath& PolicyScriptPath() const { return policy_script_path_; }
   const base::FilePath& TestScriptPath() const { return test_script_path_; }
   const base::FilePath& UserScriptPath() const { return user_script_path_; }

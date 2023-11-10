@@ -58,7 +58,7 @@ void PsstTabHelper::OnTestScriptResult(
 }
 
 void PsstTabHelper::OnUserScriptResult(
-    MatchedRule rule,
+    const MatchedRule& rule,
     const content::GlobalRenderFrameHostId& render_frame_host_id,
     base::Value value) {
   auto* user_id = value.GetIfString();
@@ -78,7 +78,7 @@ void PsstTabHelper::OnUserScriptResult(
 
 void PsstTabHelper::InsertUserScript(
     const content::GlobalRenderFrameHostId& render_frame_host_id,
-    MatchedRule rule) {
+    const MatchedRule& rule) {
   InsertScriptInPage(
       render_frame_host_id, rule.UserScript(),
       base::BindOnce(&PsstTabHelper::OnUserScriptResult,
