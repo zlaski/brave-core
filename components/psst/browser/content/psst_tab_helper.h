@@ -11,7 +11,7 @@
 #include "base/component_export.h"
 #include "base/memory/raw_ptr.h"
 #include "base/memory/weak_ptr.h"
-#include "brave/components/psst/browser/core/psst_rule.h"
+#include "brave/components/psst/browser/core/matched_rule.h"
 #include "brave/components/script_injector/common/mojom/script_injector.mojom.h"
 #include "build/build_config.h"
 #include "components/sessions/core/session_id.h"
@@ -37,21 +37,29 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
 
  private:
   PsstTabHelper(content::WebContents*, const int32_t world_id);
-  // Called to insert both test script and policy script.
+  // Insert scripts for the rfh using the script_injector mojo interface.
   void InsertScriptInPage(
       const content::GlobalRenderFrameHostId& render_frame_host_id,
       const std::string& script,
       content::RenderFrameHost::JavaScriptResultCallback cb);
-  // Used to insert a PSST test script into the page, which is contained in the
-  // Matched Rule. The result is used to determine whether to insert the policy
-  // script in |OnTestScriptResult|.
-  void InsertTestScript(
+
+  // Script injection methods. The flow is:
+  // 1. insert get user script and get logged in user id.
+  // 2. if valid and we need to, insert test script.
+  // 3. if we can make changes, insert policy script to make changes.
+  void InsertUserScript(
       const content::GlobalRenderFrameHostId& render_frame_host_id,
       MatchedRule rule);
+  void OnUserScriptResult(
+      MatchedRule rule,
+      const content::GlobalRenderFrameHostId& render_frame_host_id,
+      base::Value value);
   void OnTestScriptResult(
       const std::string& policy_script,
       const content::GlobalRenderFrameHostId& render_frame_host_id,
       base::Value value);
+
+  // Get the remote used to send the script to the renderer.
   mojo::AssociatedRemote<script_injector::mojom::ScriptInjector>& GetRemote(
       content::RenderFrameHost* rfh);
   friend class content::WebContentsUserData<PsstTabHelper>;

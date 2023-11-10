@@ -22,13 +22,6 @@ class GURL;
 
 namespace psst {
 
-// Holds the loaded script text when a rule is matched.
-struct MatchedRule {
-  std::string test_script;
-  std::string policy_script;
-  int version;
-};
-
 // Format of the psst.json file:
 // [
 //   {
@@ -39,11 +32,12 @@ struct MatchedRule {
 //     ],
 //     "name": "twitter",
 //     "version": 1,
+//     "user_script": "user.js",
 //     "test_script": "test.js",
 //     "policy_script": "policy.js"
 //   }, ...
 // ]
-// Note that "test_script" and "policy_script" give paths
+// Note that values for the "_script" keys give paths
 // relative to the component under scripts/<name>/, NOT script contents.
 
 // This class describes a single rule in the psst.json file.
@@ -65,10 +59,11 @@ class PsstRule {
   bool ShouldInsertScript(const GURL& url) const;
 
   // Getters.
-  std::string GetName() const { return name_; }
-  const base::FilePath& GetPolicyScript() const { return policy_script_path_; }
-  const base::FilePath& GetTestScript() const { return test_script_path_; }
-  int GetVersion() const { return version_; }
+  std::string Name() const { return name_; }
+  const base::FilePath& PolicyScriptPath() const { return policy_script_path_; }
+  const base::FilePath& TestScriptPath() const { return test_script_path_; }
+  const base::FilePath& UserScriptPath() const { return user_script_path_; }
+  int Version() const { return version_; }
 
  private:
   extensions::URLPatternSet include_pattern_set_;
@@ -77,6 +72,7 @@ class PsstRule {
   // These are paths (not contents!) relative to the component under scripts/.
   base::FilePath policy_script_path_;
   base::FilePath test_script_path_;
+  base::FilePath user_script_path_;
   // Used for checking if the last inserted script is the latest version.
   int version_;
 };

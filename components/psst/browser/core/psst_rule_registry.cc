@@ -18,6 +18,7 @@
 #include "base/logging.h"
 #include "base/memory/singleton.h"
 #include "base/task/thread_pool.h"
+#include "brave/components/psst/browser/core/matched_rule.h"
 #include "brave/components/psst/browser/core/psst_rule.h"
 #include "brave/components/psst/common/features.h"
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
@@ -39,19 +40,6 @@ std::string ReadFile(const base::FilePath& file_path) {
             << "read file " << file_path;
   }
   return contents;
-}
-
-MatchedRule CreateMatchedRule(const base::FilePath& component_path,
-                              const std::string& name,
-                              const base::FilePath& test_script_path,
-                              const base::FilePath& policy_script_path,
-                              const int version) {
-  auto prefix =
-      base::FilePath(component_path).Append(kScriptsDir).AppendASCII(name);
-  auto test_script = ReadFile(base::FilePath(prefix).Append(test_script_path));
-  auto policy_script =
-      ReadFile(base::FilePath(prefix).Append(policy_script_path));
-  return {test_script, policy_script, version};
 }
 
 }  // namespace
@@ -76,9 +64,9 @@ void PsstRuleRegistry::CheckIfMatch(
     if (rule.ShouldInsertScript(url)) {
       base::ThreadPool::PostTaskAndReplyWithResult(
           FROM_HERE, {base::MayBlock()},
-          base::BindOnce(&CreateMatchedRule, component_path_, rule.GetName(),
-                         rule.GetTestScript(), rule.GetPolicyScript(),
-                         rule.GetVersion()),
+          base::BindOnce(&CreateMatchedRule, component_path_, rule.Name(),
+                         rule.UserScriptPath(), rule.TestScriptPath(),
+                         rule.PolicyScriptPath(), rule.Version()),
           std::move(cb));
       // Only ever find one matching rule.
       return;

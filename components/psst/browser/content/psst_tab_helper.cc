@@ -12,6 +12,7 @@
 #include "base/strings/utf_string_conversions.h"
 #include "base/task/thread_pool.h"
 #include "base/values.h"
+#include "brave/components/psst/browser/core/matched_rule.h"
 #include "brave/components/psst/browser/core/psst_rule.h"
 #include "brave/components/psst/browser/core/psst_rule_registry.h"
 #include "brave/components/psst/common/features.h"
@@ -56,13 +57,32 @@ void PsstTabHelper::OnTestScriptResult(
   }
 }
 
-void PsstTabHelper::InsertTestScript(
+void PsstTabHelper::OnUserScriptResult(
+    MatchedRule rule,
     const content::GlobalRenderFrameHostId& render_frame_host_id,
-    MatchedRule rule) {
-  InsertScriptInPage(render_frame_host_id, rule.test_script,
+    base::Value value) {
+  auto* user_id = value.GetIfString();
+  if (!user_id) {
+    VLOG(2) << "could not get user id for PSST.";
+    std::cerr << "could not get user id for PSST." << std::endl;
+    return;
+  }
+  std::cerr << "user id for PSST: " << *user_id << std::endl;
+  // TODO(ssahib) : persist state.
+  // Insert test script.
+  InsertScriptInPage(render_frame_host_id, rule.TestScript(),
                      base::BindOnce(&PsstTabHelper::OnTestScriptResult,
                                     weak_factory_.GetWeakPtr(),
-                                    rule.policy_script, render_frame_host_id));
+                                    rule.PolicyScript(), render_frame_host_id));
+}
+
+void PsstTabHelper::InsertUserScript(
+    const content::GlobalRenderFrameHostId& render_frame_host_id,
+    MatchedRule rule) {
+  InsertScriptInPage(
+      render_frame_host_id, rule.UserScript(),
+      base::BindOnce(&PsstTabHelper::OnUserScriptResult,
+                     weak_factory_.GetWeakPtr(), rule, render_frame_host_id));
 }
 
 void PsstTabHelper::InsertScriptInPage(
@@ -122,7 +142,7 @@ void PsstTabHelper::DocumentOnLoadCompletedInPrimaryMainFrame() {
       web_contents()->GetPrimaryMainFrame()->GetGlobalId();
 
   psst_rule_registry_->CheckIfMatch(
-      url, base::BindOnce(&PsstTabHelper::InsertTestScript,
+      url, base::BindOnce(&PsstTabHelper::InsertUserScript,
                           weak_factory_.GetWeakPtr(), render_frame_host_id));
 }
 
