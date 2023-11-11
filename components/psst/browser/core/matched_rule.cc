@@ -29,11 +29,13 @@ std::string ReadFile(const base::FilePath& file_path) {
 
 }  // namespace
 
-MatchedRule::MatchedRule(const std::string& user_script,
+MatchedRule::MatchedRule(const std::string& name,
+                         const std::string& user_script,
                          const std::string& test_script,
                          const std::string& policy_script,
                          int version)
-    : user_script_(user_script),
+    : name_(name),
+      user_script_(user_script),
       test_script_(test_script),
       policy_script_(policy_script),
       version_(version) {}
@@ -55,7 +57,7 @@ const MatchedRule MatchedRule::CreateMatchedRule(
   auto test_script = ReadFile(base::FilePath(prefix).Append(test_script_path));
   auto policy_script =
       ReadFile(base::FilePath(prefix).Append(policy_script_path));
-  return MatchedRule(user_script, test_script, policy_script, version);
+  return MatchedRule(name, user_script, test_script, policy_script, version);
 }
 
 }  // namespace psst

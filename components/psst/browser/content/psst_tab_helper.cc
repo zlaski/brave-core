@@ -17,6 +17,7 @@
 #include "brave/components/psst/browser/core/psst_rule_registry.h"
 #include "brave/components/psst/common/features.h"
 #include "components/sessions/content/session_tab_helper.h"
+#include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/navigation_entry.h"
 #include "content/public/browser/navigation_handle.h"
@@ -29,6 +30,7 @@ namespace psst {
 // static
 void PsstTabHelper::MaybeCreateForWebContents(content::WebContents* contents,
                                               const int32_t world_id) {
+  // TODO(ssahib): add check for Request-OTR.
   if (contents->GetBrowserContext()->IsOffTheRecord() ||
       !base::FeatureList::IsEnabled(psst::features::kBravePsst)) {
     return;
@@ -42,6 +44,7 @@ PsstTabHelper::PsstTabHelper(content::WebContents* web_contents,
     : WebContentsObserver(web_contents),
       content::WebContentsUserData<PsstTabHelper>(*web_contents),
       world_id_(world_id),
+      prefs_(user_prefs::UserPrefs::Get(web_contents->GetBrowserContext())),
       psst_rule_registry_(PsstRuleRegistry::GetInstance()) {
   DCHECK(psst_rule_registry_);
 }
@@ -52,23 +55,37 @@ void PsstTabHelper::OnTestScriptResult(
     const std::string& policy_script,
     const content::GlobalRenderFrameHostId& render_frame_host_id,
     base::Value value) {
+  // TODO(ssahib): this should be a dictionary.
   if (value.GetIfBool().value_or(false)) {
     InsertScriptInPage(render_frame_host_id, policy_script, base::DoNothing());
   }
+}
+
+// Construct a key from the user id and name of the Matched Rule.
+// This key is used to store the user's settings.
+// The key is constructed as follows:
+// <name>:<user_id>
+// For example, if the user id is "user1" and the name is "twitter",
+// the key will be "twitter:user1".
+const std::string ConstructKey(const std::string& user_id,
+                               const std::string& name) {
+  return base::StringPrintf("%s:%s", name.c_str(), user_id.c_str());
 }
 
 void PsstTabHelper::OnUserScriptResult(
     const MatchedRule& rule,
     const content::GlobalRenderFrameHostId& render_frame_host_id,
     base::Value value) {
-  auto* user_id = value.GetIfString();
+  const std::string* user_id = value.GetIfString();
   if (!user_id) {
     VLOG(2) << "could not get user id for PSST.";
     std::cerr << "could not get user id for PSST." << std::endl;
     return;
   }
   std::cerr << "user id for PSST: " << *user_id << std::endl;
-  // TODO(ssahib) : persist state.
+  // Get PsstSettings from PrefService.
+
+  // TODO(ssahib) : persist settings under site and username.
   // Insert test script.
   InsertScriptInPage(render_frame_host_id, rule.TestScript(),
                      base::BindOnce(&PsstTabHelper::OnTestScriptResult,

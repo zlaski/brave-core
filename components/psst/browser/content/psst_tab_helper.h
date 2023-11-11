@@ -14,6 +14,7 @@
 #include "brave/components/psst/browser/core/matched_rule.h"
 #include "brave/components/script_injector/common/mojom/script_injector.mojom.h"
 #include "build/build_config.h"
+#include "components/prefs/pref_service.h"
 #include "components/sessions/core/session_id.h"
 #include "content/public/browser/media_player_id.h"
 #include "content/public/browser/web_contents_observer.h"
@@ -70,6 +71,7 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
   void DocumentOnLoadCompletedInPrimaryMainFrame() override;
 
   const int32_t world_id_;
+  const raw_ptr<PrefService> prefs_;
   const raw_ptr<PsstRuleRegistry> psst_rule_registry_;  // NOT OWNED
   bool should_process_ = false;
   // The remote used to send the script to the renderer.
