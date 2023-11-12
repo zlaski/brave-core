@@ -56,7 +56,8 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
       const content::GlobalRenderFrameHostId& render_frame_host_id,
       base::Value value);
   void OnTestScriptResult(
-      const std::string& policy_script,
+      const MatchedRule& rule,
+      const std::string& user_id,
       const content::GlobalRenderFrameHostId& render_frame_host_id,
       base::Value value);
 

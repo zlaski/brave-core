@@ -33,6 +33,7 @@ class COMPONENT_EXPORT(PSST_BROWSER_CORE) MatchedRule {
   const std::string& TestScript() const { return test_script_; }
   const std::string& PolicyScript() const { return policy_script_; }
   int Version() const { return version_; }
+  const std::string& Name() const { return name_; }
 
  private:
   MatchedRule(const std::string& name,

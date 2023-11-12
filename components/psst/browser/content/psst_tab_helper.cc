@@ -16,6 +16,7 @@
 #include "brave/components/psst/browser/core/psst_rule.h"
 #include "brave/components/psst/browser/core/psst_rule_registry.h"
 #include "brave/components/psst/common/features.h"
+#include "brave/components/psst/common/psst_prefs.h"
 #include "components/sessions/content/session_tab_helper.h"
 #include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_context.h"
@@ -52,24 +53,16 @@ PsstTabHelper::PsstTabHelper(content::WebContents* web_contents,
 PsstTabHelper::~PsstTabHelper() = default;
 
 void PsstTabHelper::OnTestScriptResult(
-    const std::string& policy_script,
+    const MatchedRule& rule,
+    const std::string& user_id,
     const content::GlobalRenderFrameHostId& render_frame_host_id,
     base::Value value) {
+  // TODO(ssahib): Update the inserted version for the site & user.
   // TODO(ssahib): this should be a dictionary.
   if (value.GetIfBool().value_or(false)) {
-    InsertScriptInPage(render_frame_host_id, policy_script, base::DoNothing());
+    InsertScriptInPage(render_frame_host_id, rule.PolicyScript(),
+                       base::DoNothing());
   }
-}
-
-// Construct a key from the user id and name of the Matched Rule.
-// This key is used to store the user's settings.
-// The key is constructed as follows:
-// <name>:<user_id>
-// For example, if the user id is "user1" and the name is "twitter",
-// the key will be "twitter:user1".
-const std::string ConstructKey(const std::string& user_id,
-                               const std::string& name) {
-  return base::StringPrintf("%s:%s", name.c_str(), user_id.c_str());
 }
 
 void PsstTabHelper::OnUserScriptResult(
@@ -83,14 +76,27 @@ void PsstTabHelper::OnUserScriptResult(
     return;
   }
   std::cerr << "user id for PSST: " << *user_id << std::endl;
-  // Get PsstSettings from PrefService.
 
-  // TODO(ssahib) : persist settings under site and username.
-  // Insert test script.
-  InsertScriptInPage(render_frame_host_id, rule.TestScript(),
-                     base::BindOnce(&PsstTabHelper::OnTestScriptResult,
-                                    weak_factory_.GetWeakPtr(),
-                                    rule.PolicyScript(), render_frame_host_id));
+  bool should_insert = false;
+  // Get the settings for the site.
+  auto settings_for_site = GetPsstSettings(*user_id, rule.Name(), prefs_);
+  if (!settings_for_site) {
+    VLOG(2) << "could not find settings for site: " << rule.Name();
+    std::cerr << "could not find settings for site: " << rule.Name()
+              << std::endl;
+    should_insert = true;
+  } else {
+    should_insert = rule.Version() > settings_for_site->script_version;
+  }
+
+  // TODO(ssahib): ask for consent here.
+
+  if (should_insert) {
+    InsertScriptInPage(render_frame_host_id, rule.TestScript(),
+                       base::BindOnce(&PsstTabHelper::OnTestScriptResult,
+                                      weak_factory_.GetWeakPtr(), rule,
+                                      *user_id, render_frame_host_id));
+  }
 }
 
 void PsstTabHelper::InsertUserScript(

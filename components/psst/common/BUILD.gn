@@ -17,6 +17,7 @@ component("common") {
   deps = [
     "//base",
     "//components/pref_registry",
+    "//components/prefs",
     "//components/user_prefs",
   ]
 }
