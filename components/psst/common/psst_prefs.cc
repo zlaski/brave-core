@@ -14,6 +14,7 @@
 #include "brave/components/psst/common/features.h"
 #include "components/pref_registry/pref_registry_syncable.h"
 #include "components/prefs/pref_service.h"
+#include "components/prefs/scoped_user_pref_update.h"
 #include "components/user_prefs/user_prefs.h"
 
 namespace psst {
@@ -68,13 +69,14 @@ base::Value::Dict PsstSettingsToDict(const PsstSettings settings) {
       .Set(kScriptVersion, settings.script_version);
 }
 
-base::Value::Dict SetPsstSettings(const std::string& user_id,
-                                  const std::string& name,
-                                  const PsstSettings settings,
-                                  PrefService* prefs) {
+base::Value* SetPsstSettings(const std::string& user_id,
+                             const std::string& name,
+                             const PsstSettings settings,
+                             PrefService* prefs) {
+  ScopedDictPrefUpdate update(prefs, prefs::kPsstSettingsPref);
   const std::string path = ConstructPath(user_id, name);
   auto value = PsstSettingsToDict(settings);
-  return base::Value::Dict().SetByDottedPath(path, std::move(value));
+  return update->SetByDottedPath(path, std::move(value));
 }
 
 }  // namespace psst

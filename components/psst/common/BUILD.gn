@@ -21,3 +21,13 @@ component("common") {
     "//components/user_prefs",
   ]
 }
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [ "psst_prefs_unittest.cc" ]
+  deps = [
+    "//base/test:test_support",
+    "//brave/components/psst/common",
+    "//components/sync_preferences:test_support",
+  ]
+}

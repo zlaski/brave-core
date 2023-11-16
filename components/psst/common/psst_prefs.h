@@ -47,10 +47,10 @@ absl::optional<PsstSettings> GetPsstSettings(const std::string& user_id,
                                              const std::string& name,
                                              PrefService* prefs);
 COMPONENT_EXPORT(PSST_COMMON)
-base::Value::Dict SetPsstSettings(const std::string& user_id,
-                                  const std::string& name,
-                                  const PsstSettings settings,
-                                  PrefService* prefs);
+base::Value* SetPsstSettings(const std::string& user_id,
+                             const std::string& name,
+                             const PsstSettings settings,
+                             PrefService* prefs);
 
 }  // namespace psst
 
