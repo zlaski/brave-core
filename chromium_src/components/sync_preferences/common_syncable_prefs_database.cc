@@ -34,9 +34,9 @@ const auto& BraveSyncablePreferences() {
             {brave_syncable_prefs_ids::kSyncedDefaultPrivateSearchProviderData,
              syncer::PREFERENCES, sync_preferences::PrefSensitivity::kNone,
              MergeBehavior::kNone}},
-             {psst::prefs::kPsstSettingsPref,
+           {psst::prefs::kPsstSettingsPref,
             {brave_syncable_prefs_ids::kSyncedPsstSettingsPref,
-             syncer::PREFERENCES, /*is_history_opt_in_required*/ false,
+             syncer::PREFERENCES, sync_preferences::PrefSensitivity::kNone,
              MergeBehavior::kMergeableDict}}});
   return kBraveCommonSyncablePrefsAllowlist;
 }

@@ -190,6 +190,7 @@ brave_chrome_browser_deps = [
   "//brave/components/psst/browser/content",
   "//brave/components/psst/browser/core",
   "//brave/components/psst/common",
+  "//brave/components/psst/common:mojom",
   "//brave/components/request_otr/common/buildflags",
   "//brave/components/resources",
   "//brave/components/skus/browser",

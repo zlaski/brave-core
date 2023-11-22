@@ -3,6 +3,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import("//mojo/public/tools/bindings/mojom.gni")
+
 component("common") {
   output_name = "psst_common"
   defines = [ "IS_PSST_COMMON_IMPL" ]
@@ -29,5 +31,16 @@ source_set("unit_tests") {
     "//base/test:test_support",
     "//brave/components/psst/common",
     "//components/sync_preferences:test_support",
+  ]
+}
+
+mojom("mojom") {
+  generate_java = true
+  sources = [ "psst_consent.mojom" ]
+
+  public_deps = [
+    "//mojo/public/mojom/base",
+    "//ui/gfx/geometry/mojom",
+    "//url/mojom:url_mojom_gurl",
   ]
 }
