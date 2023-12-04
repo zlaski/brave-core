@@ -12,11 +12,13 @@
 #include "base/strings/utf_string_conversions.h"
 #include "base/task/thread_pool.h"
 #include "base/values.h"
+#include "brave/components/psst/browser/content/psst_consent_dialog.h"
 #include "brave/components/psst/browser/core/matched_rule.h"
 #include "brave/components/psst/browser/core/psst_rule.h"
 #include "brave/components/psst/browser/core/psst_rule_registry.h"
 #include "brave/components/psst/common/features.h"
 #include "brave/components/psst/common/psst_prefs.h"
+#include "components/constrained_window/constrained_window_views.h"
 #include "components/sessions/content/session_tab_helper.h"
 #include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_context.h"
@@ -90,6 +92,11 @@ void PsstTabHelper::OnUserScriptResult(
   }
 
   // TODO(ssahib): ask for consent here.
+  std::cerr << "going to ask for consent, should_insert " << should_insert
+            << std::endl;
+  auto* dialog = new PsstConsentDialog();
+  constrained_window::ShowWebModalDialogViews(dialog, web_contents());
+  std::cerr << "asked for consent" << std::endl;
 
   if (should_insert) {
     InsertScriptInPage(render_frame_host_id, rule.TestScript(),
@@ -154,9 +161,8 @@ void PsstTabHelper::DidFinishNavigation(
 void PsstTabHelper::DocumentOnLoadCompletedInPrimaryMainFrame() {
   DCHECK(psst_rule_registry_);
   // Make sure it gets reset.
-  bool should_process = should_process_;
-  should_process_ = false;
-  if (!should_process) {
+  if (const bool should_process = std::exchange(should_process_, false);
+      !should_process) {
     return;
   }
   auto url = web_contents()->GetLastCommittedURL();

@@ -33,14 +33,3 @@ source_set("unit_tests") {
     "//components/sync_preferences:test_support",
   ]
 }
-
-mojom("mojom") {
-  generate_java = true
-  sources = [ "psst_consent.mojom" ]
-
-  public_deps = [
-    "//mojo/public/mojom/base",
-    "//ui/gfx/geometry/mojom",
-    "//url/mojom:url_mojom_gurl",
-  ]
-}

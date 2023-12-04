@@ -75,8 +75,6 @@ inline constexpr char kShieldsPanelHost[] = "brave-shields.top-chrome";
 inline constexpr char kCookieListOptInHost[] = "cookie-list-opt-in.top-chrome";
 inline constexpr char kCookieListOptInURL[] =
     "chrome://cookie-list-opt-in.top-chrome";
-inline constexpr char kPsstConsentHost[] = "psst-consent.top-chrome";
-inline constexpr char kPsstConsentURL[] = "chrome://psst-consent.top-chrome";
 inline constexpr char kFederatedInternalsURL[] = "brave://federated-internals";
 inline constexpr char kFederatedInternalsHost[] = "federated-internals";
 inline constexpr char kContentFiltersPath[] = "shields/filters";

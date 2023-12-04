@@ -220,7 +220,6 @@ using extensions::ChromeContentBrowserClientExtensionsPart;
 #include "brave/browser/ui/webui/brave_wallet/wallet_panel_ui.h"
 #include "brave/browser/ui/webui/new_tab_page/brave_new_tab_ui.h"
 #include "brave/browser/ui/webui/private_new_tab_page/brave_private_new_tab_ui.h"
-#include "brave/browser/ui/webui/psst/psst_consent_ui.h"
 #include "brave/components/brave_new_tab_ui/brave_new_tab_page.mojom.h"
 #include "brave/components/brave_news/common/brave_news.mojom.h"
 #include "brave/components/brave_news/common/features.h"
@@ -720,8 +719,6 @@ void BraveContentBrowserClient::RegisterBrowserInterfaceBindersForFrame(
       brave_private_new_tab::mojom::PageHandler, BravePrivateNewTabUI>(map);
   content::RegisterWebUIControllerInterfaceBinder<
       brave_shields::mojom::PanelHandlerFactory, ShieldsPanelUI>(map);
-  content::RegisterWebUIControllerInterfaceBinder<
-      psst::mojom::PsstConsentPageHandlerFactory, PsstConsentUI>(map);
   if (base::FeatureList::IsEnabled(
           brave_shields::features::kBraveAdblockCookieListOptIn)) {
     content::RegisterWebUIControllerInterfaceBinder<
