@@ -9,8 +9,6 @@ component("content") {
   defines = [ "IS_PSST_BROWSER_CONTENT_IMPL" ]
 
   sources = [
-    "psst_consent_dialog.cc",
-    "psst_consent_dialog.h",
     "psst_tab_helper.cc",
     "psst_tab_helper.h",
   ]

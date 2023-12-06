@@ -5,6 +5,7 @@
 
 #include "brave/components/psst/browser/content/psst_tab_helper.h"
 
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -12,7 +13,6 @@
 #include "base/strings/utf_string_conversions.h"
 #include "base/task/thread_pool.h"
 #include "base/values.h"
-#include "brave/components/psst/browser/content/psst_consent_dialog.h"
 #include "brave/components/psst/browser/core/matched_rule.h"
 #include "brave/components/psst/browser/core/psst_rule.h"
 #include "brave/components/psst/browser/core/psst_rule_registry.h"
@@ -31,21 +31,26 @@
 namespace psst {
 
 // static
-void PsstTabHelper::MaybeCreateForWebContents(content::WebContents* contents,
-                                              const int32_t world_id) {
+void PsstTabHelper::MaybeCreateForWebContents(
+    content::WebContents* contents,
+    std::unique_ptr<Delegate> delegate,
+    const int32_t world_id) {
   // TODO(ssahib): add check for Request-OTR.
   if (contents->GetBrowserContext()->IsOffTheRecord() ||
       !base::FeatureList::IsEnabled(psst::features::kBravePsst)) {
     return;
   }
 
-  psst::PsstTabHelper::CreateForWebContents(contents, world_id);
+  psst::PsstTabHelper::CreateForWebContents(contents, std::move(delegate),
+                                            world_id);
 }
 
 PsstTabHelper::PsstTabHelper(content::WebContents* web_contents,
+                             std::unique_ptr<Delegate> delegate,
                              const int32_t world_id)
     : WebContentsObserver(web_contents),
       content::WebContentsUserData<PsstTabHelper>(*web_contents),
+      delegate_(std::move(delegate)),
       world_id_(world_id),
       prefs_(user_prefs::UserPrefs::Get(web_contents->GetBrowserContext())),
       psst_rule_registry_(PsstRuleRegistry::GetInstance()) {
@@ -79,26 +84,45 @@ void PsstTabHelper::OnUserScriptResult(
   }
   std::cerr << "user id for PSST: " << *user_id << std::endl;
 
+  bool should_ask = false;
   bool should_insert = false;
   // Get the settings for the site.
   auto settings_for_site = GetPsstSettings(*user_id, rule.Name(), prefs_);
-  if (!settings_for_site) {
+  if (!settings_for_site || settings_for_site->consent_status == kAsk) {
     VLOG(2) << "could not find settings for site: " << rule.Name();
     std::cerr << "could not find settings for site: " << rule.Name()
               << std::endl;
     should_insert = true;
+    should_ask = true;
   } else {
     should_insert = rule.Version() > settings_for_site->script_version;
   }
 
-  // TODO(ssahib): ask for consent here.
-  std::cerr << "going to ask for consent, should_insert " << should_insert
-            << std::endl;
-  auto* dialog = new PsstConsentDialog();
-  constrained_window::ShowWebModalDialogViews(dialog, web_contents());
-  std::cerr << "asked for consent" << std::endl;
+  if (should_ask) {
+    // TODO(ssahib): ask for consent here.
+    std::cerr << "going to ask for consent, should_insert " << should_insert
+              << std::endl;
+    delegate_->ShowPsstConsentDialog(
+        web_contents(),
+        base::BindOnce(&PsstTabHelper::OnUserDialogAction, user_id, rule,
+                       kAllow),
+        base::BindOnce(&PsstTabHelper::OnUserDialogAction, user_id, rule,
+                       kBlock));
+    std::cerr << "asked for consent" << std::endl;
+  } else if (should_insert) {
+    InsertScriptInPage(render_frame_host_id, rule.TestScript(),
+                       base::BindOnce(&PsstTabHelper::OnTestScriptResult,
+                                      weak_factory_.GetWeakPtr(), rule,
+                                      *user_id, render_frame_host_id));
+  }
+}
 
-  if (should_insert) {
+void PsstTabHelper::OnUserDialogAction(const std::string& user_id,
+                                       const MatchedRule& rule,
+                                       PsstConsentStatus status) {
+  SetPsstSettings(user_id, rule.Name(), PsstSettings{status, rule.Version()},
+                  prefs_);
+  if (status == kAllow) {
     InsertScriptInPage(render_frame_host_id, rule.TestScript(),
                        base::BindOnce(&PsstTabHelper::OnTestScriptResult,
                                       weak_factory_.GetWeakPtr(), rule,

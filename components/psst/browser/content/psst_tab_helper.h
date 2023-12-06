@@ -6,6 +6,7 @@
 #ifndef BRAVE_COMPONENTS_PSST_BROWSER_CONTENT_PSST_TAB_HELPER_H_
 #define BRAVE_COMPONENTS_PSST_BROWSER_CONTENT_PSST_TAB_HELPER_H_
 
+#include <memory>
 #include <string>
 
 #include "base/component_export.h"
@@ -30,14 +31,23 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
     : public content::WebContentsObserver,
       public content::WebContentsUserData<PsstTabHelper> {
  public:
+  class Delegate {
+   public:
+    virtual ~Delegate() = default;
+    virtual void ShowPsstConsentDialog(content::WebContents* contents) = 0;
+  };
+
   static void MaybeCreateForWebContents(content::WebContents* contents,
+                                        std::unique_ptr<Delegate> delegate,
                                         const int32_t world_id);
   ~PsstTabHelper() override;
   PsstTabHelper(const PsstTabHelper&) = delete;
   PsstTabHelper& operator=(const PsstTabHelper&) = delete;
 
  private:
-  PsstTabHelper(content::WebContents*, const int32_t world_id);
+  PsstTabHelper(content::WebContents*,
+                std::unique_ptr<Delegate> delegate,
+                const int32_t world_id);
   // Insert scripts for the rfh using the script_injector mojo interface.
   void InsertScriptInPage(
       const content::GlobalRenderFrameHostId& render_frame_host_id,
@@ -64,12 +74,14 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
   // Get the remote used to send the script to the renderer.
   mojo::AssociatedRemote<script_injector::mojom::ScriptInjector>& GetRemote(
       content::RenderFrameHost* rfh);
+
   friend class content::WebContentsUserData<PsstTabHelper>;
 
   // content::WebContentsObserver overrides
   void DidFinishNavigation(
       content::NavigationHandle* navigation_handle) override;
   void DocumentOnLoadCompletedInPrimaryMainFrame() override;
+  std::unique_ptr<Delegate> delegate_;
 
   const int32_t world_id_;
   const raw_ptr<PrefService> prefs_;

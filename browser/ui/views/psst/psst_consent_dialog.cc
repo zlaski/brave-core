@@ -3,12 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "brave/components/psst/browser/content/psst_consent_dialog.h"
+#include "brave/browser/ui/views/psst/psst_consent_dialog.h"
 
 #include <iostream>
 #include <limits>
 #include <memory>
 
+#include "base/functional/callback_forward.h"
+#include "base/functional/callback.h"
 #include "brave/grit/brave_generated_resources.h"
 #include "brave/grit/brave_theme_resources.h"
 #include "ui/base/l10n/l10n_util.h"
@@ -18,7 +20,7 @@
 #include "ui/views/metadata/view_factory.h"
 #include "ui/views/view_class_properties.h"
 
-PsstConsentDialog::PsstConsentDialog() {
+PsstConsentDialog::PsstConsentDialog(base::OnceCallback<void()> yes_callback, base::OnceCallback<void()> no_callback) {
   set_margins(gfx::Insets(40));
   SetModalType(ui::MODAL_TYPE_CHILD);
   SetShowCloseButton(false);
@@ -78,10 +80,9 @@ PsstConsentDialog::PsstConsentDialog() {
       13 - footer_font_list.GetFontSize()));
   footer->SetProperty(views::kMarginsKey, gfx::Insets().set_top(16));
 
-  // It's okay to bind Unretained(this) here because we're registering callback
-  // from the base class.
-  SetAcceptCallback(base::BindOnce(&PsstConsentDialog::DisableAdBlockForSite,
-                                   base::Unretained(this)));
+  SetAcceptCallback(std::move(yes_callback));
+  SetCancelCallback(std::move(no_callback));
+  // TODO(shivan): what about SetCloseCallback?
 
   std::cerr << "done with PsstConsentDialog" << std::endl;
 }
@@ -96,8 +97,4 @@ gfx::Size PsstConsentDialog::CalculatePreferredSize() const {
 
 void PsstConsentDialog::WindowClosing() {
   DialogDelegateView::WindowClosing();
-}
-
-void PsstConsentDialog::DisableAdBlockForSite() {
-  std::cerr << "DisableAdBlockForSite" << std::endl;
 }
