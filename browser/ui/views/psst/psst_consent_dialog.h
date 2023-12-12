@@ -6,12 +6,17 @@
 #ifndef BRAVE_BROWSER_UI_VIEWS_PSST_PSST_CONSENT_DIALOG_H_
 #define BRAVE_BROWSER_UI_VIEWS_PSST_PSST_CONSENT_DIALOG_H_
 
-#include "ui/views/window/dialog_delegate.h"
+#include <string>
+
 #include "base/functional/callback.h"
+#include "base/functional/callback_forward.h"
+#include "brave/browser/ui/views/psst/psst_consent_dialog.h"
+#include "ui/views/window/dialog_delegate.h"
 
 class PsstConsentDialog : public views::DialogDelegateView {
  public:
-  PsstConsentDialog(base::OnceCallback<void()> yes_callback, base::OnceCallback<void()> no_callback);
+  PsstConsentDialog(base::OnceClosure yes_callback,
+                    base::OnceClosure no_callback);
   ~PsstConsentDialog() override;
 
   // views::DialogDelegateView:

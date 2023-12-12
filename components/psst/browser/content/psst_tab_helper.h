@@ -13,6 +13,7 @@
 #include "base/memory/raw_ptr.h"
 #include "base/memory/weak_ptr.h"
 #include "brave/components/psst/browser/core/matched_rule.h"
+#include "brave/components/psst/common/psst_prefs.h"
 #include "brave/components/script_injector/common/mojom/script_injector.mojom.h"
 #include "build/build_config.h"
 #include "components/prefs/pref_service.h"
@@ -34,7 +35,9 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
   class Delegate {
    public:
     virtual ~Delegate() = default;
-    virtual void ShowPsstConsentDialog(content::WebContents* contents) = 0;
+    virtual void ShowPsstConsentDialog(content::WebContents* contents,
+                                       base::OnceClosure yes_cb,
+                                       base::OnceClosure no_cb) = 0;
   };
 
   static void MaybeCreateForWebContents(content::WebContents* contents,
@@ -48,6 +51,7 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
   PsstTabHelper(content::WebContents*,
                 std::unique_ptr<Delegate> delegate,
                 const int32_t world_id);
+
   // Insert scripts for the rfh using the script_injector mojo interface.
   void InsertScriptInPage(
       const content::GlobalRenderFrameHostId& render_frame_host_id,
@@ -56,7 +60,7 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
 
   // Script injection methods. The flow is:
   // 1. insert get user script and get logged in user id.
-  // 2. if valid and we need to, insert test script.
+  // 2. if valid and we need to, get consent and/or insert test script.
   // 3. if we can make changes, insert policy script to make changes.
   void InsertUserScript(
       const content::GlobalRenderFrameHostId& render_frame_host_id,
@@ -65,9 +69,14 @@ class COMPONENT_EXPORT(PSST_BROWSER_CONTENT) PsstTabHelper
       const MatchedRule& rule,
       const content::GlobalRenderFrameHostId& render_frame_host_id,
       base::Value value);
-  void OnTestScriptResult(
-      const MatchedRule& rule,
+  void OnUserDialogAction(
       const std::string& user_id,
+      const MatchedRule& rule,
+      const content::GlobalRenderFrameHostId& render_frame_host_id,
+      PsstConsentStatus status);
+  void OnTestScriptResult(
+      const std::string& user_id,
+      const MatchedRule& rule,
       const content::GlobalRenderFrameHostId& render_frame_host_id,
       base::Value value);
 

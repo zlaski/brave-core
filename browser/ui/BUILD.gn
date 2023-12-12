@@ -556,6 +556,8 @@ source_set("ui") {
     "//brave/components/p3a:buildflags",
     "//brave/components/p3a_utils",
     "//brave/components/playlist/common/buildflags",
+    "//brave/components/psst/browser/core",
+    "//brave/components/psst/common",
     "//brave/components/query_filter",
     "//brave/components/resources:static_resources",
     "//brave/components/skus/browser",

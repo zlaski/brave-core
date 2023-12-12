@@ -11,6 +11,4 @@ brave_browser_psst_sources += [
   "//brave/browser/psst/psst_consent_tab_helper_delegate_impl.h",
 ]
 
-brave_browser_psst_deps += [
-  "//brave/components/psst/browser/content",
-]
+brave_browser_psst_deps += [ "//brave/components/psst/browser/content" ]

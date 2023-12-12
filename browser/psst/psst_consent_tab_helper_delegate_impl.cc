@@ -11,7 +11,9 @@ PsstConsentTabHelperDelegateImpl::~PsstConsentTabHelperDelegateImpl() = default;
 
 #if !defined(TOOLKIT_VIEWS)
 void PsstConsentTabHelperDelegateImpl::ShowPsstConsentDialog(
-    content::WebContents* contents) {
+    content::WebContents* contents,
+    base::OnceClosure yes_cb,
+    base::OnceClosure no_cb) {
   NOTIMPLEMENTED();
 }
 #endif

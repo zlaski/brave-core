@@ -60,8 +60,8 @@ PsstTabHelper::PsstTabHelper(content::WebContents* web_contents,
 PsstTabHelper::~PsstTabHelper() = default;
 
 void PsstTabHelper::OnTestScriptResult(
-    const MatchedRule& rule,
     const std::string& user_id,
+    const MatchedRule& rule,
     const content::GlobalRenderFrameHostId& render_frame_host_id,
     base::Value value) {
   // TODO(ssahib): Update the inserted version for the site & user.
@@ -95,8 +95,15 @@ void PsstTabHelper::OnUserScriptResult(
     should_insert = true;
     should_ask = true;
   } else {
+    std::cerr << "found settings for site: " << rule.Name()
+              << ": status: " << settings_for_site->consent_status
+              << ", version: " << settings_for_site->script_version
+              << std::endl;
     should_insert = rule.Version() > settings_for_site->script_version;
   }
+
+  std::cerr << "should_ask " << should_ask << " should_insert " << should_insert
+            << std::endl;
 
   if (should_ask) {
     // TODO(ssahib): ask for consent here.
@@ -104,29 +111,33 @@ void PsstTabHelper::OnUserScriptResult(
               << std::endl;
     delegate_->ShowPsstConsentDialog(
         web_contents(),
-        base::BindOnce(&PsstTabHelper::OnUserDialogAction, user_id, rule,
-                       kAllow),
-        base::BindOnce(&PsstTabHelper::OnUserDialogAction, user_id, rule,
-                       kBlock));
+        base::BindOnce(&PsstTabHelper::OnUserDialogAction,
+                       weak_factory_.GetWeakPtr(), *user_id, rule,
+                       render_frame_host_id, kAllow),
+        base::BindOnce(&PsstTabHelper::OnUserDialogAction,
+                       weak_factory_.GetWeakPtr(), *user_id, rule,
+                       render_frame_host_id, kBlock));
     std::cerr << "asked for consent" << std::endl;
   } else if (should_insert) {
     InsertScriptInPage(render_frame_host_id, rule.TestScript(),
                        base::BindOnce(&PsstTabHelper::OnTestScriptResult,
-                                      weak_factory_.GetWeakPtr(), rule,
-                                      *user_id, render_frame_host_id));
+                                      weak_factory_.GetWeakPtr(), *user_id,
+                                      rule, render_frame_host_id));
   }
 }
 
-void PsstTabHelper::OnUserDialogAction(const std::string& user_id,
-                                       const MatchedRule& rule,
-                                       PsstConsentStatus status) {
+void PsstTabHelper::OnUserDialogAction(
+    const std::string& user_id,
+    const MatchedRule& rule,
+    const content::GlobalRenderFrameHostId& render_frame_host_id,
+    PsstConsentStatus status) {
   SetPsstSettings(user_id, rule.Name(), PsstSettings{status, rule.Version()},
                   prefs_);
   if (status == kAllow) {
     InsertScriptInPage(render_frame_host_id, rule.TestScript(),
                        base::BindOnce(&PsstTabHelper::OnTestScriptResult,
-                                      weak_factory_.GetWeakPtr(), rule,
-                                      *user_id, render_frame_host_id));
+                                      weak_factory_.GetWeakPtr(), user_id, rule,
+                                      render_frame_host_id));
   }
 }
 

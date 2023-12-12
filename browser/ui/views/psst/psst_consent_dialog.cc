@@ -8,9 +8,10 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <utility>
 
-#include "base/functional/callback_forward.h"
 #include "base/functional/callback.h"
+#include "base/functional/callback_forward.h"
 #include "brave/grit/brave_generated_resources.h"
 #include "brave/grit/brave_theme_resources.h"
 #include "ui/base/l10n/l10n_util.h"
@@ -20,7 +21,8 @@
 #include "ui/views/metadata/view_factory.h"
 #include "ui/views/view_class_properties.h"
 
-PsstConsentDialog::PsstConsentDialog(base::OnceCallback<void()> yes_callback, base::OnceCallback<void()> no_callback) {
+PsstConsentDialog::PsstConsentDialog(base::OnceClosure yes_callback,
+                                     base::OnceClosure no_callback) {
   set_margins(gfx::Insets(40));
   SetModalType(ui::MODAL_TYPE_CHILD);
   SetShowCloseButton(false);
@@ -33,9 +35,7 @@ PsstConsentDialog::PsstConsentDialog(base::OnceCallback<void()> yes_callback, ba
 
   views::Label* header = nullptr;
   views::Label* body = nullptr;
-  views::Label* footer = nullptr;
 
-  // TODO(sko) We'd like to use different header and body text via flag/griffin
   AddChildView(
       views::Builder<views::BoxLayoutView>()
           .SetOrientation(views::BoxLayout::Orientation::kVertical)
@@ -53,32 +53,20 @@ PsstConsentDialog::PsstConsentDialog(base::OnceCallback<void()> yes_callback, ba
                       l10n_util::GetStringUTF16(IDS_PSST_CONSENT_DIALOG_BODY))
                   .SetMultiLine(true)
                   .SetHorizontalAlignment(gfx::HorizontalAlignment::ALIGN_LEFT))
-          .AddChild(views::Builder<views::Label>()
-                        .SetText(l10n_util::GetStringUTF16(
-                            IDS_PSST_CONSENT_DIALOG_FOOTER))
-                        .CopyAddressTo(&footer))
           .Build());
 
   CHECK(header);
   CHECK(body);
-  CHECK(footer);
 
   const auto& header_font_list = header->font_list();
   header->SetFontList(
       header_font_list.DeriveWithSizeDelta(16 - header_font_list.GetFontSize())
           .DeriveWithWeight(gfx::Font::Weight::SEMIBOLD));
-  header->SetProperty(views::kMarginsKey,
-                      gfx::Insets().set_top(40).set_bottom(16));
+  header->SetProperty(views::kMarginsKey, gfx::Insets().set_bottom(16));
 
   const auto& body_font_list = body->font_list();
   body->SetFontList(
       body_font_list.DeriveWithSizeDelta(14 - body_font_list.GetFontSize()));
-  body->SetProperty(views::kMarginsKey, gfx::Insets().set_bottom(24));
-
-  const auto& footer_font_list = footer->font_list();
-  footer->SetFontList(footer_font_list.DeriveWithSizeDelta(
-      13 - footer_font_list.GetFontSize()));
-  footer->SetProperty(views::kMarginsKey, gfx::Insets().set_top(16));
 
   SetAcceptCallback(std::move(yes_callback));
   SetCancelCallback(std::move(no_callback));
