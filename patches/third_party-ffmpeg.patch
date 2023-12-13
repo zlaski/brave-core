@@ -1,0 +1,7 @@
+diff --git a/third_party/ffmpeg b/third_party/ffmpeg
+index e1ca3f06adec15150a171bc38f550058b4bbb23b..acb78dc0f416f6ef009192d94dc07c05effabfda 160000
+--- a/third_party/ffmpeg
++++ b/third_party/ffmpeg
+@@ -1 +1 @@
+-Subproject commit e1ca3f06adec15150a171bc38f550058b4bbb23b
++Subproject commit acb78dc0f416f6ef009192d94dc07c05effabfda
