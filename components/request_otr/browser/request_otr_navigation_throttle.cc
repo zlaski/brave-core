@@ -17,6 +17,7 @@
 #include "brave/components/request_otr/common/features.h"
 #include "brave/components/request_otr/common/pref_names.h"
 #include "components/prefs/pref_service.h"
+#include "components/profile_metrics/browser_profile_type.h"
 #include "components/security_interstitials/content/security_interstitial_tab_helper.h"
 #include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_context.h"
@@ -52,7 +53,10 @@ RequestOTRNavigationThrottle::MaybeCreateThrottleFor(
           net::features::kBraveFirstPartyEphemeralStorage)) {
     return nullptr;
   }
-  DCHECK(ephemeral_storage_service);
+  DCHECK(ephemeral_storage_service ||
+         profile_metrics::GetBrowserProfileType(
+             navigation_handle->GetWebContents()->GetBrowserContext()) ==
+             profile_metrics::BrowserProfileType::kSystem);
 
   // Don't block subframes.
   if (!navigation_handle->IsInMainFrame()) {
