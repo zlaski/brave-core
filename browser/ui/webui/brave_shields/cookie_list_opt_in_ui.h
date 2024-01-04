@@ -26,6 +26,10 @@ class CookieListOptInUI
   void BindInterface(
       mojo::PendingReceiver<CookieListOptInPageHandlerFactory> reciever);
 
+  static constexpr std::string GetWebUIName() {
+    return "CookieListOptInBubblePanel";
+  }
+
  private:
   // brave_shields::mojom::CookieListOptInPageHandlerFactory:
   void CreatePageHandler(

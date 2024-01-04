@@ -30,6 +30,8 @@ class RewardsPanelUI : public ui::MojoBubbleWebUIController,
 
   void BindInterface(mojo::PendingReceiver<PanelHandlerFactory> receiver);
 
+  static constexpr std::string GetWebUIName() { return "RewardsPanel"; }
+
  private:
   // mojom::PanelHandlerFactory:
   void CreatePanelHandler(

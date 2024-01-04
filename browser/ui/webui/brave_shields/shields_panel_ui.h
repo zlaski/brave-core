@@ -31,6 +31,8 @@ class ShieldsPanelUI : public ui::MojoBubbleWebUIController,
       mojo::PendingReceiver<brave_shields::mojom::PanelHandlerFactory>
           receiver);
 
+  static constexpr std::string GetWebUIName() { return "ShieldsPanel"; }
+
  private:
   void CreatePanelHandler(
       mojo::PendingReceiver<brave_shields::mojom::PanelHandler> panel_receiver,

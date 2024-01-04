@@ -27,6 +27,8 @@ class TipPanelUI : public ui::MojoBubbleWebUIController,
 
   void BindInterface(mojo::PendingReceiver<TipPanelHandlerFactory> receiver);
 
+  static constexpr std::string GetWebUIName() { return "TipPanel"; }
+
  private:
   // mojom::TipPanelHandlerFactory:
   void CreateHandler(

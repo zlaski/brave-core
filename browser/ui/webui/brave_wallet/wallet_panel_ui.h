@@ -42,6 +42,8 @@ class WalletPanelUI : public ui::MojoBubbleWebUIController,
   // Allows disabling CSP on wallet panel so EvalJS could be run in main world.
   static bool& ShouldDisableCSPForTesting();
 
+  static constexpr std::string GetWebUIName() { return "WalletPanel"; }
+
  private:
   // brave_wallet::mojom::PanelHandlerFactory:
   void CreatePanelHandler(
