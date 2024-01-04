@@ -42,7 +42,6 @@ enum {
 const auto& BraveSyncablePreferences() {
   static const auto kBraveSyncablePrefsAllowList = base::MakeFixedFlatMap<
       std::string_view, sync_preferences::SyncablePrefMetadata>(
-      base::sorted_unique,
       {
           {"profile.content_settings.exceptions.braveShields",
            {brave_syncable_prefs_ids::

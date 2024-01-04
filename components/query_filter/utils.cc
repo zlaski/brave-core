@@ -113,7 +113,6 @@ static constexpr auto kSimpleQueryStringTrackers =
 
 static constexpr auto kConditionalQueryStringTrackers =
     base::MakeFixedFlatMap<std::string_view, std::string_view>(
-        base::sorted_unique,
         {
             // https://github.com/brave/brave-browser/issues/30731
             {"h_sid", "/email/"},

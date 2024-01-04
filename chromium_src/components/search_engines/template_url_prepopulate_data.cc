@@ -112,7 +112,6 @@ constexpr BravePrepopulatedEngineID kBraveEnginesNZ[] = {
 // that don't use the default list.
 constexpr auto kDefaultEnginesByCountryIdMap =
     base::MakeFixedFlatMap<int, base::span<const BravePrepopulatedEngineID>>(
-        base::sorted_unique,
         {{country_codes::CountryCharsToCountryID('A', 'M'),
           kBraveEnginesWithYandex},
          {country_codes::CountryCharsToCountryID('A', 'T'),
@@ -179,7 +178,6 @@ BravePrepopulatedEngineID GetDefaultSearchEngine(int country_id, int version) {
   const BravePrepopulatedEngineID default_v6 = PREPOPULATED_ENGINE_ID_GOOGLE;
   static constexpr auto kContentV6 =
       base::MakeFixedFlatMap<int, BravePrepopulatedEngineID>(
-          base::sorted_unique,
           {
               {country_codes::CountryCharsToCountryID('A', 'U'),
                PREPOPULATED_ENGINE_ID_DUCKDUCKGO_AU_NZ_IE},
@@ -194,7 +192,6 @@ BravePrepopulatedEngineID GetDefaultSearchEngine(int country_id, int version) {
           });
   static constexpr auto kContentV8 =
       base::MakeFixedFlatMap<int, BravePrepopulatedEngineID>(
-          base::sorted_unique,
           {
               {country_codes::CountryCharsToCountryID('A', 'M'),
                PREPOPULATED_ENGINE_ID_YANDEX},
@@ -229,7 +226,6 @@ BravePrepopulatedEngineID GetDefaultSearchEngine(int country_id, int version) {
           });
   static constexpr auto kContentV16 =
       base::MakeFixedFlatMap<int, BravePrepopulatedEngineID>(
-          base::sorted_unique,
           {
               {country_codes::CountryCharsToCountryID('A', 'M'),
                PREPOPULATED_ENGINE_ID_YANDEX},
@@ -256,7 +252,6 @@ BravePrepopulatedEngineID GetDefaultSearchEngine(int country_id, int version) {
           });
   static constexpr auto kContentV17 =
       base::MakeFixedFlatMap<int, BravePrepopulatedEngineID>(
-          base::sorted_unique,
           {
               {country_codes::CountryCharsToCountryID('A', 'M'),
                PREPOPULATED_ENGINE_ID_YANDEX},
@@ -292,7 +287,6 @@ BravePrepopulatedEngineID GetDefaultSearchEngine(int country_id, int version) {
 
   static constexpr auto kContentV20 =
       base::MakeFixedFlatMap<int, BravePrepopulatedEngineID>(
-          base::sorted_unique,
           {
               {country_codes::CountryCharsToCountryID('A', 'M'),
                PREPOPULATED_ENGINE_ID_YANDEX},
@@ -334,7 +328,6 @@ BravePrepopulatedEngineID GetDefaultSearchEngine(int country_id, int version) {
 
   static constexpr auto kContentV21 =
       base::MakeFixedFlatMap<int, BravePrepopulatedEngineID>(
-          base::sorted_unique,
           {
               {country_codes::CountryCharsToCountryID('A', 'M'),
                PREPOPULATED_ENGINE_ID_YANDEX},
@@ -379,7 +372,6 @@ BravePrepopulatedEngineID GetDefaultSearchEngine(int country_id, int version) {
           });
   static constexpr auto kContentV22 =
       base::MakeFixedFlatMap<int, BravePrepopulatedEngineID>(
-          base::sorted_unique,
           {
               {country_codes::CountryCharsToCountryID('A', 'M'),
                PREPOPULATED_ENGINE_ID_YANDEX},
@@ -426,7 +418,6 @@ BravePrepopulatedEngineID GetDefaultSearchEngine(int country_id, int version) {
           });
   static constexpr auto kContentV25 =
       base::MakeFixedFlatMap<int, BravePrepopulatedEngineID>(
-          base::sorted_unique,
           {
               {country_codes::CountryCharsToCountryID('A', 'M'),
                PREPOPULATED_ENGINE_ID_YANDEX},

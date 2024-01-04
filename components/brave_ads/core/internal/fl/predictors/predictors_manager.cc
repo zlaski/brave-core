@@ -26,7 +26,6 @@ constexpr auto kUserActivityEventToPredictorVariableTypeMapping =
     base::MakeFixedFlatMap<UserActivityEventType,
                            std::pair<brave_federated::mojom::CovariateType,
                                      brave_federated::mojom::CovariateType>>(
-        base::sorted_unique,
         {
             {UserActivityEventType::kBrowserDidEnterForeground,
              {brave_federated::mojom::CovariateType::

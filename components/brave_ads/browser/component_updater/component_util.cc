@@ -16,7 +16,6 @@ namespace {
 
 constexpr auto kComponents = base::MakeFixedFlatMap<std::string_view,
                                                     ComponentInfo>(
-    base::sorted_unique,
     {
         {"AD",
          {"pmlmnjficamnkblapnohndlnhkkoaoco",

@@ -45,7 +45,6 @@ namespace playlist {
 constexpr auto kMimeTypeToExtension =
     base::MakeFixedFlatMap<std::string_view /*mime_type*/,
                            std::string_view /*extension*/>(
-        base::sorted_unique,
         {
             {"application/ogg", "ogx"},
             {"application/vnd.apple.mpegurl", "m3u8"},
