@@ -1,5 +1,5 @@
 diff --git a/components/version_info/BUILD.gn b/components/version_info/BUILD.gn
-index 950fdf765b964c71704642588f5b827c3c2ab05f..52e1386f35e5141cc35c00560dcbf8f022f0c7b3 100644
+index 817b82b6936d118cb2aecbf0dbf00819378b87f3..f186156dae15580de92566b6351fca4d7c0260eb 100644
 --- a/components/version_info/BUILD.gn
 +++ b/components/version_info/BUILD.gn
 @@ -27,6 +27,7 @@ static_library("version_info") {

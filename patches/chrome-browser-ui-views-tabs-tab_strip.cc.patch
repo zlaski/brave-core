@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/views/tabs/tab_strip.cc b/chrome/browser/ui/views/tabs/tab_strip.cc
-index 90e89750b5c36170ac5d03a018e15fd8e007a63a..588bc02f25464884cb23381df5662afd40dc7787 100644
+index 909508033c64971f073d6fd98c3cbf0488853766..e2ac7cda8eb820bb8ac0e5561f6aac81f0203a85 100644
 --- a/chrome/browser/ui/views/tabs/tab_strip.cc
 +++ b/chrome/browser/ui/views/tabs/tab_strip.cc
-@@ -506,6 +506,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
+@@ -507,6 +507,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
    std::vector<gfx::Rect> CalculateBoundsForDraggedViews(
        const std::vector<raw_ptr<TabSlotView, VectorExperimental>>& views)
        override {
@@ -10,7 +10,7 @@ index 90e89750b5c36170ac5d03a018e15fd8e007a63a..588bc02f25464884cb23381df5662afd
      DCHECK(!views.empty());
  
      std::vector<gfx::Rect> bounds;
-@@ -687,6 +688,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
+@@ -688,6 +689,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
      // index.
      std::stable_sort(orderable_children.begin(), orderable_children.end());
  
@@ -18,7 +18,7 @@ index 90e89750b5c36170ac5d03a018e15fd8e007a63a..588bc02f25464884cb23381df5662afd
      for (const ZOrderableTabContainerElement& child : orderable_children)
        child.view()->Paint(paint_info);
    }
-@@ -777,6 +779,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
+@@ -778,6 +780,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
          continue;
        }
  

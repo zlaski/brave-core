@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui/views/tabs/tab_style_views.cc
-index 1f19efcf7f181273f154411c3a7da874cb013ca5..0e1ec5ddab0a2384e5bde56c9bba97edd01a524d 100644
+index a64d5fd0dccb760af6172b1c543035bf8f506766..3a8a8fb89e33627db3bb0acc9a600555ecd36ab0 100644
 --- a/chrome/browser/ui/views/tabs/tab_style_views.cc
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
 @@ -138,6 +138,7 @@ class GM2TabStyleViews : public TabStyleViews {
