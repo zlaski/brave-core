@@ -1917,6 +1917,10 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_SETTINGS_CLEAR_BROWSING_DATA_SIGNED_IN" desc="Description in the footer of the Clear Browsing Data dialog when the user is signed.">
         To clear browsing data from this device only, while keeping it in your Brave sync chain, <ph name="BEGIN_LINK">&lt;a href="#" target="_blank"&gt;</ph>sign out of Brave<ph name="END_LINK">&lt;/a&gt;</ph>.
       </message>
-    </messages>
+    <message name="IDS_CHROME_SHORTCUT_NAME_BETA" desc="The Chrome shortcut name for beta channel">
+          Google Chrome Beta
+        </message><message name="IDS_CHROME_SHORTCUT_NAME_DEV" desc="The Chrome shortcut name for dev channel">
+          Google Chrome Dev
+        </message></messages>
   </release>
 </grit>
