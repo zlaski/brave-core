@@ -1,16 +1,16 @@
 diff --git a/ios/chrome/browser/shared/model/prefs/browser_prefs.mm b/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
-index 4e5c9f6deaee3638494d54ea38f43dc8616c3fb5..9c3b22d505b5c7b6c3648888c31919e601dcc50a 100644
+index 11e07997c336ea0245bb34e225c7a0cebc675a94..805c686243098ee3411972901d8b70c814c3e446 100644
 --- a/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
 +++ b/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
-@@ -476,6 +476,7 @@ void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
-   registry->RegisterTimePref(kAppStoreRatingLastShownPromoDayKey, base::Time());
+@@ -477,6 +477,7 @@ void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
  
    registry->RegisterStringPref(kIOSChromeNextVersionKey, std::string());
+   registry->RegisterStringPref(kIOSChromeUpgradeURLKey, std::string());
 +  BRAVE_REGISTER_LOCAL_STATE_PREFS
  }
  
  void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
-@@ -719,6 +720,7 @@ void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -720,6 +721,7 @@ void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
    registry->RegisterBooleanPref(prefs::kInsecureFormWarningsEnabled, true);
  
    registry->RegisterTimePref(kLastCookieDeletionDate, base::Time());
