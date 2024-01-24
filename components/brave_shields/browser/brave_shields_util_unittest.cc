@@ -503,6 +503,97 @@ TEST_F(BraveShieldsUtilTest, SetCookieControlType_Default) {
   EXPECT_TRUE(cookies->ShouldBlockThirdPartyCookies());
 }
 
+TEST_F(BraveShieldsUtilTest,
+       CookieControlType_Default_ToggleCookieControlsMode) {
+  auto* map = HostContentSettingsMapFactory::GetForProfile(profile());
+  auto cookies = CookieSettingsFactory::GetForProfile(profile());
+  // Check third party blocking default
+  EXPECT_EQ(
+      static_cast<int>(content_settings::CookieControlsMode::kBlockThirdParty),
+      profile()->GetPrefs()->GetInteger(prefs::kCookieControlsMode));
+  
+  /* ALLOW */
+  brave_shields::SetCookieControlType(map, profile()->GetPrefs(),
+                                      ControlType::ALLOW, GURL());
+  auto setting =
+      map->GetContentSetting(GURL(), GURL(), ContentSettingsType::COOKIES);
+  EXPECT_EQ(CONTENT_SETTING_ALLOW, setting);
+
+  // Third party blocking should be turned off
+  EXPECT_EQ(static_cast<int>(content_settings::CookieControlsMode::kOff),
+            profile()->GetPrefs()->GetInteger(prefs::kCookieControlsMode));
+
+  // Toggling third party blocking to block
+  profile()->GetPrefs()->SetInteger(
+      prefs::kCookieControlsMode,
+      static_cast<int>(content_settings::CookieControlsMode::kBlockThirdParty));
+  // Content settings should not be affected
+  setting =
+      map->GetContentSetting(GURL(), GURL(), ContentSettingsType::COOKIES);
+  EXPECT_EQ(CONTENT_SETTING_ALLOW, setting);
+  // Shield cookies control should be set to block third party
+  EXPECT_EQ(ControlType::BLOCK_THIRD_PARTY,
+            brave_shields::GetCookieControlType(map, cookies.get(), GURL()));
+
+  // Toggling third party blocking to allow
+  profile()->GetPrefs()->SetInteger(
+      prefs::kCookieControlsMode,
+      static_cast<int>(content_settings::CookieControlsMode::kOff));
+  // Content settings should not be affected
+  setting =
+      map->GetContentSetting(GURL(), GURL(), ContentSettingsType::COOKIES);
+  EXPECT_EQ(CONTENT_SETTING_ALLOW, setting);
+  // Shield cookies control should be set to allow
+  EXPECT_EQ(ControlType::ALLOW,
+            brave_shields::GetCookieControlType(map, cookies.get(), GURL()));
+
+  /* BLOCK */
+  brave_shields::SetCookieControlType(map, profile()->GetPrefs(),
+                                      ControlType::BLOCK, GURL());
+  setting =
+      map->GetContentSetting(GURL(), GURL(), ContentSettingsType::COOKIES);
+  EXPECT_EQ(CONTENT_SETTING_BLOCK, setting);
+  // Third party blocking should be changed to block
+  EXPECT_EQ(
+      static_cast<int>(content_settings::CookieControlsMode::kBlockThirdParty),
+      profile()->GetPrefs()->GetInteger(prefs::kCookieControlsMode));
+
+  // Toggling third party blocking to allow
+  profile()->GetPrefs()->SetInteger(
+      prefs::kCookieControlsMode,
+      static_cast<int>(content_settings::CookieControlsMode::kOff));
+  // Content settings should change to ALLOW
+  setting =
+      map->GetContentSetting(GURL(), GURL(), ContentSettingsType::COOKIES);
+  EXPECT_EQ(CONTENT_SETTING_ALLOW, setting);
+  // Shield cookies control should be set to allow
+  EXPECT_EQ(ControlType::ALLOW,
+            brave_shields::GetCookieControlType(map, cookies.get(), GURL()));
+
+  /* BLOCK_THIRD_PARTY */
+  brave_shields::SetCookieControlType(map, profile()->GetPrefs(),
+                                      ControlType::BLOCK_THIRD_PARTY, GURL());
+  setting =
+      map->GetContentSetting(GURL(), GURL(), ContentSettingsType::COOKIES);
+  EXPECT_EQ(CONTENT_SETTING_ALLOW, setting);
+  // Third party blocking should change to block
+  EXPECT_EQ(
+      static_cast<int>(content_settings::CookieControlsMode::kBlockThirdParty),
+      profile()->GetPrefs()->GetInteger(prefs::kCookieControlsMode));
+
+  // Toggling third party blocking to allow
+  profile()->GetPrefs()->SetInteger(
+      prefs::kCookieControlsMode,
+      static_cast<int>(content_settings::CookieControlsMode::kOff));
+  // Content settings should not be affected
+  setting =
+      map->GetContentSetting(GURL(), GURL(), ContentSettingsType::COOKIES);
+  EXPECT_EQ(CONTENT_SETTING_ALLOW, setting);
+  // Shield cookies control should be set to allow
+  EXPECT_EQ(ControlType::ALLOW,
+            brave_shields::GetCookieControlType(map, cookies.get(), GURL()));
+}
+
 TEST_F(BraveShieldsUtilTest, SetCookieControlType_ForOrigin) {
   auto* map = HostContentSettingsMapFactory::GetForProfile(profile());
   auto cookies = CookieSettingsFactory::GetForProfile(profile());
