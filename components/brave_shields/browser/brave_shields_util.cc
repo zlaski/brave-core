@@ -443,6 +443,13 @@ void SetCookieControlType(HostContentSettingsMap* map,
       case ControlType::BLOCK:
         map->SetDefaultContentSetting(ContentSettingsType::COOKIES,
                                       CONTENT_SETTING_BLOCK);
+        // This doesn't prevent *all* cookies from being blocked, but is needed
+        // for the settings cookies UI to show that third party cookies are
+        // being blocked too.
+        profile_state->SetInteger(
+            ::prefs::kCookieControlsMode,
+            static_cast<int>(
+                content_settings::CookieControlsMode::kBlockThirdParty));
         break;
       case ControlType::BLOCK_THIRD_PARTY:
         map->SetDefaultContentSetting(ContentSettingsType::COOKIES,
