@@ -10,7 +10,10 @@ const pullL10n = (options) => {
     const extensionPath = options.extension_path
     if (options.extension === 'greaselion') {
       l10nUtil.getGreaselionScriptPaths(extensionPath).forEach((sourceStringPath) => {
-        util.run('python', ['script/pull-l10n.py', '--source_string_path', sourceStringPath], cmdOptions)
+        util.run('python', ['script/pull-l10n.py',
+          '--service', options.service,
+          '--channel', options.channel,
+          '--source_string_path', sourceStringPath], cmdOptions)
       })
       return
     }
@@ -28,7 +31,10 @@ const pullL10n = (options) => {
 
   l10nUtil.getBraveTopLevelPaths().forEach((sourceStringPath) => {
     if (!options.grd_path || sourceStringPath.endsWith(path.sep + options.grd_path)) {
-      let cmd_args = ['script/pull-l10n.py', '--source_string_path', sourceStringPath]
+      let cmd_args = ['script/pull-l10n.py',
+        '--service', options.service,
+        '--channel', options.channel,
+        '--source_string_path', sourceStringPath]
       if (options.debug)
         cmd_args.push('--debug')
       util.run('python3', cmd_args, cmdOptions)

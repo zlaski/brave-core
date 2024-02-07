@@ -282,6 +282,8 @@ program
 
 program
   .command('pull_l10n')
+  .option('--service <service>', 'Service to use: Transifex or Crowdin')
+  .option('--channel <channel>', 'Release|Beta|Nightly for Crowdin, Release for Transifex')
   .option('--extension <extension>', 'Scope this command to localize a Brave extension such as greaselion')
   .option('--grd_path <grd_path>', `Relative path to match end of full GRD path, e.g: 'generated_resources.grd'.`)
   .option('--debug', `Dumps downloaded content for one language into TransifexCurrent.txt file in the temp directory.`)
@@ -289,6 +291,8 @@ program
 
 program
   .command('push_l10n')
+  .option('--service <service>', 'Service to use: Transifex or Crowdin')
+  .option('--channel <channel>', 'Release|Beta|Nightly for Crowdin, Release for Transifex')
   .option('--extension <extension>', 'Scope this command to localize a Brave extension such as greaselion')
   .option('--extension_path <extension_path>', 'Local path for extension')
   .option('--grd_path <grd_path>', `Relative path to match end of full GRD path, e.g: 'generated_resources.grd'.`)
