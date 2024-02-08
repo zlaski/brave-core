@@ -15,6 +15,7 @@
 #include "brave/components/constants/webui_url_constants.h"
 #include "brave/ios/browser/api/ui/webui/components/components_ui.h"
 #include "brave/ios/browser/api/ui/webui/skus/skus_internals_ui.h"
+#include "brave/ios/browser/api/ui/webui/wallet/brave_wallet_page_ui.h"
 #include "build/build_config.h"
 #include "components/prefs/pref_service.h"
 #include "ios/components/webui/web_ui_url_constants.h"
@@ -71,6 +72,8 @@ WebUIIOSFactoryFunction GetWebUIIOSFactoryFunction(const GURL& url) {
     return &NewWebUIIOS<SkusInternalsUI>;
   } else if (url_host == chrome::kChromeUIComponentsHost) {
     return &NewWebUIIOS<ComponentsUI>;
+  } else if (url_host == kWalletPageHost) {
+      return &NewWebUIIOS<BraveWalletPageUI>;
   }
   return nullptr;
 }
