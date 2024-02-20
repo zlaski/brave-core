@@ -54,6 +54,7 @@ group("brave_ios") {
     ":brave_core_xcframework",
     ":generated_xcconfig",
     ":material_components_xcframework",
+    ":brave_core_ios_framework_swift",
   ]
 }
 
@@ -82,6 +83,7 @@ brave_core_public_headers = [
   "//brave/ios/browser/api/web_image/web_image.h",
   "//brave/ios/browser/keyed_service/keyed_service_factory_wrapper.h",
   "//brave/ios/browser/api/version_info/version_info_ios.h",
+  "//brave/ios/browser/swift_base_shim/base.h",
 ]
 
 brave_core_public_headers += ads_public_headers
@@ -154,6 +156,8 @@ ios_framework_bundle("brave_core_ios_framework") {
     ":brave_core_plist",
     ":brave_core_umbrella_header",
     "//brave/ios/app",
+    ":brave_core_ios_framework_swift",
+    "//brave/ios/browser/swift_base_shim",
   ]
 
   deps += ads_public_deps
@@ -219,4 +223,35 @@ generated_file("generated_xcconfig") {
   swift_active_compilation_conditions_joined =
       string_join(" ", swift_active_compliation_conditions)
   contents += [ "brave_swift_active_compliation_conditions = $swift_active_compilation_conditions_joined" ]
+}
+
+config("cpp_swift_interop") {
+  swiftflags = ["-cxx-interoperability-mode=default"]
+}
+
+# ios_framework_bundle("brave_core_ios_framework_swift") {
+#   output_name = "BraveCore_Swift"
+#   output_dir = root_out_dir
+#   info_plist = "Info-Swift.plist"
+#   configs += [":cpp_swift_interop"]
+#   sources = ["module.swift"]
+#   module_name = "BraveCore_Swift"
+#   deps = [
+#     "//brave/ios/browser/swift_test_one",
+#     "//brave/ios/browser/swift_test_two",
+#   ]
+#   frameworks = ["Foundation.framework"]
+# }
+
+source_set("brave_core_ios_framework_swift") {
+  output_name = "BraveCore_Swift"
+  # output_dir = root_out_dir
+  configs += [":cpp_swift_interop"]
+  sources = ["module.swift"]
+  module_name = "BraveCore_Swift"
+  deps = [
+    "//brave/ios/browser/swift_test_one",
+    "//brave/ios/browser/swift_test_two",
+  ]
+  frameworks = ["Foundation.framework"]
 }

@@ -1,0 +1,5 @@
+module swift_base_shim {
+  header "base.h"
+  export *
+  requires cplusplus
+}

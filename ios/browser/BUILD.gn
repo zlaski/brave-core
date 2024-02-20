@@ -47,6 +47,8 @@ source_set("browser") {
     "//brave/ios/browser/application_context",
     "//brave/ios/browser/brave_wallet",
     "//brave/ios/browser/browser_state",
+    "//brave/ios/browser/swift_test_one",
+    "//brave/ios/browser/swift_test_two",
     "//brave/ios/browser/ui/webui",
     "//components/flags_ui",
     "//components/metrics",

@@ -1,0 +1,16 @@
+import("//build/config/ios/swift_source_set.gni")
+
+config("cpp_swift_interop") {
+  swiftflags = ["-cxx-interoperability-mode=default"]
+  # include_dirs = ["//brave/ios/browser/swift_base_shim"]
+}
+
+swift_source_set("swift_test_two") {
+  configs += [":cpp_swift_interop"]
+  sources = ["file.swift"]
+  deps = [
+    "//brave/ios/browser/swift_base_shim",
+    "//brave/ios/browser/swift_test_one"
+  ]
+  frameworks = ["Foundation.framework"]
+}

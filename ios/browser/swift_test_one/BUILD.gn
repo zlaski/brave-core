@@ -1,0 +1,5 @@
+import("//build/config/ios/swift_source_set.gni")
+
+swift_source_set("swift_test_one") {
+  sources = ["file.swift"]
+}
