@@ -1,9 +1,18 @@
+import("//build/config/ios/ios_sdk.gni")
+
 config("export_includes") {
   include_dirs = ["."]
 }
 
+config("swift_bridging") {
+  _toolchain_path = rebase_path(ios_toolchains_path)
+  cflags = ["-I$_toolchain_path/usr/include"]
+  cflags_cc = ["-I$_toolchain_path/usr/include"]
+}
+
 source_set("swift_base_shim") {
   public_configs = [":export_includes"]
+  configs += [":swift_bridging"]
   sources = [
     "base.h",
     "base.mm"

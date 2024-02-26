@@ -12,4 +12,9 @@ public struct FooUser {
   public func getTime() -> Date {
     return swift_base.GetTime()
   }
+
+  public func doFunStuff() {
+    let fun = swift_base.SwiftFun.Create();
+    fun.doFunStuff();
+  }
 }
