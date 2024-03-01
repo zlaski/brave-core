@@ -31,6 +31,13 @@
 #include "net/base/filename_util.h"
 #include "third_party/blink/public/common/web_preferences/web_preferences.h"
 
+// BSC: experimental START
+#include "base/strings/utf_string_conversions.h"
+#include "chrome/browser/profiles/profile.h"
+#include "content/public/browser/media_session.h"
+#include "content/public/browser/media_session_service.h"
+// BSC: experimental END
+
 namespace playlist {
 namespace {
 
@@ -53,7 +60,189 @@ std::vector<base::FilePath> GetOrphanedPaths(
   return orphaned_paths;
 }
 
+// BSC: experimental START
+struct global_media_item {
+  std::string id;
+  std::string web_contents_url;
+  std::string title;
+  std::string artist;
+  std::string album;
+  std::string source_title;
+  std::unique_ptr<BraveMediaControllerObserver> observer;
+};
+
+std::map<std::string, std::unique_ptr<struct global_media_item>>
+    global_media_items;
+
+void update_global_media_item(std::string id) {
+  if (!base::Contains(global_media_items, id)) {
+    std::unique_ptr<struct global_media_item> new_item =
+        std::make_unique<struct global_media_item>();
+    new_item->id = id;
+    global_media_items[id] = std::move(new_item);
+  }
+
+  const auto& gm_item = global_media_items.at(id);
+  auto* web_contents = content::MediaSession::GetWebContentsFromRequestId(id);
+  bool refresh_observer = gm_item->observer == nullptr;
+  if (web_contents) {
+    std::string new_web_contents_url =
+        static_cast<std::string>(web_contents->GetVisibleURL().spec());
+    if (gm_item->web_contents_url != new_web_contents_url) {
+      refresh_observer = true;
+      LOG(ERROR) << "update_global_media_item: web_contents_url changed";
+    }
+    gm_item->web_contents_url = new_web_contents_url;
+  } else {
+    LOG(ERROR) << "update_global_media_item: unable to get web_contents";
+  }
+
+  if (refresh_observer) {
+    gm_item->observer = std::make_unique<BraveMediaControllerObserver>(id);
+  }
+}
+// BSC: experimental END
+
 }  // namespace
+
+// BSC: experimental START
+BraveMediaToolbarButtonController::BraveMediaToolbarButtonController(
+    global_media_controls::MediaItemManager* item_manager)
+    : item_manager_(item_manager) {
+  audio_focus_obs_receiver_.reset();
+  content::GetMediaSessionService().BindAudioFocusManager(
+      audio_focus_manager_remote_.BindNewPipeAndPassReceiver());
+  if (audio_focus_manager_remote_.is_bound()) {
+    audio_focus_manager_remote_->AddObserver(
+        audio_focus_obs_receiver_.BindNewPipeAndPassRemote());
+  }
+
+  item_manager_->AddObserver(this);
+}
+
+BraveMediaToolbarButtonController::~BraveMediaToolbarButtonController() {
+  item_manager_->RemoveObserver(this);
+}
+
+// see content/browser/media/media_internals_audio_focus_helper.cc for example
+void BraveMediaToolbarButtonController::OnFocusGained(
+    media_session::mojom::AudioFocusRequestStatePtr session) {
+  // DCHECK_CURRENTLY_ON(BrowserThread::UI);
+
+  if (!session) {
+    LOG(ERROR) << "OnFocusGained noop";
+    return;
+  }
+
+  std::string id = session->request_id.value().ToString();
+  update_global_media_item(id);
+
+  bool is_active_tab = false;
+  auto* web_contents = content::MediaSession::GetWebContentsFromRequestId(id);
+  if (web_contents) {
+    // TODO(bsclifton): if this request is playing in active tab,
+    // we can show the action button for "add to playlist".
+    // Code below was in a proof of concept; we could raise an event, etc.
+    //
+    // Browser* browser = chrome::FindBrowserWithTab(web_contents);
+    // if (browser) {
+    //   if (web_contents == browser->tab_strip_model()->GetActiveWebContents()) {
+    //     is_active_tab = true;
+    //   }
+    // }
+  }
+
+  const auto& gm_item = global_media_items.at(id);
+  LOG(ERROR) << "OnFocusGained(" << session->source_name.value()
+             << "):\nrequest_id=" << id << "\n"
+             << "source_id=" << session->source_id.value().ToString()
+             << "\nShould be playing"
+             << (is_active_tab ? " in active tab..." : "...") << "\n\""
+             << gm_item->title << "\"\nby \"" << gm_item->artist << "\"\n"
+             << gm_item->source_title << " (" << gm_item->web_contents_url
+             << ")";
+}
+
+void BraveMediaToolbarButtonController::OnFocusLost(
+    media_session::mojom::AudioFocusRequestStatePtr session) {
+  // DCHECK_CURRENTLY_ON(BrowserThread::UI);
+
+  LOG(ERROR) << "OnFocusLost(" << session->source_name.value()
+             << "):\nrequest_id=" << session->request_id.value().ToString()
+             << "\n"
+             << "source_id=" << session->source_id.value().ToString();
+}
+
+void BraveMediaToolbarButtonController::OnItemListChanged() {
+  std::list<std::string> item_ids = item_manager_->GetActiveItemIds();
+  for (const std::string& id : item_ids) {
+    LOG(ERROR) << "OnItemListChanged: Refreshing id[" << id << "]";
+    update_global_media_item(id);
+
+    auto* web_contents = content::MediaSession::GetWebContentsFromRequestId(id);
+    if (web_contents) {
+      // TODO(bsclifton): if this request is playing in active tab,
+      // we can show the action button for "add to playlist".
+      // Code below was in a proof of concept; we could raise an event, etc.
+      //
+      // Browser* browser = chrome::FindBrowserWithTab(web_contents);
+      // if (browser) {
+      //   if (web_contents == browser->tab_strip_model()->GetActiveWebContents()) {
+      //     // audio playing is the active tab
+      //     LOG(ERROR) << "BSC]] OnItemListChanged: request " << id
+      //                << " is playing in the active tab";
+      //   }
+      // }
+    }
+  }
+}
+
+BraveMediaControllerObserver::BraveMediaControllerObserver(
+    std::string request_id)
+    : request_id_(request_id) {
+  // Connect to the controller manager so we can create media controllers for
+  // media sessions.
+  content::GetMediaSessionService().BindMediaControllerManager(
+      controller_manager_remote_.BindNewPipeAndPassReceiver());
+
+  controller_manager_remote_->CreateMediaControllerForSession(
+      session_media_controller_.BindNewPipeAndPassReceiver(),
+      base::UnguessableToken::DeserializeFromString(request_id_).value());
+
+  media_controller_obs_receiver_.reset();
+
+  if (session_media_controller_.is_bound()) {
+    // Bind an observer to the associated media controller.
+    session_media_controller_->AddObserver(
+        media_controller_obs_receiver_.BindNewPipeAndPassRemote());
+  }
+}
+
+BraveMediaControllerObserver::~BraveMediaControllerObserver() {}
+
+void BraveMediaControllerObserver::MediaSessionMetadataChanged(
+    const std::optional<media_session::MediaMetadata>& metadata) {
+  if (!base::Contains(global_media_items, request_id_)) {
+    std::unique_ptr<struct global_media_item> new_item =
+        std::make_unique<struct global_media_item>();
+    new_item->id = request_id_;
+    global_media_items[request_id_] = std::move(new_item);
+  }
+
+  if (!metadata.has_value()) {
+    LOG(ERROR) << "MediaSessionMetadataChanged[" << request_id_ << "] noop";
+    return;
+  }
+
+  const auto& gm_item = global_media_items.at(request_id_);
+  gm_item->title = base::UTF16ToUTF8(metadata->title);
+  gm_item->artist = base::UTF16ToUTF8(metadata->artist);
+  gm_item->album = base::UTF16ToUTF8(metadata->album);
+  gm_item->source_title = base::UTF16ToUTF8(metadata->source_title);
+
+  LOG(ERROR) << "MediaSessionMetadataChanged[" << request_id_ << "]";
+}
+// BSC: experimental END
 
 PlaylistService::PlaylistService(content::BrowserContext* context,
                                  PrefService* local_state,
@@ -63,7 +252,10 @@ PlaylistService::PlaylistService(content::BrowserContext* context,
     : delegate_(std::move(delegate)),
       base_dir_(context->GetPath().Append(kBaseDirName)),
       playlist_p3a_(local_state, browser_first_run_time),
-      prefs_(user_prefs::UserPrefs::Get(context)) {
+      prefs_(user_prefs::UserPrefs::Get(context)),
+      media_notification_service_(
+          MediaNotificationServiceFactory::GetForProfile(
+              Profile::FromBrowserContext(context))) {
   media_file_download_manager_ =
       std::make_unique<PlaylistMediaFileDownloadManager>(context, this);
   thumbnail_downloader_ =
@@ -82,6 +274,12 @@ PlaylistService::PlaylistService(content::BrowserContext* context,
   MigratePlaylistValues();
 
   CleanUpOrphanedPlaylistItemDirs();
+
+  // BSC: experimental START
+  media_button_controller_ =
+      std::make_unique<BraveMediaToolbarButtonController>(
+          media_notification_service_->media_item_manager());
+  // BSC: experimental END
 }
 
 PlaylistService::~PlaylistService() = default;

@@ -30,6 +30,17 @@
 #include "mojo/public/cpp/bindings/receiver_set.h"
 #endif  // BUILDFLAG(IS_ANDROID)
 
+// BSC: experimental START
+#include "base/memory/raw_ptr.h"
+#include "base/unguessable_token.h"
+#include "chrome/browser/ui/global_media_controls/media_notification_service.h"
+#include "chrome/browser/ui/global_media_controls/media_notification_service_factory.h"
+#include "components/global_media_controls/public/media_item_manager.h"
+#include "components/global_media_controls/public/media_item_manager_observer.h"
+#include "services/media_session/public/mojom/audio_focus.mojom.h"
+#include "services/media_session/public/mojom/media_controller.mojom.h"
+// BSC: experimental END
+
 namespace base {
 class SequencedTaskRunner;
 }  // namespace base
@@ -54,6 +65,82 @@ class Image;
 }  // namespace gfx
 
 namespace playlist {
+
+// BSC: experimental START
+// Brave specific code based on:
+// chrome/browser/ui/global_media_controls/media_toolbar_button_controller.h
+class BraveMediaToolbarButtonController
+    : public media_session::mojom::AudioFocusObserver,
+      public global_media_controls::MediaItemManagerObserver {
+ public:
+  BraveMediaToolbarButtonController(global_media_controls::MediaItemManager* item_manager);
+  BraveMediaToolbarButtonController(const BraveMediaToolbarButtonController&) =
+      delete;
+  BraveMediaToolbarButtonController& operator=(
+      const BraveMediaToolbarButtonController&) = delete;
+  ~BraveMediaToolbarButtonController() override;
+
+  // media_session::mojom::AudioFocusObserver
+  void OnFocusGained(
+      media_session::mojom::AudioFocusRequestStatePtr session) override;
+  void OnFocusLost(
+      media_session::mojom::AudioFocusRequestStatePtr session) override;
+  void OnRequestIdReleased(const base::UnguessableToken&) override {}
+
+  // global_media_controls::MediaItemManagerObserver:
+  void OnItemListChanged() override;
+  void OnMediaDialogOpened() override {}
+  void OnMediaDialogClosed() override {}
+
+ private:
+  // For audio focus events
+  mojo::Remote<media_session::mojom::AudioFocusManager>
+      audio_focus_manager_remote_;
+  mojo::Receiver<media_session::mojom::AudioFocusObserver>
+      audio_focus_obs_receiver_{this};
+
+  // For changes to media item list
+  const raw_ptr<global_media_controls::MediaItemManager> item_manager_;
+  mojo::Remote<media_session::mojom::MediaControllerManager>
+      controller_manager_remote_;
+};
+
+class BraveMediaControllerObserver
+    : public media_session::mojom::MediaControllerObserver {
+ public:
+  BraveMediaControllerObserver(std::string request_id);
+  BraveMediaControllerObserver(const BraveMediaControllerObserver&) = delete;
+  BraveMediaControllerObserver& operator=(const BraveMediaControllerObserver&) =
+      delete;
+  ~BraveMediaControllerObserver() override;
+
+  // media_session::mojom::MediaControllerObserver:
+  void MediaSessionInfoChanged(
+      media_session::mojom::MediaSessionInfoPtr session_info) override {}
+  void MediaSessionMetadataChanged(
+      const std::optional<media_session::MediaMetadata>& metadata) override;
+  void MediaSessionActionsChanged(
+      const std::vector<media_session::mojom::MediaSessionAction>& actions)
+      override {}
+  void MediaSessionChanged(
+      const std::optional<base::UnguessableToken>& request_id) override {}
+  void MediaSessionPositionChanged(
+      const std::optional<media_session::MediaPosition>& position) override {}
+
+ private:
+  std::string request_id_ = "";
+  mojo::Remote<media_session::mojom::MediaController> session_media_controller_;
+
+  // Connections with the media session service to listen for audio focus
+  // updates and control media sessions.
+  mojo::Remote<media_session::mojom::MediaControllerManager>
+      controller_manager_remote_;
+
+  // Used to receive updates to the Media Session playback state.
+  mojo::Receiver<media_session::mojom::MediaControllerObserver>
+      media_controller_obs_receiver_{this};
+};
+// BSC: experimental END
 
 class MediaDetectorComponentManager;
 
@@ -424,6 +511,13 @@ class PlaylistService : public KeyedService,
 #if BUILDFLAG(IS_ANDROID)
   mojo::ReceiverSet<mojom::PlaylistService> receivers_;
 #endif  // BUILDFLAG(IS_ANDROID)
+
+
+  // BSC: experimental START
+  const raw_ptr<MediaNotificationService> media_notification_service_;
+  std::unique_ptr<BraveMediaToolbarButtonController> media_button_controller_;
+  // BSC: experimental END
+
 
   base::WeakPtrFactory<PlaylistService> weak_factory_{this};
 };
