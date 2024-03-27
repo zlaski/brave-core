@@ -107,8 +107,14 @@ void update_global_media_item(std::string id) {
 
 // BSC: experimental START
 BraveMediaToolbarButtonController::BraveMediaToolbarButtonController(
-    global_media_controls::MediaItemManager* item_manager)
-    : item_manager_(item_manager) {
+#if !BUILDFLAG(IS_ANDROID)
+    global_media_controls::MediaItemManager* item_manager
+#endif
+)
+#if !BUILDFLAG(IS_ANDROID)
+    : item_manager_(item_manager)
+#endif
+{
   audio_focus_obs_receiver_.reset();
   content::GetMediaSessionService().BindAudioFocusManager(
       audio_focus_manager_remote_.BindNewPipeAndPassReceiver());
@@ -117,11 +123,15 @@ BraveMediaToolbarButtonController::BraveMediaToolbarButtonController(
         audio_focus_obs_receiver_.BindNewPipeAndPassRemote());
   }
 
+  #if !BUILDFLAG(IS_ANDROID)
   item_manager_->AddObserver(this);
+  #endif
 }
 
 BraveMediaToolbarButtonController::~BraveMediaToolbarButtonController() {
+  #if !BUILDFLAG(IS_ANDROID)
   item_manager_->RemoveObserver(this);
+  #endif
 }
 
 // see content/browser/media/media_internals_audio_focus_helper.cc for example
@@ -173,6 +183,7 @@ void BraveMediaToolbarButtonController::OnFocusLost(
              << "source_id=" << session->source_id.value().ToString();
 }
 
+#if !BUILDFLAG(IS_ANDROID)
 void BraveMediaToolbarButtonController::OnItemListChanged() {
   std::list<std::string> item_ids = item_manager_->GetActiveItemIds();
   for (const std::string& id : item_ids) {
@@ -196,6 +207,7 @@ void BraveMediaToolbarButtonController::OnItemListChanged() {
     }
   }
 }
+#endif
 
 BraveMediaControllerObserver::BraveMediaControllerObserver(
     std::string request_id)
@@ -252,10 +264,13 @@ PlaylistService::PlaylistService(content::BrowserContext* context,
     : delegate_(std::move(delegate)),
       base_dir_(context->GetPath().Append(kBaseDirName)),
       playlist_p3a_(local_state, browser_first_run_time),
-      prefs_(user_prefs::UserPrefs::Get(context)),
-      media_notification_service_(
+      prefs_(user_prefs::UserPrefs::Get(context))
+#if !BUILDFLAG(IS_ANDROID)
+      , media_notification_service_(
           MediaNotificationServiceFactory::GetForProfile(
-              Profile::FromBrowserContext(context))) {
+              Profile::FromBrowserContext(context)))
+#endif
+{
   media_file_download_manager_ =
       std::make_unique<PlaylistMediaFileDownloadManager>(context, this);
   thumbnail_downloader_ =
@@ -278,7 +293,10 @@ PlaylistService::PlaylistService(content::BrowserContext* context,
   // BSC: experimental START
   media_button_controller_ =
       std::make_unique<BraveMediaToolbarButtonController>(
-          media_notification_service_->media_item_manager());
+        #if !BUILDFLAG(IS_ANDROID)
+          media_notification_service_->media_item_manager()
+        #endif
+      );
   // BSC: experimental END
 }
 

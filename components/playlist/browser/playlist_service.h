@@ -33,8 +33,10 @@
 // BSC: experimental START
 #include "base/memory/raw_ptr.h"
 #include "base/unguessable_token.h"
+#if !BUILDFLAG(IS_ANDROID)
 #include "chrome/browser/ui/global_media_controls/media_notification_service.h"
 #include "chrome/browser/ui/global_media_controls/media_notification_service_factory.h"
+#endif
 #include "components/global_media_controls/public/media_item_manager.h"
 #include "components/global_media_controls/public/media_item_manager_observer.h"
 #include "services/media_session/public/mojom/audio_focus.mojom.h"
@@ -73,7 +75,11 @@ class BraveMediaToolbarButtonController
     : public media_session::mojom::AudioFocusObserver,
       public global_media_controls::MediaItemManagerObserver {
  public:
+#if !BUILDFLAG(IS_ANDROID)
   BraveMediaToolbarButtonController(global_media_controls::MediaItemManager* item_manager);
+#else
+  BraveMediaToolbarButtonController();
+#endif
   BraveMediaToolbarButtonController(const BraveMediaToolbarButtonController&) =
       delete;
   BraveMediaToolbarButtonController& operator=(
@@ -88,9 +94,11 @@ class BraveMediaToolbarButtonController
   void OnRequestIdReleased(const base::UnguessableToken&) override {}
 
   // global_media_controls::MediaItemManagerObserver:
+  #if !BUILDFLAG(IS_ANDROID)
   void OnItemListChanged() override;
   void OnMediaDialogOpened() override {}
   void OnMediaDialogClosed() override {}
+  #endif
 
  private:
   // For audio focus events
@@ -101,8 +109,6 @@ class BraveMediaToolbarButtonController
 
   // For changes to media item list
   const raw_ptr<global_media_controls::MediaItemManager> item_manager_;
-  mojo::Remote<media_session::mojom::MediaControllerManager>
-      controller_manager_remote_;
 };
 
 class BraveMediaControllerObserver
@@ -514,7 +520,9 @@ class PlaylistService : public KeyedService,
 
 
   // BSC: experimental START
+  #if !BUILDFLAG(IS_ANDROID)
   const raw_ptr<MediaNotificationService> media_notification_service_;
+  #endif
   std::unique_ptr<BraveMediaToolbarButtonController> media_button_controller_;
   // BSC: experimental END
 
