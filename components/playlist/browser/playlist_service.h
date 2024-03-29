@@ -72,8 +72,11 @@ namespace playlist {
 // Brave specific code based on:
 // chrome/browser/ui/global_media_controls/media_toolbar_button_controller.h
 class BraveMediaToolbarButtonController
-    : public media_session::mojom::AudioFocusObserver,
-      public global_media_controls::MediaItemManagerObserver {
+    : public media_session::mojom::AudioFocusObserver
+#if !BUILDFLAG(IS_ANDROID)
+      , public global_media_controls::MediaItemManagerObserver
+#endif
+{
  public:
 #if !BUILDFLAG(IS_ANDROID)
   BraveMediaToolbarButtonController(global_media_controls::MediaItemManager* item_manager);
