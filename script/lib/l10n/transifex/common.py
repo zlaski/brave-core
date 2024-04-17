@@ -80,6 +80,8 @@ def xtb_lang_to_transifex_lang(lang):
     # "he", but Chromium still uses "iw" inside the XTBs.
     lang = lang.replace('iw', 'he')
     lang = lang.replace('sr_Latn', 'sr_BA@latin')
+    # We use Croatian for itself and for Bosnian
+    lang = lang.replace('bs', 'hr')
     return lang
 
 

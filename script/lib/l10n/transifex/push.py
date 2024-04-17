@@ -144,6 +144,9 @@ def upload_grd_translations_to_transifex(source_string_path, filename,
     grd_strings = get_grd_strings(source_string_path, False)
     grd_xtbs = get_xtb_files(source_string_path)
     for (lang, path) in grd_xtbs:
+        if lang == 'bs':
+            print("Skipping language 'bs' as we copy it from 'hr'.")
+            continue
         transifex_lang = xtb_lang_to_transifex_lang(lang)
         xtb_full_path = os.path.join(source_base_path, path).replace('\\', '/')
         if is_override:
