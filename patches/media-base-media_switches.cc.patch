@@ -1,8 +1,8 @@
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
-index 92d68c889a2aee6bcc35c5b8fa40172fb30130d1..0ed71c61d2e594555df0783f7697127dba062146 100644
+index fd2df22eb63daff9913e21940b382ec4c0596155..5266442c62b965e1a3e64302dd0b197b1bbd5867 100644
 --- a/media/base/media_switches.cc
 +++ b/media/base/media_switches.cc
-@@ -1251,11 +1251,7 @@ BASE_FEATURE(kAllowMediaCodecSoftwareDecoder,
+@@ -1242,11 +1242,7 @@ BASE_FEATURE(kAllowMediaCodecSoftwareDecoder,
  #if BUILDFLAG(ENABLE_HLS_DEMUXER)
  BASE_FEATURE(kBuiltInHlsPlayer,
               "BuiltInHlsPlayer",
