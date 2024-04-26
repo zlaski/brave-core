@@ -40,6 +40,7 @@ def main():
         depfile_path=depfile_path,
         depfile_sourcename=grd_path,
         webpack_aliases=args.webpack_alias,
+        output_module=args.output_module,
         extra_modules=args.extra_modules,
         public_asset_path=args.public_asset_path
     )
@@ -68,6 +69,7 @@ def parse_args():
                         help='Webpack alias',
                         required=False,
                         default=[])
+    parser.add_argument('--output_module', action='store_true')
     parser.add_argument(
         "--resource_path_prefix",
         nargs='?',
@@ -112,6 +114,9 @@ def transpile_web_uis(options):
     if options['webpack_aliases']:
         args.append("--env=webpack_aliases=" +
                     ",".join(options['webpack_aliases']))
+
+    if options['output_module']:
+        args.append("--env=output_module")
 
     # extra module locations
     if options['extra_modules']:

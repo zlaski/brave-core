@@ -7,10 +7,10 @@
 
 #include <utility>
 
-#include "base/containers/contains.h"
 #include "brave/browser/brave_rewards/rewards_util.h"
 #include "brave/browser/ui/brave_rewards/rewards_panel_coordinator.h"
 #include "brave/components/brave_rewards/common/pref_names.h"
+#include "chrome/browser/command_updater.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "components/prefs/pref_service.h"
@@ -42,11 +42,13 @@ bool MaybeOpenRewardsOnboarding(Profile* profile) {
 namespace brave_education {
 
 EducationCommandHandler::EducationCommandHandler(
-    mojo::PendingReceiver<mojom::CommandHandler> pending_command_handler,
+    mojo::PendingReceiver<browser_command::mojom::CommandHandler>
+        pending_command_handler,
     Profile* profile,
-    std::vector<mojom::Command> supported_commands)
-    : command_handler_(this, std::move(pending_command_handler)),
-      supported_commands_(std::move(supported_commands)),
+    std::vector<browser_command::mojom::Command> supported_commands)
+    : BrowserCommandHandler(std::move(pending_command_handler),
+                            profile,
+                            std::move(supported_commands)),
       profile_(profile) {
   CHECK(profile_);
 }
@@ -54,33 +56,34 @@ EducationCommandHandler::EducationCommandHandler(
 EducationCommandHandler::~EducationCommandHandler() = default;
 
 void EducationCommandHandler::CanExecuteCommand(
-    mojom::Command command,
+    browser_command::mojom::Command command,
     CanExecuteCommandCallback callback) {
   auto can_execute = [&]() {
-    if (!base::Contains(supported_commands_, command)) {
+    if (!GetCommandUpdater()->SupportsCommand(static_cast<int>(command))) {
       return false;
     }
     switch (command) {
-      case mojom::Command::kOpenRewardsOnboarding:
+      case browser_command::mojom::Command::kOpenRewardsOnboarding:
         return CanShowRewardsOnboarding(profile_);
+      default:
+        return false;
     }
   };
 
   std::move(callback).Run(can_execute());
 }
 
-void EducationCommandHandler::ExecuteCommand(mojom::Command command,
-                                             mojom::ClickInfoPtr click_info,
-                                             ExecuteCommandCallback callback) {
-  bool executed = false;
-
+void EducationCommandHandler::ExecuteCommandWithDisposition(
+    int id,
+    WindowOpenDisposition disposition) {
+  auto command = static_cast<browser_command::mojom::Command>(id);
   switch (command) {
-    case mojom::Command::kOpenRewardsOnboarding:
-      executed = MaybeOpenRewardsOnboarding(profile_);
+    case browser_command::mojom::Command::kOpenRewardsOnboarding:
+      MaybeOpenRewardsOnboarding(profile_);
+      break;
+    default:
       break;
   }
-
-  std::move(callback).Run(executed);
 }
 
 }  // namespace brave_education

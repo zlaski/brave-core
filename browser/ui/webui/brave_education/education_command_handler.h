@@ -9,34 +9,34 @@
 #include <vector>
 
 #include "base/memory/raw_ptr.h"
-#include "brave/components/brave_education/common/brave_education.mojom.h"
+#include "chrome/browser/ui/webui/browser_command/browser_command_handler.h"
 #include "mojo/public/cpp/bindings/pending_receiver.h"
-#include "mojo/public/cpp/bindings/receiver.h"
+#include "ui/base/window_open_disposition.h"
 
 class Profile;
 
 namespace brave_education {
 
-class EducationCommandHandler : public mojom::CommandHandler {
+class EducationCommandHandler : public BrowserCommandHandler {
  public:
   EducationCommandHandler(
-      mojo::PendingReceiver<mojom::CommandHandler> pending_handler,
+      mojo::PendingReceiver<browser_command::mojom::CommandHandler>
+          pending_command_handler,
       Profile* profile,
-      std::vector<mojom::Command> supported_commands);
+      std::vector<browser_command::mojom::Command> supported_commands);
 
   ~EducationCommandHandler() override;
 
   // mojom::CommandHandler:
-  void CanExecuteCommand(mojom::Command command,
+  void CanExecuteCommand(browser_command::mojom::Command command,
                          CanExecuteCommandCallback callback) override;
 
-  void ExecuteCommand(mojom::Command command,
-                      mojom::ClickInfoPtr click_info,
-                      ExecuteCommandCallback callback) override;
+  // CommandUpdaterDelegate:
+  void ExecuteCommandWithDisposition(
+      int command_id,
+      WindowOpenDisposition disposition) override;
 
  private:
-  mojo::Receiver<mojom::CommandHandler> command_handler_;
-  std::vector<mojom::Command> supported_commands_;
   raw_ptr<Profile> profile_;
 };
 

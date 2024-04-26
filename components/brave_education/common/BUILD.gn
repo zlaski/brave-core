@@ -3,8 +3,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import("//mojo/public/tools/bindings/mojom.gni")
-
 source_set("common") {
   sources = [
     "education_content_urls.cc",
@@ -17,9 +15,4 @@ source_set("common") {
     "//base",
     "//url",
   ]
-}
-
-mojom("mojom") {
-  sources = [ "brave_education.mojom" ]
-  public_deps = [ "//mojo/public/mojom/base" ]
 }

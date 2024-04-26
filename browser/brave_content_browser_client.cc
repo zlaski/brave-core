@@ -799,10 +799,6 @@ void BraveContentBrowserClient::RegisterBrowserInterfaceBindersForFrame(
       base::BindRepeating(&MaybeBindBraveVpnImpl));
 #endif
 
-  RegisterWebUIControllerInterfaceBinder<
-      brave_education::mojom::CommandHandlerFactory,
-      brave_education::BraveEducationUI>(map);
-
 #if BUILDFLAG(IS_ANDROID)
   content::RegisterWebUIControllerInterfaceBinder<
       brave_wallet::mojom::PageHandlerFactory, AndroidWalletPageUI>(map);

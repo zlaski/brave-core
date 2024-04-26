@@ -85,7 +85,8 @@ module.exports = async function (env, argv) {
       concatenateModules: !process.env.NO_CONCATENATE
     },
     experiments: {
-      syncWebAssembly: true
+      syncWebAssembly: true,
+      outputModule: Boolean(env.output_module)
     },
     plugins: [
       process.env.DEPFILE_SOURCE_NAME && new GenerateDepfilePlugin({

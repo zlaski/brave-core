@@ -93,16 +93,19 @@ BraveEducationUI::BraveEducationUI(content::WebUI* web_ui,
 BraveEducationUI::~BraveEducationUI() = default;
 
 void BraveEducationUI::BindInterface(
-    mojo::PendingReceiver<mojom::CommandHandlerFactory> pending_receiver) {
+    mojo::PendingReceiver<browser_command::mojom::CommandHandlerFactory>
+        pending_receiver) {
   if (handler_factory_receiver_.is_bound()) {
     handler_factory_receiver_.reset();
   }
   handler_factory_receiver_.Bind(std::move(pending_receiver));
 }
 
-void BraveEducationUI::CreateEducationCommandHandler(
-    mojo::PendingReceiver<mojom::CommandHandler> pending_handler) {
-  std::vector supported_commands = {mojom::Command::kOpenRewardsOnboarding};
+void BraveEducationUI::CreateBrowserCommandHandler(
+    mojo::PendingReceiver<browser_command::mojom::CommandHandler>
+        pending_handler) {
+  std::vector supported_commands = {
+      browser_command::mojom::Command::kOpenRewardsOnboarding};
 
   command_handler_ = std::make_unique<EducationCommandHandler>(
       std::move(pending_handler), profile_, std::move(supported_commands));

@@ -10,11 +10,11 @@
 #include <string>
 
 #include "base/memory/raw_ptr.h"
-#include "brave/components/brave_education/common/brave_education.mojom.h"
 #include "mojo/public/cpp/bindings/pending_receiver.h"
 #include "mojo/public/cpp/bindings/pending_remote.h"
 #include "mojo/public/cpp/bindings/receiver.h"
 #include "ui/webui/mojo_web_ui_controller.h"
+#include "ui/webui/resources/js/browser_command/browser_command.mojom.h"
 
 namespace content {
 class WebUI;
@@ -28,7 +28,7 @@ class EducationCommandHandler;
 
 // The Web UI controller for the brave://education page.
 class BraveEducationUI : public ui::MojoWebUIController,
-                         public mojom::CommandHandlerFactory {
+                         public browser_command::mojom::CommandHandlerFactory {
  public:
   BraveEducationUI(content::WebUI* web_ui, const std::string& host_name);
   ~BraveEducationUI() override;
@@ -36,16 +36,19 @@ class BraveEducationUI : public ui::MojoWebUIController,
   BraveEducationUI(const BraveEducationUI&) = delete;
   BraveEducationUI& operator=(const BraveEducationUI&) = delete;
 
-  // Instantiates the an instance of mojom::CommandHandlerFactory.
+  // Instantiates the an instance of CommandHandlerFactory.
   void BindInterface(
-      mojo::PendingReceiver<mojom::CommandHandlerFactory> pending_receiver);
+      mojo::PendingReceiver<browser_command::mojom::CommandHandlerFactory>
+          pending_receiver);
 
  private:
   // mojom::CommandHandlerFactory
-  void CreateEducationCommandHandler(
-      mojo::PendingReceiver<mojom::CommandHandler> pending_handler) override;
+  void CreateBrowserCommandHandler(
+      mojo::PendingReceiver<browser_command::mojom::CommandHandler>
+          pending_handler) override;
 
-  mojo::Receiver<mojom::CommandHandlerFactory> handler_factory_receiver_;
+  mojo::Receiver<browser_command::mojom::CommandHandlerFactory>
+      handler_factory_receiver_;
   std::unique_ptr<EducationCommandHandler> command_handler_;
   raw_ptr<Profile> profile_;
 

@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
+import { BrowserCommandProxy } from 'chrome://resources/js/browser_command/browser_command_proxy.js';
 import { BraveEducationProxy } from './brave_education_proxy'
-import { CommandHandlerProxy } from './command_handler_proxy'
 import { readMessageData } from './message_data_reader'
 
 function initializeContent (serverURL: string) {
@@ -29,7 +29,7 @@ function initializeContent (serverURL: string) {
       return
     }
 
-    const { handler } = CommandHandlerProxy.getInstance()
+    const { handler } = BrowserCommandProxy.getInstance()
     handler.canExecuteCommand(commandData.command).then(({ canExecute }) => {
       if (canExecute) {
         handler.executeCommand(commandData.command, commandData.clickInfo);
