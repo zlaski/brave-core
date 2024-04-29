@@ -1,5 +1,5 @@
 diff --git a/ui/base/accelerators/accelerator.cc b/ui/base/accelerators/accelerator.cc
-index c33829d85745e595e3da8d9913f6e75b05e6c4a9..8b081685880f3a947c463bcc90196dcee9ba98ba 100644
+index 78a3ead2e26b599fabf006ca1c9b0688a8f93f06..927dd6fcce3d62b3fb9c57d35e376b945cf5f528 100644
 --- a/ui/base/accelerators/accelerator.cc
 +++ b/ui/base/accelerators/accelerator.cc
 @@ -388,6 +388,7 @@ std::u16string Accelerator::ApplyLongFormModifiers(
