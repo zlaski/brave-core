@@ -1496,14 +1496,17 @@ public class BraveNewTabPageLayout
                         .getBoolean(BravePref.NEW_TAB_PAGE_SHOW_BACKGROUND_IMAGE);
     }
 
-    @Override
-    void setSearchProviderTopMargin(int topMargin) {
-        if (mLogoCoordinator != null) mLogoCoordinator.setTopMargin(topMargin);
+    void setSearchProviderTopMargin() {
+        if (mLogoCoordinator != null) mLogoCoordinator.setTopMargin(getLogoMargin(/* isTopMargin= */ true));
     }
 
-    @Override
-    void setSearchProviderBottomMargin(int bottomMargin) {
-        if (mLogoCoordinator != null) mLogoCoordinator.setBottomMargin(bottomMargin);
+    void setSearchProviderBottomMargin() {
+        if (mLogoCoordinator != null) mLogoCoordinator.setBottomMargin(getLogoMargin(/* isTopMargin= */ false));
+    }
+
+    int getLogoMargin(boolean isTopMargin) {
+        assert false : "This method should be deleted in bytecode!";
+        return -1;
     }
 
     private int getMaxRowsForMostVisitedTiles() {
