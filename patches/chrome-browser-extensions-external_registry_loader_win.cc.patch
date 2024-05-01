@@ -1,0 +1,13 @@
+diff --git a/chrome/browser/extensions/external_registry_loader_win.cc b/chrome/browser/extensions/external_registry_loader_win.cc
+index 7ceb9da93e89726d728408b2a4d7b53604547f20..73773061dbd3c6b2fe3ef198bc7adf749b9d812a 100644
+--- a/chrome/browser/extensions/external_registry_loader_win.cc
++++ b/chrome/browser/extensions/external_registry_loader_win.cc
+@@ -32,7 +32,7 @@ using content::BrowserThread;
+ namespace {
+ 
+ // The Registry subkey that contains information about external extensions.
+-const wchar_t kRegistryExtensions[] = L"Software\\Google\\Chrome\\Extensions";
++const wchar_t kRegistryExtensions[] = L"Software\\BraveSoftware\\Brave\\Extensions";
+ 
+ // Registry value of the key that defines the installation parameter.
+ const wchar_t kRegistryExtensionInstallParam[] = L"install_parameter";
