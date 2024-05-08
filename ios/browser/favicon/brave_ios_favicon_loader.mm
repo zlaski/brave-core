@@ -53,6 +53,7 @@ base::CancelableTaskTracker::TaskId GetIconRawBitmapForPageUrl(
   scoped_refptr<favicon::LargeIconWorker> worker =
       base::MakeRefCounted<favicon::LargeIconWorker>(
           min_source_size_in_pixel, desired_size_in_pixel,
+          favicon::LargeIconService::NoBigEnoughIconBehavior::kReturnBitmap,
           std::move(raw_bitmap_callback),
           favicon_base::LargeIconImageCallback(), tracker);
 
