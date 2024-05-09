@@ -31,10 +31,12 @@ void MaybeShowPromotionInfoBar(
 // not shown, as Brave has its own first run page
 #define BRAVE_STARTUPBROWSERCREATORIMPL_DETERMINESTARTUPTABS            \
   has_first_run_experience = false;                                     \
-  if (is_first_run_ == chrome::startup::IsFirstRun::kYes) {             \
-    StartupTabs onboarding_tabs = provider.GetOnboardingTabs(profile_); \
-    AppendTabs(onboarding_tabs, &tabs);                                 \
-    has_first_run_experience = !onboarding_tabs.empty();                \
+  if (is_first_run_ == chrome::startup::IsFirstRun::kYes && profile_ && \
+      !profile_->GetPrefs()->GetBoolean(prefs::kHasSeenWelcomePage)) {  \
+    StartupTabs welcome_tabs;                                           \
+    welcome_tabs.emplace_back(GURL(chrome::kChromeUIWelcomeURL));       \
+    AppendTabs(welcome_tabs, &tabs);                                    \
+    has_first_run_experience = true;                                    \
   }
 
 #if BUILDFLAG(IS_MAC) && BUILDFLAG(ENABLE_UPDATER)

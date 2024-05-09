@@ -667,11 +667,9 @@
 # This test fails because our badge doesn't match the upstream badge
 -IconBadgingTest.VerifyFromDisk
 
-# These tests fail because they no longer modify their expectations when
-# kForYouFre is disabled
--StartupBrowserCreatorImplTest.DetermineStartupTabs
+# This test fails because it no longer modifies its expectations now that the
+# kForYouFre feature flag was removed
 -StartupBrowserCreatorImplTest.DetermineStartupTabs_NewFeaturesPage
--StartupBrowserCreatorImplTest.DetermineStartupTabs_PrivacySandbox
 
 # Tests below this point have not been diagnosed or had issues created yet.
 -AboutFlagsHistogramTest.*
