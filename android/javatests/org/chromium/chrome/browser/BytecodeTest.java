@@ -1195,7 +1195,7 @@ public class BytecodeTest {
                         ActivityLifecycleDispatcher.class,
                         ObservableSupplier.class,
                         MenuOrKeyboardActionController.class,
-                        ObservableSupplier.class));
+                        Supplier.class));
         Assert.assertTrue(
                 constructorsMatch(
                         "org/chromium/chrome/browser/multiwindow/MultiWindowUtils",
