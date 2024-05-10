@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/prefs/browser_prefs.cc b/chrome/browser/prefs/browser_prefs.cc
-index 392ffc2fb4b01356c299efe3a989dc148d9c37db..492d2890ae4bd0a072124fb6c413f6c18b9041db 100644
+index 2dacf8abb7378211a09d5272c6899633185fe2bd..3cb8432171011d0015c29d04d0226b2dbea14661 100644
 --- a/chrome/browser/prefs/browser_prefs.cc
 +++ b/chrome/browser/prefs/browser_prefs.cc
-@@ -1791,6 +1791,8 @@ void RegisterLocalState(PrefRegistrySimple* registry) {
+@@ -1800,6 +1800,8 @@ void RegisterLocalState(PrefRegistrySimple* registry) {
    DeviceOAuth2TokenStoreDesktop::RegisterPrefs(registry);
  #endif
  
@@ -11,7 +11,7 @@ index 392ffc2fb4b01356c299efe3a989dc148d9c37db..492d2890ae4bd0a072124fb6c413f6c1
  #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
    screen_ai::RegisterLocalStatePrefs(registry);
  #endif  // BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-@@ -2265,6 +2267,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
+@@ -2274,6 +2276,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry,
                                  false);
    registry->RegisterBooleanPref(prefs::kTabGroupsDeletionSkipDialogOnCloseTab,
                                  false);
