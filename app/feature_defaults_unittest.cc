@@ -43,6 +43,7 @@
 #include "components/signin/public/base/signin_buildflags.h"
 #include "components/signin/public/base/signin_switches.h"
 #include "components/subresource_filter/core/common/common_features.h"
+#include "content/browser/private_aggregation/private_aggregation_features.h"
 #include "content/common/features.h"
 #include "content/public/common/content_features.h"
 #include "content/public/common/dips_utils.h"
@@ -129,6 +130,8 @@ TEST(FeatureDefaultsTest, DisabledFeatures) {
       &companion::features::internal::kSidePanelCompanion2,
       &companion::visual_query::features::kVisualQuerySuggestions,
       &compose::features::kEnableCompose,
+      &content::kPrivateAggregationApiDebugModeRequires3pcEligibility,
+      &content::kPrivateAggregationApiContextIdEnhancements,
       &content_settings::features::kTrackingProtection3pcd,
       &content_settings::features::kUserBypassUI,
 #if !BUILDFLAG(IS_ANDROID)
