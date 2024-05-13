@@ -367,7 +367,7 @@ public class BytecodeTest {
                 methodExists(
                         "org/chromium/chrome/browser/homepage/HomepageManager",
                         "shouldCloseAppWithZeroTabs",
-                        MethodModifier.STATIC,
+                        MethodModifier.REGULAR,
                         false,
                         null));
 
