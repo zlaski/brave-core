@@ -1,5 +1,5 @@
 diff --git a/ios/chrome/browser/shared/model/prefs/browser_prefs.mm b/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
-index 474c81b4c19af0bd490dec42c9cedc61fe2d3359..e8cd2aa080b0b705df9ad89fd974a5208fa586f2 100644
+index 172035fee0f31ea3fec011cef9a96ab51d5039fd..7832b675dfc68ea35bc106530ed848f7cf3b2ccf 100644
 --- a/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
 +++ b/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
 @@ -521,6 +521,7 @@ void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
@@ -10,10 +10,10 @@ index 474c81b4c19af0bd490dec42c9cedc61fe2d3359..e8cd2aa080b0b705df9ad89fd974a520
  }
  
  void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
-@@ -793,6 +794,7 @@ void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
-   registry->RegisterIntegerPref(spotlight::kSpotlightLastIndexingVersionKey, 0);
-   registry->RegisterTimePref(spotlight::kSpotlightLastIndexingDateKey,
-                              base::Time());
+@@ -796,6 +797,7 @@ void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
+ 
+   registry->RegisterDictionaryPref(
+       prefs::kContentNotificationsEnrollmentEligibility);
 +  BRAVE_REGISTER_BROWSER_STATE_PREFS
  }
  
