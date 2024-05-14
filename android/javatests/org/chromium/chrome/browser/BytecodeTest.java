@@ -1713,6 +1713,10 @@ public class BytecodeTest {
         Assert.assertTrue(
                 fieldExists(
                         "org/chromium/chrome/browser/toolbar/ToolbarManager",
+                        "mModalDialogManagerSupplier"));
+        Assert.assertTrue(
+                fieldExists(
+                        "org/chromium/chrome/browser/toolbar/ToolbarManager",
                         "mTabObscuringHandler"));
         Assert.assertTrue(
                 fieldExists(
