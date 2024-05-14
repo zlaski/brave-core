@@ -106,8 +106,13 @@ void SkusUrlLoaderImpl::OnFetchComplete(
     headers.push_back(std::move(new_header_value));
   }
 
+  skus::SkusResult result = {
+      success ? skus::SkusResultCode::Ok : skus::SkusResultCode::RequestFailed,
+      body,
+  };
+
   skus::HttpResponse resp = {
-      success ? skus::SkusResult::Ok : skus::SkusResult::RequestFailed,
+      result,
       response_code,
       headers,
       body_bytes,

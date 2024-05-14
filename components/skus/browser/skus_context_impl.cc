@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "base/logging.h"
+#include "base/task/bind_post_task.h"
 #include "base/task/sequenced_task_runner.h"
 #include "brave/components/skus/browser/rs/cxx/src/lib.rs.h"
 #include "brave/components/skus/browser/skus_url_loader_impl.h"
@@ -45,27 +46,31 @@ logging::LogSeverity GetLogSeverity(skus::TracingLevel level) {
 
 namespace skus {
 
-FetchOrderCredentialsCallbackState::FetchOrderCredentialsCallbackState() =
-    default;
-FetchOrderCredentialsCallbackState::~FetchOrderCredentialsCallbackState() =
-    default;
+RustBoundPostTask::RustBoundPostTask(
+    base::OnceCallback<void(const std::string&)> callback)
+    : callback_(base::BindPostTaskToCurrentDefault(std::move(callback))) {}
 
-PrepareCredentialsPresentationCallbackState::
-    PrepareCredentialsPresentationCallbackState() = default;
-PrepareCredentialsPresentationCallbackState::
-    ~PrepareCredentialsPresentationCallbackState() = default;
+RustBoundPostTask::~RustBoundPostTask() = default;
 
-CredentialSummaryCallbackState::CredentialSummaryCallbackState() = default;
-CredentialSummaryCallbackState::~CredentialSummaryCallbackState() = default;
+void RustBoundPostTask::Run(SkusResult result) {
+  if (callback_) {
+    // Call the bound callback with the result from Rust
+    std::move(callback_).Run(static_cast<std::string>(result.msg));
+  }
+}
 
-RefreshOrderCallbackState::RefreshOrderCallbackState() = default;
-RefreshOrderCallbackState::~RefreshOrderCallbackState() = default;
-
-SubmitReceiptCallbackState::SubmitReceiptCallbackState() {}
-SubmitReceiptCallbackState::~SubmitReceiptCallbackState() {}
-
-CreateOrderFromReceiptCallbackState::CreateOrderFromReceiptCallbackState() {}
-CreateOrderFromReceiptCallbackState::~CreateOrderFromReceiptCallbackState() {}
+void RustBoundPostTask::RunWithResponse(SkusResult result,
+                                        rust::cxxbridge1::Str response) {
+  if (callback_) {
+    // If the result is "Ok", pass along the specified response
+    if (result.code == skus::SkusResultCode::Ok) {
+      std::move(callback_).Run(static_cast<std::string>(response));
+    } else {
+      // The result is not "Ok", so pass along the error message
+      std::move(callback_).Run(static_cast<std::string>(result.msg));
+    }
+  }
+}
 
 void shim_logMessage(rust::cxxbridge1::Str file,
                      uint32_t line,
