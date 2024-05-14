@@ -1,5 +1,5 @@
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index d39de9bc56ea1ef98d5239ccd584e653a4747223..43162c67b7313d377d6f27f006dffd7f41d126c3 100644
+index abb1e1aecfff990a83e9c75ff32e82917d6501f8..9332ffbc2dff6a407491903cfd31041c68c8fa2b 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
 @@ -546,7 +546,6 @@ config("compiler") {
