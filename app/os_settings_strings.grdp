@@ -1411,8 +1411,8 @@
   <message name="IDS_SETTINGS_CARET_BLINK_INTERVAL_LABEL" desc="The label for a slider that allows users to pick the blink rate of their text insertion cursor.">
     Text cursor blink rate
   </message>
-  <message name="IDS_SETTINGS_CARET_BLINK_INTERVAL_OFF" desc="The label for the minimum value on a slider that turns off the caret blink rate (so the caret is always steady on).">
-    Off
+  <message name="IDS_SETTINGS_CARET_BLINK_INTERVAL_OFF" desc="The label for the minimum value on a slider that turns off the caret blink rate (so the caret does not blink).">
+    Don't blink
   </message>
   <message name="IDS_SETTINGS_CARET_BLINK_INTERVAL_FAST" desc="The label for the maximum value on a slider that makes the caret blink rate faster than normal.">
     Fast
@@ -6174,6 +6174,9 @@ Press &amp; hold keyboard keys to see accent marks and special characters. This 
   <message name="IDS_OS_SETTINGS_APPS_MENU_ITEM_DESCRIPTION" desc="Description for the Apps menu item in the left menu.">
     Notifications, Google Play
   </message>
+  <message name="IDS_OS_SETTINGS_APPS_MENU_ITEM_DESCRIPTION_ARC_UNAVAILABLE" desc="Description for the Apps menu item in the left menu, when ARC is unavailable.">
+    Notifications
+  </message>
   <message name="IDS_SETTINGS_APPS_LINK_TEXT" desc="The label for the button which links to the App Management page.">
     Manage your apps
   </message>
@@ -6407,6 +6410,15 @@ Press &amp; hold keyboard keys to see accent marks and special characters. This 
   </message>
   <message name="IDS_SETTINGS_STORAGE_ITEM_SYSTEM" desc="In Device Settings &gt; Storage, label for the total system size, difference between the size of the filesystem and the size of all items listed on the storage page.">
     System
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ITEM_ENCRYPTION_LABEL" desc="In Device Settings &gt; Storage, label for the algorithm used for storage encryption.">
+    Encrypted using
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ITEM_ENCRYPTION_AES_128" desc="In Device Settings &gt; Storage, string for the algorithm used for storage encryption.">
+    AES-128
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ITEM_ENCRYPTION_AES_256" desc="In Device Settings &gt; Storage, string for the algorithm used for storage encryption.">
+    AES-256
   </message>
 
   <!-- Privacy Page -->

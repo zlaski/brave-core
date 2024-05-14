@@ -217,8 +217,8 @@ CHAR_LIMIT guidelines:
       </message>
 
       <!-- TODO(b/326574743): Revisit string and mark it as translateable.-->
-      <message name="IDS_PREFS_CONTROL_YOUR_DATA" desc="Title of &quot;Control your data and accounts&quot; section of preferences. [CHAR_LIMIT=32]" translateable="false">
-        Control your data &amp; accounts
+      <message name="IDS_ACCOUNT_ADVANCED_HEADER" desc="Heading of a section with settings related to the user's Brave sync chain and data. [CHAR_LIMIT=32]" translateable="false">
+        Control your data &amp; account
       </message>
 
       <!-- Notification channels -->
@@ -1268,7 +1268,7 @@ Your Brave account may have other forms of browsing history like searches and ac
         Autofill form data
       </message>
       <message name="IDS_CLEAR_TABS_TITLE" desc="Title for Clear Tabs in Clear Browsing Data preference">
-        Tabs on this device
+        Tabs
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_PROGRESS_TITLE" desc="Title for the progress dialog used when waiting for &quot;delete browsing data&quot; to complete.">
         Deleting browsing data
@@ -1325,10 +1325,10 @@ Your Brave account may have other forms of browsing history like searches and ac
         Basic
       </message>
       <message name="IDS_ANDROID_APP_HISTORY_OPEN_FULL" desc="The informational message at the top of the history page letting users know that app-specific history may be missing some entries.">
-        Some of your web history might not show up here. To see a full web history, tap Open full Brave history.
+        Some of your history might not show up here. To see all your Brave history, open full Brave history.
       </message>
       <message name="IDS_ANDROID_APP_HISTORY_OPEN_FULL_OTHER_FORMS" desc="The informational message at the top of the history page letting users know that app-specific history may be missing some entries, followed by the info on the other forms of browing history.">
-        Some of your web history might not show up here. If needed, tap Open full Brave history. Also, Your Brave sync chain may have other forms of browsing history at <ph name="BEGIN_LINK">&lt;link&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/link&gt;</ph>.
+        Some of your history might not show up here. To see all your Brave history, open full Brave history. Also, Your Brave sync chain may have other forms of browsing history at <ph name="BEGIN_LINK">&lt;link&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/link&gt;</ph>.
       </message>
       <message name="IDS_ANDROID_HISTORY_OTHER_FORMS_OF_HISTORY" desc="The notification at the top of the history page indicating that deleting Brave browsing history will not delete other forms of history stored at Brave My Activity.">
         Your Brave sync chain may have other forms of browsing history at <ph name="BEGIN_LINK">&lt;link&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/link&gt;</ph>.
@@ -3117,11 +3117,19 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       <message name="IDS_HISTORY_MANAGER_NO_RESULTS_NO_DSE" desc="Text explaining that no browsing history items match a search query when the default search engine is not set.">
         Can’t find that page. Check your spelling or try a web search.
       </message>
+
+      <message name="IDS_HISTORY_MANAGER_APP_SPECIFIC_EMPTY_STATE_TITLE" desc="Title text in app-specific history zero state that indicates that there are no history items.">
+        Nothing to show yet
+      </message>
+      <message name="IDS_HISTORY_MANAGER_APP_SPECIFIC_EMPTY_STATE_DESCRIPTION" desc="Description text in app-specific history zero state that states history for a specific-app will be displayed here.">
+        The pages you've opened in Brave while using <ph name="APP_LABEL">%1$s<ex>YouTube</ex></ph> will show up here.
+      </message>
+
       <message name="IDS_HISTORY_MANAGER_APP_SPECIFIC_HISTORY_NO_RESULTS" desc="Text explaining that no browsing history items match a search query in app-specific history.">
         No search results found
       </message>
       <message name="IDS_HISTORY_MANAGER_EMPTY_STATE_VIEW_OR_OPEN_MORE_HISTORY" desc="Indicates that users can search something else or open more history">
-        Try searching for something else or open more history in Brave to see more web history from other apps.
+        Try searching for something else or open full Brave history to see more results.
       </message>
       <message name="IDS_HISTORY_MANAGER_SEARCH" desc="Placeholder text for the input field that allows users to search browsing history.">
         Search your history
@@ -3410,9 +3418,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_SYNC_PROMO_DESCRIPTION_BOOKMARKS" desc="This string is the body of a card that appears when the user opens Brave's bookmarks; the user may be signed in to Brave, but isn't syncing their Brave data. The headline above this string is 'Get all your bookmarks'. There's no character limit but try to keep the translation under 120 characters." meaning="This message means that the user can get the bookmarks from their computer on their phone, and their phone's bookmarks on their computer. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Sync to get your bookmarks from your other devices
-      </message>
-      <message name="IDS_SIGNIN_PROMO_TITLE_BOOKMARKS" desc="This string is the headline of a card that appears when the user opens Brave's bookmarks; the user may be signed in to Brave, but isn't syncing their Brave data. The line below this string is 'Sync to get your bookmarks from your other devices'. [CHAR_LIMIT=70]" meaning="This headline means that the user can get the bookmarks from their computer on their phone, and their phone's bookmarks on their computer. We want users to read this card and tap the 'Continue' button and sign-in. The tone should be inviting.">
-        Get all your bookmarks
       </message>
       <message name="IDS_SIGNIN_PROMO_DESCRIPTION_BOOKMARKS" desc="This string is the body of a card that appears when the user opens Brave's bookmarks; the user is signed out of Brave. The headline above this string is 'Get all your bookmarks'. There's no character limit but try to keep the translation under 120 characters." meaning="This message means that the user can get the bookmarks from their computer on their phone, and their phone's bookmarks on their computer. We want users to read this card and tap the 'Continue' button and sign-in. The tone should be inviting.">
         Sign in to get your bookmarks and more from your other devices
@@ -3729,7 +3734,7 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
         Collapse to side view
       </message>
       <message name="IDS_CUSTOM_TAB_HISTORY_IPH_BUBBLE_TEXT" desc="The message on the text bubble shown to educate the user about history in CCTs.">
-        View your web history here
+        View your Brave history here
       </message>
       <message name="IDS_CUSTOM_TAB_MINIMIZE" desc="The accessibility text for minimize button for custom tabs.">
         Minimize tab
@@ -3850,8 +3855,8 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       <message name="IDS_MENU_RECENT_TABS" desc="Menu item for opening the 'Recent tabs' page that shows recently closed tabs and pages the user has opened on his/her other devices. [CHAR_LIMIT=27]">
         Recent tabs
       </message>
-      <message name="IDS_MENU_WEB_HISTORY" desc="Menu item for opening the CCT history page. [CHAR_LIMIT=27]">
-        Web history
+      <message name="IDS_CHROME_HISTORY" desc="Menu item for opening the CCT history page. [CHAR_LIMIT=27]">
+        Brave history
       </message>
       <message name="IDS_MENU_HISTORY" desc="Menu item for opening the history page. [CHAR_LIMIT=27]">
         History

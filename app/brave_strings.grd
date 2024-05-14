@@ -1027,6 +1027,9 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CREATE_BUBBLE_TITLE" desc="Title of the web signin interception bubble">
           Continue in a new Brave profile?
         </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CREATE_BUBBLE_TITLE_V2" desc="Title of the web signin interception bubble used when Explicit browser Sign in is enabled">
+          Sign in to Brave in a new profile?
+        </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_SWITCH_BUBBLE_TITLE" desc="Title for the profile switch interception bubble">
           Switch to existing Brave profile?
         </message>
@@ -1036,14 +1039,14 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CONSUMER_BUBBLE_DESC" desc="Body of the web signin interception bubble">
           <ph name="EXISTING_USER">$1<ex>Elisa</ex></ph> is already signed in to this Brave profile. To keep your browsing separate, Brave can create your own profile for you.
         </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CONSUMER_BUBBLE_DESC_MANAGED_DEVICE" desc="Body of the web signin interception bubble on a managed device">
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CREATE_BUBBLE_DESC" desc="Body of the web signin interception bubble. It is shown when the user signs in on the web while they already have another account present in the current profile.">
+         <ph name="EXISTING_USER">$1<ex>Elisa</ex></ph> is already signed in.  To keep your browsing separate, sign in to Brave in your own profile as <ph name="USER_EMAIL_ADDRESS">$2<ex>foo@gmail.com</ex></ph>.
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CONSUMER_BUBBLE_DESC_MANAGED_DEVICE" desc="Body of the web signin interception bubble on a managed device">
           <ph name="EXISTING_USER">$1<ex>Elisa</ex></ph> is already signed in to this Brave profile. This will create a new Brave profile for <ph name="USER_EMAIL_ADDRESS">$2<ex>foo@gmail.com</ex></ph>
         </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_ENTERPRISE_BUBBLE_DESC_MANAGED_DEVICE" desc="Body of the web signin interception bubble when the new account is personal and the existing account is managed on a managed device">
           This will create a new Brave profile for <ph name="USER_EMAIL_ADDRESS">$1<ex>foo@gmail.com</ex></ph>
-        </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CONSUMER_BUBBLE_DESC_V2" desc="Body of the web signin interception bubble. It is shown when the user signs in on the web while they already have another account present in the current profile.">
-          Another account is already signed in. To keep your browsing separate, Brave can create your own profile for you.
         </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_SUBTITLE" desc="Subtitle of the Brave Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
           To save and use your passwords and more on all your devices, sign in to Brave
@@ -1080,6 +1083,11 @@ Permissions you've already given to websites and apps may apply to this account.
             Use Brave Without an Account
           </message>
         </if>
+
+        <!-- Autofill Sign In Promo Bubble -->
+        <message name="IDS_AUTOFILL_SIGNIN_PROMO_SUBTITLE_PASSWORD" desc="This is the body text of a confirmation message and means that the password was only saved locally to the user's device (not in their Brave sync chain). It appears when the user is not signed in to Brave and is after the 'Password saved to this device' string. If the user wants to save this data to their Brave sync chain, they can click the 'Sign in to Brave' button at the bottom of this message. The tone should be motivating.">
+          To save and use passwords and more on all your devices, sign in to Brave. This password will be saved in your Brave sync chain after you sign in.
+        </message>
       </if>
 
       <if expr="not chromeos_ash and not is_android">

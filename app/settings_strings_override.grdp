@@ -55,6 +55,9 @@
   <message name="IDS_SETTINGS_SHOW_BOOKMARKS_BAR" desc="Label for the checkbox which enables or disables showing the bookmarks bar in the toolbar.">
     Show bookmarks
   </message>
+  <message name="IDS_SETTINGS_SHOW_TAB_GROUPS_IN_BOOKMARKS_BAR" desc="Label for the checkbox which enables or disables showing saved tab groups in bookmarks bar.">
+    Show tab groups in bookmarks
+  </message>
   <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Web Store.">
     Open Web Store
   </message>

@@ -7697,7 +7697,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Device
       </message>
       <message name="IDS_NTP_CUSTOMIZE_CHROME_WEBSTORE_LABEL" desc="The message that prompts user to customize Brave with Brave webstore.">
-        Customize your browser even more with extensions from the <ph name="BEGIN_LINK1">&lt;a href="#" id="chromeWebstoreLink" on-click="onBraveWebStoreLinkClick_"&gt;</ph>Web Store<ph name="END_LINK1">&lt;/a&gt;</ph>
+        Customize your browser even more with extensions from the <ph name="BEGIN_LINK1">&lt;a href="#" id="chromeWebstoreLink"&gt;</ph>Web Store<ph name="END_LINK1">&lt;/a&gt;</ph>
       </message>
       <message name="IDS_NTP_WEBSTORE_SHOPPING_CATEOGRY_LABEL" desc="The message displayed on the button that redirects users to the 'shopping' category page of the Brave webstore.">
         Find coupons
@@ -12342,9 +12342,38 @@ This can include information about installed software, files, your browser, and 
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_NEW_PROFILE_BUTTON_LABEL" desc="Label of the confirmation button in the web signin interception bubble">
           Ok
         </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_NEW_PROFILE_BUTTON_LABEL_V2" desc="Label of the confirmation button in the web signin interception bubble. This action will create a new Brave profile for the intercepted account.">
-          Let's go
-        </message>
+
+        <if expr="use_titlecase">
+          <then>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SEPARATE_BROWSING_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for separating accounts into different browsers is displayed.">
+              Separate Browsing?
+            </message>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SWITCH_PROFILE_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for switching to a profile that has the account intercepted already signed into is displayed.">
+              Switch Profile?
+            </message>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CREATE_PROFILE_BUTTON_LABEL" desc="In Title Case: Label of the confirmation button in the web signin interception bubble. This action will create a new Brave profile for the intercepted account.">
+              Create Profile
+            </message>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_STAY_HERE_BUTTON_LABEL" desc="Label of the cancel button in the web signin interception bubble">
+              Stay Here
+            </message>
+         </then>
+         <else>
+          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SEPARATE_BROWSING_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for separating accounts into different browsers is displayed.">
+            Separate browsing?
+          </message>
+          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SWITCH_PROFILE_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for switching to a profile that has the account intercepted already signed into is displayed.">
+            Switch profile?
+          </message>
+          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CREATE_PROFILE_BUTTON_LABEL" desc="Label of the confirmation button in the web signin interception bubble. This action will create a new Brave profile for the intercepted account.">
+            Create profile
+          </message>
+          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_STAY_HERE_BUTTON_LABEL" desc="Label of the cancel button in the web signin interception bubble">
+            Stay here
+          </message>
+         </else>
+        </if>
+
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CANCEL_BUTTON_LABEL" desc="Label of the cancel button in the web signin interception bubble">
           No thanks
         </message>
@@ -12369,28 +12398,16 @@ This can include information about installed software, files, your browser, and 
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_SWITCH_BUBBLE_DESC_V2" desc="Description for the profile switch interception bubble">
           <ph name="NAME">$2<ex>Bob</ex></ph>'s profile is linked to <ph name="EMAIL">$1<ex>bob@gmail.com</ex></ph>
         </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CREATE_BUBBLE_TITLE_V2" desc="Title of the web signin interception bubble. 'Separate' is an action verb. The prompt is shown to let the user choose to keep the browsing activity for a new account in the same profile as an existing one or to move it to a new profile.">
-          Separate your browsing?
-        </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_MANAGED_DISCLAIMER" desc="Enterprise disclaimer for a managed account in the signin interception bubble.">
           This new profile will be managed by your organization. <ph name="BEGIN_LINK">&lt;a href="$1" target="_blank"&gt;<ex>https://help.google.com/articleLink</ex></ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
         </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_MANAGED_BY_DISCLAIMER" desc="Enterprise disclaimer for a managed account in the signin interception bubble, with the manager domain name.">
           This new profile will be managed by <ph name="DOMAIN">$1<ex>example.com</ex></ph>. <ph name="BEGIN_LINK">&lt;a href="$2" target="_blank"&gt;<ex>https://help.google.com/articleLink</ex></ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
         </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SEPARATE_BROWSING_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for separating accounts into different browsers is displayed.">
-          Separate Browsing?
-        </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SWITCH_PROFILE_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for switching to a profile that has the account intercepted already signed into is displayed.">
-          Switch Profile?
-        </message>
 
         <!-- Brave Signout Confirmation Prompt -->
         <message name="IDS_CHROME_SIGNOUT_CONFIRMATION_PROMPT_TITLE" desc="This is the title of an error message dialog that appears when the user opens the Brave Profile Menu and chooses 'Sign out of Brave'. The error message appears when the user has saved some data (like a password or payment method) to Brave, but Brave wasn't able to save the data to the user's Brave sync chain due to a sign-in error; but, the data has been saved locally to Brave. This title is before the 'Brave needs to verify it’s you before some data can be saved in your Brave sync chain and used on all your devices. If you sign out, this data will stay on this device.' string. The tone should be cautionary.">
           Some data isn’t saved in your account yet
-        </message>
-        <message name="IDS_CHROME_SIGNOUT_CONFIRMATION_PROMPT_VERIFY_BUTTON" translateable="false" desc="Text displayed the default button of the Brave signout confirmation prompt. The user will then be asked to reauthenticate.">
-          Verify it’s you
         </message>
         <message name="IDS_CHROME_SIGNOUT_CONFIRMATION_PROMPT_SIGNOUT_BUTTON" desc="This string is found on a button that lets the user sign out of Brave when the user taps it. It is on an error message dialog that appears when the user opens the Brave Profile Menu and chooses 'Sign out of Brave'. The error message appears when the user has saved some data (like a password or payment method) to Brave, but Brave wasn't able to save the data to the user's Brave sync chain due to a sign-in error; but, the data has been saved locally to Brave. This text is a verb and is short for the longer phrase 'Sign out of Brave anyway.'">
           Sign out anyway

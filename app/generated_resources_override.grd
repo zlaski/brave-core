@@ -609,7 +609,7 @@ are declared in tools/grit/grit_rule.gni.
         </if>
 
       <message name="IDS_NTP_CUSTOMIZE_CHROME_WEBSTORE_LABEL" desc="The message that prompts user to customize Brave with Brave webstore.">
-        Customize your browser even more with extensions from the <ph name="BEGIN_LINK1">&lt;a href="#" id="chromeWebstoreLink" on-click="onBraveWebStoreLinkClick_"&gt;</ph>Web Store<ph name="END_LINK1">&lt;/a&gt;</ph>
+        Customize your browser even more with extensions from the <ph name="BEGIN_LINK1">&lt;a href="#" id="chromeWebstoreLink"&gt;</ph>Web Store<ph name="END_LINK1">&lt;/a&gt;</ph>
       </message>
       <message name="IDS_NTP_WEBSTORE_TOAST_MESSAGE" desc="The message displayed on the New Tab Page toast that directs users to the Brave webstore themes.">
         You can find older colors in the Web Store
@@ -962,6 +962,13 @@ are declared in tools/grit/grit_rule.gni.
         </if>
 
       <if expr="not chromeos_ash and not is_android and not chromeos_lacros">
+        <if expr="use_titlecase">
+          <then>
+            </then>
+         <else>
+          </else>
+        </if>
+
         <if expr="use_titlecase">
           </if>
         <if expr="not use_titlecase">

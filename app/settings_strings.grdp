@@ -361,6 +361,9 @@
   <message name="IDS_SETTINGS_SHOW_BOOKMARKS_BAR" desc="Label for the checkbox which enables or disables showing the bookmarks bar in the toolbar.">
     Show bookmarks
   </message>
+  <message name="IDS_SETTINGS_SHOW_TAB_GROUPS_IN_BOOKMARKS_BAR" desc="Label for the checkbox which enables or disables showing saved tab groups in bookmarks bar.">
+    Show tab groups in bookmarks
+  </message>
   <message name="IDS_SETTINGS_HOVER_CARD_TITLE" desc="Title for the section in appearance settings for configuring what gets displayed in tab hovercards.">
     Tab hover preview card
   </message>
@@ -1498,6 +1501,20 @@
       </message>
     </if>
   </if>
+
+  <!-- Offer Writing Help Page -->
+  <message name="IDS_SETTINGS_OFFER_WRITING_HELP_TOGGLE_LABEL" desc="Label of the setting that enables the feature that provides writing help suggestions.">
+    Offer writing help
+  </message>
+  <message name="IDS_SETTINGS_OFFER_WRITING_HELP_TOGGLE_SUB_LABEL" desc="Sub-label of the setting that enables the feature that provides writing help suggestions.">
+    "Help me write" can automatically open when a text box on a site can be filled with short-form content
+  </message>
+  <message name="IDS_SETTINGS_OFFER_WRITING_HELP_ENABLED_SUB_LABEL" desc="Sub-label for the site settings writing help page link, used when the offer writing help preference is enabled.">
+    Allow "Help me write" to automatically open
+  </message>
+  <message name="IDS_SETTINGS_OFFER_WRITING_HELP_DISABLED_SUB_LABEL" desc="Sub-label for the site settings writing help page link, used when the offer writing help preference is disabled.">
+    Don't allow "Help me write" to automatically open
+  </message>
 
   <!-- Anti-abuse Page -->
   <message name="IDS_SETTINGS_ANTI_ABUSE_ENABLED_SUB_LABEL" desc="The label used for the anti-abuse site settings sub-label when the anti-abuse setting is turned on.">
@@ -3836,6 +3853,9 @@
 
   <message name="IDS_SETTINGS_PEOPLE_SIGN_IN" desc="The label of the button that lets user sign-in to chrome.">
     Sign in
+  </message>
+  <message name="IDS_SETTINGS_PEOPLE_VERIFY_ACCOUNT_BUTTON" desc="This button is shown in Brave's Settings, in the 'You and Brave' section. It appears when the user needs to sign back in to Brave in order to continue saving and using data (like bookmarks, passwords, or payment methods) in their Brave sync chain. When the user clicks this button, they will be prompted to enter their Brave sync chain credentials.">
+    Verify it's you
   </message>
   <message name="IDS_SETTINGS_SYNC_DISCONNECT_MANAGED_PROFILE_EXPLANATION" desc="The text to display in the 'Sign out of Brave' dialog to stop syncing for managed profiles.">
     Because this account is managed by <ph name="DOMAIN">$1<ex>example.com</ex></ph>, your bookmarks, history, passwords, and other settings will be cleared from this device. However, your data will remain stored in your Brave sync chain and can be managed on <ph name="BEGIN_LINK">&lt;a href="$2" target="_blank"&gt;<ex>&lt;a href="$2" target="_blank"&gt;</ex></ph>Brave Dashboard<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>.
