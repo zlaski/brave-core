@@ -1,0 +1,13 @@
+diff --git a/ui/views/layout/layout_provider.h b/ui/views/layout/layout_provider.h
+index d40bdd14cf7e719082a33189730153f74888644d..65f60d2f3650c534ef9235476dc0825497bcfbef 100644
+--- a/ui/views/layout/layout_provider.h
++++ b/ui/views/layout/layout_provider.h
+@@ -228,7 +228,7 @@ class VIEWS_EXPORT LayoutProvider {
+   // Returns the corner radius related to a specific context token.
+   // TODO(crbug.com/40255130): Replace GetCornerRadiusMetric(Emphasis...) with
+   // context tokens.
+-  int GetCornerRadiusMetric(ShapeContextTokens token,
++  virtual int GetCornerRadiusMetric(ShapeContextTokens token,
+                             const gfx::Size& size = gfx::Size()) const;
+ 
+  protected:
