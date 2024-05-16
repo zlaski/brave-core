@@ -36,7 +36,7 @@ struct LegalView: View {
         .fixedSize(horizontal: false, vertical: true)
         .padding(.bottom, 20)
         HStack(alignment: .top, spacing: 8) {
-          LegalCheckbox(isChecked: $isResponsibilityCheckboxChecked)
+          WalletCheckbox(isChecked: $isResponsibilityCheckboxChecked)
             .font(.title2)
           Text(Strings.Wallet.legalUserResponsibility)
             .foregroundColor(Color(uiColor: WalletV2Design.textPrimary))
@@ -47,7 +47,7 @@ struct LegalView: View {
             }
         }
         HStack(spacing: 8) {
-          LegalCheckbox(isChecked: $isTermsCheckboxChecked)
+          WalletCheckbox(isChecked: $isTermsCheckboxChecked)
             .font(.title2)
           Text(
             LocalizedStringKey(
@@ -112,20 +112,6 @@ struct LegalView: View {
       backButtonTitle: Strings.Wallet.web3DomainInterstitialPageTAndU.capitalizeFirstLetter,
       backButtonDisplayMode: .generic
     )
-  }
-}
-
-struct LegalCheckbox: View {
-  @Binding var isChecked: Bool
-
-  var body: some View {
-    Button {
-      isChecked.toggle()
-    } label: {
-      Image(braveSystemName: isChecked ? "leo.checkbox.checked" : "leo.checkbox.unchecked")
-        .renderingMode(.template)
-        .foregroundColor(Color(isChecked ? .braveBlurpleTint : .braveDisabled))
-    }
   }
 }
 
