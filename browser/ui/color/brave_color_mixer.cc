@@ -16,6 +16,7 @@
 #include "brave/components/playlist/common/buildflags/buildflags.h"
 #include "brave/components/speedreader/common/buildflags/buildflags.h"
 #include "chrome/browser/ui/color/chrome_color_id.h"
+#include "chrome/browser/ui/color/material_chrome_color_mixer.h"
 #include "chrome/browser/ui/color/material_side_panel_color_mixer.h"
 #include "ui/base/ui_base_features.h"
 #include "ui/color/color_id.h"
@@ -378,6 +379,7 @@ void AddBravifiedChromeThemeColorMixer(ui::ColorProvider* provider,
   // This is behind features::IsChromeRefresh2023 upstream, but without it the
   // colors are not set correctly.
   if (!features::IsChromeRefresh2023()) {
+    AddMaterialChromeColorMixer(provider, key);
     AddMaterialSidePanelColorMixer(provider, key);
   }
 
