@@ -1209,7 +1209,6 @@ public class BytecodeTest {
                         ObservableSupplier.class,
                         ObservableSupplier.class,
                         BrowserStateBrowserControlsVisibilityDelegate.class,
-                        boolean.class,
                         FullscreenManager.class,
                         TabObscuringHandler.class,
                         DesktopWindowStateProvider.class));
