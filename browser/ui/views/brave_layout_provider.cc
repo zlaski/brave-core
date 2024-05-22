@@ -21,12 +21,3 @@ int BraveLayoutProvider::GetCornerRadiusMetric(views::Emphasis emphasis,
       return 4;
   }
 }
-
-int BraveLayoutProvider::GetCornerRadiusMetric(views::ShapeContextTokens id,
-                                               const gfx::Size& size) const {
-  if (id == views::ShapeContextTokens::kOmniboxExpandedRadius) {
-    return 4;
-  }
-
-  return ChromeLayoutProvider::GetCornerRadiusMetric(id, size);
-}

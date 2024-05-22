@@ -17,8 +17,6 @@ class BraveLayoutProvider : public ChromeLayoutProvider {
 
   int GetCornerRadiusMetric(views::Emphasis emphasis,
                             const gfx::Size& size = gfx::Size()) const override;
-  int GetCornerRadiusMetric(views::ShapeContextTokens token,
-                            const gfx::Size& size = gfx::Size()) const override;
 };
 
 #endif  // BRAVE_BROWSER_UI_VIEWS_BRAVE_LAYOUT_PROVIDER_H_
