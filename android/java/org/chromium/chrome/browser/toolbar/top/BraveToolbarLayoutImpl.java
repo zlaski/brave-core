@@ -641,7 +641,9 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                                         == PlaylistOptionsEnum.OPEN_PLAYLIST) {
                                     BraveActivity.getBraveActivity()
                                             .openPlaylistActivity(
-                                                    getContext(), ConstantUtils.DEFAULT_PLAYLIST);
+                                                    getContext(),
+                                                    ConstantUtils.DEFAULT_PLAYLIST,
+                                                    false);
                                 } else if (playlistOptionsModel.getOptionType()
                                         == PlaylistOptionsEnum.PLAYLIST_SETTINGS) {
                                     BraveActivity.getBraveActivity().openBravePlaylistSettings();
@@ -730,7 +732,9 @@ public abstract class BraveToolbarLayoutImpl extends ToolbarLayout
                                 try {
                                     BraveActivity.getBraveActivity()
                                             .openPlaylistActivity(
-                                                    getContext(), ConstantUtils.DEFAULT_PLAYLIST);
+                                                    getContext(),
+                                                    ConstantUtils.DEFAULT_PLAYLIST,
+                                                    false);
                                 } catch (BraveActivity.BraveActivityNotFoundException e) {
                                     Log.e(TAG, "showAddedToPlaylistSnackBar onClick ", e);
                                 }
