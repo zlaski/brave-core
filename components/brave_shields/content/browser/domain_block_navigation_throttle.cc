@@ -193,7 +193,7 @@ void DomainBlockNavigationThrottle::OnShouldBlockDomain(
   } else {
     switch (domain_blocking_type_) {
       case DomainBlockingType::kNone:
-        NOTREACHED();
+        NOTREACHED_IN_MIGRATION();
         Resume();
         break;
       case DomainBlockingType::k1PES:

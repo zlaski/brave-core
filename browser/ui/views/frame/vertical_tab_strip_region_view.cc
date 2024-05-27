@@ -1328,7 +1328,7 @@ std::u16string VerticalTabStripRegionView::GetShortcutTextForNewTabButton(
     return new_tab_accelerator.GetShortcutText();
   }
 
-  NOTREACHED() << "Couldn't find the accelerator for new tab.";
+  NOTREACHED_IN_MIGRATION() << "Couldn't find the accelerator for new tab.";
   return {};
 }
 #endif
