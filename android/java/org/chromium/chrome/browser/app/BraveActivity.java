@@ -1652,16 +1652,13 @@ public abstract class BraveActivity extends ChromeActivity
             };
 
     private void checkPlaylistAction() {
-        if (getIntent() != null
-                && !TextUtils.isEmpty(getIntent().getAction())
+        if (getIntent() != null && !TextUtils.isEmpty(getIntent().getAction())
                 && getIntent().getAction().equals(ConstantUtils.PLAYLIST_ACTION)) {
             if (TextUtils.isEmpty(VideoPlaybackService.Companion.getCurrentPlaylistId())) {
                 return;
             }
-            openPlaylistActivity(
-                    BraveActivity.this,
-                    VideoPlaybackService.Companion.getCurrentPlaylistId(),
-                    true);
+            openPlaylistActivity(BraveActivity.this,
+                    VideoPlaybackService.Companion.getCurrentPlaylistId(), true);
         }
     }
 
@@ -1670,7 +1667,8 @@ public abstract class BraveActivity extends ChromeActivity
         if (notifIntent != null
                 && notifIntent.getStringExtra(RetentionNotificationUtil.NOTIFICATION_TYPE)
                         != null) {
-            String notificationType = notifIntent.getStringExtra(RetentionNotificationUtil.NOTIFICATION_TYPE);
+            String notificationType =
+                    notifIntent.getStringExtra(RetentionNotificationUtil.NOTIFICATION_TYPE);
             switch (notificationType) {
                 case RetentionNotificationUtil.HOUR_3:
                 case RetentionNotificationUtil.HOUR_24:
