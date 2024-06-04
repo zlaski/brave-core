@@ -783,6 +783,11 @@ void AddBraveOmniboxLightThemeColorMixer(ui::ColorProvider* provider,
       pick_color(leo::Color::kColorDividerSubtle)};
   mixer[kColorBravePlayerActionViewBorder] = {
       pick_color(leo::Color::kColorDividerSubtle)};
+  mixer[kColorOmniboxResultsButtonBorder] = ui::BlendTowardMaxContrast(
+      kColorToolbarBackgroundSubtleEmphasis, gfx::kGoogleGreyAlpha400);
+  mixer[kColorOmniboxResultsButtonIcon] = {kColorOmniboxResultsIcon};
+  mixer[kColorOmniboxResultsButtonIconSelected] = {
+      kColorOmniboxResultsIconSelected};
 
   // We don't use bg color for location icon view.
   mixer[kColorPageInfoBackground] = {SK_ColorTRANSPARENT};
@@ -832,6 +837,11 @@ void AddBraveOmniboxDarkThemeColorMixer(ui::ColorProvider* provider,
       pick_color(leo::Color::kColorDividerSubtle)};
   mixer[kColorBravePlayerActionViewBorder] = {
       pick_color(leo::Color::kColorDividerSubtle)};
+  mixer[kColorOmniboxResultsButtonBorder] = ui::BlendTowardMaxContrast(
+      kColorToolbarBackgroundSubtleEmphasis, gfx::kGoogleGreyAlpha400);
+  mixer[kColorOmniboxResultsButtonIcon] = {kColorOmniboxResultsIcon};
+  mixer[kColorOmniboxResultsButtonIconSelected] = {
+      kColorOmniboxResultsIconSelected};
   mixer[kColorPageInfoBackground] = {SK_ColorTRANSPARENT};
   if (key.custom_theme) {
     return;
