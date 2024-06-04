@@ -294,6 +294,16 @@ void BraveBrowserCommandController::InitBraveCommandState() {
 
   UpdateCommandEnabled(IDC_TOGGLE_ALL_BOOKMARKS_BUTTON_VISIBILITY, true);
 
+  if (browser_->is_type_normal()) {
+    // If it's already enabled, it means base class enables them by default.
+    // Then, delete all this if block.
+    CHECK(!IsCommandEnabled(IDC_READING_LIST_MENU))
+        << " Note: It's time to delete.";
+    UpdateCommandEnabled(IDC_READING_LIST_MENU, true);
+    UpdateCommandEnabled(IDC_READING_LIST_MENU_ADD_TAB, true);
+    UpdateCommandEnabled(IDC_READING_LIST_MENU_SHOW_UI, true);
+  }
+
   if (base::FeatureList::IsEnabled(tabs::features::kBraveSplitView) &&
       browser_->is_type_normal()) {
     UpdateCommandForSplitView();
