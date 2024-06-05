@@ -12,10 +12,11 @@ namespace network::mojom {
 enum class CSPDirectiveName : std::int32_t;
 }  // namespace network::mojom
 
-#define DisableDenyXFrameOptions DisableDenyXFrameOptions() = 0; \
-  virtual void OverrideContentSecurityPolicy(\
-      network::mojom::CSPDirectiveName directive, \
-      const std::string& value) = 0; \
+#define DisableDenyXFrameOptions                                 \
+  DisableDenyXFrameOptions() = 0;                                \
+  virtual void OverrideContentSecurityPolicy(                    \
+      network::mojom::CSPDirectiveName directive,                \
+      const std::string& value) = 0;                             \
   virtual void AddFrameAncestor(const GURL& frame_ancestor) = 0; \
   virtual void DisableTrustedTypesCSP
 
