@@ -22,6 +22,8 @@ void WebUIIOSDataSourceImpl::OverrideContentSecurityPolicy(
 }
 
 void WebUIIOSDataSourceImpl::AddFrameAncestor(const GURL& frame_ancestor) {
+  // Do not allow a wildcard to be a frame ancestor or it will allow any website
+  // to embed the WebUI.
   CHECK(frame_ancestor.SchemeIs(kChromeUIScheme) ||
         frame_ancestor.SchemeIs(kChromeUIUntrustedScheme));
   frame_ancestors_.insert(frame_ancestor);

@@ -19,6 +19,8 @@ source_set("wallet") {
     "wallet_handler.mm",
     "wallet_page_handler.h",
     "wallet_page_handler.mm",
+    "nft_ui.h",
+    "nft_ui.mm",
   ]
 
   deps = [

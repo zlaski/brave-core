@@ -45,6 +45,10 @@
 #include "ui/base/accelerators/accelerator.h"
 #include "ui/base/webui/web_ui_util.h"
 
+#include "brave/ios/browser/ui/webui/brave_webui_data_source.h"
+#include "brave/components/nft_display/resources/grit/nft_display_generated_map.h"
+#include "ui/resources/grit/webui_resources.h"
+
 namespace {
 
 web::WebUIIOSDataSource* CreateAndAddWebUIDataSource(
@@ -62,6 +66,53 @@ web::WebUIIOSDataSource* CreateAndAddWebUIDataSource(
   source->AddResourcePaths(base::make_span(resource_map, resource_map_size));
   source->SetDefaultResource(html_resource_id);
   return source;
+}
+
+}  // namespace
+
+namespace brave_wallet {
+
+void CreateAndAddUntrustedWebUIDataSource(web::WebUIIOS* web_ui) {
+  BraveWebUIDataSource* untrusted_source = new BraveWebUIDataSource();
+  web::URLDataSourceIOS::Add(ChromeBrowserState::FromWebUIIOS(web_ui),
+                             untrusted_source);
+  
+  untrusted_source->UseStringsJs();
+
+  // Add required resources.
+  untrusted_source->AddResourcePaths(base::make_span(kNftDisplayGenerated, kNftDisplayGeneratedSize));
+  untrusted_source->SetDefaultResource(IDR_BRAVE_WALLET_NFT_DISPLAY_HTML);
+
+  for (const auto& str : brave_wallet::kLocalizedStrings) {
+    std::u16string l10n_str =
+        brave_l10n::GetLocalizedResourceUTF16String(str.id);
+    untrusted_source->AddString(str.name, l10n_str);
+  }
+
+  untrusted_source->AddFrameAncestor(GURL(kBraveUIWalletPageURL));
+  untrusted_source->AddFrameAncestor(GURL(kBraveUIWalletPanelURL));
+  untrusted_source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ScriptSrc,
+      std::string("script-src 'self' chrome-untrusted://resources;"));
+  untrusted_source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::StyleSrc,
+      std::string("style-src 'self' 'unsafe-inline';"));
+  untrusted_source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::FontSrc,
+      std::string("font-src 'self' data:;"));
+  untrusted_source->AddResourcePath("load_time_data_deprecated.js",
+                                    IDR_WEBUI_JS_LOAD_TIME_DATA_DEPRECATED_JS);
+  untrusted_source->UseStringsJs();
+  untrusted_source->AddString("braveWalletNftBridgeUrl", kUntrustedNftURL);
+  untrusted_source->AddString("braveWalletTrezorBridgeUrl",
+                              kUntrustedTrezorURL);
+  untrusted_source->AddString("braveWalletLedgerBridgeUrl",
+                              kUntrustedLedgerURL);
+  untrusted_source->AddString("braveWalletMarketUiBridgeUrl",
+                              kUntrustedMarketURL);
+  untrusted_source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ImgSrc,
+      std::string("img-src 'self' https: data:;"));
 }
 
 }  // namespace
@@ -86,6 +137,18 @@ BraveWalletPageUI::BraveWalletPageUI(web::WebUIIOS* web_ui, const GURL& url)
 
   source->AddBoolean("isAndroid", true);
   source->AddBoolean("isIOS", true);
+      
+  source->OverrideContentSecurityPolicy(
+        network::mojom::CSPDirectiveName::FrameSrc,
+        std::string("frame-src ") + kUntrustedTrezorURL + " " +
+            kUntrustedLedgerURL + " " + kUntrustedNftURL + " " +
+            kUntrustedLineChartURL + " " + kUntrustedMarketURL + ";");
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ImgSrc,
+      base::JoinString(
+          {"img-src", "'self'", "chrome://resources",
+           "chrome://erc-token-images", base::StrCat({"data:", ";"})},
+          " "));
 
   source->AddString("braveWalletLedgerBridgeUrl", kUntrustedLedgerURL);
   source->AddString("braveWalletTrezorBridgeUrl", kUntrustedTrezorURL);
@@ -98,6 +161,8 @@ BraveWalletPageUI::BraveWalletPageUI(web::WebUIIOS* web_ui, const GURL& url)
 
   brave_wallet::AddBlockchainTokenImageSource(
       ChromeBrowserState::FromWebUIIOS(web_ui));
+      
+  brave_wallet::CreateAndAddUntrustedWebUIDataSource(web_ui);
 
   web_ui->GetWebState()->GetInterfaceBinderForMainFrame()->AddInterface(
       base::BindRepeating(&BraveWalletPageUI::BindInterface,
