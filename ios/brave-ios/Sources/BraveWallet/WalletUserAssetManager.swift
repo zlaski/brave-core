@@ -289,6 +289,7 @@ public class WalletUserAssetManager: WalletUserAssetManagerType, WalletObserverS
     isDeletedByUser: Bool,
     completion: (() -> Void)?
   ) {
+    walletService.setUserAssetVisible(token: asset, visible: visible, completion: { _ in })
     WalletUserAsset.updateUserAsset(
       for: asset,
       visible: visible,
