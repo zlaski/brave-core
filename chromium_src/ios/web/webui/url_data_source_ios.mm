@@ -29,6 +29,10 @@ bool URLDataSourceIOS::ShouldAddContentSecurityPolicy() const {
   return true;
 }
 
+bool URLDataSourceIOS::ShouldServiceRequest(const GURL& url) const {
+  return URLDataSourceIOS::ShouldServiceRequest_ChromiumImpl(url);
+}
+
 std::string URLDataSourceIOS::GetContentSecurityPolicyObjectSrc() const {
   if (ShouldAddContentSecurityPolicy()) {
     std::string csp_header;
@@ -138,6 +142,10 @@ std::string URLDataSourceIOS::GetContentSecurityPolicy(
 #define GetContentSecurityPolicyObjectSrc \
   GetContentSecurityPolicyObjectSrc_ChromiumImpl
 
+#define ShouldServiceRequest \
+  ShouldServiceRequest_ChromiumImpl
+
 #include "src/ios/web/webui/url_data_source_ios.mm"
 
+#undef ShouldServiceRequest
 #undef GetContentSecurityPolicyObjectSrc
