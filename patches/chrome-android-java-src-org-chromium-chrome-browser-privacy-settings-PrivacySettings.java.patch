@@ -1,5 +1,5 @@
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-index 74cc233f4d39f56cd89a8cd0b40610ee9e9334b4..b860d18d1ca117090c13556b6fc6b10116336b65 100644
+index 4d8fa0f5ce030b0beb092544ded00356f4737b93..5bc2bcbcd2d1b368268c8b8bad10b04e87f9069b 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 @@ -52,7 +52,7 @@ import org.chromium.ui.text.NoUnderlineClickableSpan;
@@ -8,10 +8,10 @@ index 74cc233f4d39f56cd89a8cd0b40610ee9e9334b4..b860d18d1ca117090c13556b6fc6b101
  /** Fragment to keep track of the all the privacy related preferences. */
 -public class PrivacySettings extends ChromeBaseSettingsFragment
 +public class PrivacySettings extends org.chromium.chrome.browser.settings.BravePreferenceFragment
-         implements Preference.OnPreferenceChangeListener {
+         implements Preference.OnPreferenceChangeListener, FragmentSettingsLauncher {
      private static final String PREF_CAN_MAKE_PAYMENT = "can_make_payment";
      private static final String PREF_PRELOAD_PAGES = "preload_pages";
-@@ -386,6 +386,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -409,6 +409,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
      @Override
      public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
          menu.clear();
@@ -19,7 +19,7 @@ index 74cc233f4d39f56cd89a8cd0b40610ee9e9334b4..b860d18d1ca117090c13556b6fc6b101
          MenuItem help =
                  menu.add(Menu.NONE, R.id.menu_id_targeted_help, Menu.NONE, R.string.menu_help);
          help.setIcon(
-@@ -400,6 +401,6 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
+@@ -423,6 +424,6 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                      .show(getActivity(), getString(R.string.help_context_privacy), null);
              return true;
          }
