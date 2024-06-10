@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_coordinator.h b/chrome/browser/ui/views/side_panel/side_panel_coordinator.h
-index e4e89c6284984da3396c578e88e9a85a1bf23af3..60b261065d537e5f3090e2c36ebddf2893b7c992 100644
+index 1d517b6184c889399097a9a530fa6306e650ef44..770d46d218befc66abfa3ef447b0699d1bed16d3 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_coordinator.h
 +++ b/chrome/browser/ui/views/side_panel/side_panel_coordinator.h
-@@ -55,7 +55,7 @@ class View;
+@@ -53,7 +53,7 @@ class View;
  // registry's active_entry() then global registry's. These values are reset when
  // the side panel is closed and |last_active_global_entry_id_| is used to
  // determine what entry is seen when the panel is reopened.
