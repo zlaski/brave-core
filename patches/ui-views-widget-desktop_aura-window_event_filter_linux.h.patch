@@ -1,0 +1,17 @@
+diff --git a/ui/views/widget/desktop_aura/window_event_filter_linux.h b/ui/views/widget/desktop_aura/window_event_filter_linux.h
+index bd86869e5ebeced65616ed9b3bb7693ba092351b..d698d8b1a744ac435e4910ecb1c66717eff6ecc8 100644
+--- a/ui/views/widget/desktop_aura/window_event_filter_linux.h
++++ b/ui/views/widget/desktop_aura/window_event_filter_linux.h
+@@ -37,9 +37,11 @@ class VIEWS_EXPORT WindowEventFilterLinux : public ui::EventHandler {
+ 
+   ~WindowEventFilterLinux() override;
+ 
+-  void HandleMouseEventWithHitTest(int hit_test, ui::MouseEvent* event);
++  void HandleLocatedEventWithHitTest(int hit_test, ui::LocatedEvent* event);
+ 
+  private:
++  bool HandleMouseEventWithHitTest(int hit_test, ui::MouseEvent* event);
++
+   // Called when the user clicked the caption area.
+   void OnClickedCaption(ui::MouseEvent* event, int previous_click_component);
+ 

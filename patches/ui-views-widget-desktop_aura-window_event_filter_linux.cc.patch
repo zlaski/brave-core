@@ -1,0 +1,78 @@
+diff --git a/ui/views/widget/desktop_aura/window_event_filter_linux.cc b/ui/views/widget/desktop_aura/window_event_filter_linux.cc
+index e9581db1039aab371175b6bac2fb412fea1be876..10a08894ec3e4d7706406ddb5e01c1ac2f82a33e 100644
+--- a/ui/views/widget/desktop_aura/window_event_filter_linux.cc
++++ b/ui/views/widget/desktop_aura/window_event_filter_linux.cc
+@@ -36,34 +36,46 @@ WindowEventFilterLinux::~WindowEventFilterLinux() {
+   desktop_window_tree_host_->window()->RemovePreTargetHandler(this);
+ }
+ 
+-void WindowEventFilterLinux::HandleMouseEventWithHitTest(
++void WindowEventFilterLinux::HandleLocatedEventWithHitTest(
+     int hit_test,
+-    ui::MouseEvent* event) {
+-  if (event->type() == ui::ET_MOUSE_PRESSED) {
+-    int previous_click_component = HTNOWHERE;
+-    if (event->IsLeftMouseButton()) {
+-      previous_click_component = click_component_;
+-      click_component_ = hit_test;
+-    }
++    ui::LocatedEvent* event) {
++  if (event->type() != ui::ET_MOUSE_PRESSED)
++    return;
+ 
+-    if (hit_test == HTCAPTION) {
+-      OnClickedCaption(event, previous_click_component);
+-    } else if (hit_test == HTMAXBUTTON) {
+-      OnClickedMaximizeButton(event);
+-    } else if (desktop_window_tree_host_->GetContentWindow()->GetProperty(
+-                   aura::client::kResizeBehaviorKey) &
+-               aura::client::kResizeBehaviorCanResize) {
+-      MaybeDispatchHostWindowDragMovement(hit_test, event);
+-    }
++  if (event->IsMouseEvent() &&
++      HandleMouseEventWithHitTest(hit_test, event->AsMouseEvent())) {
+     return;
+   }
+ 
+-  if (event->type() == ui::ET_MOUSE_DRAGGED) {
++  if (desktop_window_tree_host_->GetContentWindow()->GetProperty(
++          aura::client::kResizeBehaviorKey) &
++      aura::client::kResizeBehaviorCanResize) {
+     MaybeDispatchHostWindowDragMovement(hit_test, event);
+-    return;
+   }
+ }
+ 
++bool WindowEventFilterLinux::HandleMouseEventWithHitTest(
++    int hit_test,
++    ui::MouseEvent* event) {
++  int previous_click_component = HTNOWHERE;
++  if (event->IsLeftMouseButton()) {
++    previous_click_component = click_component_;
++    click_component_ = hit_test;
++  }
++
++  if (hit_test == HTCAPTION) {
++    OnClickedCaption(event, previous_click_component);
++    return true;
++  }
++
++  if (hit_test == HTMAXBUTTON) {
++    OnClickedMaximizeButton(event);
++    return true;
++  }
++
++  return false;
++}
++
+ void WindowEventFilterLinux::OnClickedCaption(ui::MouseEvent* event,
+                                               int previous_click_component) {
+   ui::LinuxUi::WindowFrameActionSource action_type;
+@@ -85,6 +97,7 @@ void WindowEventFilterLinux::OnClickedCaption(ui::MouseEvent* event,
+       return;
+     }
+   } else {
++    MaybeDispatchHostWindowDragMovement(HTCAPTION, event);
+     return;
+   }
+ 
