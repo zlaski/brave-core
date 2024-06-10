@@ -1061,7 +1061,7 @@ Permissions you've already given to websites and apps may apply to this account.
           Brave needs to verify it’s you before some data can be saved in your Brave sync chain and used on all your devices. If you sign out, this data will stay on this device.
         </message>
         <message name="IDS_CHROME_SIGNOUT_CONFIRMATION_PROMPT_UNSYNCED_BODY" desc="This is the subtitle of an error message dialog that appears when the user opens the Brave Profile Menu and chooses 'Sign out of Brave'. The error message appears when the user tries to sign out immediately after having saved saved some data (like a password or payment method) to Brave and Brave hasn't had time to save that data to the user's Brave sync chain yet. This subtitle is after the 'Some data isn't saved yet' string. The tone should be cautionary, because we want to explain to the user that their data is not saved to their Brave sync chain. This string asks the user to wait a few minutes before trying to sign out again.">
-          Some of your Brave data hasn't been saved in your Brave sync chain yet. Try waiting a few minutes before signing out.
+          Some of your Brave data hasn't been saved in your Brave sync chain yet. Try waiting a few minutes before signing out. If you sign out now, this data will be deleted.
         </message>
         <message name="IDS_CLOSE_WARNING_FOR_CLEAR_COOKIES_ON_EXIT_TEXT" desc="Body of a notice displayed when closing the last Brave window, to inform the user about a change in the way the 'Clear cookie on exit' setting works.">
           You’ll be signed out of most sites when you close all Brave windows, except your Brave sync chain if you’re signed in to Brave. To let sites remember you, <ph name="SETTINGS_LINK">$1<ex>go to settings</ex></ph>.
@@ -1439,6 +1439,12 @@ Permissions you've already given to websites and apps may apply to this account.
       <!-- Desktop Capture -->
       <message name="IDS_DESKTOP_MEDIA_PICKER_SOURCE_TYPE_TAB" desc="Text for the button on the window picker dialog, clicking which takes one to tab sharing">
         Brave Tab
+      </message>
+      <message name="IDS_DESKTOP_MEDIA_PICKER_SCREEN_PERMISSION_TEXT_MAC" desc="Instructive text for how to enable screen recording on Mac when trying to share a screen.">
+        To share your screen, allow screen recording for Brave in System Preferences
+      </message>
+      <message name="IDS_DESKTOP_MEDIA_PICKER_WINDOW_PERMISSION_TEXT_MAC" desc="Instructive text for how to enable screen recording on Mac when trying to share a window.">
+        To share your window, allow screen recording for Brave in System Preferences
       </message>
 
       <!-- Runtime permission strings -->
@@ -2018,6 +2024,14 @@ Permissions you've already given to websites and apps may apply to this account.
             Make Brave faster
           </message>
         </if>
+      </if>
+
+      <!-- Performance Intervention Dialog strings -->
+      <!-- TODO(crbug.com/341709409): Finalize the intervention strings and mark them as translateable -->
+      <if expr="not is_android">
+        <message name="IDS_PERFORMANCE_INTERVENTION_DIALOG_BODY" desc="Body text for a dialog suggesting users to deactivate certain tabs to improve performance." translateable="false">
+          To improve your browsing experience, Brave recommends deactivating these background tabs:
+        </message>
       </if>
 
       <!-- Delete Browsing Data -->

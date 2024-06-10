@@ -419,6 +419,9 @@ Permissions you've already given to websites and apps may apply to this account.
           </if>
       </if>
 
+      <if expr="not is_android">
+        </if>
+
       <if expr="not is_android and not is_chromeos">
         </if>
       <if expr="is_macosx">

@@ -84,6 +84,9 @@
   <if expr="not is_chromeos">
     </if>
 
+  <if expr="chrome_root_store_cert_management_ui">
+    </if>
+
   <if expr="use_nss_certs">
     <if expr="is_chromeos">
       </if>

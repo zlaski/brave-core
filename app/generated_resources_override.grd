@@ -643,9 +643,6 @@ are declared in tools/grit/grit_rule.gni.
         </if>
       <if expr="not use_titlecase">
         </if>
-      <message name="IDS_USER_NOTES_MENU_OPEN_IN_INCOGNITO" desc="Menu description for opening a page with notes in a private window.">
-        Open in Private Window
-      </message>
       <if expr="is_macosx">
         </if>
       <if expr="use_titlecase">
@@ -654,6 +651,15 @@ are declared in tools/grit/grit_rule.gni.
         </if>
       <if expr="not is_android">
         </if>
+
+      <if expr="_google_chrome">
+        <if expr="not is_android">
+          <if expr="use_titlecase">
+            </if>
+          <if expr="not use_titlecase">
+            </if>
+          </if>
+      </if>
 
       <if expr="_google_chrome">
         <if expr="not is_android">
@@ -827,7 +833,7 @@ are declared in tools/grit/grit_rule.gni.
       <if expr="use_titlecase">
         </if>
 
-    <if expr="use_titlecase">
+        <if expr="use_titlecase">
         </if>
       <if expr="not use_titlecase">
         </if>
@@ -1305,6 +1311,12 @@ are declared in tools/grit/grit_rule.gni.
         </if>
     </if>
     <if expr="not is_android">
+      </if>
+    <if expr="not is_android">
+        <if expr="use_titlecase">
+        </if>
+      <if expr="not use_titlecase">
+        </if>
       </if>
     <if expr="is_android">
       </if>
