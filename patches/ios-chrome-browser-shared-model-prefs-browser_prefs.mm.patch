@@ -1,16 +1,16 @@
 diff --git a/ios/chrome/browser/shared/model/prefs/browser_prefs.mm b/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
-index b6aa1c842a0d9fdefe53ddbe5ef42c7f7be48bef..57124423785a749489887d4eec96dbf7e97dff39 100644
+index eb805a368226868dc01d9e79ecc0984004daefa7..8ee54aee29c1b723768c5443c8bb26bb315577fb 100644
 --- a/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
 +++ b/ios/chrome/browser/shared/model/prefs/browser_prefs.mm
-@@ -544,6 +544,7 @@ void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
-   registry->RegisterStringPref(kIOSChromeNextVersionKey, std::string());
-   registry->RegisterStringPref(kIOSChromeUpgradeURLKey, std::string());
-   registry->RegisterTimePref(kLastInfobarDisplayTimeKey, base::Time());
+@@ -564,6 +564,7 @@ void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
+   // Bottom omnibox preferences.
+   registry->RegisterBooleanPref(prefs::kBottomOmnibox, false);
+   registry->RegisterBooleanPref(prefs::kBottomOmniboxByDefault, false);
 +  BRAVE_REGISTER_LOCAL_STATE_PREFS
  }
  
  void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
-@@ -831,6 +832,7 @@ void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
+@@ -849,6 +850,7 @@ void RegisterBrowserStatePrefs(user_prefs::PrefRegistrySyncable* registry) {
  
    registry->RegisterIntegerPref(prefs::kIosSyncSegmentsNewTabPageDisplayCount,
                                  0);
