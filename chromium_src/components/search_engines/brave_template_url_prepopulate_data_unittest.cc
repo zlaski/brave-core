@@ -68,15 +68,17 @@ class BraveTemplateURLPrepopulateDataTest : public testing::Test {
         TemplateURLPrepopulateData::kBraveCurrentDataVersion);
   }
 
-  void CheckForCountry(char digit1, char digit2, int prepopulate_id) {
+  void CheckForCountry(char digit1,
+                       char digit2,
+                       const PrepopulatedEngine& engine) {
     prefs_.SetInteger(kCountryIDAtInstall, digit1 << 8 | digit2);
     prefs_.SetInteger(prefs::kBraveDefaultSearchVersion,
                       TemplateURLPrepopulateData::kBraveCurrentDataVersion);
-    size_t default_index;
-    std::vector<std::unique_ptr<TemplateURLData>> t_urls =
-        TemplateURLPrepopulateData::GetPrepopulatedEngines(
-            &prefs_, &search_engine_choice_service_, &default_index);
-    EXPECT_EQ(prepopulate_id, t_urls[default_index]->prepopulate_id);
+    std::unique_ptr<TemplateURLData> fallback_t_url_data =
+        TemplateURLPrepopulateData::GetPrepopulatedFallbackSearch(
+            &prefs_, &search_engine_choice_service_);
+    EXPECT_EQ(fallback_t_url_data->keyword(), engine.keyword);
+    EXPECT_EQ(fallback_t_url_data->prepopulate_id, engine.id);
   }
 
  protected:
@@ -119,8 +121,8 @@ TEST_F(BraveTemplateURLPrepopulateDataTest, UniqueIDs) {
 
   for (int country_id : kCountryIds) {
     prefs_.SetInteger(kCountryIDAtInstall, country_id);
-    std::vector<std::unique_ptr<TemplateURLData>> urls = GetPrepopulatedEngines(
-        &prefs_, &search_engine_choice_service_, nullptr);
+    std::vector<std::unique_ptr<TemplateURLData>> urls =
+        GetPrepopulatedEngines(&prefs_, &search_engine_choice_service_);
     std::set<int> unique_ids;
     for (auto& url : urls) {
       ASSERT_TRUE(unique_ids.find(url->prepopulate_id) == unique_ids.end());
@@ -131,10 +133,9 @@ TEST_F(BraveTemplateURLPrepopulateDataTest, UniqueIDs) {
 
 // Verifies that each prepopulate data entry has required fields
 TEST_F(BraveTemplateURLPrepopulateDataTest, ProvidersFromPrepopulated) {
-  size_t default_index;
   std::vector<std::unique_ptr<TemplateURLData>> t_urls =
       TemplateURLPrepopulateData::GetPrepopulatedEngines(
-          &prefs_, &search_engine_choice_service_, &default_index);
+          &prefs_, &search_engine_choice_service_);
 
   // Ensure all the URLs have the required fields populated.
   ASSERT_FALSE(t_urls.empty());
@@ -154,119 +155,119 @@ TEST_F(BraveTemplateURLPrepopulateDataTest, ProvidersFromPrepopulated) {
 // Verifies default search provider for locale
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForArgentina) {
-  CheckForCountry('A', 'R', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('A', 'R', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForIndia) {
-  CheckForCountry('I', 'N', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('I', 'N', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForBrazil) {
-  CheckForCountry('B', 'R', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('B', 'R', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForUSA) {
-  CheckForCountry('U', 'S', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('U', 'S', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForGermany) {
-  CheckForCountry('D', 'E', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('D', 'E', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForFrance) {
-  CheckForCountry('F', 'R', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('F', 'R', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForGreatBritain) {
-  CheckForCountry('G', 'B', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('G', 'B', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForCanada) {
-  CheckForCountry('C', 'A', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('C', 'A', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForAustralia) {
-  CheckForCountry('A', 'U', PREPOPULATED_ENGINE_ID_GOOGLE);
+  CheckForCountry('A', 'U', TemplateURLPrepopulateData::google);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForNewZealand) {
-  CheckForCountry('N', 'Z', PREPOPULATED_ENGINE_ID_GOOGLE);
+  CheckForCountry('N', 'Z', TemplateURLPrepopulateData::google);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForIreland) {
-  CheckForCountry('I', 'E', PREPOPULATED_ENGINE_ID_GOOGLE);
+  CheckForCountry('I', 'E', TemplateURLPrepopulateData::google);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForAustria) {
-  CheckForCountry('A', 'T', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('A', 'T', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForSpain) {
-  CheckForCountry('E', 'S', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('E', 'S', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForMexico) {
-  CheckForCountry('M', 'X', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('M', 'X', TemplateURLPrepopulateData::brave);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForRepublicOfArmenia) {
-  CheckForCountry('A', 'M', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('A', 'M', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForRepublicOfAzerbaijan) {
-  CheckForCountry('A', 'Z', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('A', 'Z', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForRepublicOfBelarus) {
-  CheckForCountry('B', 'Y', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('B', 'Y', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForKyrgyzRepublic) {
-  CheckForCountry('K', 'G', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('K', 'G', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForRepublicOfKazakhstan) {
-  CheckForCountry('K', 'Z', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('K', 'Z', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForRepublicOfMoldova) {
-  CheckForCountry('M', 'D', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('M', 'D', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForRussianFederation) {
-  CheckForCountry('R', 'U', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('R', 'U', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForRepublicOfTajikistan) {
-  CheckForCountry('T', 'J', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('T', 'J', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForTurkmenistan) {
-  CheckForCountry('T', 'M', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('T', 'M', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForRepublicOfUzbekistan) {
-  CheckForCountry('U', 'Z', PREPOPULATED_ENGINE_ID_YANDEX);
+  CheckForCountry('U', 'Z', TemplateURLPrepopulateData::yandex_com);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest,
        DefaultSearchProvidersForSouthKorea) {
-  CheckForCountry('K', 'R', PREPOPULATED_ENGINE_ID_NAVER);
+  CheckForCountry('K', 'R', TemplateURLPrepopulateData::naver);
 }
 
 TEST_F(BraveTemplateURLPrepopulateDataTest, DefaultSearchProvidersForItaly) {
-  CheckForCountry('I', 'T', PREPOPULATED_ENGINE_ID_BRAVE);
+  CheckForCountry('I', 'T', TemplateURLPrepopulateData::brave);
 }
