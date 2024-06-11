@@ -33,4 +33,8 @@
         android:order="5"
         android:title="@string/autocomplete_top_sites_title"
         android:persistent="false"/>
+    <org.chromium.components.browser_ui.settings.ChromeBasePreference
+        android:key="quick_search_engine"
+        android:order="6"
+        android:title="@string/quick_search_engine"/>
 </PreferenceScreen>
