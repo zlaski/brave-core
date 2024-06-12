@@ -1,0 +1,13 @@
+diff --git a/chrome/browser/ui/browser_actions.h b/chrome/browser/ui/browser_actions.h
+index 30cfb97230bf0b654e9d410937424feb08a30688..8e27392b600defde13699d4287e84f8e25aff0c6 100644
+--- a/chrome/browser/ui/browser_actions.h
++++ b/chrome/browser/ui/browser_actions.h
+@@ -18,7 +18,7 @@ class BrowserActions {
+   explicit BrowserActions(Browser& browser);
+   BrowserActions(const BrowserActions&) = delete;
+   BrowserActions& operator=(const BrowserActions&) = delete;
+-  ~BrowserActions();
++  virtual ~BrowserActions();
+ 
+   actions::ActionItem* root_action_item() const { return root_action_item_; }
+ 
