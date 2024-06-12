@@ -800,9 +800,6 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_ACCESSIBILITY_LABELS_SEND_ONCE" desc="The context-menu sub-item that asks whether to integrate the accessibility image labeling service of Brave to Brave, for a single use.">
             Just once
           </message>
-          <message name="IDS_CONTENT_CONTEXT_PDF_OCR_MENU_OPTION" desc="The context-menu item that asks whether to use the PDF OCR service to convert image to text.">
-            Extract text from PDF
-          </message>
           <message name="IDS_CONTENT_CONTEXT_RUN_LAYOUT_EXTRACTION" desc="The context-menu item that runs a local machine intelligence model to extract visual layout semantics.">
            Recognize visual layout semantics
           </message>
@@ -2417,6 +2414,9 @@ are declared in tools/grit/grit_rule.gni.
       </message>
       <message name="IDS_DOWNLOAD_BY_EXTENSION_URL" desc="Indicates which extension downloaded this file by name and URL.">
         Downloaded by &lt;a href="<ph name="URL">$1<ex>adblock.com</ex></ph>"&gt;<ph name="EXTENSION">$2<ex>The Best Brave Extension Ever</ex></ph>&lt;/a&gt;
+      </message>
+      <message name="IDS_DOWNLOADS_PAGE_REFERRER_LINE" desc="Line that indicates the referrer url from which a file was downloaded and embeds a corresponding link">
+        From <ph name="BEGIN_LINK">&lt;a&gt;</ph><ph name="DISPLAY_REFERRER_URL">$1<ex>https://example.com</ex></ph><ph name="END_LINK">&lt;/a&gt;</ph>
       </message>
       <message name="IDS_DOWNLOAD_IN_INCOGNITO" desc="Indicates a download was started in Private mode.">
         Downloaded in Private
@@ -4869,9 +4869,6 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_EXTENSION_INSTALL_PROMPT_TITLE" desc="Titlebar of the extension or app installation prompt. Asks the user if they want to install a particular extension or app.">
         Add "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>"?
       </message>
-      <message name="IDS_EXTENSION_UNINSTALL_PROMPT_HEADING" desc="First bold line in the content area of the extension or app uninstallation prompt. Asks the user if they want to uninstall a particular extension or app.">
-        Remove "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>"?
-      </message>
       <message name="IDS_EXTENSION_REQUEST_PROMPT_TITLE" desc="Titlebar of the extension or app request prompt. Asks the user if they want to send installation request for a particular extension or app to their admin.">
         Send a request to your administrator to install "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>"?
       </message>
@@ -4880,9 +4877,6 @@ are declared in tools/grit/grit_rule.gni.
       </message>
       <message name="IDS_EXTENSION_BLOCKED_BY_POLICY_PROMPT_TITLE" desc="Title of the extension or app install blocked prompt. Tells the user they can't install this extension as it's blocked by policy.">
         Your admin has blocked "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>" - App ID <ph name="EXTENSION_ID">$2<ex>abacabadabacabaeabacabadabacabaf</ex></ph>
-      </message>
-      <message name="IDS_EXTENSION_PROGRAMMATIC_UNINSTALL_PROMPT_HEADING" desc="First bold line in the content area of the extension or app uninstallation prompt when the uninstallation is programmatically triggered by another extension. Asks the user if they want to uninstall a particular extension or app.">
-        "<ph name="TRIGGERING_EXTENSION_NAME">$1<ex>Extension Manager</ex></ph>" would like to remove "<ph name="EXTENSION_NAME">$2<ex>Gmail Checker</ex></ph>".
       </message>
       <message name="IDS_EXTENSION_RE_ENABLE_PROMPT_TITLE" desc="Titlebar of the extension or app installation prompt. Asks the user if they want to re-enable a particular extension or app.">
         The newest version of "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>" has been disabled because it requires more permissions.
@@ -6650,6 +6644,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <message name="IDS_PASSWORD_GENERATION_SUGGESTION_GPM" desc="Text shown next to a generated password describing it as a suggestion.">
           Use strong password
         </message>
+        <message name="IDS_PASSWORD_GENERATION_SUGGESTION_GPM_WITHOUT_STRONG" desc="Text shown next to a generated password describing it as a suggestion.">
+          Use suggested password
+        </message>
         <message name="IDS_PASSWORD_GENERATION_SUGGESTION_TRUSTED_ADVICE" desc="Text shown next to a generated password describing it as recommended.">
           Use recommended password
         </message>
@@ -6678,6 +6675,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <if expr="use_titlecase">
         <message name="IDS_PASSWORD_GENERATION_SUGGESTION_GPM" desc="In Title Case: Text shown next to a generated password describing it as a suggestion.">
           Use Strong Password
+        </message>
+        <message name="IDS_PASSWORD_GENERATION_SUGGESTION_GPM_WITHOUT_STRONG" desc="In Title Case: Text shown next to a generated password describing it as a suggestion.">
+          Use Suggested Password
         </message>
         <message name="IDS_PASSWORD_GENERATION_SUGGESTION_TRUSTED_ADVICE" desc="Text shown next to a generated password describing it as recommended.">
           Use Recommended Password
@@ -7871,6 +7871,40 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_WALLPAPER_SEARCH_SIGNED_OUT_TITLE" desc="The title of the message displayed when a wallpaper search request rejected because the user is signed out.">
         Please sign in to continue.
       </message>
+      <if expr="use_titlecase">
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CHOOSE_ICONS_HEADER" desc="Header for the section of Customize Brave for selecting toolbar icons.">
+          Choose Your Toolbar Icons
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_NAVIGATION" desc="The label for the category of actions that involve navigation, such as the home button or opening a new private window.">
+          Navigation
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_YOUR_CHROME" desc="The label for the category of actions that involve your Brave data, such as opening the password manager or clearing browsing data.">
+          Your Brave
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_SIDE_PANELS" desc="The label for the category of actions that open side panels, such as reading mode and show all bookmarks.">
+          Side Panels
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_TOOLS_AND_ACTIONS" desc="The label for the category of actions that open special purpose tools, such as Brave Translate or developer tools.">
+          Tools and Actions
+        </message>
+      </if>
+      <if expr="not use_titlecase">
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CHOOSE_ICONS_HEADER" desc="Header for the section of Customize Brave for selecting toolbar icons.">
+          Choose your toolbar icons
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_NAVIGATION" desc="The label for the category of actions that involve navigation, such as the home button or opening a new private window.">
+          Navigation
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_YOUR_CHROME" desc="The label for the category of actions that involve your Brave data, such as opening the password manager or clearing browsing data.">
+          Your Brave
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_SIDE_PANELS" desc="The label for the category of actions that open side panels, such as reading mode and show all bookmarks.">
+          Side panels
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_TOOLS_AND_ACTIONS" desc="The label for the category of actions that open special purpose tools, such as Brave Translate or developer tools.">
+          Tools and actions
+        </message>
+      </if>
 
       <!-- NTP Modules -->
       <message name="IDS_NTP_MODULES_INFO_BUTTON_TITLE" desc="Text shown in tooltip of info button of an NTP module.">
@@ -8029,28 +8063,22 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <ph name="BREAK">&lt;br&gt;</ph>
         You can manage settings from the card menu or see more options in Customize Brave.
       </message>
-      <message name="IDS_NTP_MODULES_TODAY_CALENDAR_HEADER" desc="Header of the Calendar module when showing today's calendar on the NTP." meaning="Header of the calendar module to indicate that the events shown are for today." translateable="false">
-        Today's Calendar
+      <message name="IDS_NTP_MODULES_GOOGLE_CALENDAR_DISMISS_BUTTON_TEXT" desc="Text shown on the dismiss button of a Brave Calendar NTP card.">
+        Hide Brave Calendar
       </message>
-      <message name="IDS_NTP_MODULES_TODAY_CALENDAR_DISABLE_BUTTON_TEXT" desc="Text shown on the disable button of a NTP card showing today's calendar." translateable="false">
-        Don't show Today's Calendar
+      <message name="IDS_NTP_MODULES_GOOGLE_CALENDAR_DISMISS_TOAST_MESSAGE" desc="Text shown on the toast on the NTP indicating that the Brave Calendar card has been dismissed.">
+        Brave Calendar hidden
       </message>
-      <message name="IDS_NTP_MODULES_TODAY_CALENDAR_DISMISS_BUTTON_TEXT" desc="Text shown on the dismiss button of a NTP card showing today's calendar." translateable="false">
-        Hide Today's Calendar
+      <message name="IDS_NTP_MODULES_GOOGLE_CALENDAR_DISABLE_TOAST_MESSAGE" desc="Text shown on the toast on the NTP indicating that the Brave Calendar card has been disabled.">
+        You won't see Brave Calendar on this page again
       </message>
-      <message name="IDS_NTP_MODULES_TODAY_CALENDAR_DISMISS_TOAST_MESSAGE" desc="Text shown on the toast on the NTP indicating that a card showing today's calendar has been dismissed." translateable="false">
-        Today's Calendar hidden
-      </message>
-      <message name="IDS_NTP_MODULES_TODAY_CALENDAR_DISABLE_TOAST_MESSAGE" desc="Text shown on the toast on the NTP indicating that a card showing today's calendar has been disabled." translateable="false">
-        You won't see Today's Calendar on this page again
-      </message>
-      <message name="IDS_NTP_MODULES_TODAY_CALENDAR_MORE_ACTIONS" desc="Text shown on the tooltip for the 3 dot menu on the card showing today's calendar." translateable="false">
-        More actions for Today's Calendar
+      <message name="IDS_NTP_MODULES_GOOGLE_CALENDAR_MORE_ACTIONS" desc="Text shown on the tooltip for the 3 dot menu on the Brave Calendar card on the NTP.">
+        More actions for Brave Calendar
       </message>
       <message name="IDS_NTP_MODULES_GOOGLE_CALENDAR_TITLE" desc="Title of the Brave Calendar module shown in various UIs for Customize Brave and the NTP." meaning="Title of feature for showing a glimpse of a user's Google Calendar.">
         Brave Calendar
       </message>
-      <message name="IDS_NTP_MODULES_GOOGLE_CALENDAR_DISABLE_BUTTON_TEXT" desc="Text shown on the disable button of a NTP Brave Calendar card." translateable="false">
+      <message name="IDS_NTP_MODULES_GOOGLE_CALENDAR_DISABLE_BUTTON_TEXT" desc="Text shown on the disable button of a NTP Brave Calendar card.">
         Don't show Brave Calendar
       </message>
       <message name="IDS_NTP_MODULES_OUTLOOK_CALENDAR_TITLE" desc="Title of the Brave Calendar module shown in various UIs for Customize Brave and the NTP." meaning="Title of feature for showing a glimpse of a user's Google Calendar.">
@@ -8058,6 +8086,21 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_NTP_MODULES_OUTLOOK_CALENDAR_DISABLE_BUTTON_TEXT" desc="Text shown on the disable button of a NTP Outlook Calendar card." translateable="false">
         Don't show Outlook Calendar
+      </message>
+      <message name="IDS_NTP_MODULES_CALENDAR_JOIN_MEETING_BUTTON_TEXT" desc="Text shown on button on the NTP Calendar cards for joining a video conference." meaning="Click here to join your video conference meetings.">
+        Join Meeting
+      </message>
+      <message name="IDS_NTP_MODULES_CALENDAR_IN_PROGRESS" desc="Text displaying that the meeting is in progress." meaning="The meeting is currently in progress.">
+        In Progress
+      </message>
+      <message name="IDS_NTP_MODULES_CALENDAR_IN_X_MIN" desc="Text displaying that the meeting is in x minutes with shortened version of the word 'minutes'." meaning="The meeting will start in x minutes.">
+        In <ph name="NUM_MIN">$1<ex>5</ex></ph> min
+      </message>
+      <message name="IDS_NTP_MODULES_CALENDAR_IN_X_HR" desc="Text displaying that the meeting is in x hours with shortened version of the word 'hours'." meaning="The meeting will start in x hours.">
+        In <ph name="NUM_HR">$1<ex>5</ex></ph> hr
+      </message>
+      <message name="IDS_NTP_MODULES_CALENDAR_SEE_MORE" desc="Text for a link to the user's calendar." meaning="Click here to view more of the calendar.">
+        See More
       </message>
       <message name="IDS_NTP_MODULES_PHOTOS_TITLE" desc="Title shown in the header of the photos module.">
         From your Google Photos
@@ -8756,6 +8799,12 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_READING_MODE_ENABLE_LINKS_BUTTON_LABEL" desc="Accessibility label for the button that enables all links in reading mode content.">
         Enable links
       </message>
+      <message name="IDS_READING_MODE_DISABLE_IMAGES_BUTTON_LABEL" desc="Accessibility label for the button that disables showing images in reading mode content.">
+        Disable images
+      </message>
+      <message name="IDS_READING_MODE_ENABLE_IMAGES_BUTTON_LABEL" desc="Accessibility label for the button that enables showing images in reading mode content.">
+        Enable images
+      </message>
       <message name="IDS_READING_MODE_COLORS_COMBOBOX_LABEL" desc="Accessibility label for the colors combobox of the reading mode feature.">
         Color theme
       </message>
@@ -8840,8 +8889,14 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_READING_MODE_VOICE_SPEED" desc="Accessibility label for button that opens a dropdown with options for changing the speed of the voice for Read Aloud.">
         Voice speed
       </message>
+      <message name="IDS_READING_MODE_VOICE_SPEED_WITH_RATE" desc="Accessibility label for button that opens a dropdown with options for changing the speed of the voice for Read Aloud.">
+        Voice speed <ph name="RATE">$1<ex>1</ex></ph>x
+      </message>
       <message name="IDS_READING_MODE_VOICE_SELECTION" desc="Accessibility label for button that opens a dropdown with options for changing the voice used for Read Aloud.">
         Voice selection
+      </message>
+      <message name="IDS_READING_MODE_ITEM_SELECTED" desc="Accessibility label for an icon that indicates a menu item in Reading mode is selected.">
+        Selected.
       </message>
       <message name="IDS_READING_MODE_LANGUAGE_MENU" desc="Label for a button that opens a dialog with options for managing language preferences for Read Aloud.">
         Languages...
@@ -8878,6 +8933,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_READING_MODE_LANGUAGE_MENU_NO_INTERNET" desc="Label for status text when no internet prevents a voice from downloading from the Read Aloud language menu.">
         No internet
+      </message>
+      <message name="IDS_READING_MODE_LANGUAGE_MENU_DOWNLOAD_FAILED" desc="Label for generic status text when there was an error when downloading a voice from the Read Aloud language menu and there's no more details on the error.">
+        Download failed
       </message>
       <message name="IDS_READING_MODE_LANGUAGE_MENU_NO_SPACE" desc="Label for status text when no space on disk prevents a voice from downloading from the Read Aloud language menu.">
         To install this language, clear space on your device
@@ -9329,6 +9387,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_TAB_GROUP_EDITOR_BUBBLE_FOOTER_SYNC_ENABLED" desc="Text shown on the footer of the editor bubble when sync is enabled, if visible">
         Your tab groups automatically save and update across all your signed-in devices.
+      </message>
+      <message name="IDS_TAB_GROUP_EDITOR_BUBBLE_FOOTER_LEARN_MORE" desc="Link shown in the tab group editor bubble footer to learn more about tabs">
+        Learn more about tabs
       </message>
       <message name="IDS_ACCNAME_TAB_GROUPS_EVERYTHING" desc="The accessible name for the tab group everything button in the bookmarks bar.">
         Tab groups
@@ -10942,6 +11003,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Brave P
         <message name="IDS_SAVED_TAB_GROUPS_MENU" desc="The title of the 'Tab groups' menu in the App Menu.">
           Tab groups
         </message>
+        <message name="IDS_OPEN_GROUP_IN_BROWSER_MENU" desc="The title of the 'Open group' submenu item in the App Menu.">
+          Open group
+        </message>
       </if>
       <if expr="use_titlecase">
         <message name="IDS_SAVED_TAB_GROUP_TABS_COUNT" desc="In Title Case: Title of unnamed saved tab group in Everything menu. [ICU_Syntax]">
@@ -10952,6 +11016,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Brave P
         </message>
         <message name="IDS_SAVED_TAB_GROUPS_MENU" desc="The title of the 'Tab Groups' menu in the App Menu.">
           Tab Groups
+        </message>
+        <message name="IDS_OPEN_GROUP_IN_BROWSER_MENU" desc="The title of the 'Open Group' submenu item in the App Menu.">
+          Open Group
         </message>
       </if>
 
@@ -10975,19 +11042,29 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Brave P
           Your tab groups now automatically save
         </message>
 
-    <!-- Tab Group Editor Bubble -->
-      <message name="IDS_TAB_GROUP_DELETION_DIALOG_BODY_SYNCED_DELETE" desc=". Displayed in the Tab Group Deletion Dialog.">
-        This will delete the group from all devices signed into Brave with this Brave sync chain.
+    <!-- Tab Group Deletion Dialog -->
+      <message name="IDS_TAB_GROUP_DELETION_DIALOG_MISSING_EMAIL" desc="The email address used in the deletion dialog body when an email is missing.">
+        Brave with this Brave sync chain
       </message>
-      <message name="IDS_TAB_GROUP_DELETION_DIALOG_BODY_SYNCED_UNGROUP" desc="The body text for ungrouping. Displayed in the Tab Group Deletion Dialog.">
-        The tabs will remain open on this device but the group will be deleted from all devices signed into Brave with this Brave sync chain.
+      <message name="IDS_TAB_GROUP_DELETION_DIALOG_BODY_SYNCED_DELETE" desc="The body text for deleting a synced group or groups. Displayed in the Tab Group Deletion Dialog.">
+        {GROUP_COUNT, plural,
+              =1 {This will delete the group from all devices signed into <ph name="EMAIL">$1<ex>user@gmail.com</ex></ph>}
+              other {This will delete the groups from all devices signed into <ph name="EMAIL">$1<ex>user@gmail.com</ex></ph>}}
       </message>
-
-      <message name="IDS_TAB_GROUP_DELETION_DIALOG_BODY_NOT_SYNCED_DELETE" desc=". Displayed in the Tab Group Deletion Dialog.">
-        This will permanently delete the group from your device.
+      <message name="IDS_TAB_GROUP_DELETION_DIALOG_BODY_SYNCED_UNGROUP" desc="The body text for ungrouping a synced group or groups. Displayed in the Tab Group Deletion Dialog.">
+        {GROUP_COUNT, plural,
+          =1 {The tabs will remain open on this device but the group will be deleted from all devices signed into <ph name="EMAIL">$1<ex>user@gmail.com</ex></ph>}
+          other {The tabs will remain open on this device but the groups will be deleted from all devices signed into <ph name="EMAIL">$1<ex>user@gmail.com</ex></ph>}}
       </message>
-      <message name="IDS_TAB_GROUP_DELETION_DIALOG_BODY_NOT_SYNCED_UNGROUP" desc="The body text for ungrouping. Displayed in the Tab Group Deletion Dialog.">
-        The tabs will remain open on this device but the group will be permanently deleted.
+      <message name="IDS_TAB_GROUP_DELETION_DIALOG_BODY_NOT_SYNCED_DELETE" desc="The body text for deleting an unsynced group or groups. Displayed in the Tab Group Deletion Dialog.">
+        {GROUP_COUNT, plural,
+          =1 {This will permanently delete the group from your device.}
+          other {This will permanently delete the groups from your device.}}
+      </message>
+      <message name="IDS_TAB_GROUP_DELETION_DIALOG_BODY_NOT_SYNCED_UNGROUP" desc="The body text for ungrouping an unsynced group or groups. Displayed in the Tab Group Deletion Dialog.">
+        {GROUP_COUNT, plural,
+          =1 {The tabs will remain open on this device but the group will be permanently deleted.}
+          other {The tabs will remain open on this device but the groups will be permanently deleted.}}
       </message>
 
       <if expr="use_titlecase">
@@ -10997,20 +11074,38 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Brave P
         </message>
         <!-- Title -->
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_TITLE_DELETE" desc="The title for deleting. Displayed in the Tab Group Deletion Dialog.">
-          Delete Tab Group?
+          {GROUP_COUNT, plural,
+              =1 {Delete Tab Group?}
+              other {Delete Tab Groups?}}
         </message>
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_TITLE_UNGROUP" desc="The title for ungrouping. Displayed in the Tab Group Deletion Dialog.">
-          Ungroup Tab Group?
+          {GROUP_COUNT, plural,
+              =1 {Ungroup Tab Group?}
+              other {Ungroup Tab Groups?}}
         </message>
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_TITLE_CLOSE_TAB_AND_DELETE" desc="The title for closing the tab and deleting the group. Displayed in the Tab Group Deletion Dialog.">
-          Close Tab(s) and Delete Group?
+          {TAB_COUNT, plural,
+            =1 {{GROUP_COUNT, plural,
+              =1 {Close Tab and Delete Group?}
+              other {Close Tab and Delete Groups?}}}
+            other {{GROUP_COUNT, plural,
+              =1 {Close Tabs and Delete Group?}
+              other {Close Tabs and Delete Groups?}}}}
         </message>
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_TITLE_REMOVE_TAB_AND_DELETE" desc="The title for removing the tab and deleting the group. Displayed in the Tab Group Deletion Dialog.">
-          Remove Tab(s) and Delete Group?
+          {TAB_COUNT, plural,
+            =1 {{GROUP_COUNT, plural,
+              =1 {Remove Tab and Delete Group?}
+              other {Remove Tab and Delete Groups?}}}
+            other {{GROUP_COUNT, plural,
+              =1 {Remove Tabs and Delete Group?}
+              other {Remove Tabs and Delete Groups?}}}}
         </message>
         <!-- OK Text -->
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_OK_TEXT_DELETE" desc=". Displayed in the Tab Group Deletion Dialog.">
-          Delete Group
+          {GROUP_COUNT, plural,
+              =1 {Delete Group}
+              other {Delete Groups}}
         </message>
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_OK_TEXT_UNGROUP" desc="The text displayed on the ok button for ungrouping. Displayed in the Tab Group Deletion Dialog.">
           Ungroup
@@ -11023,20 +11118,38 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Brave P
         </message>
         <!-- Title -->
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_TITLE_DELETE" desc="The title for deleting. Displayed in the Tab Group Deletion Dialog.">
-          Delete tab group?
+          {GROUP_COUNT, plural,
+              =1 {Delete tab group?}
+              other {Delete tab groups?}}
         </message>
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_TITLE_UNGROUP" desc="The title for ungrouping. Displayed in the Tab Group Deletion Dialog.">
-          Ungroup tab group?
+          {GROUP_COUNT, plural,
+              =1 {Ungroup tab group?}
+              other {Ungroup tab groups?}}
         </message>
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_TITLE_CLOSE_TAB_AND_DELETE" desc="The title for closing the tab and deleting the group. Displayed in the Tab Group Deletion Dialog.">
-          Close tab(s) and delete group?
+          {TAB_COUNT, plural,
+            =1 {{GROUP_COUNT, plural,
+              =1 {Close tab and delete group?}
+              other {Close tab and delete groups?}}}
+            other {{GROUP_COUNT, plural,
+              =1 {Close tabs and delete group?}
+              other {Close tabs and delete groups?}}}}
         </message>
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_TITLE_REMOVE_TAB_AND_DELETE" desc="The title for removing the tab and deleting the group. Displayed in the Tab Group Deletion Dialog.">
-          Remove tab(s) and delete group?
+          {TAB_COUNT, plural,
+            =1 {{GROUP_COUNT, plural,
+              =1 {Remove tab and delete group?}
+              other {Remove tab and delete groups?}}}
+            other {{GROUP_COUNT, plural,
+              =1 {Remove tabs and delete group?}
+              other {Remove tabs and delete groups?}}}}
         </message>
         <!-- OK Text -->
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_OK_TEXT_DELETE" desc=". Displayed in the Tab Group Deletion Dialog.">
-          Delete group
+          {GROUP_COUNT, plural,
+              =1 {Delete group}
+              other {Delete groups}}
         </message>
         <message name="IDS_TAB_GROUP_DELETION_DIALOG_OK_TEXT_UNGROUP" desc="The text displayed on the ok button for ungrouping. Displayed in the Tab Group Deletion Dialog.">
           Ungroup
@@ -12557,14 +12670,8 @@ This can include information about installed software, files, your browser, and 
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_MANAGED_BY_DISCLAIMER" desc="Enterprise disclaimer for a managed account in the signin interception bubble, with the manager domain name.">
           This new profile will be managed by <ph name="DOMAIN">$1<ex>example.com</ex></ph>. <ph name="BEGIN_LINK">&lt;a href="$2" target="_blank"&gt;<ex>https://help.google.com/articleLink</ex></ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
         </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_IPH_TITLE_SIGNIN" desc="This string is the headline of a confirmation message, which is intended to help users understand that they have been signed in to Brave. The user previously signed in to a Brave service (like Gmail or Maps), and saw the Brave Signin Bubble intercept; when asked whether the user wanted to sign in to Brave as well, the user selected yes. Now, this confirmation appears at the top right of Brave (pointing at the Profile Menu) to confirm that their choice was effective. This headline string comes before the 'When you sign in on this device, you get your passwords and more from your Brave sync chain' string. We are focusing on the benefit that user enjoys, now that they're signed in to Brave. The tone should be welcoming.">
-          Welcome, <ph name="PROFILE_NAME">$1<ex>Elisa</ex></ph>
-        </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_IPH_TITLE_SIGNIN_REMINDER" desc="This string is the headline of a reminder message, which is intended to help users understand that they have been signed in to Brave. The user previously signed in to a Brave service (like Gmail or Maps), and saw the Brave Signin Bubble intercept; when asked whether the user wanted to sign in to Brave as well, the user selected yes. After a period of time, this reminder message appears at the top right of Brave (pointing at the Profile Menu) to remind the user that they made this choice a while ago. This headline string comes before the 'You’re signed in to Brave. You’ve got your passwords and more from your Brave sync chain.' string. We are focusing on the benefit that user enjoys, now that they're signed in to Brave. The tone should be welcoming.">
-          Welcome back, <ph name="PROFILE_NAME">$2<ex>Elisa</ex></ph>
-        </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_IPH_TEXT_SIGNIN" desc="This string is the body text of a confirmation message, which is intended to help users understand that they have been signed in to Brave. The user previously signed in to a Brave service (like Gmail or Maps), and saw the Brave Signin Bubble intercept; when asked whether the user wanted to sign in to Brave as well, the user selected yes. Now, this confirmation appears at the top right of Brave (pointing at the Profile Menu) to confirm that their choice was effective. This body text string comes after the 'Welcome, Elisa' string. We are focusing on the benefit that user enjoys, now that they're signed in to Brave. The tone should be welcoming.">
-          When you sign in on this device, you get your passwords and more from your Brave sync chain
+          Welcome back, <ph name="PROFILE_NAME">$1<ex>Elisa</ex></ph>
         </message>
         <if expr="use_titlecase">
           <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_IPH_OK_BUTTON" desc="This button appears on a confirmation message, which is intended to help users understand that they have been signed in to Brave. The user previously signed in to a Brave service (like Gmail or Maps), and saw the Brave Signin Bubble intercept; when asked whether the user wanted to sign in to Brave as well, the user selected yes. Now, this confirmation appears at the top right of Brave (pointing at the Profile Menu) to confirm that their choice was effective. This button string comes after the 'Welcome, Elisa' and 'When you sign in on this device, you get your passwords and more from your Brave sync chain' strings. Users click 'Got it' to convey that they saw the message and want to hide the message.">
@@ -14629,6 +14736,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <message name="IDS_A11Y_ALERT_FASTER_SPLITSCREEN_TOAST" desc="The text for the Faster Splitscreen toast during faster splitscreen setup.">
         Choose a window for this side
         </message>
+        <message name="IDS_A11Y_ALERT_SNAP_GROUP_CREATION" desc="An alert for snap group creation.">
+        Group two side-by-side windows
+        </message>
         <message name="IDS_A11Y_ALERT_SNAP_GROUP_RESIZE_LEFT" desc="An alert for snap group resize.">
         Resized windows to the left
         </message>
@@ -15696,10 +15806,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
          This passkey will be saved only in Windows Hello. It will remain on this device after you close all Private windows.
       </message>
       <message name="IDS_WEBAUTHN_CREATE_PASSKEY_CHOOSE_DEVICE_TITLE" desc="The title of a dialog prompting the user to create a passkey for signing into a website. Refer to Glossary for the meaning of 'passkey'; do not translate it as 'password'.">
-         Create a passkey
-      </message>
-      <message name="IDS_WEBAUTHN_CREATE_PASSKEY_CHOOSE_DEVICE_BODY" desc="The body of a dialog prompting the user to create a passkey for signing into a website. Refer to Glossary for the meaning of 'passkey'; do not translate it as 'password'.">
-         Choose how you want to create a passkey for <ph name="APP_NAME">$1<ex>example.com</ex></ph>
+        Choose where to save your passkey for <ph name="APP_NAME">$1<ex>example.com</ex></ph>
       </message>
       <message name="IDS_WEBAUTHN_USE_PASSKEY_CHOOSE_DEVICE_TITLE" desc="The title of a dialog prompting the user to use a passkey for signing into a website. Refer to Glossary for the meaning of 'passkey'; do not translate it as 'password'.">
          Use your passkey
@@ -15857,6 +15964,12 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_WEBAUTHN_GPM_INCOGNITO_CREATE_DESC" desc="The description of a dialog that is shown when a user is creating a Brave Password Manager passkey while browsing in Private mode. It is explaining to the user that the passkey will continue to exist in the password manager outside of Private mode.">
         This passkey will be saved to your password manager. Anyone with access to it will be able to use this passkey.
+      </message>
+      <message name="IDS_WEBAUTHN_GPM_PIN_OPTION_NUMBERS" desc="A label on the pin options dropdown menu that allows to choose a Brave Password Manager pin with digits only.">
+        Numbers
+      </message>
+      <message name="IDS_WEBAUTHN_GPM_PIN_OPTION_ALPHANUMERIC" desc="A label on the pin options dropdown menu that allows to choose an alphanumeric Brave Password Manager pin.">
+        Letters &amp;&amp; Numbers
       </message>
 
       <!-- Web-modal dialog shown during Digital Credential request -->
@@ -16100,6 +16213,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Don't copy
     </message>
 
+    <!-- Data sharing UI strings -->
+    <message name="IDS_DATA_SHARING_BUBBLE_DIALOG_TITLE" desc="Title of the data sharing bubble">
+      Data Sharing
+    </message>
 
     <!-- Deep scanning open now dialog strings -->
     <message name="IDS_DEEP_SCANNING_DIALOG_OPEN_NOW_TITLE" desc="Title shown in tab modal dialog when the user attempts to open a download while deep scanning is in progress">

@@ -775,6 +775,9 @@
       <message name="IDS_NEWLY_SYNCED_TAB_GROUP_IPH" desc="IPH text highlighting a tab group that was synced from another device">
         New group from your other device
       </message>
+      <message name="IDS_FIND_HIDDEN_TAB_GROUP_IPH" desc="IPH text to hint the user to opening the dedicated tab groups UI surface after hiding a tab group.">
+        You can find all your tab groups here
+      </message>
       <message name="IDS_OPEN_TAB_GROUP_MENU_ITEM" desc="Menu item to open a more detailed view of a tab group.">
         Open
       </message>
@@ -791,6 +794,17 @@
       </message>
       <message name="IDS_AUTO_OPEN_SYNCED_TAB_GROUPS_SUMMARY" desc="A title to show in the top toolbar when the Tabs settings page is open.">
         Automatically open tab groups from other devices
+      </message>
+
+    <!-- Archived tabs strings -->
+      <message name="IDS_ARCHIVED_TABS_DIALOG_TITLE" desc="The toolbar title for the archived tabs dialog.">
+        {TABS_COUNT, plural,
+          =1 {<ph name="TABS_COUNT_ONE">%1$d<ex>1</ex></ph> inactive tab}
+          other {<ph name="TABS_COUNT_MANY">%1$d<ex>8</ex></ph> inactive tabs}
+        }
+      </message>
+      <message name="IDS_ARCHIVED_TABS_DIALOG_CLOSE_ALL_BUTTON" desc="The button title for the archived tabs dialog. Closes all inactive tabs.">
+        Close all inactive tabs
       </message>
     </messages>
   </release>

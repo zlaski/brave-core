@@ -230,24 +230,6 @@
   <message name="IDS_SETTINGS_MAIN_NODE_ANNOTATIONS_SUBTITLE" desc="Subtitle for screen reader main node annotation feature." translateable="false">
     Identify the main landmark in web pages for assistive technology
   </message>
-  <message name="IDS_SETTINGS_PDF_OCR_DOWNLOAD_COMPLETE" desc="Success message when it has downloaded PDF OCR files.">
-    Text recognition files downloaded
-  </message>
-  <message name="IDS_SETTINGS_PDF_OCR_DOWNLOAD_ERROR" desc="Generic error message when it fails to download PDF OCR files.">
-    Can't download text recognition files. Try again later.
-  </message>
-  <message name="IDS_SETTINGS_PDF_OCR_DOWNLOAD_PROGRESS" desc="Download progress indicator after PDF OCR is enabled. The user needs to download certain files for the feature to work.">
-    Downloading text recognition files… <ph name="PERCENT">$1<ex>17</ex></ph>%
-  </message>
-  <message name="IDS_SETTINGS_PDF_OCR_DOWNLOADING" desc="Generic message when it has started downloading PDF OCR files.">
-    Downloading text recognition files
-  </message>
-  <message name="IDS_SETTINGS_PDF_OCR_TITLE" desc="Description for screen reader pdf ocr feature.">
-    Extract text from PDF
-  </message>
-  <message name="IDS_SETTINGS_PDF_OCR_SUBTITLE" desc="Subtitle for screen reader pdf ocr feature.">
-    Scan PDF to extract text for assistive technology
-  </message>
   <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_TITLE" desc="Name of the setting to enable Live Caption feature.">
     Live Caption
   </message>
@@ -387,6 +369,9 @@
   </message>
   <message name="IDS_SETTINGS_SHOW_TAB_GROUPS_IN_BOOKMARKS_BAR" desc="Label for the checkbox which enables or disables showing saved tab groups in bookmarks bar.">
     Show tab groups in bookmarks
+  </message>
+  <message name="IDS_SETTINGS_AUTO_PIN_NEW_TAB_GROUPS" desc="Label for the checkbox which enables or disables auto pin new tab groups.">
+    Automatically pin new tab groups created on any device to the bookmarks
   </message>
   <message name="IDS_SETTINGS_HOVER_CARD_TITLE" desc="Title for the section in appearance settings for configuring what gets displayed in tab hovercards.">
     Tab hover preview card
@@ -1184,9 +1169,6 @@
   </message>
   <message name="IDS_SETTINGS_CLEAR_PERIOD_NOT_SELECTED" desc="This is the text that is shown in the clear browsing data time range dropdown until the user selected a time range from this dropdown.">
     Select a time range
-  </message>
-  <message name="IDS_SETTINGS_CLEAR_BROWSING_DATA_TIME_PERIOD_REQUIRED_ANNOUNCEMENT" translateable="false" desc="This text is for the Clear Browsing Data dialog but does not show in the dialog UI. If the user is a screen reader user, did not select a time period for deletion, and clicked the 'Clear' button, then this text is read out by the screen reader before the focus is moved to the time period dropdown.">
-    Please select a time range
   </message>
   <message name="IDS_SETTINGS_NOTIFICATION_WARNING" desc="A warning that notifications will be disabled by deleting cookies for this site.">
     Notifications will be disabled
@@ -3985,8 +3967,17 @@
   <message name="IDS_SETTINGS_PERSONALIZE_GOOGLE_SERVICES_LINKED_SERVICES_TITLE" desc="This string is found on a link in Brave's Advanced Sync settings. When the user taps it, the link takes the user to 'Linked Brave services' in the Brave sync chain's Data &amp; privacy settings. The link is on a setting that users see in Brave's Advanced Sync settings. This text should match the branded term 'linked Brave services' in Glossary Manager: https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=517bace2.">
     Linked Brave services
   </message>
+  <message name="IDS_SETTINGS_SIGNIN_CHROME_SIGNIN_OPTION_PLACEHOLDER" desc="Placeholder for the dropdown list of options for the setting 'Sign in to Brave when you sign in to other Brave services'. This choice is not selectable and only exist and shown if the user did not do any prior choice. It will be overriden by any choice made by the user.">
+    Select an option
+  </message>
+  <message name="IDS_SETTINGS_SIGNIN_CHROME_SIGNIN_OPTION_SIGNIN" desc="One of three options for the setting is called 'Sign in to Brave when you sign in to other Brave services'. When the user chooses this option, the user will automatically sign in to Brave after they sign in to a Brave service (like Gmail) using Brave. The verb tense should be descriptive, not imperative.">
+    Sign in
+  </message>
+  <message name="IDS_SETTINGS_SIGNIN_CHROME_SIGNIN_OPTION_DO_NOT_SIGNIN" desc="One of three options for the setting is called 'Sign in to Brave when you sign in to other Brave services'. When the user chooses this option, the user will NOT automatically sign in to Brave after they sign in to a Brave service (like Gmail) using Brave. The verb tense should be descriptive, not imperative.">
+    Don’t sign in
+  </message>
   <message name="IDS_SETTINGS_SIGNIN_CHROME_SIGNIN_OPTION_ALWAYS_ASK" desc="One of three options for the setting is called 'Sign in to Brave when you sign in to other Brave services'. When the user chooses this option, the user will be asked whether they want to sign in to Brave after they sign in to a Brave service (like Gmail) using Brave. The verb tense should be descriptive, not imperative.">
-    Ask me every time
+    Ask every time
   </message>
 
   <if expr="not use_titlecase">
