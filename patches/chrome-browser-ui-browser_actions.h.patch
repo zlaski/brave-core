@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/browser_actions.h b/chrome/browser/ui/browser_actions.h
-index 30cfb97230bf0b654e9d410937424feb08a30688..8e27392b600defde13699d4287e84f8e25aff0c6 100644
+index 11bf7f4960907f446267754344ddc7a19ae43a18..64e0c7e880baabda424af66d4176df916d5ebd6c 100644
 --- a/chrome/browser/ui/browser_actions.h
 +++ b/chrome/browser/ui/browser_actions.h
 @@ -18,7 +18,7 @@ class BrowserActions {
@@ -9,5 +9,5 @@ index 30cfb97230bf0b654e9d410937424feb08a30688..8e27392b600defde13699d4287e84f8e
 -  ~BrowserActions();
 +  virtual ~BrowserActions();
  
-   actions::ActionItem* root_action_item() const { return root_action_item_; }
+   static std::u16string GetCleanTitleAndTooltipText(std::u16string string);
  
