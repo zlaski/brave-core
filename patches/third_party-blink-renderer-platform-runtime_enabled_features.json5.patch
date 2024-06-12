@@ -1,5 +1,5 @@
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-index 456eb2c56b5a5461b300ddbca7897d6eb926382e..64655b83ba92a099658c05ad3e6776220e650340 100644
+index d619043fc13058850a7d33364e1a911ba8f82657..cc880ae445cc106a823ecd925cba35b7091d95c0 100644
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 @@ -1694,6 +1694,7 @@
@@ -18,7 +18,7 @@ index 456eb2c56b5a5461b300ddbca7897d6eb926382e..64655b83ba92a099658c05ad3e677622
      },
      {
        name: "FileSystemAccessLockingScheme",
-@@ -2512,6 +2514,7 @@
+@@ -2514,6 +2516,7 @@
      {
        name: "MiddleClickAutoscroll",
        status: "test",
@@ -26,7 +26,7 @@ index 456eb2c56b5a5461b300ddbca7897d6eb926382e..64655b83ba92a099658c05ad3e677622
      },
      {
        name: "MobileLayoutTheme",
-@@ -3563,6 +3566,7 @@
+@@ -3560,6 +3563,7 @@
      {
        name: "Serial",
        status: {"Android": "", "default": "stable"},

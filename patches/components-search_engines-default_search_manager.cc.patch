@@ -1,5 +1,5 @@
 diff --git a/components/search_engines/default_search_manager.cc b/components/search_engines/default_search_manager.cc
-index 7454160344241e757ce378e71f3f0cf3e83f0914..5d180d6e62817682f42703cd28665287db6db642 100644
+index 48624d57ed3c6a5e983b5b1f36310f283a6bdd2f..60745d02e06e769073d9694ad8b6349619b7db22 100644
 --- a/components/search_engines/default_search_manager.cc
 +++ b/components/search_engines/default_search_manager.cc
 @@ -395,6 +395,7 @@ void DefaultSearchManager::LoadDefaultSearchEngineFromPrefs() {

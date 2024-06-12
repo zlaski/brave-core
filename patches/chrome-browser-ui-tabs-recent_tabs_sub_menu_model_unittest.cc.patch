@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/tabs/recent_tabs_sub_menu_model_unittest.cc b/chrome/browser/ui/tabs/recent_tabs_sub_menu_model_unittest.cc
-index 6a2250e838812b0fc5c56df725258b1a877c6a61..59f21e0045f9fbad2399bb7068d60748419d2f39 100644
+index 2d99206f6f577d9112ee3fdbf7e3e5db086ed949..4636d82f6a21cc58af0a086bffd1dd55561453a4 100644
 --- a/chrome/browser/ui/tabs/recent_tabs_sub_menu_model_unittest.cc
 +++ b/chrome/browser/ui/tabs/recent_tabs_sub_menu_model_unittest.cc
-@@ -175,6 +175,7 @@ class RecentTabsSubMenuModelTest : public BrowserWithTestWindowTest,
+@@ -164,6 +164,7 @@ class RecentTabsSubMenuModelTest : public BrowserWithTestWindowTest {
      helper->VerifyExport(session_sync_service_->GetOpenTabsUIDelegate());
    }
  
