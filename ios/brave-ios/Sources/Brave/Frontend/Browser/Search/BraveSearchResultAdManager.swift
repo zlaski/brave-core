@@ -15,9 +15,9 @@ class BraveSearchResultAdManager: NSObject {
 
   private var searchResultAds = [String: BraveAds.SearchResultAdInfo]()
 
-  init?(url: URL, rewards: BraveRewards, isPrivateBrowsing: Bool) {
+  init?(url: URL, rewards: BraveRewards, isPrivateBrowsing: Bool, isAggressiveAdsBlocking: Bool) {
     if !BraveAds.shouldSupportSearchResultAds() || !BraveSearchManager.isValidURL(url)
-      || isPrivateBrowsing
+      || isPrivateBrowsing || isAggressiveAdsBlocking
     {
       return nil
     }
