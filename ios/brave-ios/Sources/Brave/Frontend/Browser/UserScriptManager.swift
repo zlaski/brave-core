@@ -182,7 +182,13 @@ class UserScriptManager {
           ? YoutubeQualityScriptHandler.userScript : nil
       case .braveLeoAIChat:
         return Preferences.UserScript.leo.value ? BraveLeoScriptHandler.userScript : nil
-      case .braveTranslate: return BraveTranslateScriptHandler.userScript
+      case .braveTranslate:
+        #if compiler(>=6.0)
+        if #available(iOS 18.0, *) {
+          return BraveTranslateScriptHandler.userScript
+        }
+        #endif
+        return nil
       }
     }
 
