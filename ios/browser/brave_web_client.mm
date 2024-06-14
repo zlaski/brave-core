@@ -56,18 +56,19 @@ void BraveWebClient::AddAdditionalSchemes(Schemes* schemes) const {
 
   schemes->standard_schemes.push_back(kBraveUIScheme);
   schemes->secure_schemes.push_back(kBraveUIScheme);
-  
+
   schemes->standard_schemes.push_back("chrome-untrusted");
   schemes->secure_schemes.push_back("chrome-untrusted");
 }
 
 void BraveWebClient::GetAdditionalWebUISchemes(
-      std::vector<std::string>* additional_schemes) {
+    std::vector<std::string>* additional_schemes) {
   ChromeWebClient::GetAdditionalWebUISchemes(additional_schemes);
-  
-//  additional_schemes->push_back("chrome-untrusted");
+
+  //  additional_schemes->push_back("chrome-untrusted");
 }
 
 bool BraveWebClient::IsAppSpecificURL(const GURL& url) const {
-  return ChromeWebClient::IsAppSpecificURL(url) || url.SchemeIs(kBraveUIScheme) || url.SchemeIs("chrome-untrusted") ;
+  return ChromeWebClient::IsAppSpecificURL(url) ||
+         url.SchemeIs(kBraveUIScheme) || url.SchemeIs("chrome-untrusted");
 }

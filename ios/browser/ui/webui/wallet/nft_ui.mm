@@ -40,15 +40,12 @@ web::WebUIIOSDataSource* CreateAndAddWebUIDataSource(
 
 }  // namespace
 
-
 // kUntrustedNftURL
 UntrustedNftUI::UntrustedNftUI(web::WebUIIOS* web_ui, const GURL& url)
     : web::WebUIIOSController(web_ui, url.host()) {
-  web::WebUIIOSDataSource* untrusted_source 
-      = CreateAndAddWebUIDataSource(web_ui, url.host(),
-                                       kNftDisplayGenerated,
-                                       kNftDisplayGeneratedSize,
-                                       IDR_BRAVE_WALLET_NFT_DISPLAY_HTML);
+  web::WebUIIOSDataSource* untrusted_source = CreateAndAddWebUIDataSource(
+      web_ui, url.host(), kNftDisplayGenerated, kNftDisplayGeneratedSize,
+      IDR_BRAVE_WALLET_NFT_DISPLAY_HTML);
 
   for (const auto& str : brave_wallet::kLocalizedStrings) {
     std::u16string l10n_str =
@@ -58,10 +55,10 @@ UntrustedNftUI::UntrustedNftUI(web::WebUIIOS* web_ui, const GURL& url)
 
   untrusted_source->AddFrameAncestor(GURL(kBraveUIWalletPageURL));
   untrusted_source->AddFrameAncestor(GURL(kBraveUIWalletPanelURL));
-//  webui::SetupWebUIDataSource(
-//      untrusted_source,
-//      base::make_span(kNftDisplayGenerated, kNftDisplayGeneratedSize),
-//      IDR_BRAVE_WALLET_NFT_DISPLAY_HTML);
+  //  webui::SetupWebUIDataSource(
+  //      untrusted_source,
+  //      base::make_span(kNftDisplayGenerated, kNftDisplayGeneratedSize),
+  //      IDR_BRAVE_WALLET_NFT_DISPLAY_HTML);
   untrusted_source->OverrideContentSecurityPolicy(
       network::mojom::CSPDirectiveName::ScriptSrc,
       std::string("script-src 'self' chrome-untrusted://resources;"));
@@ -88,10 +85,8 @@ UntrustedNftUI::UntrustedNftUI(web::WebUIIOS* web_ui, const GURL& url)
 
 UntrustedNftUI::~UntrustedNftUI() = default;
 
-bool UntrustedNftUI::OverrideHandleWebUIIOSMessage(
-    const GURL& source_url,
-    std::string_view message) {
-  
+bool UntrustedNftUI::OverrideHandleWebUIIOSMessage(const GURL& source_url,
+                                                   std::string_view message) {
   fprintf(stderr, "MESSAGE WEB_UI_NFT: %s\n", std::string(message).c_str());
   return false;
 }

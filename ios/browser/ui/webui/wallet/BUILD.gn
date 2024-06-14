@@ -13,14 +13,14 @@ source_set("wallet") {
     "blockchain_images_source.mm",
     "brave_wallet_page_ui.h",
     "brave_wallet_page_ui.mm",
+    "nft_ui.h",
+    "nft_ui.mm",
     "wallet_common_ui.h",
     "wallet_common_ui.mm",
     "wallet_handler.h",
     "wallet_handler.mm",
     "wallet_page_handler.h",
     "wallet_page_handler.mm",
-    "nft_ui.h",
-    "nft_ui.mm",
   ]
 
   deps = [

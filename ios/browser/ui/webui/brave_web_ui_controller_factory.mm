@@ -47,7 +47,8 @@ WebUIIOSFactoryFunction GetWebUIIOSFactoryFunction(const GURL& url) {
 
   // This will get called a lot to check all URLs, so do a quick check of other
   // schemes to filter out most URLs.
-  if (!url.SchemeIs(kBraveUIScheme) && !url.SchemeIs(kChromeUIScheme) && !url.SchemeIs(kChromeUIUntrustedScheme)) {
+  if (!url.SchemeIs(kBraveUIScheme) && !url.SchemeIs(kChromeUIScheme) &&
+      !url.SchemeIs(kChromeUIUntrustedScheme)) {
     return nullptr;
   }
 
@@ -67,6 +68,8 @@ WebUIIOSFactoryFunction GetWebUIIOSFactoryFunction(const GURL& url) {
     return &NewWebUIIOS<SkusInternalsUI>;
   } else if (url_host == kWalletPageHost) {
     return &NewWebUIIOS<BraveWalletPageUI>;
+  } else if (url_host == kUntrustedNftHost) {
+    return &NewWebUIIOS<UntrustedNftUI>;
   }
   return nullptr;
 }

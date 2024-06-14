@@ -11,10 +11,10 @@
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "ios/web/public/web_client.h"
+#include "services/network/public/mojom/content_security_policy.mojom.h"
 #include "ui/base/webui/jstemplate_builder.h"
 #include "ui/base/webui/resource_path.h"
 #include "ui/base/webui/web_ui_util.h"
-#include "services/network/public/mojom/content_security_policy.mojom.h"
 
 namespace {
 const char kChromeUIScheme[] = "chrome";
@@ -32,19 +32,19 @@ BraveWebUIDataSource::BraveWebUIDataSource()
 BraveWebUIDataSource::~BraveWebUIDataSource() = default;
 
 void BraveWebUIDataSource::AddString(const std::string& name,
-                                       const std::u16string& value) {
+                                     const std::u16string& value) {
   localized_strings_.Set(name, value);
   replacements_[name] = base::UTF16ToUTF8(value);
 }
 
 void BraveWebUIDataSource::AddString(const std::string& name,
-                                       const std::string& value) {
+                                     const std::string& value) {
   localized_strings_.Set(name, value);
   replacements_[name] = value;
 }
 
 void BraveWebUIDataSource::AddLocalizedString(const std::string& name,
-                                                int ids) {
+                                              int ids) {
   localized_strings_.Set(name, web::GetWebClient()->GetLocalizedString(ids));
   replacements_[name] =
       base::UTF16ToUTF8(web::GetWebClient()->GetLocalizedString(ids));
@@ -81,7 +81,7 @@ bool BraveWebUIDataSource::ShouldReplaceI18nInJS() const {
 }
 
 void BraveWebUIDataSource::AddResourcePath(const std::string& path,
-                                             int resource_id) {
+                                           int resource_id) {
   path_to_idr_map_[path] = resource_id;
 }
 
@@ -135,7 +135,7 @@ std::string BraveWebUIDataSource::GetSource() const {
 }
 
 void BraveWebUIDataSource::StartDataRequest(const std::string& path,
-                                              GotDataCallback callback) {
+                                            GotDataCallback callback) {
   EnsureLoadTimeDataDefaultsAdded();
 
   if (use_strings_js_) {
@@ -157,15 +157,15 @@ std::string BraveWebUIDataSource::GetMimeType(const std::string& path) const {
   if (base::EndsWith(path, ".png", base::CompareCase::INSENSITIVE_ASCII)) {
     return "image/png";
   }
-  
+
   if (base::EndsWith(path, ".gif", base::CompareCase::INSENSITIVE_ASCII)) {
     return "image/gif";
   }
-  
+
   if (base::EndsWith(path, ".jpg", base::CompareCase::INSENSITIVE_ASCII)) {
     return "image/jpg";
   }
-  
+
   if (base::EndsWith(path, ".js", base::CompareCase::INSENSITIVE_ASCII)) {
     return "application/javascript";
   }
@@ -279,8 +279,9 @@ std::string BraveWebUIDataSource::GetContentSecurityPolicyFrameSrc() const {
 }
 
 void BraveWebUIDataSource::EnsureLoadTimeDataDefaultsAdded() {
-  if (load_time_data_defaults_added_)
+  if (load_time_data_defaults_added_) {
     return;
+  }
 
   load_time_data_defaults_added_ = true;
   base::Value::Dict defaults;

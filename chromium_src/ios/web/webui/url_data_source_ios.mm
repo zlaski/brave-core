@@ -142,8 +142,7 @@ std::string URLDataSourceIOS::GetContentSecurityPolicy(
 #define GetContentSecurityPolicyObjectSrc \
   GetContentSecurityPolicyObjectSrc_ChromiumImpl
 
-#define ShouldServiceRequest \
-  ShouldServiceRequest_ChromiumImpl
+#define ShouldServiceRequest ShouldServiceRequest_ChromiumImpl
 
 #include "src/ios/web/webui/url_data_source_ios.mm"
 

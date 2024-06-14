@@ -12,6 +12,7 @@ class UntrustedNftUI : public web::WebUIIOSController {
   UntrustedNftUI(const UntrustedNftUI&) = delete;
   UntrustedNftUI& operator=(const UntrustedNftUI&) = delete;
   ~UntrustedNftUI() override;
-  
-  bool OverrideHandleWebUIIOSMessage(const GURL& source_url, std::string_view message) override;
+
+  bool OverrideHandleWebUIIOSMessage(const GURL& source_url,
+                                     std::string_view message) override;
 };

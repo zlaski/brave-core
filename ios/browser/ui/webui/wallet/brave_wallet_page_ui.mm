@@ -25,6 +25,7 @@
 #include "brave/components/constants/webui_url_constants.h"
 #include "brave/components/ipfs/buildflags/buildflags.h"
 #include "brave/components/l10n/common/localization_util.h"
+#include "brave/components/nft_display/resources/grit/nft_display_generated_map.h"
 #include "brave/ios/browser/brave_wallet/asset_ratio_service_factory.h"
 #include "brave/ios/browser/brave_wallet/bitcoin_wallet_service_factory.h"
 #include "brave/ios/browser/brave_wallet/brave_wallet_ipfs_service_factory.h"
@@ -33,6 +34,7 @@
 #include "brave/ios/browser/brave_wallet/keyring_service_factory.h"
 #include "brave/ios/browser/brave_wallet/swap_service_factory.h"
 #include "brave/ios/browser/brave_wallet/tx_service_factory.h"
+#include "brave/ios/browser/ui/webui/brave_webui_data_source.h"
 #include "brave/ios/browser/ui/webui/wallet/wallet_common_ui.h"
 #include "components/grit/brave_components_resources.h"
 #include "components/grit/brave_components_strings.h"
@@ -44,9 +46,6 @@
 #import "ios/web/public/webui/web_ui_ios_message_handler.h"
 #include "ui/base/accelerators/accelerator.h"
 #include "ui/base/webui/web_ui_util.h"
-
-#include "brave/ios/browser/ui/webui/brave_webui_data_source.h"
-#include "brave/components/nft_display/resources/grit/nft_display_generated_map.h"
 #include "ui/resources/grit/webui_resources.h"
 
 namespace {
@@ -76,11 +75,12 @@ void CreateAndAddUntrustedWebUIDataSource(web::WebUIIOS* web_ui) {
   BraveWebUIDataSource* untrusted_source = new BraveWebUIDataSource();
   web::URLDataSourceIOS::Add(ChromeBrowserState::FromWebUIIOS(web_ui),
                              untrusted_source);
-  
+
   untrusted_source->UseStringsJs();
 
   // Add required resources.
-  untrusted_source->AddResourcePaths(base::make_span(kNftDisplayGenerated, kNftDisplayGeneratedSize));
+  untrusted_source->AddResourcePaths(
+      base::make_span(kNftDisplayGenerated, kNftDisplayGeneratedSize));
   untrusted_source->SetDefaultResource(IDR_BRAVE_WALLET_NFT_DISPLAY_HTML);
 
   for (const auto& str : brave_wallet::kLocalizedStrings) {
@@ -115,7 +115,7 @@ void CreateAndAddUntrustedWebUIDataSource(web::WebUIIOS* web_ui) {
       std::string("img-src 'self' https: data:;"));
 }
 
-}  // namespace
+}  // namespace brave_wallet
 
 BraveWalletPageUI::BraveWalletPageUI(web::WebUIIOS* web_ui, const GURL& url)
     : web::WebUIIOSController(web_ui, url.host()) {
@@ -137,12 +137,12 @@ BraveWalletPageUI::BraveWalletPageUI(web::WebUIIOS* web_ui, const GURL& url)
 
   source->AddBoolean("isAndroid", true);
   source->AddBoolean("isIOS", true);
-      
+
   source->OverrideContentSecurityPolicy(
-        network::mojom::CSPDirectiveName::FrameSrc,
-        std::string("frame-src ") + kUntrustedTrezorURL + " " +
-            kUntrustedLedgerURL + " " + kUntrustedNftURL + " " +
-            kUntrustedLineChartURL + " " + kUntrustedMarketURL + ";");
+      network::mojom::CSPDirectiveName::FrameSrc,
+      std::string("frame-src ") + kUntrustedTrezorURL + " " +
+          kUntrustedLedgerURL + " " + kUntrustedNftURL + " " +
+          kUntrustedLineChartURL + " " + kUntrustedMarketURL + ";");
   source->OverrideContentSecurityPolicy(
       network::mojom::CSPDirectiveName::ImgSrc,
       base::JoinString(
@@ -161,7 +161,7 @@ BraveWalletPageUI::BraveWalletPageUI(web::WebUIIOS* web_ui, const GURL& url)
 
   brave_wallet::AddBlockchainTokenImageSource(
       ChromeBrowserState::FromWebUIIOS(web_ui));
-      
+
   brave_wallet::CreateAndAddUntrustedWebUIDataSource(web_ui);
 
   web_ui->GetWebState()->GetInterfaceBinderForMainFrame()->AddInterface(
