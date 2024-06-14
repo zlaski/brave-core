@@ -58,6 +58,12 @@ export const sendMessageToNftUiFrame = (
   message: CommandMessage
 ) => {
   if (targetWindow && !isComponentInStorybook()) {
+    switch (message.command) {
+      case NftUiCommand.UpdateNFTMetadata: {
+        const { payload } = message as UpdateNFtMetadataMessage
+        console.log('NFT: nft-ui-messages.tsx - sendMessageToNftUiFrame postMessage() for UpdateNFtMetadataMessage icon=' + payload.icon);
+      }
+    }
     targetWindow.postMessage(message, braveNftDisplayOrigin)
   }
 }

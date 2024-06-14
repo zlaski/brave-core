@@ -62,6 +62,7 @@ const App = () => {
 
           case NftUiCommand.UpdateNFTMetadata: {
             const { payload } = message as UpdateNFtMetadataMessage
+            console.log('NFT: nft.tsx received UpdateNFTMetadata event for icon=' + payload.icon);
             setDisplayMode(payload.displayMode)
 
             if (payload.displayMode === 'icon') {
@@ -90,11 +91,31 @@ const App = () => {
     []
   )
 
+  // Current:
   React.useEffect(() => {
+    console.log('NFT: nft.tsx - React.useEffect() - adding event listener');
     // add event listener for postMessage from wallet ui
     window.addEventListener('message', onMessageEventListener)
-    return () => window.removeEventListener('message', onMessageEventListener)
+    return () => {
+      console.log('NFT: nft.tsx - React.useEffect() return - removing event listener');
+      window.removeEventListener('message', onMessageEventListener)
+    }
   }, [onMessageEventListener])
+
+  // Fix 1:
+//  React.useLayoutEffect(() => {
+//    console.log('NFT: nft.tsx - React.useLayoutEffect() - adding event listener');
+//    // add event listener for postMessage from wallet ui
+//    window.addEventListener('message', onMessageEventListener)
+//    return () =>  {
+//     console.log('NFT: nft.tsx - React.useLayoutEffect() return - removing event listener');
+//     window.removeEventListener('message', onMessageEventListener)
+//    }
+//  }, [onMessageEventListener])
+  
+  // Fix 2:
+  //  console.log('NFT: nft.tsx - adding event listener');
+  //  window.addEventListener('message', onMessageEventListener)
 
   return (
     <BrowserRouter>
