@@ -74,6 +74,7 @@ class BraveLocationBarView : public LocationBarView {
 #endif
   // LocationBarView:
   std::vector<views::View*> GetTrailingViews() override;
+  std::vector<views::View*> GetLeadingViews() override;
   void RefreshBackground() override;
   ui::ImageModel GetLocationIcon(LocationIconView::Delegate::IconFetchedCallback
                                      on_icon_fetched) const override;

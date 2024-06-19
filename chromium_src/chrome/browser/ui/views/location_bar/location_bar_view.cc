@@ -18,10 +18,18 @@
 //               If custom padding is provided(text_left is not null), respect
 //               it. Otherwise, set our design value - 5px.
 // Both value could be updated when |should_indent| is true.
-#define BRAVE_LAYOUT_LEADING_DECORATIONS                           \
-  icon_left = GetLayoutConstant(LOCATION_BAR_ELEMENT_PADDING);     \
-  if (text_left == 0 && !location_icon_view_->ShouldShowLabel()) { \
-    text_left = 5;                                                 \
+#define BRAVE_LAYOUT_LEADING_DECORATIONS                                    \
+  icon_left = GetLayoutConstant(LOCATION_BAR_ELEMENT_PADDING);              \
+  if (text_left == 0 && !location_icon_view_->ShouldShowLabel()) {          \
+    text_left = 5;                                                          \
+  }                                                                         \
+  auto left_most = GetLeadingViews();                                       \
+  for (auto* item : left_most) {                                            \
+    if (item->GetVisible()) {                                               \
+      leading_decorations.AddDecoration(                                    \
+          vertical_padding, location_height, false, 0,                      \
+          /*intra_item_padding=*/0, icon_left, permission_dashboard_view_); \
+    }                                                                       \
   }
 
 #define BRAVE_LAYOUT_TRAILING_DECORATIONS                                    \
@@ -51,5 +59,9 @@
 #undef BRAVE_LAYOUT_LEADING_DECORATIONS
 
 std::vector<views::View*> LocationBarView::GetTrailingViews() {
+  return std::vector<views::View*>();
+}
+
+std::vector<views::View*> LocationBarView::GetLeadingViews() {
   return std::vector<views::View*>();
 }

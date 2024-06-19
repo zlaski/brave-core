@@ -294,6 +294,10 @@ std::vector<views::View*> BraveLocationBarView::GetTrailingViews() {
   return views;
 }
 
+std::vector<views::View*> BraveLocationBarView::GetLeadingViews() {
+  return std::vector<views::View*>();
+}
+
 void BraveLocationBarView::RefreshBackground() {
   LocationBarView::RefreshBackground();
 
@@ -358,7 +362,8 @@ void BraveLocationBarView::ChildVisibilityChanged(views::View* child) {
   // the size changes when an icon is shown or hidden. The LocationBarView
   // does not listen to ChildVisibilityChanged events so we must make we Layout
   // and re-caculate trailing decorator positions when a child changes.
-  if (base::Contains(GetTrailingViews(), child)) {
+  if (base::Contains(GetTrailingViews(), child) ||
+      base::Contains(GetLeadingViews(), child)) {
     DeprecatedLayoutImmediately();
     SchedulePaint();
   }
