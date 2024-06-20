@@ -19,8 +19,8 @@ enum class CSPDirectiveName : std::int32_t;
   void OverrideContentSecurityPolicy(                                       \
       network::mojom::CSPDirectiveName directive, const std::string& value) \
       override;                                                             \
-  virtual void AddFrameAncestor(const GURL& frame_ancestor) override;       \
-  virtual void DisableTrustedTypesCSP() override;                           \
+  void AddFrameAncestor(const GURL& frame_ancestor) override;               \
+  void DisableTrustedTypesCSP() override;                                   \
                                                                             \
  private:                                                                   \
   base::flat_map<network::mojom::CSPDirectiveName, std::string>             \

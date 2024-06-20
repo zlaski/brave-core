@@ -3,6 +3,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
+#ifndef BRAVE_IOS_BROWSER_UI_WEBUI_WALLET_NFT_UI_H_
+#define BRAVE_IOS_BROWSER_UI_WEBUI_WALLET_NFT_UI_H_
+
 #include "ios/web/public/webui/web_ui_ios.h"
 #include "ios/web/public/webui/web_ui_ios_controller.h"
 
@@ -12,6 +15,9 @@ class UntrustedNftUI : public web::WebUIIOSController {
   UntrustedNftUI(const UntrustedNftUI&) = delete;
   UntrustedNftUI& operator=(const UntrustedNftUI&) = delete;
   ~UntrustedNftUI() override;
-  
-  bool OverrideHandleWebUIIOSMessage(const GURL& source_url, std::string_view message) override;
+
+  bool OverrideHandleWebUIIOSMessage(const GURL& source_url,
+                                     std::string_view message) override;
 };
+
+#endif  // BRAVE_IOS_BROWSER_UI_WEBUI_WALLET_NFT_UI_H_

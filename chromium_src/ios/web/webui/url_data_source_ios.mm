@@ -1,3 +1,8 @@
+// Copyright (c) 2024 The Brave Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
 #include "ios/web/public/webui/url_data_source_ios.h"
 
 #include "base/containers/span.h"
@@ -5,7 +10,6 @@
 #include "base/strings/strcat.h"
 #include "base/strings/stringprintf.h"
 #include "base/strings/utf_string_conversions.h"
-#include "ios/chrome/browser/shared/model/url/chrome_url_constants.h"
 #include "services/network/public/mojom/content_security_policy.mojom.h"
 
 namespace {
@@ -45,7 +49,6 @@ std::string URLDataSourceIOS::GetContentSecurityPolicyObjectSrc() const {
         network::mojom::CSPDirectiveName::FencedFrameSrc,
         network::mojom::CSPDirectiveName::FormAction,
         network::mojom::CSPDirectiveName::FontSrc,
-        //      network::mojom::CSPDirectiveName::FrameSrc,
         network::mojom::CSPDirectiveName::ImgSrc,
         network::mojom::CSPDirectiveName::MediaSrc,
         network::mojom::CSPDirectiveName::ObjectSrc,
@@ -142,8 +145,7 @@ std::string URLDataSourceIOS::GetContentSecurityPolicy(
 #define GetContentSecurityPolicyObjectSrc \
   GetContentSecurityPolicyObjectSrc_ChromiumImpl
 
-#define ShouldServiceRequest \
-  ShouldServiceRequest_ChromiumImpl
+#define ShouldServiceRequest ShouldServiceRequest_ChromiumImpl
 
 #include "src/ios/web/webui/url_data_source_ios.mm"
 
