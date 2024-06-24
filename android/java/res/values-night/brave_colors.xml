@@ -269,4 +269,8 @@
     <color name="primary_20">#2A118E</color>
     <color name="button_background">#3f39e8</color>
     <color name="systemfeedback_error_text">#ffb1b0</color>
+
+    <color name="text_interactive">#7c91ff</color>
+
+    <color name="icon_default">#a1b2ba</color>
 </resources>
