@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "base/functional/callback_helpers.h"
 #include "base/i18n/time_formatting.h"
@@ -205,12 +206,12 @@ TEST_F(EngineConsumerOAIUnitTest, TestGenerateAssistantResponse) {
   history.push_back(mojom::ConversationTurn::New(
       mojom::CharacterType::HUMAN, mojom::ActionType::SUMMARIZE_SELECTED_TEXT,
       mojom::ConversationTurnVisibility::VISIBLE, human_input, selected_text,
-      std::nullopt));
+      std::nullopt, base::Time::Now(), std::vector<mojom::EditEntryPtr>{}));
 
   history.push_back(mojom::ConversationTurn::New(
       mojom::CharacterType::ASSISTANT, mojom::ActionType::RESPONSE,
       mojom::ConversationTurnVisibility::VISIBLE, assistant_input, std::nullopt,
-      std::nullopt));
+      std::nullopt, base::Time::Now(), std::vector<mojom::EditEntryPtr>{}));
 
   std::string expected_human_input =
       base::StrCat({base::ReplaceStringPlaceholders(

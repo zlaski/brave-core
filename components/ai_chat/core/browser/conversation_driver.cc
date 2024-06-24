@@ -416,7 +416,8 @@ void ConversationDriver::UpdateOrCreateLastAssistantEntry(
     mojom::ConversationTurnPtr entry = mojom::ConversationTurn::New(
         CharacterType::ASSISTANT, mojom::ActionType::RESPONSE,
         ConversationTurnVisibility::VISIBLE, "", std::nullopt,
-        std::vector<mojom::ConversationEntryEventPtr>{});
+        std::vector<mojom::ConversationEntryEventPtr>{}, base::Time::Now(),
+        std::vector<mojom::EditEntryPtr>{});
     chat_history_.push_back(std::move(entry));
   }
 
@@ -868,7 +869,8 @@ void ConversationDriver::AddSubmitSelectedTextError(
   const std::string& question = GetActionTypeQuestion(action_type);
   mojom::ConversationTurnPtr turn = mojom::ConversationTurn::New(
       CharacterType::HUMAN, action_type, ConversationTurnVisibility::VISIBLE,
-      question, selected_text, std::nullopt);
+      question, selected_text, std::nullopt, base::Time::Now(),
+      std::vector<mojom::EditEntryPtr>{});
   AddToConversationHistory(std::move(turn));
   SetAPIError(error);
 }
@@ -925,7 +927,8 @@ void ConversationDriver::SubmitSelectedTextWithQuestion(
     // Use sidebar.
     mojom::ConversationTurnPtr turn = mojom::ConversationTurn::New(
         CharacterType::HUMAN, action_type, ConversationTurnVisibility::VISIBLE,
-        question, selected_text, std::nullopt);
+        question, selected_text, std::nullopt, base::Time::Now(),
+        std::vector<mojom::EditEntryPtr>{});
 
     SubmitHumanConversationEntry(std::move(turn));
   } else {
@@ -1165,7 +1168,7 @@ void ConversationDriver::SubmitSummarizationRequest() {
       CharacterType::HUMAN, mojom::ActionType::SUMMARIZE_PAGE,
       ConversationTurnVisibility::VISIBLE,
       l10n_util::GetStringUTF8(IDS_CHAT_UI_SUMMARIZE_PAGE), std::nullopt,
-      std::nullopt);
+      std::nullopt, base::Time::Now(), std::vector<mojom::EditEntryPtr>{});
   SubmitHumanConversationEntry(std::move(turn));
 }
 
@@ -1329,4 +1332,33 @@ void ConversationDriver::SendFeedback(
                                   : std::nullopt,
                               std::move(on_complete));
 }
+
+void ConversationDriver::ModifyConversation(uint32_t turn_index,
+                                            const std::string& new_text) {
+  if (turn_index >= chat_history_.size()) {
+    return;
+  }
+
+  auto& turn = chat_history_.at(turn_index);
+  if (turn->character_type == CharacterType::ASSISTANT) {  // not supported yet
+    return;
+  }
+
+  std::string sanitized_input = new_text;
+  engine_->SanitizeInput(sanitized_input);
+  if (sanitized_input.empty() || sanitized_input == turn->text) {
+    return;
+  }
+
+  turn->edits.push_back(
+      mojom::EditEntry::New(turn->text, turn->last_edited_time));
+  turn->text = sanitized_input;
+  turn->last_edited_time = base::Time::Now();
+
+  // Modifying human turn, drop anything after this turn_index and resubmit.
+  auto new_turn = std::move(chat_history_.at(turn_index));
+  chat_history_.erase(chat_history_.begin() + turn_index, chat_history_.end());
+  SubmitHumanConversationEntry(std::move(new_turn));
+}
+
 }  // namespace ai_chat

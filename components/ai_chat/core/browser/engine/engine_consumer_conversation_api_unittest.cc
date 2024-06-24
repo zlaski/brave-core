@@ -213,15 +213,18 @@ TEST_F(EngineConsumerConversationAPIUnitTest,
   history.push_back(mojom::ConversationTurn::New(
       mojom::CharacterType::HUMAN, mojom::ActionType::QUERY,
       mojom::ConversationTurnVisibility::VISIBLE,
-      "Which show is this catchphrase from?", "I have spoken.", std::nullopt));
+      "Which show is this catchphrase from?", "I have spoken.", std::nullopt,
+      base::Time::Now(), std::vector<mojom::EditEntryPtr>{}));
   history.push_back(mojom::ConversationTurn::New(
       mojom::CharacterType::ASSISTANT, mojom::ActionType::RESPONSE,
       mojom::ConversationTurnVisibility::VISIBLE, "The Mandalorian.",
-      std::nullopt, std::nullopt));
+      std::nullopt, std::nullopt, base::Time::Now(),
+      std::vector<mojom::EditEntryPtr>{}));
   history.push_back(mojom::ConversationTurn::New(
       mojom::CharacterType::HUMAN, mojom::ActionType::RESPONSE,
       mojom::ConversationTurnVisibility::VISIBLE,
-      "Is it related to a broader series?", std::nullopt, std::nullopt));
+      "Is it related to a broader series?", std::nullopt, std::nullopt,
+      base::Time::Now(), std::vector<mojom::EditEntryPtr>{}));
   std::string expected_events = R"([
     {"role": "user", "type": "pageText", "content": "This is my page. I have spoken."},
     {"role": "user", "type": "pageExcerpt", "content": "I have spoken."},

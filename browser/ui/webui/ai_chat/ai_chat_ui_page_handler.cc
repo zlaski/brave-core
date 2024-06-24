@@ -141,7 +141,8 @@ void AIChatUIPageHandler::SubmitHumanConversationEntry(
 
   mojom::ConversationTurnPtr turn = mojom::ConversationTurn::New(
       CharacterType::HUMAN, mojom::ActionType::UNSPECIFIED,
-      ConversationTurnVisibility::VISIBLE, input, std::nullopt, std::nullopt);
+      ConversationTurnVisibility::VISIBLE, input, std::nullopt, std::nullopt,
+      base::Time::Now(), std::vector<mojom::EditEntryPtr>{});
   active_chat_tab_helper_->SubmitHumanConversationEntry(std::move(turn));
 }
 
@@ -513,6 +514,13 @@ void AIChatUIPageHandler::OnGetPremiumStatus(
     }
 #endif
     std::move(callback).Run(status, std::move(info));
+  }
+}
+
+void AIChatUIPageHandler::ModifyConversation(uint32_t turn_index,
+                                             const std::string& new_text) {
+  if (active_chat_tab_helper_) {
+    active_chat_tab_helper_->ModifyConversation(turn_index, new_text);
   }
 }
 
