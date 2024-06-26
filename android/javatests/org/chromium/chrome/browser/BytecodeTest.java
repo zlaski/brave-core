@@ -1083,7 +1083,6 @@ public class BytecodeTest {
                         ActivityLifecycleDispatcher.class,
                         Supplier.class,
                         BottomSheetController.class,
-                        Supplier.class,
                         TabContentManager.class,
                         TabCreatorManager.class,
                         SnackbarManager.class,
