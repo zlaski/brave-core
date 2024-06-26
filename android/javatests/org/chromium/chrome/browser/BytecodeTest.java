@@ -1808,14 +1808,6 @@ public class BytecodeTest {
         Assert.assertTrue(
                 fieldExists(
                         "org/chromium/chrome/browser/toolbar/ToolbarManager",
-                        "mActivityLifecycleDispatcher"));
-        Assert.assertTrue(
-                fieldExists(
-                        "org/chromium/chrome/browser/toolbar/ToolbarManager",
-                        "mIsWarmOnResumeSupplier"));
-        Assert.assertTrue(
-                fieldExists(
-                        "org/chromium/chrome/browser/toolbar/ToolbarManager",
                         "mTabContentManager"));
         Assert.assertTrue(
                 fieldExists(
