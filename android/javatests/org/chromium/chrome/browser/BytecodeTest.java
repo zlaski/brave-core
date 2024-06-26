@@ -1139,8 +1139,6 @@ public class BytecodeTest {
                         ScrimCoordinator.class,
                         ObservableSupplier.class,
                         BottomSheetController.class,
-                        ActivityLifecycleDispatcher.class,
-                        Supplier.class,
                         TabModelSelector.class,
                         TabContentManager.class,
                         ViewGroup.class,
