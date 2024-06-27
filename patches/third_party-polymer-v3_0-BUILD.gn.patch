@@ -1,5 +1,5 @@
 diff --git a/third_party/polymer/v3_0/BUILD.gn b/third_party/polymer/v3_0/BUILD.gn
-index 6533c5a0aae3420048c2789054eb547e7900aa16..c824568970a62d030e3fe470127ac764196a0b8c 100644
+index 87ce1dffb29f24e501fb2a92645ce3d58e85edbe..99e004cd34743f63004687269fff64b02c3fbfa2 100644
 --- a/third_party/polymer/v3_0/BUILD.gn
 +++ b/third_party/polymer/v3_0/BUILD.gn
 @@ -37,6 +37,7 @@ js_files = [
@@ -10,7 +10,7 @@ index 6533c5a0aae3420048c2789054eb547e7900aa16..c824568970a62d030e3fe470127ac764
    js_files += [
      "iron-a11y-announcer/iron-a11y-announcer.js",
      "iron-behaviors/iron-control-state.js",
-@@ -267,6 +268,7 @@ ts_library("library") {
+@@ -266,6 +267,7 @@ ts_library("library") {
    ]
  
    if (is_chromeos_ash) {
@@ -18,7 +18,7 @@ index 6533c5a0aae3420048c2789054eb547e7900aa16..c824568970a62d030e3fe470127ac764
      definitions += [
        "components-chromium/iron-a11y-announcer/iron-a11y-announcer.d.ts",
        "components-chromium/iron-collapse/iron-collapse.d.ts",
-@@ -292,4 +294,5 @@ ts_library("library") {
+@@ -291,4 +293,5 @@ ts_library("library") {
        "components-chromium/paper-tooltip/paper-tooltip.d.ts",
      ]
    }
