@@ -14,8 +14,7 @@ struct LegalView: View {
 
   @State private var isResponsibilityCheckboxChecked: Bool = false
   @State private var isTermsCheckboxChecked: Bool = false
-  @State private var isShowingCreateNewWallet: Bool = false
-  @State private var isShowingRestoreExistedWallet: Bool = false
+  @State private var isShowingNetworkSelection: Bool = false
 
   private var isContinueDisabled: Bool {
     !isResponsibilityCheckboxChecked || !isTermsCheckboxChecked
@@ -66,11 +65,7 @@ struct LegalView: View {
           }
         }
         Button {
-          if setupOption == .new {
-            isShowingCreateNewWallet = true
-          } else {
-            isShowingRestoreExistedWallet = true
-          }
+          isShowingNetworkSelection = true
         } label: {
           Text(Strings.Wallet.continueButtonTitle)
             .frame(maxWidth: .infinity)
@@ -83,24 +78,12 @@ struct LegalView: View {
     .padding()
     .background(
       NavigationLink(
-        destination: CreateWalletView(
+        destination: OnboardingNetworkSelectionView(
           keyringStore: keyringStore,
           setupOption: setupOption,
           dismissAction: dismissAction
         ),
-        isActive: $isShowingCreateNewWallet,
-        label: {
-          EmptyView()
-        }
-      )
-    )
-    .background(
-      NavigationLink(
-        destination: RestoreWalletView(
-          keyringStore: keyringStore,
-          dismissAction: dismissAction
-        ),
-        isActive: $isShowingRestoreExistedWallet,
+        isActive: $isShowingNetworkSelection,
         label: {
           EmptyView()
         }

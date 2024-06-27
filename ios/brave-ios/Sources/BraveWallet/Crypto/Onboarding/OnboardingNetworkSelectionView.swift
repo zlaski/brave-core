@@ -13,8 +13,12 @@ private struct SharedConstants {
 
 struct OnboardingNetworkSelectionView: View {
 
+  var keyringStore: KeyringStore
+  let setupOption: OnboardingSetupOption
+  // Used to dismiss all of Wallet
+  let dismissAction: () -> Void
   /// All available networks
-  @State var networks: [Selectable<BraveWallet.NetworkInfo>] = []
+  @State var networks: [Selectable<BraveWallet.NetworkInfo>]
   /// If we are fetching networks
   @State private var isLoading: Bool = false
   /// If we are showing testnets section
@@ -24,9 +28,19 @@ struct OnboardingNetworkSelectionView: View {
 
     }
   }
+  @State private var isShowingCreateNewWallet: Bool = false
+  @State private var isShowingRestoreExistedWallet: Bool = false
   @ScaledMetric private var gridItemWidth: CGFloat = SharedConstants.defaultGridItemWidth
 
-  init(networks: [Selectable<BraveWallet.NetworkInfo>]) {
+  init(
+    keyringStore: KeyringStore,
+    setupOption: OnboardingSetupOption,
+    dismissAction: @escaping () -> Void,
+    networks: [Selectable<BraveWallet.NetworkInfo>] = []
+  ) {
+    self.keyringStore = keyringStore
+    self.setupOption = setupOption
+    self.dismissAction = dismissAction
     self._networks = State(wrappedValue: networks)
   }
 
@@ -134,6 +148,43 @@ struct OnboardingNetworkSelectionView: View {
     .safeAreaInset(edge: .bottom) {
       continueButton
     }
+    .transparentUnlessScrolledNavigationAppearance()
+    .background(
+      NavigationLink(
+        destination: CreateWalletView(
+          keyringStore: keyringStore,
+          setupSelections: .init(
+            setupOption: setupOption,
+            networks: networks
+          ),
+          dismissAction: dismissAction
+        ),
+        isActive: $isShowingCreateNewWallet,
+        label: {
+          EmptyView()
+        }
+      )
+    )
+    .background(
+      NavigationLink(
+        destination: RestoreWalletView(
+          keyringStore: keyringStore,
+          setupSelections: .init(
+            setupOption: setupOption,
+            networks: networks
+          ),
+          dismissAction: dismissAction
+        ),
+        isActive: $isShowingRestoreExistedWallet,
+        label: {
+          EmptyView()
+        }
+      )
+    )
+    .task {
+      guard networks.isEmpty else { return }
+      self.networks = await keyringStore.onboardingNetworks()
+    }
   }
 
   // MARK: Subviews
@@ -180,7 +231,11 @@ struct OnboardingNetworkSelectionView: View {
   private var continueButton: some View {
     Button(
       action: {
-
+        if setupOption == .new {
+          isShowingCreateNewWallet = true
+        } else {
+          isShowingRestoreExistedWallet = true
+        }
       },
       label: {
         Text(
@@ -247,6 +302,9 @@ struct OnboardingNetworkSelectionView: View {
 #Preview {
   NavigationView {
     OnboardingNetworkSelectionView(
+      keyringStore: .previewStore,
+      setupOption: .new,
+      dismissAction: {},
       networks: [
         // mandatory networks get sorted to front
         .mockFilecoinMainnet,
