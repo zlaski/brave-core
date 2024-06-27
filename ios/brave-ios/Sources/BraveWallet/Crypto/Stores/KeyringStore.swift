@@ -266,19 +266,38 @@ public class KeyringStore: ObservableObject, WalletObserverStore {
         self?.updateInfo()
       },
       _accountsChanged: { [weak self] in
+        // Ignore while setting up wallet / creating accounts
+        guard self?.isCreatingWallet == false else { return }
         self?.updateInfo()
       },
-      _selectedWalletAccountChanged: { [weak self] _ in
+      _selectedWalletAccountChanged: { [weak self] selectedAccount in
+        // Ignore while setting up wallet / creating accounts
+        guard self?.isCreatingWallet == false else { return }
         self?.updateInfo()
       },
       _selectedDappAccountChanged: { [weak self] _, _ in
+        // Ignore while setting up wallet / creating accounts
+        guard self?.isCreatingWallet == false else { return }
         self?.updateInfo()
       }
     )
     self.rpcServiceObserver = JsonRpcServiceObserver(
       rpcService: rpcService,
-      _chainChangedEvent: { [weak self] _, _, _ in
-        self?.updateInfo()
+      _chainChangedEvent: { [weak self] chainId, coin, _ in
+        Task { @MainActor [self] in
+          // Ignore while setting up wallet / creating accounts
+          guard self?.isCreatingWallet == false else { return }
+          // Verify correct account is selected for the new network.
+          // This could occur from Eth Switch Chain request when Solana account selected.
+          let accountId = await self?.walletService.ensureSelectedAccountForChain(
+            coin: coin,
+            chainId: chainId
+          )
+          if accountId == nil {
+            assertionFailure("Should not have a nil selectedAccount for any network.")
+          }
+          await self?.updateInfo()
+        }
       }
     )
   }
@@ -444,6 +463,8 @@ public class KeyringStore: ObservableObject, WalletObserverStore {
     let mnemonic = await keyringService.createWallet(password: password)
     if mnemonic != nil {
       self.passwordToSaveInBiometric = password
+      let selectedNetworks = networks.compactMap { $0.isSelected ? $0.model : nil }
+      await setupAccounts(selectedNetworks: selectedNetworks)
     }
     isCreatingWallet = false
     await updateInfo()
@@ -469,6 +490,50 @@ public class KeyringStore: ObservableObject, WalletObserverStore {
         }
       }
     }
+  }
+
+  /// Create account(s) as needed for selected networks
+  private func setupAccounts(selectedNetworks: [BraveWallet.NetworkInfo]) async {
+    let allAccounts = await keyringService.allAccounts()
+    var networksNeedingAccount = selectedNetworks
+    // Remove networks already containing an account
+    networksNeedingAccount.removeAll(where: { selectedNetwork in
+      allAccounts.accounts.contains(where: { account in
+        selectedNetwork.supportedKeyrings.contains(.init(value: account.keyringId.rawValue))
+      })
+    })
+    var createdAccountsForKeyrings = Set<BraveWallet.KeyringId>()
+    // Create a default account for each selected network needing an account
+    for network in networksNeedingAccount {
+      let keyringIdForNetwork = BraveWallet.KeyringId.keyringId(
+        for: network.coin,
+        on: network.chainId
+      )
+      guard !createdAccountsForKeyrings.contains(keyringIdForNetwork) else {
+        continue
+      }
+      let accountName = defaultAccountName(
+        for: network.coin,
+        chainId: network.chainId
+      )
+      let accountInfo = await keyringService.addAccount(
+        coin: network.coin,
+        keyringId: keyringIdForNetwork,
+        accountName: accountName
+      )
+      if let accountInfo {
+        // store that we created an account for this network/coin type
+        // to only create 1 for each keyring
+        createdAccountsForKeyrings.insert(accountInfo.keyringId)
+      }
+    }
+    // Select Ethereum account by default (if Eth Mainnet selected)
+    guard let selectedAccount = allAccounts.selectedAccount,
+      selectedNetworks.contains(where: { $0.chainId == BraveWallet.MainnetChainId }),
+      selectedAccount.coin != .eth,
+      let firstEthAccount = allAccounts.accounts.first(where: { $0.coin == .eth })
+    else { return }
+    _ = await keyringService.setSelectedAccount(accountId: firstEthAccount.accountId)
   }
 
   func recoveryPhrase(password: String, completion: @escaping ([RecoveryWord]) -> Void) {
