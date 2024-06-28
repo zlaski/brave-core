@@ -79,7 +79,6 @@ TEST(FeatureDefaultsTest, DisabledFeatures) {
       &android_webview::features::kWebViewEnumerateDevicesCache,
 #endif
       &attribution_reporting::features::kConversionMeasurement,
-      &autofill::features::kAutofillEnableRemadeDownstreamMetrics,
       &autofill::features::test::kAutofillServerCommunication,
 #if BUILDFLAG(IS_ANDROID)
       &base::features::kCollectAndroidFrameTimelineMetrics,
