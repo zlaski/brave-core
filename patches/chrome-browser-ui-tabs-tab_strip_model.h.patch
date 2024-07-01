@@ -1,10 +1,10 @@
 diff --git a/chrome/browser/ui/tabs/tab_strip_model.h b/chrome/browser/ui/tabs/tab_strip_model.h
-index 8ccfabc182b4e11597dd8faadec4a9018572cff5..6ec01a81cd7af2d58b359e4a12cc51403318d0ef 100644
+index ff77f6e5978ed1a5b3128d7a20cb7e10f5700f3e..55844a33f46cc8a971e4d23dce12391ead06b71f 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.h
 +++ b/chrome/browser/ui/tabs/tab_strip_model.h
-@@ -657,6 +657,7 @@ class TabStripModel : public TabGroupController {
-   // Returns the tab at `index` in the tabstrip.
-   tabs::TabModel* GetTabAtIndex(int index) const;
+@@ -662,6 +662,7 @@ class TabStripModel : public TabGroupController {
+   tabs::TabModel* GetTabForWebContents(
+       const content::WebContents* contents) const;
  
 +  TAB_STRIP_MODEL_H_
   private:
