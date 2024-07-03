@@ -73,7 +73,10 @@ IN_PROC_BROWSER_TEST_F(CommandUtilsBrowserTest,
       continue;
     }
 
-    SCOPED_TRACE(testing::Message() << commands::GetCommandName(command));
+    // SCOPED_TRACE(testing::Message() << commands::GetCommandName(command));
+    LOG(ERROR) << command << ": " << commands::GetCommandName(command);
     chrome::ExecuteCommand(browser(), command);
+    // Let the command execution finish.
+    base::RunLoop().RunUntilIdle();
   }
 }
