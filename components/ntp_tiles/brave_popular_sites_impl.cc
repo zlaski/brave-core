@@ -11,13 +11,6 @@ namespace {
 std::map<ntp_tiles::SectionType, ntp_tiles::PopularSites::SitesVector>
     g_filtered_sections;
 
-bool ShouldHideSiteFromPopularSites(const ntp_tiles::PopularSites::Site& site) {
-  if (site.url == "https://m.youtube.com/")
-    return true;
-
-  return false;
-}
-
 }  // namespace
 
 namespace ntp_tiles {
@@ -27,16 +20,8 @@ namespace ntp_tiles {
 const std::map<SectionType, PopularSitesImpl::SitesVector>&
 BravePopularSitesImpl::sections() const {
   PopularSites::SitesVector filtered_sites;
-  const auto iter =
-      PopularSitesImpl::sections().find(SectionType::PERSONALIZED);
-  if (iter != PopularSitesImpl::sections().end()) {
-    const PopularSites::SitesVector& popular_sites = iter->second;
-    for (const auto& site : popular_sites) {
-      if (ShouldHideSiteFromPopularSites(site))
-        continue;
-      filtered_sites.push_back(site);
-    }
-  }
+
+  // Leave PERSONALIZED section as empty.
   g_filtered_sections[SectionType::PERSONALIZED] = filtered_sites;
   return g_filtered_sections;
 }
