@@ -803,6 +803,12 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_EXTENSIONS_MANIFEST_V2_DEPRECATION_KEEP_DIALOG_DESCRIPTION" desc="The description of the dialog asking the user if they want to keep the extension installed, which is affected by the Manifest V2 deprecation">
           This extension is no longer supported. Brave recommends that you remove it instead.
         </message>
+        <message name="IDS_EXTENSIONS_MV2_DEPRECATION_MESSAGE_DISABLED_SUBTITLE" desc="Subtitle text displayed in the manifest v2 deprecation message for a specific extension during the disabled stage.">
+          Brave recommends that you remove it. Learn more about supported extensions
+        </message>
+        <message name="IDS_EXTENSIONS_MV2_DEPRECATION_PANEL_REMOVE_BUTTON_ACC_LABEL" desc="The (accessible) label for the button to remove an extension.">
+          Remove <ph name="EXTENSION_NAME">$1<ex>Brave Translate</ex></ph> from Brave
+        </message>
       </if>
 
       <!-- Extension Safety Check Detail Page strings -->
@@ -1064,7 +1070,7 @@ Permissions you've already given to websites and apps may apply to this account.
           This will create a new Brave profile for <ph name="USER_EMAIL_ADDRESS">$1<ex>foo@gmail.com</ex></ph>
         </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_SUBTITLE" desc="Subtitle of the Brave Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-          To save and use your passwords and more on all your devices, sign in to Brave
+          To get your passwords and more on all your devices, sign in to Brave
         </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_SUBTITLE_SUPERVISED" desc="Subtitle of the Brave Signin Bubble intercept that is shown when a signed out user signs in on the web with a supervised account." translateable="false">
           Sign in to Brave so that your parents can help you stay safe on the web
@@ -1100,9 +1106,6 @@ Permissions you've already given to websites and apps may apply to this account.
           <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Brave Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
             Make Brave Your Own
           </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE_SUPERVISED" desc="Title of the Brave Signin Bubble intercept that is shown when a signed out user signs in on the web with a supervised account." translateable="false">
-            Be Safe Online
-          </message>
           <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT" desc="Label of the Decline button of the Brave Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
             Use Brave Without an Account
           </message>
@@ -1120,7 +1123,7 @@ Permissions you've already given to websites and apps may apply to this account.
 
         <!-- Autofill Sign In Promo Bubble -->
         <message name="IDS_AUTOFILL_SIGNIN_PROMO_SUBTITLE_PASSWORD" desc="This is the body text of a confirmation message and means that the password was only saved locally to the user's device (not in their Brave sync chain). It appears when the user is not signed in to Brave and is after the 'Password saved to this device' string. If the user wants to save this data to their Brave sync chain, they can click the 'Sign in to Brave' button at the bottom of this message. The tone should be motivating.">
-          To save and use passwords and more on all your devices, sign in to Brave. This password will be saved in your Brave sync chain after you sign in.
+          To get your passwords and more on all your devices, sign in to Brave. This password will be saved in your Brave sync chain after you sign in.
         </message>
       </if>
 

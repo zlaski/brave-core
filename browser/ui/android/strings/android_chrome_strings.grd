@@ -1755,16 +1755,57 @@ Your Brave account may have other forms of browsing history like searches and ac
       <message name="IDS_SAFETY_HUB_SAFE_BROWSING_ON_SUMMARY" translateable="false">
         You're getting standard protection
       </message>
+      <message name="IDS_SAFETY_HUB_SAFE_BROWSING_ON_SUMMARY_MANAGED" translateable="false">
+        Your organization turned on Safe Browsing
+      </message>
       <message name="IDS_SAFETY_HUB_SAFE_BROWSING_ENHANCED_TITLE" translateable="false">
         Enhanced Safe Browsing is on
       </message>
       <message name="IDS_SAFETY_HUB_SAFE_BROWSING_ENHANCED_SUMMARY" translateable="false">
         You have Brave's strongest security
       </message>
+      <message name="IDS_SAFETY_HUB_SAFE_BROWSING_ENHANCED_SUMMARY_MANAGED" translateable="false">
+        Your organization turned on Enhanced Safe Browsing
+      </message>
       <message name="IDS_SAFETY_HUB_SAFE_BROWSING_OFF_SUMMARY" translateable="false">
         Turn on Safe Browsing to get protection against dangerous sites
       </message>
-
+      <message name="IDS_SAFETY_HUB_SAFE_BROWSING_OFF_SUMMARY_MANAGED" translateable="false">
+        Your organization turned off Safe Browsing
+      </message>
+      <message name="IDS_SAFETY_HUB_VIEW_SITES_BUTTON" translateable="false">
+        View sites
+      </message>
+      <message name="IDS_SAFETY_HUB_PASSWORDS_NAVIGATION_BUTTON" translateable="false">
+        Go to Password Manager
+      </message>
+      <message name="IDS_SAFETY_HUB_GO_TO_GOOGLE_PLAY_BUTTON" translateable="false">
+        Go to Google Play
+      </message>
+      <message name="IDS_SAFETY_HUB_GO_TO_SETTINGS_BUTTON" translateable="false">
+        Go to Settings
+      </message>
+      <message name="IDS_SAFETY_HUB_GO_TO_SECURITY_SETTINGS_BUTTON" translateable="false">
+        Go to security settings
+      </message>
+      <message name="IDS_SAFETY_HUB_TURN_ON_BUTTON" translateable="false">
+        Turn on
+      </message>
+      <message name="IDS_SAFETY_HUB_GO_TO_NOTIFICATIONS_BUTTON" translateable="false">
+        Go to notifications
+      </message>
+      <message name="IDS_SAFETY_HUB_PERMISSIONS_PAGE_MENU_TEXT" translateable="false">
+        Go to site settings
+      </message>
+      <message name="IDS_SAFETY_HUB_NOTIFICATIONS_PAGE_MENU_TEXT" translateable="false">
+        Go to notification settings
+      </message>
+      <message name="IDS_SAFETY_HUB_AUTOREVOCATION_TOGGLE_TITLE" translateable="false">
+        Automatically remove permissions
+      </message>
+      <message name="IDS_SAFETY_HUB_AUTOREVOCATION_TOGGLE_SUMMARY" translateable="false">
+        To protect your data, let Brave remove permissions from sites that you haven’t visited recently
+      </message>
 
        <!-- Safe Browsing preferences -->
       <message name="IDS_PREFS_SAFE_BROWSING_TITLE" desc="Title for the Safe Browsing preferences. [CHAR_LIMIT=32]">
@@ -2706,12 +2747,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_ACCESSIBILITY_TAB_SWITCHER_INCOGNITO_STACK" desc="Content description for the Private stack selection 'button'.">
         Private tabs
-      </message>
-      <message name="IDS_ACCESSIBILITY_TAB_SWITCHER_STANDARD_STACK_SELECTED" desc="Announcement when the standard tab stack is selected.">
-        Switched to standard tabs
-      </message>
-      <message name="IDS_ACCESSIBILITY_TAB_SWITCHER_INCOGNITO_STACK_SELECTED" desc="Announcement when the Private tab stack is selected.">
-        Switched to Private tabs
       </message>
       <message name="IDS_ACCESSIBILITY_UNDO_CLOSED_TAB_ANNOUNCEMENT_MESSAGE" desc="Message spoken out loud for accessibility when a user decides to undo a closed tab.">
         Restored <ph name="TAB_TITLE">%1$s<ex>YouTube</ex></ph>, tab
@@ -3729,14 +3764,8 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       <message name="IDS_N_MINUTES_AGO" desc="A number of minutes in the past. [ICU Syntax]">
         {MINUTES, plural, =1 {# minute ago} other {# minutes ago}}
       </message>
-      <message name="IDS_N_MINUTES_AGO_NARROW" desc="A number of minutes in the past, made narrow to save space, and unit-like to avoid different plural form unless necessary. [ICU Syntax]">
-        {MINUTES, plural, =1 {# min ago} other {# min ago}}
-      </message>
       <message name="IDS_N_HOURS_AGO" desc="A number of hours in the past. [ICU Syntax]">
         {HOURS, plural, =1 {# hour ago} other {# hours ago}}
-      </message>
-      <message name="IDS_N_HOURS_AGO_NARROW" desc="A number of hours in the past, made narrow to save space, and unit-like to avoid different plural form unless necessary. [ICU Syntax]">
-        {HOURS, plural, =1 {# hr ago} other {# hr ago}}
       </message>
       <message name="IDS_N_DAYS_AGO" desc="A number of days in the past. [ICU Syntax]">
         {DAYS, plural, =1 {# day ago} other {# days ago}}
@@ -4077,6 +4106,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_MENU_RECENT_TABS" desc="Menu item for opening the 'Recent tabs' page that shows recently closed tabs and pages the user has opened on his/her other devices. [CHAR_LIMIT=27]">
         Recent tabs
+      </message>
+      <message name="IDS_MENU_TINKER_TANK" desc="Menu item for opening the tinker tank bottom sheet. [CHAR_LIMIT=27]" translateable="false">
+        Tinker tank
       </message>
       <message name="IDS_CHROME_HISTORY" desc="Menu item for opening the CCT history page. [CHAR_LIMIT=27]">
         Brave history
@@ -4550,12 +4582,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_RDS_WINDOW_SETTING_MESSAGE_BUTTON" desc="Text on the button allowing users to manage the setting.">
         Go to Settings
-      </message>
-      <message name="IDS_RDS_APP_MENU_USER_EDUCATION_DIALOG_TITLE" desc="Title of the dialog shown to educate the user about the desktop site app menu site-level setting.">
-        Brave will remember your choice
-      </message>
-      <message name="IDS_RDS_APP_MENU_USER_EDUCATION_DIALOG_MESSAGE" desc="Message on the dialog shown to educate the user about the desktop site app menu site-level setting.">
-        When you select desktop site once, the setting is applied to the site each time you visit
       </message>
       <message name="IDS_RDS_SITE_SETTINGS_GENERIC_IPH_TEXT_DESKTOP" desc="Message on the generic text bubble shown to educate the user about using the desktop site site-level setting to switch to desktop mode.">
         You can request the desktop site for <ph name="HOST_NAME">%1$s<ex>www.example.com</ex></ph>
@@ -5959,6 +5985,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_SIGNIN" desc="Header for sign in sheet. Sheet is shown to prompt user to sign in to a website using an account from an identity provider.">
         Sign in to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
+      </message>
+      <message name="IDS_ACCOUNT_SELECTION_BUTTON_MODE_SHEET_TITLE_EXPLICIT_SIGNIN" desc="Header for sign in sheet. Sheet is shown to prompt user to sign in to a website using an account from an identity provider." translateable="false">
+        Sign in with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%1$s<ex>idp.com</ex></ph>
+      </message>
+      <message name="IDS_ACCOUNT_SELECTION_BUTTON_MODE_SHEET_TITLE_EXPLICIT_SIGNUP" desc="Header for sign up sheet. Sheet is shown to prompt user to sign up to a website using an account from an identity provider." translateable="false">
+        Sign up with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%1$s<ex>idp.com</ex></ph>
+      </message>
+      <message name="IDS_ACCOUNT_SELECTION_BUTTON_MODE_SHEET_TITLE_EXPLICIT_USE" desc="Header for use sheet. Sheet is shown to prompt user to use a website using an account from an identity provider." translateable="false">
+        Use with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%1$s<ex>idp.com</ex></ph>
+      </message>
+      <message name="IDS_ACCOUNT_SELECTION_BUTTON_MODE_SHEET_TITLE_EXPLICIT_CONTINUE" desc="Header for continue sheet. Sheet is shown to prompt user to continue to a website using an account from an identity provider." translateable="false">
+        Continue with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%1$s<ex>idp.com</ex></ph>
       </message>
       <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_SIGNUP" desc="Header for sign up sheet. Sheet is shown to prompt user to sign up to a website using an account from an identity provider.">
         Sign up to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
