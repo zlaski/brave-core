@@ -16,11 +16,10 @@ namespace extensions {
 namespace util {
 std::unique_ptr<const PermissionSet> GetInstallPromptPermissionSetForExtension(
     const Extension* extension,
-    Profile* profile,
-    bool include_optional_permissions) {
+    Profile* profile) {
   auto permissions_to_display =
-      GetInstallPromptPermissionSetForExtension_ChromiumImpl(
-          extension, profile, include_optional_permissions);
+      GetInstallPromptPermissionSetForExtension_ChromiumImpl(extension,
+                                                             profile);
 
   if (permissions_to_display &&
       (extension->id() == ipfs_companion_extension_id ||
