@@ -57,6 +57,8 @@
 #include "components/safe_browsing/core/common/safe_browsing_prefs.h"
 #include "components/send_tab_to_self/send_tab_to_self_sync_service.h"
 #include "components/sync/base/features.h"
+
+
 #include "ios/chrome/app/startup/provider_registration.h"
 #include "ios/chrome/browser/bookmarks/model/bookmark_model_factory.h"
 #include "ios/chrome/browser/bookmarks/model/bookmark_undo_service_factory.h"
@@ -66,13 +68,8 @@
 #include "ios/chrome/browser/history/model/web_history_service_factory.h"
 #include "ios/chrome/browser/passwords/model/ios_chrome_profile_password_store_factory.h"
 #include "ios/chrome/browser/shared/model/application_context/application_context.h"
-#include "ios/chrome/browser/shared/model/browser/browser.h"
-#include "ios/chrome/browser/shared/model/browser/browser_list.h"
-#include "ios/chrome/browser/shared/model/browser/browser_list_factory.h"
 #include "ios/chrome/browser/shared/model/browser_state/chrome_browser_state.h"
-#include "ios/chrome/browser/shared/model/browser_state/chrome_browser_state_manager.h"
 #include "ios/chrome/browser/shared/model/paths/paths.h"
-#include "ios/chrome/browser/shared/model/web_state_list/web_state_list.h"
 #include "ios/chrome/browser/shared/public/commands/command_dispatcher.h"
 #include "ios/chrome/browser/sync/model/send_tab_to_self_sync_service_factory.h"
 #include "ios/chrome/browser/sync/model/session_sync_service_factory.h"
@@ -82,6 +79,14 @@
 #include "ios/public/provider/chrome/browser/ui_utils/ui_utils_api.h"
 #include "ios/web/public/init/web_main.h"
 #include "services/network/public/cpp/shared_url_loader_factory.h"
+
+#include "ios/web/public/init/web_main.h"
+#import "ios/web_view/internal/web_view_web_client.h"
+#import "ios/web_view/internal/web_view_web_main_delegate.h"
+#import "testing/coverage_util_ios.h"
+#include "ios/web_view/internal/cwv_web_view_configuration_internal.h"
+
+//ios/web_view/internal/sync/web_view_sync_service_factory.h
 
 #if BUILDFLAG(IOS_CREDENTIAL_PROVIDER_ENABLED)
 #include "ios/chrome/browser/credential_provider/model/credential_provider_service_factory.h"
@@ -107,11 +112,8 @@ const BraveCoreLogSeverity BraveCoreLogSeverityVerbose =
   std::vector<std::string> _argv_store;
   std::unique_ptr<const char*[]> _raw_args;
   std::unique_ptr<web::WebMain> _webMain;
-  std::unique_ptr<Browser> _browser;
-  std::unique_ptr<Browser> _otr_browser;
-  BrowserList* _browserList;
-  BrowserList* _otr_browserList;
-  ChromeBrowserState* _mainBrowserState;
+  
+  ios_web_view::WebViewBrowserState* _mainBrowserState;
   scoped_refptr<p3a::P3AService> _p3a_service;
   scoped_refptr<p3a::HistogramsBraveizer> _histogram_braveizer;
 }
@@ -175,6 +177,9 @@ const BraveCoreLogSeverity BraveCoreLogSeverityVerbose =
     // Register all providers before calling any Chromium code.
     [ProviderRegistration registerProviders];
 
+    // This is for generating coverage data for tests only.
+    coverage_util::ConfigureCoverageReportPath();
+    
     // Setup WebClient ([ClientRegistration registerClients])
     _webClient.reset(new BraveWebClient());
     _webClient->SetUserAgent(base::SysNSStringToUTF8(userAgent));
@@ -184,6 +189,21 @@ const BraveCoreLogSeverity BraveCoreLogSeverityVerbose =
 
     // Start Main ([ChromeMainStarter startChromeMain])
     web::WebMainParams params(_delegate.get());
+    
+    // Stop Main
+    __weak BraveCoreMain* weakSelf = self;
+    [NSNotificationCenter.defaultCenter
+        addObserverForName:UIApplicationWillTerminateNotification
+                    object:nil
+                     queue:nil
+                usingBlock:^(NSNotification* _Nonnull note) {
+                  // These global variables should be destructed when the app is
+                  // about to terminate, and in reverse order to construction.
+                  __strong BraveCoreMain* strongSelf = self;
+                  strongSelf->_webMain.reset();
+                  strongSelf->_delegate.reset();
+                  strongSelf->_webClient.reset();
+                }];
 
     // Parse Switches, Features, Arguments (Command-Line Arguments)
     NSMutableArray* arguments =
@@ -212,30 +232,14 @@ const BraveCoreLogSeverity BraveCoreLogSeverityVerbose =
 
     // Setup WebMain
     _webMain = std::make_unique<web::WebMain>(std::move(params));
+    
+    
 
     // Initialize and set the main browser state.
-    ios::ChromeBrowserStateManager* browserStateManager =
-        GetApplicationContext()->GetChromeBrowserStateManager();
-    ChromeBrowserState* chromeBrowserState =
-        browserStateManager->GetLastUsedBrowserStateDeprecatedDoNotUse();
-    _mainBrowserState = chromeBrowserState;
+    _mainBrowserState = [[CWVWebViewConfiguration defaultConfiguration] browserState];
 
     // Disable Safe-Browsing via Prefs
-    chromeBrowserState->GetPrefs()->SetBoolean(prefs::kSafeBrowsingEnabled,
-                                               false);
-
-    // Setup main browser
-    _browserList = BrowserListFactory::GetForBrowserState(_mainBrowserState);
-    _browser = Browser::Create(_mainBrowserState, {});
-    _browserList->AddBrowser(_browser.get());
-
-    // Setup otr browser
-    ChromeBrowserState* otrChromeBrowserState =
-        chromeBrowserState->GetOffTheRecordChromeBrowserState();
-    _otr_browserList =
-        BrowserListFactory::GetForBrowserState(otrChromeBrowserState);
-    _otr_browser = Browser::Create(otrChromeBrowserState, {});
-    _otr_browserList->AddIncognitoBrowser(_otr_browser.get());
+    _mainBrowserState->GetPrefs()->SetBoolean(prefs::kSafeBrowsingEnabled, false);
 
     // Initialize the provider UI global state.
     ios::provider::InitializeUI();
@@ -278,21 +282,6 @@ const BraveCoreLogSeverity BraveCoreLogSeverityVerbose =
   _syncAPI = nil;
   _tabGeneratorAPI = nil;
   _webImageDownloader = nil;
-
-  _otr_browserList =
-      BrowserListFactory::GetForBrowserState(_otr_browser->GetBrowserState());
-  [_otr_browser->GetCommandDispatcher() prepareForShutdown];
-  _otr_browserList->RemoveBrowser(_otr_browser.get());
-  CloseAllWebStates(*_otr_browser->GetWebStateList(),
-                    WebStateList::CLOSE_NO_FLAGS);
-  _otr_browser.reset();
-
-  _browserList =
-      BrowserListFactory::GetForBrowserState(_browser->GetBrowserState());
-  [_browser->GetCommandDispatcher() prepareForShutdown];
-  _browserList->RemoveBrowser(_browser.get());
-  CloseAllWebStates(*_browser->GetWebStateList(), WebStateList::CLOSE_NO_FLAGS);
-  _browser.reset();
 
   _mainBrowserState = nullptr;
   _webMain.reset();

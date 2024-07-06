@@ -6,9 +6,9 @@
 #ifndef BRAVE_IOS_BROWSER_BRAVE_WEB_MAIN_PARTS_H_
 #define BRAVE_IOS_BROWSER_BRAVE_WEB_MAIN_PARTS_H_
 
-#include "ios/chrome/browser/web/model/chrome_main_parts.h"
+#include "ios/web_view/internal/web_view_web_main_parts.h"
 
-class BraveWebMainParts : public IOSChromeMainParts {
+class BraveWebMainParts : public ios_web_view::WebViewWebMainParts {
  public:
   explicit BraveWebMainParts(const base::CommandLine& parsed_command_line);
   BraveWebMainParts(const BraveWebMainParts&) = delete;

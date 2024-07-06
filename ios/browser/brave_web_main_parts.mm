@@ -20,11 +20,11 @@
 #include "components/variations/synthetic_trials_active_group_id_provider.h"
 #include "components/variations/variations_ids_provider.h"
 #include "components/variations/variations_switches.h"
-#include "ios/chrome/browser/application_context/model/application_context_impl.h"
-#include "ios/chrome/browser/browser_state/model/browser_state_keyed_service_factories.h"
+#include "ios/web_view/internal/app/application_context.h"
+#include "components/keyed_service/ios/browser_state_keyed_service_factory.h"
 #include "ios/chrome/browser/flags/about_flags.h"
-#include "ios/chrome/browser/shared/model/browser_state/chrome_browser_state.h"
-#include "ios/chrome/browser/shared/model/browser_state/chrome_browser_state_manager.h"
+#include "ios/web_view/internal/web_view_browser_state.h"
+#include "ios/web_view/public/cwv_web_view_configuration.h"
 #include "ios/chrome/browser/shared/model/paths/paths.h"
 #include "ios/web/public/thread/web_task_traits.h"
 #include "ios/web/public/thread/web_thread.h"
@@ -37,7 +37,7 @@
 
 BraveWebMainParts::BraveWebMainParts(
     const base::CommandLine& parsed_command_line)
-    : IOSChromeMainParts(parsed_command_line) {}
+    : WebViewWebMainParts() {}
 
 BraveWebMainParts::~BraveWebMainParts() {}
 
@@ -53,7 +53,7 @@ void BraveWebMainParts::PreCreateMainMessageLoop() {
 }
 
 void BraveWebMainParts::PreMainMessageLoopRun() {
-  IOSChromeMainParts::PreMainMessageLoopRun();
+  WebViewWebMainParts::PreMainMessageLoopRun();
   static_cast<BraveApplicationContextImpl*>(application_context_.get())
       ->StartBraveServices();
 }
