@@ -326,7 +326,6 @@ public class BraveToolbarManager extends ToolbarManager {
     public void initializeWithNative(
             @NonNull LayoutManagerImpl layoutManager,
             @Nullable StripLayoutHelperManager stripLayoutHelperManager,
-            OnClickListener tabSwitcherClickHandler,
             OnClickListener newTabClickHandler,
             OnClickListener bookmarkClickHandler,
             OnClickListener customTabsBackClickHandler) {
@@ -338,7 +337,6 @@ public class BraveToolbarManager extends ToolbarManager {
         super.initializeWithNative(
                 layoutManager,
                 stripLayoutHelperManager,
-                tabSwitcherClickHandler,
                 wrappedNewTabClickHandler,
                 bookmarkClickHandler,
                 customTabsBackClickHandler);
@@ -358,7 +356,12 @@ public class BraveToolbarManager extends ToolbarManager {
                             mActivity,
                             mCompositorViewHolder.getResourceManager(),
                             mCompositorViewHolder.getLayoutManager(),
-                            tabSwitcherClickHandler,
+                            // TODO(AlexeyBarabash): tabSwitcherClickHandler is required
+                            // but removed from ToolbarManager.initializeWithNative
+                            (View v) -> {
+                                ;
+                            },
+                            // tabSwitcherClickHandler,
                             wrappedNewTabClickHandler,
                             mWindowAndroid,
                             mTabModelSelector,
@@ -464,12 +467,17 @@ public class BraveToolbarManager extends ToolbarManager {
     }
 
     // TODO(alexeybarabash): WIP Upstream's cleanup legacy tab switcher code in toolbar
+    // isToolbarPhone method was removed along with BraveTopToolbarCoordinator class
     // private boolean isToolbarPhone() {
     //     assert (mToolbar instanceof BraveTopToolbarCoordinator);
     //     return mToolbar instanceof BraveTopToolbarCoordinator
     //             && ((BraveTopToolbarCoordinator) mToolbar).isToolbarPhone();
     // }
+    private boolean isToolbarPhone() {
+        return true;
+    }
 
+    // TODO(alexeybarabash): WIP Upstream's cleanup legacy tab switcher code in toolbar
     // private ObservableSupplier<Integer> getConstraintsProxy() {
     //     if (mToolbar instanceof BraveTopToolbarCoordinator) {
     //         return ((BraveTopToolbarCoordinator) mToolbar).getConstraintsProxy();
@@ -478,6 +486,10 @@ public class BraveToolbarManager extends ToolbarManager {
     //     assert false : "Wrong top toolbar type!";
     //     return null;
     // }
+    private ObservableSupplier<Integer> getConstraintsProxy() {
+        assert false : "Wrong top toolbar type!";
+        return null;
+    }
 
     @Override
     public LocationBar getLocationBar() {
