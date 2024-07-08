@@ -113,15 +113,26 @@ struct SearchStatusEvent {
   bool is_searching = true;
 };
 
+struct WebSource {
+  string title;
+  url.mojom.Url url;
+  url.mojom.Url favicon_url;
+};
+
+struct WebSourcesEvent {
+  array<WebSource> sources;
+};
+
 struct CompletionEvent {
   string completion;
 };
 
 // Events that occur during a conversation turn (only assistant for now)
 union ConversationEntryEvent {
-  CompletionEvent completion_event;
   SearchQueriesEvent search_queries_event;
   SearchStatusEvent search_status_event;
+  WebSourcesEvent sources_event;
+  CompletionEvent completion_event;
 };
 
 // Represents a single turn in a conversation.
@@ -238,6 +249,7 @@ interface PageHandler {
   // |is_fetching| will be |true|.
   GetSiteInfo() => (SiteInfo site_info);
   GetFaviconImageData() => (array<uint8>? favicon_image_data);
+  GetSearchFavicon(url.mojom.Url url) => (array<uint8>? favicon_image_data);
   OpenBraveLeoSettings();
   OpenURL(url.mojom.Url url);
   OpenLearnMoreAboutBraveSearchWithLeo();
