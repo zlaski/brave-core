@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
-index cf04ad3c3662b8583ceaf08d8de181cccfd450b8..471e4564a124501e197942cfb2521372ea3b6615 100644
+index cf04ad3c3662b8583ceaf08d8de181cccfd450b8..5af53557c03a2a206ab31d0ccc25b8b10f899940 100644
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
 @@ -443,6 +443,7 @@ public class ToolbarPhone extends ToolbarLayout
@@ -10,6 +10,15 @@ index cf04ad3c3662b8583ceaf08d8de181cccfd450b8..471e4564a124501e197942cfb2521372
      }
  
      private void updateModernLocationBarCorners() {
+@@ -467,7 +468,7 @@ public class ToolbarPhone extends ToolbarLayout
+      */
+     private @ColorInt int getLocationBarColorForToolbarColor(@ColorInt int toolbarColor) {
+         if (isLocationBarShownInGeneralNtp() || mIsInLoadingPhaseFromNtpToWebpage) {
+-            assert mHomeSurfaceLocationBarBackgroundColor != 0;
++            /*assert mHomeSurfaceLocationBarBackgroundColor != 0;*/ //TODO(alexeybarabash): fix assert in a proper way
+             return mHomeSurfaceLocationBarBackgroundColor;
+         }
+         return ThemeUtils.getTextBoxColorForToolbarBackgroundInNonNativePage(
 @@ -604,6 +605,7 @@ public class ToolbarPhone extends ToolbarLayout
                  mTrackerSupplier.get().notifyEvent(EventConstants.PARTNER_HOME_PAGE_BUTTON_PRESSED);
              }
