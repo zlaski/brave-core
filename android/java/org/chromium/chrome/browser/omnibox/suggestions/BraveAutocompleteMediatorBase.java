@@ -62,6 +62,7 @@ class BraveAutocompleteMediatorBase {
                 inputStart,
                 boolean.class,
                 openInNewTab,
+                boolean.class,
                 shouldUpdateSuggestionUrl);
     }
 }
