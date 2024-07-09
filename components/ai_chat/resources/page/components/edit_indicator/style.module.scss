@@ -9,11 +9,7 @@
   align-items: flex-start;
   gap: var(--leo-spacing-m);
   align-self: stretch;
-}
-
-icon {
-  width: var(--leo-icon-s);
-  height: var(--leo-icon-s);
+  --leo-icon-size: 18px;
 }
 
 .editedText {
