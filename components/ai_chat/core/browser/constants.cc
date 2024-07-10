@@ -81,6 +81,7 @@ base::span<const webui::LocalizedString> GetLocalizedStrings() {
       {"feedbackPremiumNote", IDS_CHAT_UI_FEEDBACK_PREMIUM_NOTE},
       {"submitButtonLabel", IDS_CHAT_UI_SUBMIT_BUTTON_LABEL},
       {"cancelButtonLabel", IDS_CHAT_UI_CANCEL_BUTTON_LABEL},
+      {"saveButtonLabel", IDS_CHAT_UI_SAVE_BUTTON_LABEL},
       {"optionNotHelpful", IDS_CHAT_UI_OPTION_NOT_HELPFUL},
       {"optionIncorrect", IDS_CHAT_UI_OPTION_INCORRECT},
       {"optionUnsafeHarmful", IDS_CHAT_UI_OPTION_UNSAFE_HARMFUL},

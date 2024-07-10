@@ -58,6 +58,7 @@ provideStrings({
   feedbackPremiumNote: 'Leo Premium provides access to an expanded set of language models for even greater answer nuance. $1Learn more$2',
   submitButtonLabel: 'Submit',
   cancelButtonLabel: 'Cancel',
+  saveButtonLabel: 'Save',
   optionNotHelpful: 'Not helpful',
   optionIncorrect: 'Incorrect',
   optionUnsafeHarmful: 'Unsafe/harmful',

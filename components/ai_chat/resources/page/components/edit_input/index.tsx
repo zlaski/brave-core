@@ -6,7 +6,7 @@
 import * as React from 'react'
 
 import Button from '@brave/leo/react/button'
-import Icon from '@brave/leo/react/icon'
+import { getLocale } from '$web-common/locale'
 
 import styles from './style.module.scss'
 
@@ -42,26 +42,27 @@ function EditInput(props: Props) {
             autoFocus
             rows={1}
           />
-          <div className={styles.actions}>
-            <Button
-              className={styles.cancelButton}
-              fab
-              size='tiny'
-              kind='plain-faint'
-              onClick={props.onCancel}
-            >
-              <Icon name="close"/>
-            </Button>
-            <Button
-              className={styles.submitButton}
-              fab
-              size='tiny'
-              onClick={() => props.onSubmit(text)}
-            >
-              <Icon name="check-normal"/>
-            </Button>
-          </div>
-        </div>
+      </div>
+      <div className={styles.actions}>
+        <Button
+          className={styles.cancelButton}
+          fab
+          size='small'
+          kind='plain-faint'
+          onClick={props.onCancel}
+        >
+        <span className={styles.buttonText}>{getLocale('cancelButtonLabel')}</span>
+        </Button>
+        <Button
+          className={styles.saveButton}
+          fab
+          size='small'
+          kind='filled'
+          onClick={() => props.onSubmit(text)}
+        >
+        <span className={styles.buttonText}>{getLocale('saveButtonLabel')}</span>
+        </Button>
+      </div>
     </div>
   )
 }

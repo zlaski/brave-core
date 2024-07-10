@@ -4,20 +4,20 @@
 // you can obtain one at https://mozilla.org/MPL/2.0/.
 
 .content {
-  display: flex;
   padding: 11px var(--leo-spacing-m);
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  position: relative;
   gap: var(--leo-spacing-m);
-  align-self: stretch;
-
-  border-radius: var(--leo-radius-m);
-  border: 1px solid var(--leo-color-divider-strong);
-  background: var(--leo-color-container-background);
 }
 
 .growWrap {
+  border-radius: var(--leo-radius-m);
+  border: 1px solid var(--leo-color-divider-strong);
+  background: var(--leo-color-container-background);
+
   justify-content: space-between;
   align-self: stretch;
 
@@ -64,26 +64,42 @@
 .actions {
   display: flex;
   justify-content: flex-end;
+  gap: var(--leo-spacing-s);
+  align-self: flex-end;
+}
+
+.buttonText {
+  display: flex;
+  padding: 0px var(--leo-spacing-m);
   align-items: center;
-  gap: 8px;
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
 }
 
 .cancelButton {
   display: flex;
+  height: 36px;
+  min-height: 36px;
+  padding: var(--leo-spacing-m) var(--leo-spacing-l);
   justify-content: center;
   align-items: center;
-  border-radius: var(--leo-radius-s);
+  border-radius: var(--leo-radius-l);
+
+  .buttonText {
+    color: var(--leo-color-text-secondary);
+  }
 }
 
-.submitButton {
+.saveButton {
   display: flex;
-  width: 28px;
-  height: 28px;
+  height: 36px;
+  min-height: 36px;
+  padding: var(--leo-spacing-m) var(--leo-spacing-l);
   justify-content: center;
   align-items: center;
-  border-radius: var(--leo-radius-m);
+
+  border-radius: var(--leo-radius-l);
   background: var(--leo-color-button-background);
+
+  .buttonText {
+    color: var(--leo-color-text-primary);
+  }
 }

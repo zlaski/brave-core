@@ -190,6 +190,9 @@
   <message name="IDS_CHAT_UI_CANCEL_BUTTON_LABEL" desc="Button label to cancel action">
     Cancel
   </message>
+  <message name="IDS_CHAT_UI_SAVE_BUTTON_LABEL" desc="Button label to save data/form">
+    Save
+  </message>
   <message name="IDS_CHAT_UI_OPTION_NOT_HELPFUL" desc="Select option for feedback form if the answer is not helpful">
     Not helpful
   </message>
