@@ -129,6 +129,8 @@ struct AIChatResponseMessageView: View {
             .font(.subheadline)
             .foregroundStyle(Color(braveSystemName: .textPrimary))
             .multilineTextAlignment(.leading)
+            .id(block.string)
+            .transition(.opacity.animation(.easeIn(duration: 0.4)))
             .frame(maxWidth: .infinity, alignment: .leading)
         }
       }
@@ -138,6 +140,8 @@ struct AIChatResponseMessageView: View {
         .font(.subheadline)
         .foregroundStyle(Color(braveSystemName: .textPrimary))
         .multilineTextAlignment(.leading)
+        .id(text)
+        .transition(.opacity.animation(.easeIn(duration: 0.4)))
         .frame(maxWidth: .infinity, alignment: .leading)
     }
   }
