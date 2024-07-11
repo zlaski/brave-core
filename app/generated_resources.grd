@@ -3209,7 +3209,7 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_INSTALL_PWA_BUTTON_LABEL" desc="Text for button that installs a web app to the operating system.">
         Install
       </message>
-      <message name="IDS_INSTALL_PWA_DIALOG_TITLE" desc="Title for dialog that shows up when a web app needs to be installed to the operating system.">
+      <message name="IDS_INSTALL_PWA_DIALOG_TITLE" meaning="Shown only on PWA install dialogs" desc="Title for dialog that shows up when a web app needs to be installed to the operating system.">
         Install app
       </message>
       <message name="IDS_WEB_APP_DETAILED_INSTALL_DIALOG_DESCRIPTION_TITLE" desc="Title above app description to explain the content below is from this app">
@@ -4838,9 +4838,6 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_EXTENSION_CONFIRM_PERMISSIONS" desc="Titlebar of the extension or app permissions prompt window">
         Confirm Permissions
       </message>
-      <message name="IDS_EXTENSION_DELEGATED_INSTALL_PROMPT_TITLE" desc="Titlebar of the app delegated installation prompt window">
-        Add "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>" for <ph name="USER_NAME">$2<ex>Wallace</ex></ph>?
-      </message>
       <message name="IDS_EXTENSION_INSTALL_PROMPT_TITLE" desc="Titlebar of the extension or app installation prompt. Asks the user if they want to install a particular extension or app.">
         Add "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>"?
       </message>
@@ -5441,7 +5438,7 @@ are declared in tools/grit/grit_rule.gni.
       <!-- Extension requests sign in to Brave through chrome.identity API -->
       <if expr="enable_extensions">
         <message name="IDS_EXTENSION_ASKS_IDENTITY_WHILE_SIGNED_IN_WEB_ONLY_BODY_PART_2" desc="This string is the second paragraph of the body of a dialog intended to inform the user that one of their installed extensions wants them to sign in to Brave to be able to use their Brave sync chain.">
-          You’ll also be able to use and save your passwords and more from your Brave sync chain.
+          You’ll also get your passwords and more from your Brave sync chain.
         </message>
       </if>
 
@@ -5824,9 +5821,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_EXTENSION_PROMPT_INSTALL_FRICTION_WARNING_TEXT" desc="The warning text displayed in the install friction dialog">
         This extension is not trusted by Enhanced Safe Browsing.
       </message>
-      <message name="IDS_EXTENSION_PROMPT_INSTALL_BUTTON" desc="Text for the install button on the extension install prompt">
-        Add
-      </message>
       <message name="IDS_EXTENSION_INSTALL_PROMPT_ACCEPT_BUTTON_EXTENSION" desc="Text for the install button on the extension install prompt, for an extension (i.e. not app or theme).">
         Add extension
       </message>
@@ -6000,6 +5994,22 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_EXTENSIONS_MANIFEST_V2_DEPRECATION_KEEP_DIALOG_OK_BUTTON" desc="The text of the dialog button to keep the extension installed, which is affected by the Manifest V2 deprecation">
         Keep
+      </message>
+      <!-- Manifest V2 Deprecation Dialog strings -->
+      <message name="IDS_EXTENSIONS_MANIFEST_V2_DEPRECATION_DISABLED_DIALOG_TITLE" desc="The title of the dialog that appears when extensions were disabled due to the Manifest V2 deprecation">
+        "<ph name="EXTENSION_NAME">$1<ex>Brave Translate</ex></ph>" was turned off
+      </message>
+      <message name="IDS_EXTENSIONS_MANIFEST_V2_DEPRECATION_DISABLED_DIALOG_PLURAL_TITLE" desc="The title of the dialog that appears when extensions were disabled due to the Manifest V2 deprecation">
+        <ph name="NUM_EXTENSIONS">$1<ex>3</ex></ph> extensions were turned off
+      </message>
+      <message name="IDS_EXTENSIONS_MANIFEST_V2_DEPRECATION_DISABLED_DIALOG_OK_BUTTON" desc="The text of the dialog button that removes the extension(s) that were were disabled due to the Manifest V2 deprecation">
+        Remove
+      </message>
+      <message name="IDS_EXTENSIONS_MANIFEST_V2_DEPRECATION_DISABLED_DIALOG_CANCEL_BUTTON" desc="The text of the dialog button that opens the settings for the extension(s) that were were disabled due to the Manifest V2 deprecation">
+        {NUM_EXTENSIONS, plural,
+          =1 {Manage extension}
+          other {Manage extensions}
+        }
       </message>
 
       <!-- Begin Extension Settings Overridden Dialog strings. -->
@@ -7490,23 +7500,14 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_CUSTOMIZE_THEMES_HEADER" desc="The header for the page that lists theme categories in the Customize Brave side panel.">
         Themes
       </message>
-      <message name="IDS_NTP_CUSTOMIZE_MENU_BACKGROUND_LABEL" desc="The label for the backgrounds option in the customization menu on the New Tab Page.">
-        Background
-      </message>
-      <message name="IDS_NTP_CUSTOMIZE_MENU_BACKGROUND_DISABLED_LABEL" desc="The description for the backgrounds option in the customization menu on the New Tab Page when the option is disabled by the administrator.">
-        Custom backgrounds have been turned off by your administrator
-      </message>
       <message name="IDS_NTP_CUSTOMIZE_MENU_SHORTCUTS_LABEL" desc="The label for the shortcuts option in the customization menu on the New Tab Page.">
         Shortcuts
       </message>
       <message name="IDS_NTP_CUSTOMIZE_MENU_TOOLBAR_LABEL" desc="The label for the option to customize toolbar icons in the customization menu on the New Tab Page. This is a button which opens a panel for customizing toolbar icons when clicked.">
-        Toolbar Icons
+        Toolbar
       </message>
       <message name="IDS_NTP_CUSTOMIZE_MENU_MODULES_LABEL" desc="The label for the modules option in the customization menu on the New Tab Page.">
         Cards
-      </message>
-      <message name="IDS_NTP_CUSTOMIZE_MENU_COLOR_LABEL" desc="The label for the colors and themes option in the customization menu on the New Tab Page">
-        Color and theme
       </message>
       <message name="IDS_NTP_CUSTOMIZE_NO_BACKGROUND_LABEL" desc="The label for the 'Default Brave' tile in the customization menu on the New Tab Page">
         Default Brave
@@ -7535,17 +7536,8 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_CUSTOMIZE_YOUR_SEARCHED_IMAGE_LABEL" desc="The label for the 'Your searched image' button in the customization menu on the New Tab Page side panel.">
         AI created theme
       </message>
-      <message name="IDS_NTP_CUSTOMIZE_UPLOAD_FROM_DEVICE_LABEL" desc="The label for the 'Upload from device' tile in the customization menu on the New Tab Page">
-        Upload from device
-      </message>
       <message name="IDS_NTP_CUSTOMIZE_CHROME_CURRENT_THEME_LABEL" desc="The second line of the label for the button that opens a link to a third party theme.">
         Current theme you have installed.
-      </message>
-      <message name="IDS_NTP_CUSTOMIZE_HIDE_SHORTCUTS_LABEL" desc="The label for the option to hide shortcuts in the customization menu on the New Tab Page">
-        Hide shortcuts
-      </message>
-      <message name="IDS_NTP_CUSTOMIZE_HIDE_SHORTCUTS_DESC" desc="The description for the option to hide shortcuts in the customization menu on the New Tab Page">
-        Don't show shortcuts on this page
       </message>
       <message name="IDS_NTP_CUSTOMIZE_SHOW_CARDS_LABEL" desc="The label for the option to show cards in the customization menu on the New Tab Page">
         Show cards
@@ -7564,18 +7556,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_NTP_CUSTOMIZE_MY_SHORTCUTS_DESC" desc="The description for the option to show most visited sites in the customization menu on the New Tab Page">
         Shortcuts are curated by you
-      </message>
-      <message name="IDS_NTP_CUSTOMIZE_HIDE_ALL_CARDS_LABEL" desc="The label for the option to hide all cards in the customization menu on the New Tab Page">
-        Hide all cards
-      </message>
-      <message name="IDS_NTP_CUSTOMIZE_CUSTOMIZE_CARDS_LABEL" desc="The label for the option to customize cards in the customization menu on the New Tab Page">
-        Customize cards
-      </message>
-      <message name="IDS_NTP_CUSTOMIZE_3PT_THEME_DESC" desc="The description for the installed third-party themes in the customization menu on the New Tab Page">
-        Current theme you have installed
-      </message>
-      <message name="IDS_NTP_CUSTOMIZE_3PT_THEME_UNINSTALL" desc="The label for the third-party theme uninstall button in the customization menu on the New Tab Page">
-        Uninstall
       </message>
       <message name="IDS_NTP_CUSTOMIZE_COLOR_PICKER_LABEL" desc="The label for the color picker in the customization menu on the New Tab Page">
         Custom color
@@ -7598,9 +7578,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_THEME_MANAGED_DIALOG_BODY" desc="Body text for the dialog informing users that their theme is managed when they try selecting a theme on the New Tab Page.">
         Your administrator has set a default theme which cannot be changed.
       </message>
-    <message name="IDS_NTP_THEMES_CONTAINER_LABEL" desc="The accessibility label description read by the screen reader for the Color and Theme container when customizing the New Tab Page.">
-      Pick a theme color
-    </message>
+      <message name="IDS_NTP_THEMES_CONTAINER_LABEL" desc="The accessibility label description read by the screen reader for the Color and Theme container when customizing the New Tab Page.">
+        Pick a theme color
+      </message>
       <message name="IDS_NTP_CUSTOMIZE_DEFAULT_LABEL" desc="The label for the Default theme in the customization menu on the New Tab Page">
         Default color
       </message>
@@ -7880,10 +7860,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_WALLPAPER_SEARCH_SIGNED_OUT_TITLE" desc="The title of the message displayed when a wallpaper search request rejected because the user is signed out.">
         Please sign in to continue.
       </message>
+      <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CHOOSE_ICONS_LABEL" desc="Label for the description of the functionality of the section of Customize Brave for selecting toolbar icons.">
+        Choose what buttons show in the toolbar
+      </message>
+      <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_REORDER_TIP_LABEL" desc="Label for the tip informing users of how they can reorder buttons that they have pinned to the toolbar.">
+        To rearrange buttons on the toolbar, drag them
+      </message>
       <if expr="use_titlecase">
-        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CHOOSE_ICONS_HEADER" desc="Header for the section of Customize Brave for selecting toolbar icons.">
-          Choose Your Toolbar Icons
-        </message>
         <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_NAVIGATION" desc="The label for the category of actions that involve navigation, such as the home button or opening a new private window.">
           Navigation
         </message>
@@ -7896,11 +7879,11 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_TOOLS_AND_ACTIONS" desc="The label for the category of actions that open special purpose tools, such as Brave Translate or developer tools.">
           Tools and Actions
         </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_RESET_TO_DEFAULT_BUTTON_LABEL" desc="The label for the button to reset the set of pinned toolbar actions to the default.">
+          Reset to Default
+        </message>
       </if>
       <if expr="not use_titlecase">
-        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CHOOSE_ICONS_HEADER" desc="Header for the section of Customize Brave for selecting toolbar icons.">
-          Choose your toolbar icons
-        </message>
         <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_NAVIGATION" desc="The label for the category of actions that involve navigation, such as the home button or opening a new private window.">
           Navigation
         </message>
@@ -7912,6 +7895,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
         </message>
         <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_CATEGORY_TOOLS_AND_ACTIONS" desc="The label for the category of actions that open special purpose tools, such as Brave Translate or developer tools.">
           Tools and actions
+        </message>
+        <message name="IDS_NTP_CUSTOMIZE_TOOLBAR_RESET_TO_DEFAULT_BUTTON_LABEL" desc="The label for the button to reset the set of pinned toolbar actions to the default.">
+          Reset to default
         </message>
       </if>
 
@@ -12335,6 +12321,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Brave P
         <message name="IDS_NEW_TAB_GUEST_SESSION_LEARN_MORE_ACCESSIBILITY_TEXT" desc="Accessibility label for a link labeled 'Learn more' that links to a help article about browsing as a guest.">
           Learn more about browsing as a guest
         </message>
+        <message name="IDS_NEW_TAB_ENTERPRISE_GUEST_SESSION_LEARN_MORE_ACCESSIBILITY_TEXT" desc="Accessibility label for a link labeled 'Learn more' that links to a help article about enterprise enrolled devices.">
+          Learn more about enterprise enrolled devices
+        </message>
         <message name="IDS_NEW_TAB_TILE_GRID_ACCESSIBLE_DESCRIPTION" desc="Help message for screenreader users, spoken when navigating to a tile grid for the first time.">
           Use left and right arrow keys to navigate.
         </message>
@@ -12669,21 +12658,27 @@ This can include information about installed software, files, your browser, and 
             <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_STAY_HERE_BUTTON_LABEL" desc="Label of the cancel button in the web signin interception bubble">
               Stay Here
             </message>
-         </then>
-         <else>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SEPARATE_BROWSING_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for separating accounts into different browsers is displayed.">
-            Separate browsing?
-          </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SWITCH_PROFILE_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for switching to a profile that has the account intercepted already signed into is displayed.">
-            Switch profile?
-          </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CREATE_PROFILE_BUTTON_LABEL" desc="Label of the confirmation button in the web signin interception bubble. This action will create a new Brave profile for the intercepted account.">
-            Create profile
-          </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_STAY_HERE_BUTTON_LABEL" desc="Label of the cancel button in the web signin interception bubble">
-            Stay here
-          </message>
-         </else>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE_SUPERVISED" desc="Title of the Signin Bubble intercept that is shown when a signed out user signs in on the web with a supervised account." translateable="false">
+              Be Safe Online
+            </message>
+          </then>
+          <else>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SEPARATE_BROWSING_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for separating accounts into different browsers is displayed.">
+              Separate browsing?
+            </message>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SWITCH_PROFILE_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for switching to a profile that has the account intercepted already signed into is displayed.">
+              Switch profile?
+            </message>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CREATE_PROFILE_BUTTON_LABEL" desc="Label of the confirmation button in the web signin interception bubble. This action will create a new Brave profile for the intercepted account.">
+              Create profile
+            </message>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_STAY_HERE_BUTTON_LABEL" desc="Label of the cancel button in the web signin interception bubble">
+              Stay here
+            </message>
+            <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE_SUPERVISED" desc="Title of the Signin Bubble intercept that is shown when a signed out user signs in on the web with a supervised account." translateable="false">
+              Be safe online
+            </message>
+          </else>
         </if>
 
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CANCEL_BUTTON_LABEL" desc="Label of the cancel button in the web signin interception bubble">
@@ -13943,6 +13938,11 @@ Please help our engineers fix this problem. Tell us what happened right before y
           Turn on "Brave" in Location Services on your Mac
         </message>
       </if>
+      <if expr="is_win">
+        <message name="IDS_GEOLOCATION_TURNED_OFF_IN_WINDOWS" desc="Title for the geolocation bubble that is used when a site requests geolocation, but geolocation is blocked on an OS level in Windows.">
+          Location is turned off in Windows System Preferences
+        </message>
+      </if>
         <message name="IDS_GEOLOCATION_TURNED_OFF" desc="Description text in the omnibox icon showing when location permission is blocked on an OS level.">
           Location turned off
         </message>
@@ -14042,19 +14042,22 @@ Please help our engineers fix this problem. Tell us what happened right before y
           Microphone turned off
         </message>
       </if>
-      <if expr="is_chromeos">
-        <message name="IDS_OPEN_SETTINGS_LINK" desc="Title for the button that takes the user to the Security and Privacy settings in ChromeOS, in order for the user to be able to modify the ability to access camera, microphone and geolocation for Brave.">
+      <if expr="is_win or is_chromeos">
+        <message name="IDS_OPEN_SETTINGS_LINK" desc="Title for the button that takes the user to the Security and Privacy settings in Windows or ChromeOS, in order for the user to be able to modify the ability to access camera, microphone and geolocation for Brave.">
           Open Settings
         </message>
       </if>
-      <if expr="is_macosx or is_chromeos">
-        <message name="IDS_TURNED_OFF" desc="Description text for the state of camera or microphone">
+      <if expr="is_macosx or is_chromeos or is_win">
+        <message name="IDS_TURNED_OFF" desc="Description text for the state of camera or microphone or geolocation">
           Turned off
         </message>
       </if>
 
       <message name="IDS_A11Y_OMNIBOX_CHIP_HINT" desc="A navigational hint given to screenreader users, informing them that a setting which was just announced is accessible via the address bar.">
         Change this setting in the address bar.
+      </message>
+      <message name="IDS_A11Y_INDICATORS_ANNOUNCEMENT" desc="A permission usage status text that is used when a permission activity indicator is displayed. Additionally it contains a hint how to change this setting. All these strings are already defined.">
+        <ph name="PERMISSION_USAGE">$1<ex>This page is accessing your camera</ex></ph> <ph name="PERMISSION_INDICATOR_DESCRIPTION">$2<ex>Change this setting in the address bar</ex></ph>
       </message>
 
       <!-- Media Left-Hand Side indicators -->
@@ -16017,11 +16020,8 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_WEBAUTHN_GPM_PIN_OPTION_ALPHANUMERIC" desc="A label on the pin options dropdown menu that allows to choose an alphanumeric Brave Password Manager pin.">
         Letters &amp;&amp; Numbers
       </message>
-      <message name="IDS_WEBAUTHN_GPM_CHANGE_PIN_TITLE" desc="The title of a dialog that is shown when a user is changing their Brave Password Manager PIN.">
-        Create a new PIN for Brave Password Manager
-      </message>
-      <message name="IDS_WEBAUTHN_GPM_CREATE_PIN_TITLE" desc="The title of a dialog that is shown when a user is creating a Brave Password Manager PIN for the first time. Refer to Glossary for the meaning of 'passkey'; do not translate it as 'password'">
-        Protect all your passkeys with a recovery PIN
+      <message name="IDS_WEBAUTHN_GPM_CREATE_PIN_TITLE" desc="The title of a dialog that is shown when a user is creating a new Brave Password Manager PIN. Refer to Glossary for the meaning of 'passkey'; do not translate it as 'password'">
+        Create a recovery PIN for Brave Password Manager
       </message>
       <message name="IDS_WEBAUTHN_GPM_CREATE_PIN_DESC" desc="The description of a dialog that is shown when a user is creating a Brave Password Manager PIN explaining that it will be used to access their passkeys on all devices. Refer to Glossary for the meaning of 'passkey'; do not translate it as 'password'">
         A recovery PIN helps you access your saved passkeys on any device
@@ -16051,6 +16051,27 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_WEBAUTHN_MANAGE_PASSWORDS_AND_PASSKEYS" desc="The label of a button in a passkey saved confirmation bubble that leads to password manager. Refer to Glossary for the meaning of 'passkey'; do not translate it as 'password'">
         Manage passwords and passkeys
+      </message>
+      <message name="IDS_WEBAUTHN_SHOW_PIN" desc="The tooltip of a button that is used to show the PIN.">
+        Show PIN
+      </message>
+      <message name="IDS_WEBAUTHN_HIDE_PIN" desc="The tooltip of a button that is used to hide the PIN.">
+        Hide PIN
+      </message>
+      <message name="IDS_WEBAUTHN_CHANGE_PIN" desc="The label of a button that is displayed on a dialog when the user entered their PIN incorrectly too many times, allowing to change it.">
+        Change PIN
+      </message>
+      <message name="IDS_WEBAUTHN_LOCKED_GPM_PIN_TITLE" desc="The title of a dialog that is displayed when the user entered their Brave Password Manager PIN incorrectly too many times.">
+        Change your recovery PIN for Brave Password Manager
+      </message>
+      <message name="IDS_WEBAUTHN_LOCKED_GPM_PIN_DESCRIPTION" desc="The description of a dialog that is displayed when the user entered their Brave Password Manager PIN incorrectly too many times.">
+        You've entered the wrong PIN too many times. To access your passkeys and passwords, change your PIN.
+      </message>
+      <message name="IDS_WEBAUTHN_GPM_PIN_DIGIT_HINT" desc="The hint that is displayed during the creation of a 6-digit Brave Password Manager PIN, whenever a user types something other than a digit.">
+        Enter a 6-digit PIN
+      </message>
+      <message name="IDS_WEBAUTHN_GPM_PIN_LENGTH_HINT" desc="The hint that is displayed during the creation of an alphanumeric Brave Password Manager PIN, explaining its minimal length requirement whenever the currently typed length is not enough.">
+        Your PIN can be 4 characters or more
       </message>
 
       <!-- Web-modal dialog shown during Digital Credential request -->
@@ -16588,30 +16609,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <message name="IDS_CHROMELABS_ENABLED_WITH_VARIATION_NAME" desc="Label for combobox option for an enabled variation that will have a description describing what variation is enabled in the placeholder.">
       Enabled – <ph name="VARIATION_NAME">$1<ex>tabs shrink to pinned tab width</ex></ph>
-    </message>
-    <!-- BraveLabs Customize Brave SidePanel-->
-    <message name="IDS_CUSTOMIZE_CHROME_SIDE_PANEL_EXPERIMENT_NAME" desc="The name for the Customize Brave Side Panel experiment.">
-      Customize Brave Side Panel
-    </message>
-    <message name="IDS_CUSTOMIZE_CHROME_SIDE_PANEL_DESCRIPTION" desc="The description for the Customize Brave Side Panel experiment.">
-      Enables the ability to use Customize Brave functionality from the unified side panel on the New Tab Page.
-    </message>
-    <!-- BraveLabs BraveRefresh2023-->
-    <message name="IDS_CHROMEREFRESH2023_EXPERIMENT_NAME" desc="The name of the project for Brave's desktop UI redesign.">
-      Brave Refresh 2023
-    </message>
-    <message name="IDS_CHROMEREFRESH2023_DESCRIPTION" desc="The description of the project for Brave's desktop UI redesign.">
-      Enables the new desktop design. Customize Brave Side Panel must also be enabled.
-    </message>
-     <message name="IDS_CHROMEREFRESH2023_WITHOUT_OMNIBOX" desc="Indicates no omnibox design changes in Brave's desktop UI redesign.">
-      without Omnibox
-    </message>
-    <!-- BraveLabs BraveWebuiRefresh2023-->
-    <message name="IDS_CHROMEWEBUIREFRESH2023_EXPERIMENT_NAME" desc="The name of the project for Brave's desktop WebUI redesign.">
-      Brave WebUI Refresh 2023
-    </message>
-    <message name="IDS_CHROMEWEBUIREFRESH2023_DESCRIPTION" desc="The description of the project for Brave's desktop WebUI redesign.">
-      Enables the new desktop design for WebUI. Brave Refresh 2023 must also be enabled.
     </message>
     <!-- BraveLabs Tab Scrolling -->
     <message name="IDS_TAB_SCROLLING_EXPERIMENT_NAME" desc="Name for Tab Scrolling experiment">
@@ -17378,6 +17375,29 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_EXPERIMENTAL_FEATURE_DISCLAIMER" desc="Text used for experimental features.">
       This is an experimental AI feature.
     </message>
+
+    <!-- Safety Hub elements. -->
+    <!-- TODO(crbug.com/324562205): Make strings translateable once finalized. -->
+    <if expr="is_android">
+        <message name="IDS_SETTINGS_SAFETY_HUB_SAFE_BROWSING_MENU_NOTIFICATION" translateable="false">
+          Get protection against dangerous sites
+        </message>
+        <message name="IDS_SETTINGS_SAFETY_HUB_REVIEW_NOTIFICATION_PERMISSIONS_MENU_NOTIFICATION" translateable="false">
+          {NUM_SITES, plural,
+          =1 {Found 1 site with lots of notifications}
+          other {Found {NUM_SITES} sites with lots of notifications}}
+        </message>
+        <message name="IDS_SETTINGS_SAFETY_HUB_REVOKED_PERMISSIONS_MENU_NOTIFICATION" translateable="false">
+          {NUM_SITES, plural,
+          =1 {Brave removed permissions for 1 site}
+          other {Brave removed permissions for {NUM_SITES} sites}}
+        </message>
+        <message name="IDS_SETTINGS_SAFETY_HUB_UNUSED_SITE_PERMISSIONS_MENU_NOTIFICATION" translateable="false">
+          {NUM_SITES, plural,
+          =1 {Brave removed permissions for 1 unused site}
+          other {Brave removed permissions for {NUM_SITES} ununsed sites}}
+        </message>
+    </if>
   </messages>
 </release>
 </grit>
