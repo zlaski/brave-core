@@ -9,14 +9,11 @@
 #include <memory>
 
 #include "base/android/application_status_listener.h"
-#include "base/memory/weak_ptr.h"
 #include "brave/browser/brave_ads/application_state/background_helper/background_helper.h"
 
 namespace brave_ads {
 
-class BackgroundHelperAndroid
-    : public BackgroundHelper,
-      public base::SupportsWeakPtr<BackgroundHelperAndroid> {
+class BackgroundHelperAndroid final : public BackgroundHelper {
  public:
   BackgroundHelperAndroid(const BackgroundHelperAndroid&) = delete;
   BackgroundHelperAndroid& operator=(const BackgroundHelperAndroid&) = delete;
