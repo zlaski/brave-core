@@ -585,6 +585,10 @@ For more settings that use data to improve your Brave experience, go to <ph name
       <message translateable="false" name="IDS_AUTOFILL_OPTIONS_UNDO_TOGGLE_CHANGE" desc="Description below switch toggling the use of third-party autofill in Brave." formatter_data="android_java">
         Undo setting change
       </message>
+      <!-- TODO(crbug.com/40898980): Use finalized string.-->
+      <message translateable="false" name="IDS_AUTOFILL_OPTIONS_HINT_POLICY" desc="Explanation that a policy prevents toggling the use of third-party autofill in Brave." formatter_data="android_java">
+        Disabled by the administrator of this device
+      </message>
       <message name="IDS_AUTOFILL_DELETE_SAVED_CVCS_CONFIRMATION_DIALOG_TITLE" desc="Title for the dialog where the user confirms their intention to delete their saved CVCs.">
         Delete saved security codes?
       </message>
@@ -1799,6 +1803,30 @@ Your Brave account may have other forms of browsing history like searches and ac
       </message>
       <message name="IDS_SAFETY_HUB_AUTOREVOCATION_TOGGLE_SUMMARY" translateable="false">
         To protect your data, let Brave remove permissions from sites that you haven’t visited recently
+      </message>
+      <message name="IDS_SAFETY_HUB_SAFETY_TIPS_SAFETY_TOOLS_TITLE" translateable="false">
+        Learn about Brave's safety tools
+      </message>
+      <message name="IDS_SAFETY_HUB_SAFETY_TIPS_SAFETY_TOOLS_SUMMARY" translateable="false">
+        With tools from Brave, you can browse safely and stay in control
+      </message>
+      <message name="IDS_SAFETY_HUB_SAFETY_TIPS_INCOGNITO_TITLE" translateable="false">
+        Learn about Brave Private
+      </message>
+      <message name="IDS_SAFETY_HUB_SAFETY_TIPS_INCOGNITO_SUMMARY" translateable="false">
+        Private mode keeps your browsing private from others who use your device
+      </message>
+      <message name="IDS_SAFETY_HUB_SAFETY_TIPS_SAFE_BROWSING_TITLE" translateable="false">
+        Learn about Safe Browsing
+      </message>
+      <message name="IDS_SAFETY_HUB_SAFETY_TIPS_SAFE_BROWSING_SUMMARY" translateable="false">
+        Brave warns you about unsafe sites and downloads
+      </message>
+      <message name="IDS_SAFETY_HUB_SAFE_BROWSER_STATE_TITLE" translateable="false">
+        Your browser looks good
+      </message>
+      <message name="IDS_SAFETY_HUB_CHECKED_RECENTLY" translateable="false">
+        Checked recently
       </message>
 
        <!-- Safe Browsing preferences -->
@@ -5975,7 +6003,7 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
 
       <!-- WebID Account Selection strings -->
       <message name="IDS_ACCOUNT_SELECTION_ADD_ACCOUNT" desc="Title of the button that lets the user sign in to an additional account" translateable="false">
-        Add Account
+        Use a different account
       </message>
       <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_SIGNIN" desc="Header for sign in sheet. Sheet is shown to prompt user to sign in to a website using an account from an identity provider.">
         Sign in to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
@@ -6000,9 +6028,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_CONTINUE" desc="Header for continue sheet. Sheet is shown to prompt user to continue to a website using an account from an identity provider.">
         Continue to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
-      </message>
-      <message name="IDS_ACCOUNT_SELECTION_SHEET_SUBTITLE_EXPLICIT" desc="Message shown when the user is shown the federated identity login prompt. This message is the subtitle for the sign in sheet, which contains the top-level domain of the page the user is visiting when the user is receiving a prompt from an iframe embedded on such page.">
-        on <ph name="MAIN_FRAME_ETLD_PLUS_ONE">%1$s<ex>main-frame.example</ex></ph>
       </message>
       <message name="IDS_ACCOUNT_SELECTION_DATA_SHARING_CONSENT_NO_PP_OR_TOS" desc="The consent text shown to the user before sign up when there is no privacy policy or terms of service.">
       To continue, <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%1$s<ex>idp.com</ex></ph> will share your name, email address, and profile picture with this site.
@@ -6450,22 +6475,19 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
 
       <!-- Interstitial shown prior to making digital identity request to wallet -->
       <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_DIALOG_TITLE" translateable="false">
-        Caution
+        Make sure you trust this site with your data
       </message>
       <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_LOW_RISK_DIALOG_TEXT" translateable="false">
-        <ph name="WEBSITE_ORIGIN">%1$s<ex>www.cheapalcohol.com</ex></ph> would like to ask Android to give you options for sharing your identity information.
+        <ph name="WEBSITE_ORIGIN">%1$s<ex>www.cheapalcohol.com</ex></ph> wants to use personal info from your digital wallet. Only continue if you trust this site.
       </message>
-      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_LOW_RISK_POSITIVE_BUTTON_TEXT" translateable="false">
-        Share
+      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_LOW_RISK_NEGATIVE_BUTTON_TEXT" translateable="false">
+        Cancel
       </message>
       <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_HIGH_RISK_DIALOG_TEXT" translateable="false">
-        <ph name="WEBSITE_ORIGIN">%1$s<ex>www.cheapalcohol.com</ex></ph> would like to ask Android for access to your identity. Brave cannot determine what privacy risks this may pose.
+        <ph name="WEBSITE_ORIGIN">%1$s<ex>www.cheapalcohol.com</ex></ph> wants to use personal info from your digital wallet. Only continue if you trust this site. Dangerous sites might trick you into revealing things like your legal name or ID number.
       </message>
-      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_HIGH_RISK_POSITIVE_BUTTON_TEXT" translateable="false">
-        Share Anyway
-      </message>
-      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_NEGATIVE_BUTTON_TEXT" translateable="false">
-        Do Not Share
+      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_HIGH_RISK_NEGATIVE_BUTTON_TEXT" translateable="false">
+        Back to safety
       </message>
       <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_REQUEST_ABORTED_DIALOG_TEXT" translateable="false">
         <ph name="WEBSITE_ORIGIN">%1$s<ex>www.cheapalcohol.com</ex></ph> has canceled the request for identity information.
