@@ -272,6 +272,8 @@ struct AIChatResponseMessageView: View {
             Text(line.codeLine)
               .font(.subheadline)
               .multilineTextAlignment(.leading)
+              .id(line.codeLine)
+              .transition(.opacity.animation(.easeIn(duration: 0.4)))
           }
         }
       }
