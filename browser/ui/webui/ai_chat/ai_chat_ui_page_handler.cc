@@ -14,6 +14,7 @@
 #include "base/notreached.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/time/time.h"
+#include "brave/browser/ai_chat/ai_chat_service_factory.h"
 #include "brave/browser/ui/side_panel/ai_chat/ai_chat_side_panel_utils.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-shared.h"
@@ -100,6 +101,26 @@ AIChatUIPageHandler::AIChatUIPageHandler(
 }
 
 AIChatUIPageHandler::~AIChatUIPageHandler() = default;
+
+void AIChatUIPageHandler::BindInitialConversation(
+    mojo::PendingReceiver<mojom::ConversationHandler> receiver,
+    mojo::PendingRemote<mojom::ChatUIPage> conversation_ui_handler) {
+  // TODO(petemill): This function and the service's BindConversation should
+  // be the only things that actually create conversation instances.
+
+  if (!active_chat_tab_helper_) {
+    // No initial conversation for standalone page
+    return;
+  }
+
+  ConversationHandler* conversation =
+      AIChatServiceFactory::GetForBrowserContext(profile_)
+          ->GetOrCreateConversationHandlerForPageContent(
+              active_chat_tab_helper_->GetContentId(),
+              active_chat_tab_helper_->GetWeakPtr());
+
+  conversation->Bind(std::move(receiver), std::move(conversation_ui_handler));
+}
 
 void AIChatUIPageHandler::SetClientPage(
     mojo::PendingRemote<ai_chat::mojom::ChatUIPage> page) {
@@ -416,6 +437,7 @@ void AIChatUIPageHandler::OnFaviconImageDataChanged() {
 }
 
 void AIChatUIPageHandler::OnPageHasContent(mojom::SiteInfoPtr site_info) {
+  CHECK(site_info);
   if (page_.is_bound()) {
     page_->OnSiteInfoChanged(std::move(site_info));
   }
