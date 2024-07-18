@@ -36,7 +36,6 @@ if (!is_android) {
 
 brave_browser_misc_metrics_deps = [
   "//brave/browser:browser_process",
-  "//brave/browser/profiles:util",
   "//brave/components/ai_chat/core/common/buildflags",
   "//brave/components/misc_metrics",
   "//chrome/browser:browser_process",

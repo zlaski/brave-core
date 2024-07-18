@@ -5,11 +5,9 @@
 
 #include "brave/browser/ui/views/brave_tooltips/brave_tooltip_popup.h"
 
-#include <map>
 #include <utility>
 
 #include "base/time/time.h"
-#include "brave/browser/profiles/profile_util.h"
 #include "brave/browser/ui/brave_tooltips/bounds_util.h"
 #include "brave/grit/brave_generated_resources.h"
 #include "build/build_config.h"
@@ -22,7 +20,6 @@
 #include "ui/gfx/animation/linear_animation.h"
 #include "ui/gfx/animation/tween.h"
 #include "ui/gfx/canvas.h"
-#include "ui/gfx/color_palette.h"
 #include "ui/gfx/geometry/insets.h"
 #include "ui/gfx/geometry/point.h"
 #include "ui/gfx/geometry/rect.h"

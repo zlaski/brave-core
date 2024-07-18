@@ -19,7 +19,6 @@ source_set("tooltips") {
 
     deps += [
       "//base",
-      "//brave/browser/profiles:util",
       "//brave/browser/ui/brave_tooltips",
       "//brave/components/brave_ads/browser:browser",
       "//brave/components/l10n/common",

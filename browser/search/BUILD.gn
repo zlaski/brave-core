@@ -11,7 +11,6 @@ source_set("search") {
 
     deps += [
       "//base",
-      "//brave/browser/profiles:profiles",
       "//brave/components/constants",
       "//chrome/browser/ui",
       "//chrome/common",

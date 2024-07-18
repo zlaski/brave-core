@@ -6,12 +6,9 @@
 #ifndef BRAVE_BROWSER_PROFILES_PROFILE_UTIL_H_
 #define BRAVE_BROWSER_PROFILES_PROFILE_UTIL_H_
 
-#include "chrome/browser/profiles/profile.h"
-#include "content/public/browser/browser_context.h"
+class Profile;
 
 namespace brave {
-
-bool IsTorDisabledForProfile(Profile* profile);
 
 // Specifically used to record if sponsored images are enabled.
 // Called from BraveAppearanceHandler and BraveNewTabMessageHandler

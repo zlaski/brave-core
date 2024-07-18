@@ -25,7 +25,6 @@ source_set("brave_tooltips") {
     "//base",
     "//brave/app:brave_generated_resources_grit",
     "//brave/app/vector_icons",
-    "//brave/browser/profiles:util",
     "//brave/browser/ui/brave_tooltips",
     "//components/prefs",
     "//skia",

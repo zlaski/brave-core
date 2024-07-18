@@ -5,16 +5,9 @@
 
 #include "brave/browser/profiles/profile_util.h"
 
-#include <map>
-#include <memory>
-#include <utility>
-
-#include "base/memory/raw_ptr.h"
 #include "base/metrics/histogram_macros.h"
 #include "brave/components/brave_shields/content/browser/brave_shields_p3a.h"
 #include "brave/components/brave_shields/core/common/brave_shield_utils.h"
-#include "brave/components/constants/brave_constants.h"
-#include "brave/components/constants/pref_names.h"
 #include "brave/components/ntp_background_images/common/pref_names.h"
 #include "brave/components/search_engines/brave_prepopulated_engines.h"
 #include "brave/components/tor/buildflags/buildflags.h"
@@ -31,19 +24,7 @@ using ntp_background_images::prefs::kNewTabPageShowBackgroundImage;
 using ntp_background_images::prefs::
     kNewTabPageShowSponsoredImagesBackgroundImage;  // NOLINT
 
-#if BUILDFLAG(ENABLE_TOR)
-#include "brave/browser/tor/tor_profile_service_factory.h"
-#endif
-
 namespace brave {
-
-bool IsTorDisabledForProfile(Profile* profile) {
-#if BUILDFLAG(ENABLE_TOR)
-  return TorProfileServiceFactory::IsTorDisabled(profile);
-#else
-  return true;
-#endif
-}
 
 void RecordSponsoredImagesEnabledP3A(Profile* profile) {
   bool is_sponsored_image_enabled =

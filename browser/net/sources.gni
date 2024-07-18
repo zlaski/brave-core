@@ -55,7 +55,6 @@ brave_browser_net_deps = [
   "//brave/browser:browser_process",
   "//brave/browser/brave_wallet",
   "//brave/browser/net:geolocation",
-  "//brave/browser/profiles:util",
   "//brave/browser/safebrowsing",
   "//brave/common",
   "//brave/components/brave_ads/browser",
