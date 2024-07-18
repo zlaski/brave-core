@@ -54,6 +54,9 @@ class AIChatUIPageHandler : public ai_chat::mojom::PageHandler,
   ~AIChatUIPageHandler() override;
 
   // ai_chat::mojom::PageHandler:
+  void BindInitialConversation(
+      mojo::PendingReceiver<mojom::ConversationHandler> receiver,
+      mojo::PendingRemote<mojom::ChatUIPage> conversation_ui_handler) override;
   void SetClientPage(
       mojo::PendingRemote<ai_chat::mojom::ChatUIPage> page) override;
   void GetModels(GetModelsCallback callback) override;

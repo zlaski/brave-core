@@ -21,6 +21,9 @@
 #include "base/scoped_observation.h"
 #include "brave/components/ai_chat/core/browser/ai_chat_credential_manager.h"
 #include "brave/components/ai_chat/core/browser/ai_chat_feedback_api.h"
+#include "brave/components/ai_chat/core/browser/ai_chat_service.h"
+#include "brave/components/ai_chat/core/browser/conversation_handler.h"
+#include "brave/components/ai_chat/core/browser/conversation_observer.h"
 #include "brave/components/ai_chat/core/browser/engine/engine_consumer.h"
 #include "brave/components/ai_chat/core/browser/model_service.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-forward.h"
@@ -35,7 +38,10 @@ FORWARD_DECLARE_TEST(AIChatUIBrowserTest, PrintPreviewFallback);
 namespace ai_chat {
 class AIChatMetrics;
 
-class ConversationDriver : public ModelService::Observer {
+// TODO(petemill): move almost everything to ConversationHandler
+class ConversationDriver
+    : public ModelService::Observer,
+      public ConversationHandler::AssociatedContentDelegate {
  public:
   using GeneratedTextCallback =
       base::RepeatingCallback<void(const std::string& text)>;
@@ -48,27 +54,12 @@ class ConversationDriver : public ModelService::Observer {
   using GetPageContentCallback = base::OnceCallback<
       void(std::string content, bool is_video, std::string invalidation_token)>;
 
-  class Observer : public base::CheckedObserver {
-   public:
-    ~Observer() override {}
-
-    virtual void OnHistoryUpdate() {}
-    virtual void OnAPIRequestInProgress(bool in_progress) {}
-    virtual void OnAPIResponseError(mojom::APIError error) {}
-    virtual void OnModelDataChanged(
-        const std::string& model_key,
-        const std::vector<mojom::ModelPtr>& model_list) {}
-    virtual void OnSuggestedQuestionsChanged(
-        std::vector<std::string> questions,
-        mojom::SuggestionGenerationStatus suggestion_generation_status) {}
-    virtual void OnFaviconImageDataChanged() {}
-    virtual void OnPageHasContent(mojom::SiteInfoPtr site_info) {}
-    virtual void OnPrintPreviewRequested(bool is_pdf) {}
-  };
+  using Observer = ConversationObserver;
 
   ConversationDriver(
       PrefService* profile_prefs,
       PrefService* local_state,
+      AIChatService* ai_chat_service,
       ModelService* model_service,
       AIChatMetrics* ai_chat_metrics,
       base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
@@ -78,6 +69,7 @@ class ConversationDriver : public ModelService::Observer {
   ConversationDriver(
       PrefService* profile_prefs,
       PrefService* local_state,
+      AIChatService* ai_chat_service,
       ModelService* model_service,
       AIChatMetrics* ai_chat_metrics,
       std::unique_ptr<AIChatCredentialManager> credential_manager,
@@ -87,6 +79,14 @@ class ConversationDriver : public ModelService::Observer {
 
   ConversationDriver(const ConversationDriver&) = delete;
   ConversationDriver& operator=(const ConversationDriver&) = delete;
+
+  // ConversationHandler::AssociatedContentDelegate
+  int GetContentId() const override;
+  GURL GetURL() const override;
+  std::u16string GetTitle() const override;
+  void GetContent(GetPageContentCallback callback,
+                  std::string_view invalidation_token) override;
+  void GetContentPrintPreviewFallback(GetPageContentCallback callback) override;
 
   void ChangeModel(const std::string& model_key);
   std::string GetDefaultModel();
@@ -162,6 +162,10 @@ class ConversationDriver : public ModelService::Observer {
   // location bar, and unlink it if so. If the panel is not open and there is
   // no existing chat history, the page content should not be linked.
   void MaybeUnlinkPageContent();
+
+  base::WeakPtr<ConversationDriver> GetWeakPtr() {
+    return weak_ptr_factory_.GetWeakPtr();
+  }
 
   const std::string& GetArticleTextForTesting() const { return article_text_; }
   bool IsSuggestionsEmptyForTesting() const { return suggestions_.empty(); }
@@ -276,6 +280,7 @@ class ConversationDriver : public ModelService::Observer {
 
   // TODO(nullhook): Abstract the data model
   std::string model_key_;
+  raw_ptr<AIChatService> service_;
   raw_ptr<ModelService> model_service_;
   std::vector<mojom::ConversationTurnPtr> chat_history_;
   bool is_conversation_active_ = false;
@@ -286,6 +291,9 @@ class ConversationDriver : public ModelService::Observer {
   bool is_page_text_fetch_in_progress_ = false;
   bool is_print_preview_fallback_requested_ = false;
   std::unique_ptr<base::OneShotEvent> on_page_text_fetch_complete_;
+
+  // Handlers that are interested in this content for the current navigation.
+  std::vector<base::WeakPtr<ConversationHandler>> associated_conversations_;
 
   bool is_request_in_progress_ = false;
   std::vector<std::string> suggestions_;

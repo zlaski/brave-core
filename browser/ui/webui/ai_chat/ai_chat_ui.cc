@@ -7,6 +7,7 @@
 
 #include <utility>
 
+#include "brave/browser/ai_chat/ai_chat_service_factory.h"
 #include "brave/browser/ui/side_panel/ai_chat/ai_chat_side_panel_utils.h"
 #include "brave/browser/ui/webui/ai_chat/ai_chat_ui_page_handler.h"
 #include "brave/browser/ui/webui/brave_webui_source.h"
@@ -146,6 +147,12 @@ void AIChatUI::BindInterface(
   }
   page_handler_ = std::make_unique<ai_chat::AIChatUIPageHandler>(
       web_ui()->GetWebContents(), web_contents, profile_, std::move(receiver));
+}
+
+void AIChatUI::BindInterface(
+    mojo::PendingReceiver<ai_chat::mojom::Service> receiver) {
+  ai_chat::AIChatServiceFactory::GetForBrowserContext(profile_)->Bind(
+      std::move(receiver));
 }
 
 std::unique_ptr<content::WebUIController>

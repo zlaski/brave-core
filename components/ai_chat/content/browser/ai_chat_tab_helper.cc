@@ -32,6 +32,7 @@
 #include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_accessibility_state.h"
 #include "content/public/browser/browser_context.h"
+#include "content/public/browser/navigation_details.h"
 #include "content/public/browser/navigation_entry.h"
 #include "content/public/browser/scoped_accessibility_mode.h"
 #include "content/public/browser/storage_partition.h"
@@ -103,6 +104,7 @@ void AIChatTabHelper::SetMaxContentLengthForTesting(
 
 AIChatTabHelper::AIChatTabHelper(
     content::WebContents* web_contents,
+    AIChatService* ai_chat_service,
     AIChatMetrics* ai_chat_metrics,
     base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
         skus_service_getter,
@@ -113,6 +115,7 @@ AIChatTabHelper::AIChatTabHelper(
       ConversationDriver(
           user_prefs::UserPrefs::Get(web_contents->GetBrowserContext()),
           local_state_prefs,
+          ai_chat_service,
           ModelServiceFactory::GetForBrowserContext(
               web_contents->GetBrowserContext()),
           ai_chat_metrics,
@@ -159,24 +162,25 @@ void AIChatTabHelper::WebContentsDestroyed() {
       ->RemoveObserver(this);
 }
 
-void AIChatTabHelper::DidFinishNavigation(
-    content::NavigationHandle* navigation_handle) {
-  if (!navigation_handle->IsInMainFrame()) {
+void AIChatTabHelper::NavigationEntryCommitted(
+    const content::LoadCommittedDetails& load_details) {
+  if (!load_details.is_main_frame) {
     return;
   }
-  DVLOG(2) << __func__ << navigation_handle->GetNavigationId()
-           << " url: " << navigation_handle->GetURL().spec()
-           << " same document? " << navigation_handle->IsSameDocument();
-
+  // UniqueID will provide a consitent value for the entry when navigating
+  // through history, allowing us to re-join conversations and navigations.
+  int pending_navigation_id = load_details.entry->GetUniqueID();
+  pending_navigation_id_ = pending_navigation_id;
+  DVLOG(2) << __func__ << " id: " << pending_navigation_id_
+           << " url: " << load_details.entry->GetVirtualURL()
+           << " same document? " << load_details.is_same_document;
   // Allow same-document navigation, as content often changes as a result
   // of framgment / pushState / replaceState navigations.
   // Content won't be retrieved immediately and we don't have a similar
   // "DOM Content Loaded" event, so let's wait for something else such as
   // page title changing before committing to starting a new conversation
   // and treating it as a "fresh page".
-  is_same_document_navigation_ = navigation_handle->IsSameDocument();
-  pending_navigation_id_ = navigation_handle->GetNavigationId();
-
+  is_same_document_navigation_ = load_details.is_same_document;
   // Experimentally only call |OnNewPage| for same-page navigations _if_
   // it results in a page title change (see |TtileWasSet|).
   if (!is_same_document_navigation_) {

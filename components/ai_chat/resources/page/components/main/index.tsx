@@ -26,17 +26,24 @@ import WelcomeGuide from '../welcome_guide'
 import PageContextToggle from '../page_context_toggle'
 import styles from './style.module.scss'
 import ToolsButtonMenu from '../tools_button_menu'
+import { useAIChat } from '../../state/ai_chat_context'
+import { ConversationContextProvider } from '../../state/conversation_context'
+import Conversation from '../conversation'
 
 const SCROLL_BOTTOM_THRESHOLD = 10.0
 
 function Main() {
   const context = React.useContext(DataContext)
+  const aiChatContext = useAIChat()
+
   const {
     siteInfo,
     hasAcceptedAgreement,
     currentError,
     apiHasError
   } = context
+
+  const [selectedConversationId, setSelectedConversationId] = React.useState<string | undefined>()
 
   const handleNewConversation = () => {
     getPageHandlerInstance().pageHandler.clearConversationHistory()
@@ -152,6 +159,21 @@ function Main() {
       >
         <AlertCenter position='top-left' className={styles.alertCenter} />
         <div className={styles.conversationContent}>
+
+          <ul>
+            <li onClick={() => setSelectedConversationId(undefined)}>This page's conversation</li>
+          {aiChatContext.VisibleConversations.map(conversation => (
+            <li key={conversation.uuid} onClick={() => setSelectedConversationId(conversation.uuid)}>
+              <div>{conversation.uuid}</div>
+              <div>{conversation.title}</div>
+            </li>
+          ))}
+          </ul>
+
+          <ConversationContextProvider conversationId={selectedConversationId}>
+            <Conversation />
+          </ConversationContextProvider>
+
           {context.hasAcceptedAgreement && <>
             <ModelIntro />
             <ConversationList

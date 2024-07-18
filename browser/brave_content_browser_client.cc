@@ -611,7 +611,9 @@ void BraveContentBrowserClient::RegisterWebUIInterfaceBrokers(
 
 #if BUILDFLAG(ENABLE_AI_CHAT)
   if (ai_chat::features::IsAIChatEnabled()) {
-    registry.ForWebUI<AIChatUI>().Add<ai_chat::mojom::PageHandler>();
+    registry.ForWebUI<AIChatUI>()
+        .Add<ai_chat::mojom::PageHandler>()
+        .Add<ai_chat::mojom::Service>();
   }
 #endif
 

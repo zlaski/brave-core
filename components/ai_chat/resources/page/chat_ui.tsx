@@ -14,8 +14,9 @@ import '@brave/leo/tokens/css/variables.css'
 import '$web-common/defaultTrustedTypesPolicy'
 import { loadTimeData } from '$web-common/loadTimeData'
 import BraveCoreThemeProvider from '$web-common/BraveCoreThemeProvider'
-import Main from './components/main'
 import DataContextProvider from './state/data-context-provider'
+import { AIChatContextProvider } from './state/ai_chat_context'
+import Main from './components/main'
 
 setIconBasePath('chrome-untrusted://resources/brave-icons')
 
@@ -25,11 +26,13 @@ function App () {
   }, [])
 
   return (
-    <DataContextProvider>
-      <BraveCoreThemeProvider>
-        <Main />
-      </BraveCoreThemeProvider>
-    </DataContextProvider>
+    <AIChatContextProvider>
+        <DataContextProvider>
+          <BraveCoreThemeProvider>
+            <Main />
+          </BraveCoreThemeProvider>
+        </DataContextProvider>
+    </AIChatContextProvider>
   )
 }
 

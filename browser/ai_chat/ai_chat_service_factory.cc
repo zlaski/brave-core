@@ -6,6 +6,8 @@
 #include "brave/browser/ai_chat/ai_chat_service_factory.h"
 
 #include <memory>
+#include <string>
+#include <utility>
 
 #include "base/no_destructor.h"
 #include "brave/browser/brave_browser_process.h"
