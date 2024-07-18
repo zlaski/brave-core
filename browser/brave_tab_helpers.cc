@@ -10,6 +10,7 @@
 
 #include "base/command_line.h"
 #include "base/feature_list.h"
+#include "brave/browser/ai_chat/ai_chat_service_factory.h"
 #include "brave/browser/brave_ads/creatives/search_result_ad/creative_search_result_ad_tab_helper.h"
 #include "brave/browser/brave_ads/tabs/ads_tab_helper.h"
 #include "brave/browser/brave_browser_process.h"
@@ -145,8 +146,10 @@ void AttachTabHelpers(content::WebContents* web_contents) {
           return skus::SkusServiceFactory::GetForContext(context);
         },
         context);
+    auto* ai_chat_service =
+        ai_chat::AIChatServiceFactory::GetForBrowserContext(context);
     ai_chat::AIChatTabHelper::CreateForWebContents(
-        web_contents,
+        web_contents, ai_chat_service,
         g_brave_browser_process->process_misc_metrics()
             ? g_brave_browser_process->process_misc_metrics()->ai_chat_metrics()
             : nullptr,

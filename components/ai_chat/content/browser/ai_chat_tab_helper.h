@@ -91,6 +91,7 @@ class AIChatTabHelper : public content::WebContentsObserver,
 
   AIChatTabHelper(
       content::WebContents* web_contents,
+      AIChatService* ai_chat_service,
       AIChatMetrics* ai_chat_metrics,
       base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
           skus_service_getter,
@@ -101,8 +102,8 @@ class AIChatTabHelper : public content::WebContentsObserver,
 
   // content::WebContentsObserver
   void WebContentsDestroyed() override;
-  void DidFinishNavigation(
-      content::NavigationHandle* navigation_handle) override;
+  void NavigationEntryCommitted(
+      const content::LoadCommittedDetails& load_details) override;
   void TitleWasSet(content::NavigationEntry* entry) override;
   void InnerWebContentsAttached(content::WebContents* inner_web_contents,
                                 content::RenderFrameHost* render_frame_host,
@@ -140,7 +141,7 @@ class AIChatTabHelper : public content::WebContentsObserver,
   raw_ptr<AIChatMetrics> ai_chat_metrics_;
 
   bool is_same_document_navigation_ = false;
-  int64_t pending_navigation_id_;
+  int pending_navigation_id_;
   bool is_pdf_a11y_info_loaded_ = false;
   uint8_t check_pdf_a11y_tree_attempts_ = 0;
   GetPageContentCallback pending_get_page_content_callback_;

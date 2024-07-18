@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
+// TODO(petemill): rename to AIChat
 import * as AIChatUI from 'gen/brave/components/ai_chat/core/common/mojom/ai_chat.mojom.m.js'
 
 // Provide access to all the generated types
@@ -14,6 +15,12 @@ interface API {
 }
 
 let apiInstance: API
+
+// TODO: lazy-load
+export const Service: AIChatUI.ServiceRemote = AIChatUI.Service.getRemote()
+export const ServiceObserver: AIChatUI.ChatUICallbackRouter = new AIChatUI.ChatUICallbackRouter()
+
+Service.bindUI(ServiceObserver.$.bindNewPipeAndPassRemote())
 
 class PageHandlerAPI implements API {
   pageHandler: AIChatUI.PageHandlerRemote
@@ -37,4 +44,36 @@ export default function getPageHandlerInstance() {
     apiInstance = new PageHandlerAPI()
   }
   return apiInstance
+}
+
+export function getConversation(id: string) {
+  let conversationHandler: AIChatUI.ConversationHandlerRemote =
+    new AIChatUI.ConversationHandlerRemote()
+  let callbackRouter = new AIChatUI.ChatUIPageCallbackRouter()
+
+  Service.bindConversation(
+    id,
+    conversationHandler.$.bindNewPipeAndPassReceiver(),
+    callbackRouter.$.bindNewPipeAndPassRemote()
+  )
+  return {
+    conversationHandler,
+    callbackRouter
+  }
+}
+
+export function getInitialConversation() {
+  let conversationHandler: AIChatUI.ConversationHandlerRemote =
+    new AIChatUI.ConversationHandlerRemote()
+  let callbackRouter = new AIChatUI.ChatUIPageCallbackRouter()
+
+  getPageHandlerInstance().pageHandler.bindInitialConversation(
+    conversationHandler.$.bindNewPipeAndPassReceiver(),
+    callbackRouter.$.bindNewPipeAndPassRemote()
+  )
+
+  return {
+    conversationHandler,
+    callbackRouter
+  }
 }

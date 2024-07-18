@@ -25,15 +25,13 @@ class AIChatServiceFactory : public BrowserContextKeyedServiceFactory {
   AIChatServiceFactory& operator=(const AIChatServiceFactory&) = delete;
 
   static AIChatServiceFactory* GetInstance();
-  static AIChatService* GetForBrowserContext(
-      content::BrowserContext* context);
+  static AIChatService* GetForBrowserContext(content::BrowserContext* context);
 
  private:
   friend base::NoDestructor<AIChatServiceFactory>;
 
   AIChatServiceFactory();
   ~AIChatServiceFactory() override;
-
 
   // BrowserContextKeyedServiceFactory overrides:
   content::BrowserContext* GetBrowserContextToUse(

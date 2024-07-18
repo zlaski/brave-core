@@ -31,6 +31,7 @@ class AIChatUI : public ui::UntrustedWebUIController {
 
   void BindInterface(
       mojo::PendingReceiver<ai_chat::mojom::PageHandler> receiver);
+  void BindInterface(mojo::PendingReceiver<ai_chat::mojom::Service> receiver);
 
   // Set by WebUIContentsWrapperT. TopChromeWebUIController provides default
   // implementation for this but we don't use it.

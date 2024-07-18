@@ -32,6 +32,7 @@
 #include "brave/brave_domains/service_domains.h"
 #include "brave/components/ai_chat/core/browser/ai_chat_credential_manager.h"
 #include "brave/components/ai_chat/core/browser/ai_chat_metrics.h"
+#include "brave/components/ai_chat/core/browser/ai_chat_service.h"
 #include "brave/components/ai_chat/core/browser/brave_search_responses.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
 #include "brave/components/ai_chat/core/browser/engine/engine_consumer.h"
@@ -142,6 +143,7 @@ GetSearchQuerySummaryNetworkTrafficAnnotationTag() {
 ConversationDriver::ConversationDriver(
     PrefService* profile_prefs,
     PrefService* local_state_prefs,
+    AIChatService* ai_chat_service,
     ModelService* model_service,
     AIChatMetrics* ai_chat_metrics,
     base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
@@ -150,6 +152,7 @@ ConversationDriver::ConversationDriver(
     std::string_view channel_string)
     : ConversationDriver(profile_prefs,
                          local_state_prefs,
+                         ai_chat_service,
                          model_service,
                          ai_chat_metrics,
                          std::make_unique<AIChatCredentialManager>(
@@ -161,6 +164,7 @@ ConversationDriver::ConversationDriver(
 ConversationDriver::ConversationDriver(
     PrefService* profile_prefs,
     PrefService* local_state_prefs,
+    AIChatService* ai_chat_service,
     ModelService* model_service,
     AIChatMetrics* ai_chat_metrics,
     std::unique_ptr<AIChatCredentialManager> credential_manager,
@@ -173,6 +177,7 @@ ConversationDriver::ConversationDriver(
           url_loader_factory,
           std::string(channel_string))),
       url_loader_factory_(url_loader_factory),
+      service_(ai_chat_service),
       model_service_(model_service),
       on_page_text_fetch_complete_(new base::OneShotEvent()),
       text_embedder_(nullptr, base::OnTaskRunnerDeleter(nullptr)) {
@@ -266,6 +271,31 @@ ConversationDriver::ConversationDriver(
 
 ConversationDriver::~ConversationDriver() {
   models_observer_.Reset();
+  for (auto& conversation : associated_conversations_) {
+    conversation->OnAssociatedContentDestroyed();
+  }
+}
+
+int ConversationDriver::GetContentId() const {
+  return current_navigation_id_;
+}
+
+GURL ConversationDriver::GetURL() const {
+  return GetPageURL();
+}
+
+std::u16string ConversationDriver::GetTitle() const {
+  return GetPageTitle();
+}
+
+void ConversationDriver::GetContent(GetPageContentCallback callback,
+                                    std::string_view invalidation_token) {
+  GetPageContent(std::move(callback), invalidation_token);
+}
+
+void ConversationDriver::GetContentPrintPreviewFallback(
+    GetPageContentCallback callback) {
+  PrintPreviewFallback(std::move(callback));
 }
 
 void ConversationDriver::ChangeModel(const std::string& model_key) {
@@ -322,6 +352,7 @@ ConversationDriver::GetConversationHistory() {
 
 std::vector<mojom::ConversationTurnPtr>
 ConversationDriver::GetVisibleConversationHistory() {
+  // TODO(petemill): don't clone at this point, return const references.
   // Remove conversations that are meant to be hidden from the user
   std::vector<ai_chat::mojom::ConversationTurnPtr> list;
   for (const auto& turn : GetConversationHistory()) {
@@ -868,6 +899,25 @@ void ConversationDriver::OnPageContentUpdated(std::string contents_text,
 
 void ConversationDriver::OnNewPage(int64_t navigation_id) {
   current_navigation_id_ = navigation_id;
+  // Tell the associated_conversations_ that we're breaking up
+  for (auto& handler : associated_conversations_) {
+    if (handler) {
+      handler->OnAssociatedContentDestroyed();
+    }
+  }
+  associated_conversations_.clear();
+
+  // We need at least one new conversation
+  // Get a new conversation (or existing if back navigation)
+  // TODO(petemill): only create conversation if UI is active
+  auto new_conversation =
+      service_
+          ->GetOrCreateConversationHandlerForPageContent(
+              current_navigation_id_, weak_ptr_factory_.GetWeakPtr())
+          ->GetWeakPtr();
+  associated_conversations_.emplace_back(new_conversation);
+
+  // Deprecated
   CleanUp();
 }
 
@@ -1423,7 +1473,7 @@ void ConversationDriver::OnSuggestedQuestionsChanged() {
 
 void ConversationDriver::OnPageHasContentChanged(mojom::SiteInfoPtr site_info) {
   for (auto& obs : observers_) {
-    obs.OnPageHasContent(std::move(site_info));
+    obs.OnPageHasContent(site_info->Clone());
   }
 }
 
