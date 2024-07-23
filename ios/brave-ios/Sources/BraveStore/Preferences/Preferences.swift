@@ -19,4 +19,12 @@ extension Preferences {
       default: nil
     )
   }
+
+  public struct Payments {
+    /// Whether or not to allow payments to work on Nightly and Beta
+    public static let developerPaymentsEnabled = Option<Bool>(
+      key: "debug.dev-payments-enabled",
+      default: false
+    )
+  }
 }

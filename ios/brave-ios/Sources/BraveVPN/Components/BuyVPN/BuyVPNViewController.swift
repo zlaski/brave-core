@@ -156,6 +156,12 @@ public class BuyVPNViewController: VPNSetupLoadingController {
   }
 
   @objc func restorePurchasesAction() {
+    if !AppConstants.isOfficialBuild && !Preferences.Payments.developerPaymentsEnabled.value {
+      Logger.module.info("Restoring purchases not allowed!")
+      handleTransactionError(error: .transactionError(error: .init(.paymentNotAllowed)))
+      return
+    }
+
     isLoading = true
     SKPaymentQueue.default().restoreCompletedTransactions()
 
@@ -175,6 +181,12 @@ public class BuyVPNViewController: VPNSetupLoadingController {
   }
 
   @objc func startSubscriptionAction() {
+    if !AppConstants.isOfficialBuild && !Preferences.Payments.developerPaymentsEnabled.value {
+      Logger.module.info("Purchases not allowed!")
+      handleTransactionError(error: .transactionError(error: .init(.paymentNotAllowed)))
+      return
+    }
+
     addPaymentForSubcription(type: activeSubcriptionChoice)
   }
 

@@ -1113,7 +1113,7 @@ class SettingsViewController: TableViewController {
           cellClass: MultilineButtonCell.self
         ),
         Row(
-          text: "VPN Logs",
+          text: "Brave VPN Logs",
           selection: { [unowned self] in
             self.navigationController?.pushViewController(VPNLogsViewController(), animated: true)
           },
@@ -1130,12 +1130,22 @@ class SettingsViewController: TableViewController {
           cellClass: MultilineValue1Cell.self
         ),
         Row(
-          text: "Leo Logs",
+          text: "Brave Leo Logs",
           selection: { [unowned self] in
             let controller = UIHostingController(rootView: AIChatLeoSkusLogsView())
             self.navigationController?.pushViewController(controller, animated: true)
           },
           accessory: .disclosureIndicator,
+          cellClass: MultilineValue1Cell.self
+        ),
+        Row(
+          text: "Brave Skus Payments",
+          accessory: .switchToggle(
+            value: Preferences.Payments.developerPaymentsEnabled.value,
+            {
+              Preferences.Payments.developerPaymentsEnabled.value = $0
+            }
+          ),
           cellClass: MultilineValue1Cell.self
         ),
         Row(

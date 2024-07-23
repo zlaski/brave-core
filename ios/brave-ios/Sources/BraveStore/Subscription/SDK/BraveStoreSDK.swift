@@ -236,6 +236,11 @@ public class BraveStoreSDK: AppStoreSDK {
   /// - Parameter product: The product whose purchase receipt to restore
   /// - Returns: Returns true if receipt restoration was successful. False otherwise
   public func restorePurchase(_ product: BraveStoreProduct) async -> Bool {
+    if !AppConstants.isOfficialBuild && !Preferences.Payments.developerPaymentsEnabled.value {
+      Logger.module.info("[BraveStoreSDK] - Restoring purchases not allowed!")
+      return false
+    }
+
     if await currentTransaction(for: product) != nil {
       try? await AppStoreReceipt.sync()
       return true
@@ -248,6 +253,11 @@ public class BraveStoreSDK: AppStoreSDK {
   /// - Returns: Returns true if receipt restoration was successful. False otherwise
   @MainActor
   public func restorePurchases() async -> Bool {
+    if !AppConstants.isOfficialBuild && !Preferences.Payments.developerPaymentsEnabled.value {
+      Logger.module.info("[BraveStoreSDK] - Restoring purchases not allowed!")
+      return false
+    }
+
     #if STOREKIT2
     var didRestore = false
     for await result in Transaction.currentEntitlements {
@@ -295,6 +305,11 @@ public class BraveStoreSDK: AppStoreSDK {
   ///           Purchase may be successful with the AppStore, but fail with SkusSDK.
   @MainActor
   public func purchase(product: BraveStoreProduct) async throws {
+    if !AppConstants.isOfficialBuild && !Preferences.Payments.developerPaymentsEnabled.value {
+      Logger.module.info("[BraveStoreSDK] - Purchases not allowed!")
+      throw Product.PurchaseError.purchaseNotAllowed
+    }
+
     if let subscription = await subscription(for: product) {
       if try await super.purchase(subscription) != nil {
         Logger.module.info("[BraveStoreSDK] - Product Purchase Successful")

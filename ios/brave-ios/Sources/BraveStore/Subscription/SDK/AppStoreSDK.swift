@@ -5,6 +5,8 @@
 
 import BraveCore
 import Foundation
+import Preferences
+import Shared
 import StoreKit
 import os.log
 
@@ -389,6 +391,11 @@ public class AppStoreSDK: ObservableObject {
   /// - Parameter product: The product customer wants to purchase
   /// - Returns: Returns the validated purchase transaction. Returns null if the transaction failed
   public func purchase(_ product: Product) async throws -> Transaction? {
+    if !AppConstants.isOfficialBuild && !Preferences.Payments.developerPaymentsEnabled.value {
+      Logger.module.info("[AppStoreSDK] - Purchases not allowed!")
+      throw Product.PurchaseError.purchaseNotAllowed
+    }
+
     let result = try await product.purchase(options: [.simulatesAskToBuyInSandbox(false)])
     switch result {
     case .success(let result):
