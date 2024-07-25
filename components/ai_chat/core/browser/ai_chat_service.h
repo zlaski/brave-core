@@ -15,9 +15,13 @@
 #include "base/memory/weak_ptr.h"
 #include "base/scoped_multi_source_observation.h"
 #include "brave/components/ai_chat/core/browser/ai_chat_credential_manager.h"
+#include "brave/components/ai_chat/core/browser/ai_chat_feedback_api.h"
 #include "brave/components/ai_chat/core/browser/ai_chat_metrics.h"
 #include "brave/components/ai_chat/core/browser/conversation_handler.h"
+#include "brave/components/ai_chat/core/browser/engine/engine_consumer.h"
 #include "brave/components/ai_chat/core/browser/model_service.h"
+#include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-forward.h"
+#include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-shared.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom.h"
 #include "brave/components/skus/common/skus_sdk.mojom.h"
 #include "components/keyed_service/core/keyed_service.h"
@@ -56,6 +60,7 @@ class AIChatService : public KeyedService,
   void OnConversationEntriesChanged(
       ConversationHandler* handler,
       std::vector<mojom::ConversationTurnPtr> entries) override;
+  void OnClientConnectionChanged(ConversationHandler* handler) override;
 
   // Adds new conversation and returns the handler
   ConversationHandler* CreateConversation();
@@ -75,21 +80,43 @@ class AIChatService : public KeyedService,
   void MarkAgreementAccepted() override;
   void GetVisibleConversations(
       GetVisibleConversationsCallback callback) override;
+  void GetActionMenuList(GetActionMenuListCallback callback) override;
+  void GetPremiumStatus(GetPremiumStatusCallback callback) override;
+  void GetCanShowPremiumPrompt(
+      GetCanShowPremiumPromptCallback callback) override;
+  void DismissPremiumPrompt() override;
+
   void BindConversation(
       const std::string& uuid,
       mojo::PendingReceiver<mojom::ConversationHandler> receiver,
-      mojo::PendingRemote<mojom::ChatUIPage> conversation_ui_handler) override;
-  void BindUI(mojo::PendingRemote<mojom::ChatUI> ui) override;
+      mojo::PendingRemote<mojom::ConversationUI> conversation_ui_handler)
+      override;
+  void BindObserver(mojo::PendingRemote<mojom::ServiceObserver> ui) override;
+
+  bool HasUserOptedIn();
+  bool IsPremiumStatus();
+
+  std::unique_ptr<EngineConsumer> GetDefaultAIEngine();
 
  private:
+  void OnUserOptedIn();
+  void OnSkusServiceReceived(
+      SkusServiceGetter getter,
+      mojo::PendingRemote<skus::mojom::SkusService> service);
   std::vector<mojom::Conversation*> FilterVisibleConversations();
   void OnConversationListChanged();
+  void OnPremiumStatusReceived(GetPremiumStatusCallback callback,
+                               mojom::PremiumStatus status,
+                               mojom::PremiumInfoPtr info);
+  void MaybeEraseConversation(ConversationHandler* conversation);
 
   raw_ptr<ModelService> model_service_;
   raw_ptr<PrefService> profile_prefs_;
   raw_ptr<AIChatMetrics> ai_chat_metrics_;
   scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory_;
+  PrefChangeRegistrar pref_change_registrar_;
 
+  std::unique_ptr<AIChatFeedbackAPI> feedback_api_;
   std::unique_ptr<AIChatCredentialManager> credential_manager_;
 
   // All conversation metadata. Mainly just titles and uuids. Key is uuid
@@ -111,7 +138,12 @@ class AIChatService : public KeyedService,
                                      ConversationHandler::Observer>
       conversation_observations_{this};
   mojo::ReceiverSet<mojom::Service> receivers_;
-  mojo::RemoteSet<mojom::ChatUI> ui_handlers_;
+  mojo::RemoteSet<mojom::ServiceObserver> observer_remotes_;
+
+  // AIChatCredentialManager / Skus does not provide an event when
+  // subscription status changes. So we cache it and fetch latest fairly
+  // often (whenever UI is focused).
+  mojom::PremiumStatus last_premium_status_ = mojom::PremiumStatus::Unknown;
 
   base::WeakPtrFactory<AIChatService> weak_ptr_factory_{this};
 };

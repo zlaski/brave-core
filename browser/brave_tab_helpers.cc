@@ -22,7 +22,6 @@
 #include "brave/browser/misc_metrics/page_metrics_tab_helper.h"
 #include "brave/browser/misc_metrics/process_misc_metrics.h"
 #include "brave/browser/ntp_background/ntp_tab_helper.h"
-#include "brave/browser/skus/skus_service_factory.h"
 #include "brave/browser/ui/bookmark/brave_bookmark_tab_helper.h"
 #include "brave/browser/ui/brave_ui_features.h"
 #include "brave/components/ai_chat/core/common/buildflags/buildflags.h"
@@ -37,11 +36,8 @@
 #include "build/build_config.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/profiles/profile.h"
-#include "chrome/common/channel_info.h"
 #include "chrome/common/chrome_isolated_world_ids.h"
 #include "components/user_prefs/user_prefs.h"
-#include "components/version_info/channel.h"
-#include "components/version_info/version_info.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/web_contents.h"
 #include "extensions/buildflags/buildflags.h"
@@ -141,20 +137,7 @@ void AttachTabHelpers(content::WebContents* web_contents) {
 #if BUILDFLAG(ENABLE_AI_CHAT)
   content::BrowserContext* context = web_contents->GetBrowserContext();
   if (ai_chat::IsAllowedForContext(context)) {
-    auto skus_service_getter = base::BindRepeating(
-        [](content::BrowserContext* context) {
-          return skus::SkusServiceFactory::GetForContext(context);
-        },
-        context);
-    auto* ai_chat_service =
-        ai_chat::AIChatServiceFactory::GetForBrowserContext(context);
-    ai_chat::AIChatTabHelper::CreateForWebContents(
-        web_contents, ai_chat_service,
-        g_brave_browser_process->process_misc_metrics()
-            ? g_brave_browser_process->process_misc_metrics()->ai_chat_metrics()
-            : nullptr,
-        skus_service_getter, g_browser_process->local_state(),
-        std::string(version_info::GetChannelString(chrome::GetChannel())));
+    ai_chat::AIChatTabHelper::CreateForWebContents(web_contents);
   }
 #endif
 

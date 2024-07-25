@@ -9,24 +9,17 @@
 #include <memory>
 #include <optional>
 #include <string>
-#include <vector>
 
 #include "base/memory/raw_ptr.h"
-#include "base/observer_list.h"
-#include "brave/components/ai_chat/core/browser/conversation_driver.h"
-#include "brave/components/ai_chat/core/browser/engine/engine_consumer.h"
-#include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom.h"
+#include "brave/components/ai_chat/core/browser/associated_content_driver.h"
 #include "brave/components/ai_chat/core/common/mojom/page_content_extractor.mojom.h"
 #include "components/favicon/core/favicon_driver_observer.h"
-#include "components/prefs/pref_change_registrar.h"
 #include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/render_frame_host.h"
 #include "content/public/browser/web_contents_observer.h"
 #include "content/public/browser/web_contents_user_data.h"
 #include "mojo/public/cpp/bindings/associated_receiver.h"
 #include "mojo/public/cpp/bindings/pending_associated_receiver.h"
-#include "mojo/public/cpp/bindings/receiver_set.h"
-#include "services/data_decoder/public/cpp/data_decoder.h"
 
 class PrefService;
 
@@ -43,7 +36,7 @@ class AIChatTabHelper : public content::WebContentsObserver,
                         public content::WebContentsUserData<AIChatTabHelper>,
                         public mojom::PageContentExtractorHost,
                         public favicon::FaviconDriverObserver,
-                        public ConversationDriver {
+                        public AssociatedContentDriver {
  public:
   static void BindPageContentExtractorHost(
       content::RenderFrameHost* rfh,
@@ -89,14 +82,7 @@ class AIChatTabHelper : public content::WebContentsObserver,
     raw_ptr<AIChatTabHelper> helper_;
   };
 
-  AIChatTabHelper(
-      content::WebContents* web_contents,
-      AIChatService* ai_chat_service,
-      AIChatMetrics* ai_chat_metrics,
-      base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
-          skus_service_getter,
-      PrefService* local_state_prefs,
-      const std::string& channel_name);
+  explicit AIChatTabHelper(content::WebContents* web_contents);
 
   void OnPDFA11yInfoLoaded();
 
@@ -120,11 +106,10 @@ class AIChatTabHelper : public content::WebContentsObserver,
                         bool icon_url_changed,
                         const gfx::Image& image) override;
 
-  // ai_chat::ConversationDriver
+  // ai_chat::AssociatedContentDriver
   GURL GetPageURL() const override;
-  void GetPageContent(GetPageContentCallback callback,
+  void GetPageContent(ConversationHandler::GetPageContentCallback callback,
                       std::string_view invalidation_token) override;
-  void PrintPreviewFallback(GetPageContentCallback callback) override;
   std::u16string GetPageTitle() const override;
 
   void GetSearchSummarizerKey(
@@ -138,13 +123,21 @@ class AIChatTabHelper : public content::WebContentsObserver,
   // Traverse through a11y tree to check existence of status node.
   void CheckPDFA11yTree();
 
+  // Get content using a printing / OCR mechanism, instead of
+  // directly from the source.
+  void PrintPreviewFallback(
+      ConversationHandler::GetPageContentCallback callback);
+
   raw_ptr<AIChatMetrics> ai_chat_metrics_;
 
   bool is_same_document_navigation_ = false;
   int pending_navigation_id_;
   bool is_pdf_a11y_info_loaded_ = false;
   uint8_t check_pdf_a11y_tree_attempts_ = 0;
-  GetPageContentCallback pending_get_page_content_callback_;
+
+  // TODO(petemill): Use signal to allow for multiple callbacks
+  ConversationHandler::GetPageContentCallback
+      pending_get_page_content_callback_;
 
   std::unique_ptr<PDFA11yInfoLoadObserver> pdf_load_observer_;
   base::OnceClosure on_pdf_a11y_info_loaded_cb_;

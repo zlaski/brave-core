@@ -12,20 +12,32 @@
 #include "base/functional/callback_forward.h"
 #include "base/memory/weak_ptr.h"
 #include "base/scoped_observation.h"
-#include "brave/components/ai_chat/core/browser/conversation_observer.h"
+#include "brave/components/ai_chat/core/browser/ai_chat_credential_manager.h"
+#include "brave/components/ai_chat/core/browser/engine/engine_consumer.h"
+#include "brave/components/ai_chat/core/browser/model_service.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-forward.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom.h"
 #include "mojo/public/cpp/bindings/pending_receiver.h"
 #include "mojo/public/cpp/bindings/receiver_set.h"
 #include "mojo/public/cpp/bindings/remote_set.h"
+#include "partition_alloc/pointers/raw_ptr.h"
 #include "url/gurl.h"
+
+namespace network {
+class SharedURLLoaderFactory;
+}  // namespace network
 
 namespace ai_chat {
 
-class ConversationDriver;
+class AIChatFeedbackAPI;
+class AIChatService;
+class AssociatedArchiveContent;
 
+// Performs all conversation-related operations, responsible for sending
+// messages to the conversation engine, handling the responses, and owning
+// the in-memory conversation history.
 class ConversationHandler : public mojom::ConversationHandler,
-                            public ConversationObserver {
+                            ModelService::Observer {
  public:
   // |invalidation_token| is an optional parameter that will be passed back on
   // the next call to |GetPageContent| so that the implementer may determine if
@@ -35,9 +47,15 @@ class ConversationHandler : public mojom::ConversationHandler,
   // with transcripts fetched over the network.
   using GetPageContentCallback = base::OnceCallback<
       void(std::string content, bool is_video, std::string invalidation_token)>;
+  using GeneratedTextCallback =
+      base::RepeatingCallback<void(const std::string& text)>;
+
   // Supplements a conversation with active page content
   class AssociatedContentDelegate {
    public:
+    virtual ~AssociatedContentDelegate();
+    virtual void AddRelatedConversation(
+        base::WeakPtr<ConversationHandler> conversation) {}
     // Unique ID for the content. For browser Tab content, this should be
     // a navigation ID that's re-used during back navigations.
     virtual int GetContentId() const = 0;
@@ -49,14 +67,11 @@ class ConversationHandler : public mojom::ConversationHandler,
     // conversation.
     // |is_video| lets the conversation know that the content is focused on
     // video content so that various UI language can be adapted.
-    // |invalidation_token| is an optional parameter received in a prior
-    // callback response of this function against the same page. See
-    // GetPageContentCallback for explanation.
-    virtual void GetContent(GetPageContentCallback callback,
-                            std::string_view invalidation_token) = 0;
-
-    virtual void GetContentPrintPreviewFallback(
-        GetPageContentCallback callback) = 0;
+    virtual void GetContent(GetPageContentCallback callback) = 0;
+    // Get current cache of content, if available. Do not perform any fresh
+    // fetch for the content.
+    virtual std::string_view GetCachedTextContent() = 0;
+    virtual bool GetCachedIsVideo() = 0;
   };
 
   class Observer : public base::CheckedObserver {
@@ -66,29 +81,92 @@ class ConversationHandler : public mojom::ConversationHandler,
     virtual void OnConversationEntriesChanged(
         ConversationHandler* handler,
         std::vector<mojom::ConversationTurnPtr> entries) {}
+    virtual void OnClientConnectionChanged(ConversationHandler* handler) {}
   };
 
-  explicit ConversationHandler(const mojom::Conversation* conversation);
+  ConversationHandler(
+      const mojom::Conversation* conversation,
+      AIChatService* ai_chat_service,
+      ModelService* model_service,
+      AIChatCredentialManager* credential_manager,
+      AIChatFeedbackAPI* feedback_api,
+      scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory);
+
   ~ConversationHandler() override;
+  ConversationHandler(const ConversationHandler&) = delete;
+  ConversationHandler& operator=(const ConversationHandler&) = delete;
 
   void Bind(mojo::PendingReceiver<mojom::ConversationHandler> receiver,
-            mojo::PendingRemote<mojom::ChatUIPage> conversation_ui_handler);
+            mojo::PendingRemote<mojom::ConversationUI> conversation_ui_handler);
 
   void AddObserver(Observer* observer);
   void RemoveObserver(Observer* observer);
 
+  bool IsAnyClientConnected();
+  bool HasAnyHistory();
+
   // Called when the associated content is destroyed or navigated away. If
   // it's a navigation, the AssociatedContentDelegate will set itself to a new
   // ConversationHandler.
-  void OnAssociatedContentDestroyed();
+  void OnAssociatedContentDestroyed(std::string last_text_content,
+                                    bool is_video);
 
   // This can be called multiple times, e.g. when the user navigates back to
   // content, this conversation can be reunited with the delegate.
   void SetAssociatedContentDelegate(
       base::WeakPtr<AssociatedContentDelegate> delegate);
+  const mojom::Model& GetCurrentModel();
+  const std::vector<mojom::ConversationTurnPtr>& GetConversationHistory();
 
   // mojom::ConversationHandler
   void GetConversationHistory(GetConversationHistoryCallback callback) override;
+  void RateMessage(bool is_liked,
+                   uint32_t turn_id,
+                   RateMessageCallback callback) override;
+  void SendFeedback(const std::string& category,
+                    const std::string& feedback,
+                    const std::string& rating_id,
+                    bool send_hostname,
+                    SendFeedbackCallback callback) override;
+  void GetModels(GetModelsCallback callback) override;
+  void ChangeModel(const std::string& model_key) override;
+  void GetIsRequestInProgress(GetIsRequestInProgressCallback callback) override;
+  void SubmitHumanConversationEntry(const std::string& input) override;
+  void SubmitHumanConversationEntry(mojom::ConversationTurnPtr turn);
+  void SubmitHumanConversationEntryWithAction(
+      const std::string& input,
+      mojom::ActionType action_type) override;
+  void ModifyConversation(uint32_t turn_index,
+                          const std::string& new_text) override;
+  void SubmitSummarizationRequest() override;
+  void GetSuggestedQuestions(GetSuggestedQuestionsCallback callback) override;
+  void GenerateQuestions() override;
+  void GetAssociatedContentInfo(
+      GetAssociatedContentInfoCallback callback) override;
+  void SetShouldSendPageContents(bool should_send) override;
+  void RetryAPIRequest() override;
+  void GetAPIResponseError(GetAPIResponseErrorCallback callback) override;
+  void ClearErrorAndGetFailedMessage(
+      ClearErrorAndGetFailedMessageCallback callback) override;
+
+  void SubmitSelectedText(
+      const std::string& selected_text,
+      mojom::ActionType action_type,
+      GeneratedTextCallback received_callback = base::NullCallback(),
+      EngineConsumer::GenerationCompletedCallback completed_callback =
+          base::NullCallback());
+  void SubmitSelectedTextWithQuestion(
+      const std::string& selected_text,
+      const std::string& question,
+      mojom::ActionType action_type,
+      GeneratedTextCallback received_callback,
+      EngineConsumer::GenerationCompletedCallback completed_callback);
+  bool MaybePopPendingRequests();
+  void MaybeUnlinkAssociatedContent();
+  void AddSubmitSelectedTextError(const std::string& selected_text,
+                                  mojom::ActionType action_type,
+                                  mojom::APIError error);
+  void OnFaviconImageDataChanged();
 
   base::WeakPtr<ConversationHandler> GetWeakPtr() {
     return weak_ptr_factory_.GetWeakPtr();
@@ -96,27 +174,126 @@ class ConversationHandler : public mojom::ConversationHandler,
 
   std::string get_conversation_uuid() const { return metadata_->uuid; }
 
-  // TODO(petemill): Temporary until these move to here
-  // ConversationObserver
-  void OnHistoryUpdate() override;
+  bool IsSuggestionsEmptyForTesting() const { return suggestions_.empty(); }
+
+  void SetEngineForTesting(std::unique_ptr<EngineConsumer> engine_for_testing) {
+    engine_ = std::move(engine_for_testing);
+  }
+  EngineConsumer* GetEngineForTesting() { return engine_.get(); }
+
+  void SetChatHistoryForTesting(
+      std::vector<mojom::ConversationTurnPtr> history) {
+    chat_history_ = std::move(history);
+  }
+
+ protected:
+  // ModelService::Observer
+  void OnModelListUpdated() override;
+  void OnModelRemoved(const std::string& removed_key) override;
 
  private:
+  void InitEngine();
+  void BuildAssociatedContentInfo();
+  bool IsContentAssociationPossible();
+  int GetContentUsedPercentage();
+  void AddToConversationHistory(mojom::ConversationTurnPtr turn);
+  void PerformAssistantGeneration(const std::string& input,
+                                  int associated_content_uuid,
+                                  std::string page_content = "",
+                                  bool is_video = false,
+                                  std::string invalidation_token = "");
+  void SetAPIError(const mojom::APIError& error);
+  void UpdateOrCreateLastAssistantEntry(mojom::ConversationEntryEventPtr text);
+  void MaybeSeedOrClearSuggestions();
+
+  void GeneratePageContent(GetPageContentCallback callback);
+  void SetPageContent(std::string contents_text,
+                      bool is_video,
+                      std::string invalidation_token);
+
+  void OnGeneratePageContentComplete(int navigation_id,
+                                     GetPageContentCallback callback,
+                                     std::string contents_text,
+                                     bool is_video,
+                                     std::string invalidation_token);
+  void OnExistingGeneratePageContentComplete(GetPageContentCallback callback);
+  void OnEngineCompletionDataReceived(int associated_content_uuid,
+                                      mojom::ConversationEntryEventPtr result);
+  void OnEngineCompletionComplete(int associated_content_uuid,
+                                  EngineConsumer::GenerationResult result);
+  void OnSuggestedQuestionsResponse(
+      int navigation_id,
+      EngineConsumer::SuggestedQuestionResult result);
+
+  void OnModelDataChanged();
+  void OnHistoryUpdate();
+  void OnSuggestedQuestionsChanged();
+  void OnAssociatedContentInfoChanged();
+  void OnClientConnectionChanged();
+  void OnAssociatedContentFaviconImageDataChanged();
+  void OnAPIRequestInProgressChanged();
+
   base::WeakPtr<AssociatedContentDelegate> associated_content_delegate_;
+  std::unique_ptr<AssociatedArchiveContent> archive_content_;
 
   // UUID for associated content so that back navigations can reunite the
   // AssociatedContentDelegate with the ConversationHandler, e.g. navigation id.
-  std::string associated_content_uuid_;
+  int associated_content_uuid_;
+  std::string model_key_;
+  // Chat conversation entries
+  std::vector<mojom::ConversationTurnPtr> chat_history_;
+  mojom::ConversationTurnPtr pending_conversation_entry_;
+  // Any previously-generated suggested questions
+  std::vector<std::string> suggestions_;
+  // Is a conversation engine request in progress (does not include
+  // non-conversation engine requests.
+  bool is_request_in_progress_ = false;
+  mojom::SiteInfoPtr associated_content_info_ = nullptr;
+
+  // TODO(petemill): Tracking whether the UI is open
+  // for a conversation might not be neccessary anymore as there
+  // are no automatic actions that occur anymore now that content
+  // fetching is on-deman.
+  // bool is_conversation_active_ = false;
+
+  // Keep track of whether we've generated suggested questions for the current
+  // context. We cannot rely on counting the questions in |suggested_questions_|
+  // since they get removed when used, or we might not have received any
+  // successfully.
+  mojom::SuggestionGenerationStatus suggestion_generation_status_ =
+      mojom::SuggestionGenerationStatus::None;
+
+  // TODO(petemill): Remove the AssociatedContentDelegate when
+  // not sending paging contents instead of keeping track with a bool,
+  // so that it's impossible to use page content when disconnected.
+  // The UI can have access to the UI's associated content in order
+  // to both get metadata and and ask this conversation to be associated with
+  // it. This would also be a good strategy if we can keep a conversation
+  // but change AssociatedContentDelegate as the active Tab navigates to
+  // different pages.
+  bool should_send_page_contents_ = false;
+
+  bool is_print_preview_fallback_requested_ = false;
+
+  std::unique_ptr<EngineConsumer> engine_ = nullptr;
+  mojom::APIError current_error_ = mojom::APIError::None;
+
   // Data store UUID for conversation
   raw_ptr<const mojom::Conversation> metadata_;
+  base::raw_ptr<AIChatService> ai_chat_service_;
+  base::raw_ptr<ModelService> model_service_;
+  base::raw_ptr<AIChatCredentialManager> credential_manager_;
+  base::raw_ptr<AIChatFeedbackAPI> feedback_api_;
+  scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory_;
 
   // Temporary
-  base::ScopedObservation<ConversationDriver, ConversationObserver>
-      conversation_driver_observation_{this};
+  base::ScopedObservation<ModelService, ModelService::Observer>
+      models_observer_{this};
 
   base::ObserverList<Observer> observers_;
   mojo::ReceiverSet<mojom::ConversationHandler> receivers_;
   // TODO(petemill): Rename to ConversationUIHandler
-  mojo::RemoteSet<mojom::ChatUIPage> conversation_ui_handlers_;
+  mojo::RemoteSet<mojom::ConversationUI> conversation_ui_handlers_;
 
   base::WeakPtrFactory<ConversationHandler> weak_ptr_factory_{this};
 };

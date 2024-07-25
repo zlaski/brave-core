@@ -26,9 +26,6 @@ class ConversationObserver : public base::CheckedObserver {
   virtual void OnModelDataChanged(
       const std::string& model_key,
       const std::vector<mojom::ModelPtr>& model_list) {}
-  virtual void OnSuggestedQuestionsChanged(
-      std::vector<std::string> questions,
-      mojom::SuggestionGenerationStatus suggestion_generation_status) {}
   virtual void OnFaviconImageDataChanged() {}
   virtual void OnPageHasContent(mojom::SiteInfoPtr site_info) {}
   virtual void OnPrintPreviewRequested(bool is_pdf) {}

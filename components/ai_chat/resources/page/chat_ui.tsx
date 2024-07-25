@@ -14,24 +14,26 @@ import '@brave/leo/tokens/css/variables.css'
 import '$web-common/defaultTrustedTypesPolicy'
 import { loadTimeData } from '$web-common/loadTimeData'
 import BraveCoreThemeProvider from '$web-common/BraveCoreThemeProvider'
-import DataContextProvider from './state/data-context-provider'
 import { AIChatContextProvider } from './state/ai_chat_context'
 import Main from './components/main'
+import { ConversationContextProvider } from './state/conversation_context'
 
-setIconBasePath('chrome-untrusted://resources/brave-icons')
+setIconBasePath('chrome://resources/brave-icons')
 
 function App () {
   React.useEffect(() => {
     document.getElementById('mountPoint')?.classList.add('loaded')
   }, [])
 
+  const [selectedConversationId, setSelectedConversationId] = React.useState<string | undefined>()
+
   return (
     <AIChatContextProvider>
-        <DataContextProvider>
+      <ConversationContextProvider conversationId={selectedConversationId}>
           <BraveCoreThemeProvider>
-            <Main />
+            <Main setSelectedConversationId={setSelectedConversationId} />
           </BraveCoreThemeProvider>
-        </DataContextProvider>
+      </ConversationContextProvider>
     </AIChatContextProvider>
   )
 }

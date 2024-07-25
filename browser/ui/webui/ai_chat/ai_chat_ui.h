@@ -13,8 +13,6 @@
 #include "chrome/browser/ui/webui/top_chrome/top_chrome_web_ui_controller.h"
 #include "chrome/browser/ui/webui/top_chrome/top_chrome_webui_config.h"
 #include "content/public/browser/web_ui_controller.h"
-#include "ui/webui/mojo_web_ui_controller.h"
-#include "ui/webui/untrusted_web_ui_controller.h"
 
 namespace content {
 class BrowserContext;
@@ -22,7 +20,7 @@ class BrowserContext;
 
 class Profile;
 
-class AIChatUI : public ui::UntrustedWebUIController {
+class AIChatUI : public content::WebUIController {
  public:
   explicit AIChatUI(content::WebUI* web_ui);
   AIChatUI(const AIChatUI&) = delete;
@@ -30,7 +28,7 @@ class AIChatUI : public ui::UntrustedWebUIController {
   ~AIChatUI() override;
 
   void BindInterface(
-      mojo::PendingReceiver<ai_chat::mojom::PageHandler> receiver);
+      mojo::PendingReceiver<ai_chat::mojom::AIChatUIHandler> receiver);
   void BindInterface(mojo::PendingReceiver<ai_chat::mojom::Service> receiver);
 
   // Set by WebUIContentsWrapperT. TopChromeWebUIController provides default
@@ -43,7 +41,7 @@ class AIChatUI : public ui::UntrustedWebUIController {
   static constexpr std::string GetWebUIName() { return "AIChatPanel"; }
 
  private:
-  std::unique_ptr<ai_chat::mojom::PageHandler> page_handler_;
+  std::unique_ptr<ai_chat::mojom::AIChatUIHandler> page_handler_;
 
   base::WeakPtr<TopChromeWebUIController::Embedder> embedder_;
   raw_ptr<Profile> profile_ = nullptr;
@@ -51,12 +49,16 @@ class AIChatUI : public ui::UntrustedWebUIController {
   WEB_UI_CONTROLLER_TYPE_DECL();
 };
 
-class UntrustedChatUIConfig : public DefaultTopChromeWebUIConfig<AIChatUI> {
+class AIChatUIConfig : public content::WebUIConfig {
  public:
-  UntrustedChatUIConfig();
-  ~UntrustedChatUIConfig() override = default;
+  AIChatUIConfig();
+  ~AIChatUIConfig() override = default;
 
   bool IsWebUIEnabled(content::BrowserContext* browser_context) override;
+
+  std::unique_ptr<content::WebUIController> CreateWebUIController(
+      content::WebUI* web_ui,
+      const GURL& url) override;
 };
 
 #endif  // BRAVE_BROWSER_UI_WEBUI_AI_CHAT_AI_CHAT_UI_H_
