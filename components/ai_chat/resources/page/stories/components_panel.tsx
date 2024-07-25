@@ -12,11 +12,11 @@ import '@brave/leo/tokens/css/variables.css'
 import { getKeysForMojomEnum } from '$web-common/mojomUtils'
 import ThemeProvider from '$web-common/BraveCoreThemeProvider'
 import Main from '../components/main'
-import * as mojom from '../api/page_handler'
+import * as mojom from '../api/index.ts'
 import { useArgs } from '@storybook/preview-api'
 import FeedbackForm from '../components/feedback_form'
 import DataContextProvider from '../state/data-context-provider'
-import { setPageHandlerAPIForTesting } from '../api/page_handler'
+import { setPageHandlerAPIForTesting } from '../api/index.ts'
 import { MockPageHandlerAPI } from '../api/mock_page_handler'
 
 const mockAPIHandler = new MockPageHandlerAPI()

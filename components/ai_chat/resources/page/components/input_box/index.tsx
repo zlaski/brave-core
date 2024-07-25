@@ -11,12 +11,14 @@ import Icon from '@brave/leo/react/icon'
 import Button from '@brave/leo/react/button'
 
 import styles from './style.module.scss'
-import { AIChatContext } from '../../state/context'
-import getPageHandlerInstance from '../../api/page_handler'
+import { AIChatContext } from '../../state/ai_chat_context'
+import { ConversationContext } from '../../state/conversation_context'
+import getAPI from '../../api'
 import ActionTypeLabel from '../action_type_label'
 
-type Props = Pick<AIChatContext,
-  'inputText'
+type Props = Pick<
+  ConversationContext,
+  | 'inputText'
   | 'setInputText'
   | 'submitInputTextToAPI'
   | 'selectedActionType'
@@ -26,8 +28,9 @@ type Props = Pick<AIChatContext,
   | 'inputTextCharCountDisplay'
   | 'isToolsMenuOpen'
   | 'setIsToolsMenuOpen'
-  | 'isMobile'
-  | 'shouldDisableUserInput'>
+  | 'shouldDisableUserInput'
+> &
+  Pick<AIChatContext, 'isMobile'>
 
 function InputBox(props: Props) {
   const onInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -39,7 +42,7 @@ function InputBox(props: Props) {
   }
 
   const handleMic = () => {
-    getPageHandlerInstance().pageHandler.handleVoiceRecognition()
+    getAPI().UIHandler.handleVoiceRecognition()
   }
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

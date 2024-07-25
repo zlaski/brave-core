@@ -6,16 +6,24 @@
 #ifndef BRAVE_COMPONENTS_AI_CHAT_CORE_BROWSER_MODEL_SERVICE_H_
 #define BRAVE_COMPONENTS_AI_CHAT_CORE_BROWSER_MODEL_SERVICE_H_
 
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include "base/observer_list.h"
+#include "brave/components/ai_chat/core/browser/ai_chat_credential_manager.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-forward.h"
 #include "components/keyed_service/core/keyed_service.h"
 #include "components/prefs/pref_change_registrar.h"
 #include "components/prefs/pref_registry_simple.h"
+
+namespace network {
+class SharedURLLoaderFactory;
+}
+
 namespace ai_chat {
+class EngineConsumer;
 
 class ModelService : public KeyedService {
  public:
@@ -51,6 +59,14 @@ class ModelService : public KeyedService {
 
   void AddObserver(Observer* observer);
   void RemoveObserver(Observer* observer);
+
+  // TODO(petemill): not ideal to take these params that engine's happen
+  // to need. Perhaps put this function on AIChatService, which will
+  // likely directly have access to any params any engine needs.
+  std::unique_ptr<EngineConsumer> GetEngineForModel(
+      std::string model_key,
+      scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
+      AIChatCredentialManager* credential_manager);
 
   // Returns a static model
   static const mojom::Model* GetModelForTesting(std::string_view key);

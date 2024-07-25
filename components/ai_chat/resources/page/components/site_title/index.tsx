@@ -5,32 +5,46 @@
 
 import * as React from 'react'
 import classnames from '$web-common/classnames'
-
+import { useConversation } from '../../state/conversation_context'
 import styles from './style.module.scss'
-import DataContext from '../../state/context'
 interface SiteTitleProps {
-  size: "default" | "small"
+  size: 'default' | 'small'
 }
 
-function SiteTitle (props: SiteTitleProps) {
-  const context = React.useContext(DataContext)
+function SiteTitle(props: SiteTitleProps) {
+  const context = useConversation()
 
-   return (
-    <div className={classnames({
-      [styles.box]: true,
-      [styles.boxSm]: props.size === "small"
-    })}>
-      <div className={classnames({
-        [styles.favIconContainer]: true,
-        [styles.favIconContainerSm]: props.size === "small"
-      })}>
-        { context.favIconUrl && <img src={context.favIconUrl} /> }
+  return (
+    <div
+      className={classnames({
+        [styles.box]: true,
+        [styles.boxSm]: props.size === 'small'
+      })}
+    >
+      <div
+        className={classnames({
+          [styles.favIconContainer]: true,
+          [styles.favIconContainerSm]: props.size === 'small'
+        })}
+      >
+        {context.associatedContentInfo?.url?.url && (
+          <img
+            src={`chrome://favicon2?pageUrl=${encodeURIComponent(context.associatedContentInfo.url.url)}&size=128&allowGoogleServerFallback=0&time=${context.favIconCacheKey}`}
+          />
+        )}
       </div>
-      <div className={classnames({
-        [styles.titleContainer]: true,
-        [styles.titleContainerSm]: props.size === "small"
-      })}>
-        <p className={styles.title} title={context.siteInfo?.title}>{context.siteInfo?.title}</p>
+      <div
+        className={classnames({
+          [styles.titleContainer]: true,
+          [styles.titleContainerSm]: props.size === 'small'
+        })}
+      >
+        <p
+          className={styles.title}
+          title={context.associatedContentInfo?.title}
+        >
+          {context.associatedContentInfo?.title}
+        </p>
       </div>
     </div>
   )
