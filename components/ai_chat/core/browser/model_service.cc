@@ -6,6 +6,7 @@
 #include "brave/components/ai_chat/core/browser/model_service.h"
 
 #include <algorithm>
+#include <memory>
 #include <utility>
 
 #include "base/base64.h"
@@ -14,11 +15,16 @@
 #include "base/strings/strcat.h"
 #include "base/uuid.h"
 #include "base/values.h"
+#include "brave/components/ai_chat/core/browser/engine/engine_consumer_claude.h"
+#include "brave/components/ai_chat/core/browser/engine/engine_consumer_conversation_api.h"
+#include "brave/components/ai_chat/core/browser/engine/engine_consumer_llama.h"
+#include "brave/components/ai_chat/core/browser/engine/engine_consumer_oai.h"
 #include "brave/components/ai_chat/core/common/features.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom.h"
 #include "brave/components/ai_chat/core/common/pref_names.h"
 #include "components/os_crypt/sync/os_crypt.h"
 #include "components/prefs/pref_service.h"
+#include "services/network/public/cpp/shared_url_loader_factory.h"
 
 namespace ai_chat {
 
@@ -432,6 +438,42 @@ void ModelService::AddObserver(Observer* observer) {
 
 void ModelService::RemoveObserver(Observer* observer) {
   observers_.RemoveObserver(observer);
+}
+
+std::unique_ptr<EngineConsumer> ModelService::GetEngineForModel(
+    std::string model_key,
+    scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory,
+    AIChatCredentialManager* credential_manager) {
+  const mojom::Model* model = GetModel(model_key);
+  std::unique_ptr<EngineConsumer> engine;
+  // Only LeoModels are passed to the following engines.
+  if (model->options->is_leo_model_options()) {
+    auto& leo_model_opts = model->options->get_leo_model_options();
+
+    // Engine enum on model to decide which one
+    if (leo_model_opts->engine_type ==
+        mojom::ModelEngineType::BRAVE_CONVERSATION_API) {
+      DVLOG(1) << "Started AI engine: conversation api";
+      engine = std::make_unique<EngineConsumerConversationAPI>(
+          *leo_model_opts, url_loader_factory, credential_manager);
+    } else if (leo_model_opts->engine_type ==
+               mojom::ModelEngineType::LLAMA_REMOTE) {
+      DVLOG(1) << "Started AI engine: llama";
+      engine = std::make_unique<EngineConsumerLlamaRemote>(
+          *leo_model_opts, url_loader_factory, credential_manager);
+    } else {
+      DVLOG(1) << "Started AI engine: claude";
+      engine = std::make_unique<EngineConsumerClaudeRemote>(
+          *leo_model_opts, url_loader_factory, credential_manager);
+    }
+  } else if (model->options->is_custom_model_options()) {
+    auto& custom_model_opts = model->options->get_custom_model_options();
+    DVLOG(1) << "Started AI engine: custom";
+    engine = std::make_unique<EngineConsumerOAIRemote>(*custom_model_opts,
+                                                       url_loader_factory);
+  }
+
+  return engine;
 }
 
 }  // namespace ai_chat

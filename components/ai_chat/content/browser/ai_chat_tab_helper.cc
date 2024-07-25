@@ -10,26 +10,17 @@
 #include <string>
 #include <utility>
 
-#include "base/containers/contains.h"
 #include "base/containers/fixed_flat_set.h"
 #include "base/functional/bind.h"
 #include "base/memory/weak_ptr.h"
-#include "base/notreached.h"
 #include "base/ranges/algorithm.h"
 #include "base/strings/string_util.h"
-#include "brave/components/ai_chat/content/browser/model_service_factory.h"
 #include "brave/components/ai_chat/content/browser/page_content_fetcher.h"
 #include "brave/components/ai_chat/content/browser/pdf_utils.h"
-#include "brave/components/ai_chat/core/browser/ai_chat_metrics.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
-#include "brave/components/ai_chat/core/common/features.h"
 #include "brave/components/ai_chat/core/common/mojom/page_content_extractor.mojom.h"
-#include "brave/components/ai_chat/core/common/pref_names.h"
 #include "components/favicon/content/content_favicon_driver.h"
-#include "components/grit/brave_components_strings.h"
-#include "components/prefs/pref_service.h"
 #include "components/strings/grit/components_strings.h"
-#include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/browser_accessibility_state.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/navigation_details.h"
@@ -37,7 +28,6 @@
 #include "content/public/browser/scoped_accessibility_mode.h"
 #include "content/public/browser/storage_partition.h"
 #include "content/public/browser/web_contents.h"
-#include "mojo/public/cpp/bindings/self_owned_receiver.h"
 #include "pdf/buildflags.h"
 #include "ui/accessibility/ax_mode.h"
 #include "ui/accessibility/ax_updates_and_events.h"
@@ -102,28 +92,9 @@ void AIChatTabHelper::SetMaxContentLengthForTesting(
   g_max_page_content_length_for_testing = max_length;
 }
 
-AIChatTabHelper::AIChatTabHelper(
-    content::WebContents* web_contents,
-    AIChatService* ai_chat_service,
-    AIChatMetrics* ai_chat_metrics,
-    base::RepeatingCallback<mojo::PendingRemote<skus::mojom::SkusService>()>
-        skus_service_getter,
-    PrefService* local_state_prefs,
-    const std::string& channel_name)
+AIChatTabHelper::AIChatTabHelper(content::WebContents* web_contents)
     : content::WebContentsObserver(web_contents),
-      content::WebContentsUserData<AIChatTabHelper>(*web_contents),
-      ConversationDriver(
-          user_prefs::UserPrefs::Get(web_contents->GetBrowserContext()),
-          local_state_prefs,
-          ai_chat_service,
-          ModelServiceFactory::GetForBrowserContext(
-              web_contents->GetBrowserContext()),
-          ai_chat_metrics,
-          skus_service_getter,
-          web_contents->GetBrowserContext()
-              ->GetDefaultStoragePartition()
-              ->GetURLLoaderFactoryForBrowserProcess(),
-          channel_name) {
+      content::WebContentsUserData<AIChatTabHelper>(*web_contents) {
   favicon::ContentFaviconDriver::FromWebContents(web_contents)
       ->AddObserver(this);
 }
@@ -277,8 +248,9 @@ GURL AIChatTabHelper::GetPageURL() const {
   return web_contents()->GetLastCommittedURL();
 }
 
-void AIChatTabHelper::GetPageContent(GetPageContentCallback callback,
-                                     std::string_view invalidation_token) {
+void AIChatTabHelper::GetPageContent(
+    ConversationHandler::GetPageContentCallback callback,
+    std::string_view invalidation_token) {
   if (IsPdf(web_contents()) && !is_pdf_a11y_info_loaded_) {
     if (pending_get_page_content_callback_) {
       std::move(pending_get_page_content_callback_).Run("", false, "");
@@ -286,19 +258,21 @@ void AIChatTabHelper::GetPageContent(GetPageContentCallback callback,
     // invalidation_token doesn't matter for PDF extraction.
     pending_get_page_content_callback_ = std::move(callback);
   } else {
-    if (base::Contains(kPrintPreviewRetrievalHosts,
-                       GetPageURL().host_piece())) {
-      pending_get_page_content_callback_ = std::move(callback);
-      NotifyPrintPreviewRequested(false);
-    } else {
-      FetchPageContent(web_contents(), invalidation_token, std::move(callback));
-    }
+    // if (base::Contains(kPrintPreviewRetrievalHosts,
+    //                    GetPageURL().host_piece())) {
+    //   pending_get_page_content_callback_ = std::move(callback);
+    //   NotifyPrintPreviewRequested(false);
+    // } else {
+    FetchPageContent(web_contents(), invalidation_token, std::move(callback));
+    // }
   }
 }
 
-void AIChatTabHelper::PrintPreviewFallback(GetPageContentCallback callback) {
-  pending_get_page_content_callback_ = std::move(callback);
-  NotifyPrintPreviewRequested(IsPdf(web_contents()));
+void AIChatTabHelper::PrintPreviewFallback(
+    ConversationHandler::GetPageContentCallback callback) {
+  std::move(callback).Run("", false, "");
+  // pending_get_page_content_callback_ = std::move(callback);
+  // NotifyPrintPreviewRequested(IsPdf(web_contents()));
 }
 
 std::u16string AIChatTabHelper::GetPageTitle() const {
@@ -312,15 +286,19 @@ void AIChatTabHelper::BindPageContentExtractorReceiver(
 }
 
 uint32_t AIChatTabHelper::GetMaxPageContentLength() {
+  // TODO(petemill): Use ModelService to get the max page content length
+  // for any model, since this TabHelper might be used for multiple
+  // conversations with different models, or the current conversations' models
+  // could be changed.
   if (g_max_page_content_length_for_testing) {
     return *g_max_page_content_length_for_testing;
   }
-  auto& model = GetCurrentModel();
-  if (model.options->is_leo_model_options()) {
-    return model.options->get_leo_model_options()->max_page_content_length;
-  } else {
-    return kCustomModelMaxPageContentLength;
-  }
+  // auto& model = GetCurrentModel();
+  // if (model.options->is_leo_model_options()) {
+  //   return model.options->get_leo_model_options()->max_page_content_length;
+  // } else {
+  return kCustomModelMaxPageContentLength;
+  // }
 }
 
 void AIChatTabHelper::CheckPDFA11yTree() {

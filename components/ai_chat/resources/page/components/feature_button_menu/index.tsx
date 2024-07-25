@@ -8,25 +8,27 @@ import ButtonMenu from '@brave/leo/react/buttonMenu'
 import Button from '@brave/leo/react/button'
 import Icon from '@brave/leo/react/icon'
 import Label from '@brave/leo/react/label'
-import { getLocale } from '$web-common/locale'
-import getPageHandlerInstance, * as mojom from '../../api/page_handler'
-import DataContext from '../../state/context'
-import styles from './style.module.scss'
 import classnames from '$web-common/classnames'
+import { getLocale } from '$web-common/locale'
+import * as mojom from '../../api'
+import { useAIChat } from '../../state/ai_chat_context'
+import { useConversation } from '../../state/conversation_context'
+import styles from './style.module.scss'
 
 export default function FeatureMenu() {
-  const context = React.useContext(DataContext)
+  const aiChatContext = useAIChat()
+  const conversationContext = useConversation()
 
   const handleSettingsClick = () => {
-    getPageHandlerInstance().pageHandler.openBraveLeoSettings()
+    aiChatContext.uiHandler?.openAIChatSettings()
   }
 
   const handleNewConversationClick = () => {
-    getPageHandlerInstance().pageHandler.clearConversationHistory()
+    console.error('TODO: new conversation')
   }
 
-  const customModels = context.allModels.filter(model => model.options.customModelOptions !== undefined)
-  const leoModels = context.allModels.filter(model => model.options.leoModelOptions !== undefined)
+  const customModels = conversationContext.allModels.filter(model => model.options.customModelOptions !== undefined)
+  const leoModels = conversationContext.allModels.filter(model => model.options.leoModelOptions !== undefined)
 
   return (
     <ButtonMenu
@@ -47,8 +49,8 @@ export default function FeatureMenu() {
         return (
           <leo-menu-item
             key={model.key}
-            aria-selected={model.key === context.currentModel?.key || null}
-            onClick={() => context.setCurrentModel(model)}
+            aria-selected={model.key === conversationContext.currentModel?.key || null}
+            onClick={() => conversationContext.setCurrentModel(model)}
           >
             <div className={styles.menuItemWithIcon}>
               <div className={styles.menuText}>
@@ -59,7 +61,7 @@ export default function FeatureMenu() {
               </div>
               {model.options.leoModelOptions?.access ===
                 mojom.ModelAccess.PREMIUM &&
-                !context.isPremiumUser && (
+                !aiChatContext.isPremiumUser && (
                   <Label
                     className={styles.modelLabel}
                     mode={'outline'}
@@ -84,8 +86,8 @@ export default function FeatureMenu() {
         return (
           <leo-menu-item
             key={model.key}
-            aria-selected={model.key === context.currentModel?.key || null}
-            onClick={() => context.setCurrentModel(model)}
+            aria-selected={model.key === conversationContext.currentModel?.key || null}
+            onClick={() => conversationContext.setCurrentModel(model)}
           >
             <div className={styles.menuItemWithIcon}>
               <div className={styles.menuText}>
@@ -107,8 +109,8 @@ export default function FeatureMenu() {
         </div>
       </leo-menu-item>
 
-      {!context.isPremiumUser &&
-      <leo-menu-item onClick={context.goPremium}>
+      {!aiChatContext.isPremiumUser &&
+      <leo-menu-item onClick={aiChatContext.goPremium}>
         <div className={classnames(styles.menuItemWithIcon, styles.menuItemMainItem)}>
           <Icon name='lock-open' />
           <span className={styles.menuText}>{getLocale('menuGoPremium')}</span>
@@ -116,8 +118,8 @@ export default function FeatureMenu() {
       </leo-menu-item>
       }
 
-      {context.isPremiumUser &&
-      <leo-menu-item onClick={context.managePremium}>
+      {aiChatContext.isPremiumUser &&
+      <leo-menu-item onClick={aiChatContext.managePremium}>
         <div className={classnames(styles.menuItemWithIcon, styles.menuItemMainItem)}>
           <Icon name='lock-open' />
           <span className={styles.menuText}>{getLocale('menuManageSubscription')}</span>

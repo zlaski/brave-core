@@ -66,7 +66,7 @@ class AIChatSettingsHelper : public mojom::AIChatSettingsHelper,
 
  private:
   void OnPremiumStatusReceived(
-      mojom::PageHandler::GetPremiumStatusCallback parent_callback,
+      mojom::Service::GetPremiumStatusCallback parent_callback,
       mojom::PremiumStatus premium_status,
       mojom::PremiumInfoPtr premium_info);
 

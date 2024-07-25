@@ -78,7 +78,7 @@ inline constexpr char kSpeedreaderPanelURL[] =
     "chrome://brave-speedreader.top-chrome";
 inline constexpr char kSpeedreaderPanelHost[] = "brave-speedreader.top-chrome";
 inline constexpr char kShortcutsURL[] = "chrome://settings/system/shortcuts";
-inline constexpr char kChatUIURL[] = "chrome-untrusted://chat/";
+inline constexpr char kChatUIURL[] = "chrome://chat/";
 inline constexpr char kChatUIHost[] = "chat";
 
 inline constexpr char kRewriterUIURL[] = "chrome://rewriter/";

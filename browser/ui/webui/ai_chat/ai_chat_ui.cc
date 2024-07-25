@@ -18,11 +18,14 @@
 #include "brave/components/constants/webui_url_constants.h"
 #include "brave/components/l10n/common/localization_util.h"
 #include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/ui/webui/favicon_source.h"
 #include "chrome/browser/ui/webui/webui_util.h"
+#include "components/favicon_base/favicon_url_parser.h"
 #include "components/grit/brave_components_resources.h"
 #include "components/prefs/pref_service.h"
 #include "components/user_prefs/user_prefs.h"
 #include "content/public/browser/web_contents.h"
+#include "content/public/browser/web_ui_controller.h"
 #include "content/public/browser/web_ui_data_source.h"
 #include "content/public/common/url_constants.h"
 
@@ -54,25 +57,25 @@ content::WebContents* GetActiveWebContents(content::BrowserContext* context) {
 #endif
 
 AIChatUI::AIChatUI(content::WebUI* web_ui)
-    : ui::UntrustedWebUIController(web_ui),
+    : WebUIController(web_ui),
       profile_(Profile::FromWebUI(web_ui)) {
   DCHECK(profile_);
   DCHECK(profile_->IsRegularProfile());
 
   // Create a URLDataSource and add resources.
-  content::WebUIDataSource* untrusted_source =
+  content::WebUIDataSource* source =
       content::WebUIDataSource::CreateAndAdd(
-          web_ui->GetWebContents()->GetBrowserContext(), kChatUIURL);
+          web_ui->GetWebContents()->GetBrowserContext(), kChatUIHost);
 
   webui::SetupWebUIDataSource(
-      untrusted_source,
+      source,
       base::make_span(kAiChatUiGenerated, kAiChatUiGeneratedSize),
       IDR_CHAT_UI_HTML);
 
-  untrusted_source->AddResourcePath("styles.css", IDR_CHAT_UI_CSS);
+  source->AddResourcePath("styles.css", IDR_CHAT_UI_CSS);
 
   for (const auto& str : ai_chat::GetLocalizedStrings()) {
-    untrusted_source->AddString(
+    source->AddString(
         str.name, brave_l10n::GetLocalizedResourceUTF16String(str.id));
   }
 
@@ -80,11 +83,11 @@ AIChatUI::AIChatUI(content::WebUI* web_ui)
       profile_->GetOriginalProfile()->GetPrefs()->GetTime(
           ai_chat::prefs::kLastAcceptedDisclaimer);
 
-  untrusted_source->AddBoolean("hasAcceptedAgreement",
+  source->AddBoolean("hasAcceptedAgreement",
                                !last_accepted_disclaimer.is_null());
-  untrusted_source->AddInteger("customModelMaxPageContentLength",
+  source->AddInteger("customModelMaxPageContentLength",
                                ai_chat::kCustomModelMaxPageContentLength);
-  untrusted_source->AddInteger("customModelLongConversationCharLimit",
+  source->AddInteger("customModelLongConversationCharLimit",
                                ai_chat::kCustomModelLongConversationCharLimit);
 
 #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS)
@@ -93,34 +96,38 @@ AIChatUI::AIChatUI(content::WebUI* web_ui)
   constexpr bool kIsMobile = false;
 #endif
 
-  untrusted_source->AddBoolean("isMobile", kIsMobile);
+  source->AddBoolean("isMobile", kIsMobile);
 
-  untrusted_source->AddBoolean(
+  source->AddBoolean(
       "hasUserDismissedPremiumPrompt",
       profile_->GetOriginalProfile()->GetPrefs()->GetBoolean(
           ai_chat::prefs::kUserDismissedPremiumPrompt));
 
-  untrusted_source->OverrideContentSecurityPolicy(
+  source->OverrideContentSecurityPolicy(
       network::mojom::CSPDirectiveName::ScriptSrc,
-      "script-src 'self' chrome-untrusted://resources;");
-  untrusted_source->OverrideContentSecurityPolicy(
+      "script-src 'self' chrome://resources;");
+  source->OverrideContentSecurityPolicy(
       network::mojom::CSPDirectiveName::StyleSrc,
-      "style-src 'self' 'unsafe-inline' chrome-untrusted://resources;");
-  untrusted_source->OverrideContentSecurityPolicy(
+      "style-src 'self' 'unsafe-inline' chrome://resources;");
+  source->OverrideContentSecurityPolicy(
       network::mojom::CSPDirectiveName::ImgSrc,
-      "img-src 'self' blob: chrome-untrusted://resources;");
-  untrusted_source->OverrideContentSecurityPolicy(
+      "img-src 'self' blob: chrome://resources chrome://favicon2;");
+  source->OverrideContentSecurityPolicy(
       network::mojom::CSPDirectiveName::FontSrc,
-      "font-src 'self' data: chrome-untrusted://resources;");
+      "font-src 'self' data: chrome://resources;");
 
-  untrusted_source->OverrideContentSecurityPolicy(
+  source->OverrideContentSecurityPolicy(
       network::mojom::CSPDirectiveName::TrustedTypes, "trusted-types default;");
+
+  content::URLDataSource::Add(
+      profile_, std::make_unique<FaviconSource>(
+                   profile_, chrome::FaviconUrlFormat::kFavicon2));
 }
 
 AIChatUI::~AIChatUI() = default;
 
 void AIChatUI::BindInterface(
-    mojo::PendingReceiver<ai_chat::mojom::PageHandler> receiver) {
+    mojo::PendingReceiver<ai_chat::mojom::AIChatUIHandler> receiver) {
   // We call ShowUI() before creating the PageHandler object so that
   // the WebContents is added to a Browser which we can get a reference
   // to and provide to the PageHandler.
@@ -155,15 +162,20 @@ void AIChatUI::BindInterface(
       std::move(receiver));
 }
 
-bool UntrustedChatUIConfig::IsWebUIEnabled(
+AIChatUIConfig::CreateWebUIController(content::WebUI* web_ui,
+                                             const GURL& url) {
+  return std::make_unique<AIChatUI>(web_ui);
+}
+
+bool AIChatUIConfig::IsWebUIEnabled(
     content::BrowserContext* browser_context) {
   return ai_chat::IsAIChatEnabled(
              user_prefs::UserPrefs::Get(browser_context)) &&
          Profile::FromBrowserContext(browser_context)->IsRegularProfile();
 }
 
-UntrustedChatUIConfig::UntrustedChatUIConfig()
-    : DefaultTopChromeWebUIConfig(content::kChromeUIUntrustedScheme,
+AIChatUIConfig::AIChatUIConfig()
+    : WebUIConfig(content::kChromeUIScheme, kChatUIHost) {}
                                   kChatUIHost) {}
 
 WEB_UI_CONTROLLER_TYPE_IMPL(AIChatUI)

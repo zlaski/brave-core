@@ -21,6 +21,9 @@
 #include "brave/browser/ui/webui/brave_wallet/wallet_panel_ui.h"
 #include "brave/browser/ui/webui/speedreader/speedreader_toolbar_ui.h"
 #endif  // !BUILDFLAG(IS_ANDROID)
+#if BUILDFLAG(ENABLE_AI_CHAT)
+#include "brave/browser/ui/webui/ai_chat/ai_chat_ui.h"
+#endif  // BUILDFLAG(ENABLE_AI_CHAT)
 
 void RegisterChromeWebUIConfigs() {
   RegisterChromeWebUIConfigs_ChromiumImpl();
@@ -35,4 +38,7 @@ void RegisterChromeWebUIConfigs() {
   map.AddWebUIConfig(std::make_unique<WalletPanelUIConfig>());
   map.AddWebUIConfig(std::make_unique<SpeedreaderToolbarUIConfig>());
 #endif  // !BUILDFLAG(IS_ANDROID)
+#if BUILDFLAG(ENABLE_AI_CHAT)
+  map.AddWebUIConfig(std::make_unique<AIChatUIConfig>());
+#endif
 }
