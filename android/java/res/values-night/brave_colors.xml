@@ -98,7 +98,6 @@
     <color name="systemfeedback_info_text">#a0cdff</color>
     <color name="systemfeedback_info_icon">#a0cdff</color>
     <color name="systemfeedback_info_background">#072542</color>
-    <color name="text_interactive">#7c91ff</color>
 
     <color name="brave_set_default_dialog_text_color">@android:color/white</color>
 
