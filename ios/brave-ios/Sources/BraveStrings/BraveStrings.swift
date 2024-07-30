@@ -7191,7 +7191,7 @@ extension Strings {
         value: "24/7 support",
         comment: "Text for a checkbox to present the user benefits for using Brave VPN"
       )
-    
+
     public static let infoCheckPrivacy =
       NSLocalizedString(
         "vpn.infoCheckPrivacy",
@@ -7218,7 +7218,7 @@ extension Strings {
         value: "Hundreds of servers around the world",
         comment: "Information Text shown to users for using Brave VPN"
       )
-    
+
     public static let infoCheckConnectionSpeed =
       NSLocalizedString(
         "vpn.infoCheckConnectionSpeed",
@@ -7227,7 +7227,7 @@ extension Strings {
         value: "Lightning-fast connection speeds",
         comment: "Information shown to users for using Brave VPN"
       )
-    
+
     public static let infoCheckLimitDevice =
       NSLocalizedString(
         "vpn.infoCheckLimitDevice",
@@ -7236,7 +7236,7 @@ extension Strings {
         value: "Protect up to 10 devices with one plan",
         comment: "Information shown to users for using Brave VPN"
       )
-    
+
     public static let autoRenewSoonExpirePopOverTitle =
       NSLocalizedString(
         "vpn.autoRenewSoonExpireTitle",
