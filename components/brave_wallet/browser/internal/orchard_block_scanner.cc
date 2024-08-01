@@ -10,9 +10,11 @@ namespace brave_wallet {
 OrchardBlockScanner::Result::Result() = default;
 
 OrchardBlockScanner::Result::Result(std::vector<OrchardNote> discovered_notes,
-                                    std::vector<OrchardNullifier> spent_notes)
+                                    std::vector<OrchardNullifier> spent_notes,
+                                    std::vector<OrchardCommitment> commitments)
     : discovered_notes(std::move(discovered_notes)),
-      spent_notes(std::move(spent_notes)) {}
+      spent_notes(std::move(spent_notes)),
+      commitments(std::move(commitments)) {}
 
 OrchardBlockScanner::Result::Result(const Result&) = default;
 
@@ -33,7 +35,9 @@ OrchardBlockScanner::ScanBlocks(
     std::vector<zcash::mojom::CompactBlockPtr> blocks) {
   std::vector<OrchardNullifier> found_nullifiers;
   std::vector<OrchardNote> found_notes;
+  std::vector<OrchardCommitment> commitments;
 
+  uint32_t cmu_index = 0;
   for (const auto& block : blocks) {
     // Scan block using the decoder initialized with the provided fvk
     // to find new spendable notes.
@@ -54,6 +58,16 @@ OrchardBlockScanner::ScanBlocks(
           return base::unexpected(ErrorCode::kInputError);
         }
 
+        if (orchard_action->cmx.size() != kOrchardCmxSize) {
+          return base::unexpected(ErrorCode::kInputError);
+        }
+
+        OrchardCommitment commitment;
+        base::ranges::copy(orchard_action->cmx.begin(),
+                           orchard_action->cmx.end(), commitment.cmu.begin());
+        commitment.block_id = block->height;
+        commitment.index = cmu_index++;
+
         std::array<uint8_t, kOrchardNullifierSize> action_nullifier;
         base::ranges::copy(orchard_action->nullifier, action_nullifier.begin());
 
@@ -72,7 +86,8 @@ OrchardBlockScanner::ScanBlocks(
       }
     }
   }
-  return Result({std::move(found_notes), std::move(found_nullifiers)});
+  return Result({std::move(found_notes), std::move(found_nullifiers),
+                 std::move(commitments)});
 }
 
 }  // namespace brave_wallet

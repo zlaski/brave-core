@@ -25,6 +25,9 @@ namespace {
 #define kNotesTable "notes"
 #define kSpentNotesTable "spent_notes"
 #define kAccountMeta "account_meta"
+#define kShardTree "shard_tree"
+#define kShardTreeCheckpoints "checkpoints"
+#define kCheckpointsMarksRemoved "checkpoints_mark_removed"
 
 const int kEmptyDbVersionNumber = 1;
 const int kCurrentVersionNumber = 2;
@@ -124,6 +127,28 @@ bool ZCashOrchardStorage::CreateSchema() {
                             "account_birthday INTEGER NOT NULL,"
                             "latest_scanned_block INTEGER NOT NULL,"
                             "latest_scanned_block_hash TEXT NOT NULL);") &&
+         database_->Execute("CREATE TABLE " kShardTree
+                           " ("
+                           "shard_index INTEGER PRIMARY KEY,"
+                           "subtree_end_height INTEGER,"
+                           "root_hash BLOB,"
+                           "shard_data BLOB,"
+                           "contains_marked INTEGER,"
+                           "CONSTRAINT root_unique UNIQUE (root_hash));") &&
+         database_->Execute("CREATE TABLE " kShardTreeCheckpoints
+                           " ("
+                           "checkpoint_id INTEGER PRIMARY KEY,"
+                           "position INTEGER)") &&
+         database_->Execute("CREATE TABLE " kCheckpointsMarksRemoved
+                           " ("
+                           "checkpoint_id INTEGER NOT NULL,"
+                           "mark_removed_position INTEGER NOT NULL,"
+                           "FOREIGN KEY (checkpoint_id) REFERENCES "
+                           "orchard_tree_checkpoints(checkpoint_id)"
+                           "ON DELETE CASCADE,"
+                           "CONSTRAINT spend_position_unique UNIQUE "
+                           "(checkpoint_id, mark_removed_position)"
+                           ")") &&
          transaction.Commit();
 }
 
@@ -419,5 +444,567 @@ std::optional<ZCashOrchardStorage::Error> ZCashOrchardStorage::UpdateNotes(
 
   return std::nullopt;
 }
+
+base::expected<uint32_t, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::GetLatestShardIndex(mojom::AccountIdPtr account_id) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement resolve_max_shard_id(
+      database_->GetCachedStatement(SQL_FROM_HERE,
+                                   "SELECT "
+                                   "max(shard_index) FROM " kShardTree " "
+                                   "WHERE account_id = ?;"));
+
+  resolve_max_shard_id.BindString(0, account_id->unique_key);
+  if (resolve_max_shard_id.Step()) {
+    auto shard_index = ReadUint32(resolve_max_shard_id, 0);
+    if (!shard_index) {
+      NOTREACHED_IN_MIGRATION();
+      return base::unexpected(
+          Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+    }
+    return shard_index.value();
+  }
+
+  return 0;
+}
+
+base::expected<bool, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::PutShardRoots(
+    mojom::AccountIdPtr account_id,
+    uint8_t shard_roots_height,
+    uint32_t start_position,
+    std::vector<OrchardShard> roots) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Transaction transaction(database_.get());
+  if (!transaction.Begin()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  // Insert found notes to the notes table
+  sql::Statement statement_populate_roots(database_->GetCachedStatement(
+      SQL_FROM_HERE, "INSERT INTO " kShardTree " "
+                     "(shard_index, subtree_end_height, root_hash, shard_data, "
+                     "contains_marked) "
+                     "VALUES (?, ?, ?, ?, ?);"));
+
+  uint32_t counter = start_position;
+  for (const auto& root : roots) {
+    statement_populate_roots.Reset(true);
+    statement_populate_roots.BindInt64(0, counter++);
+    statement_populate_roots.BindInt64(1, shard_roots_height);
+    statement_populate_roots.BindBlob(2, root.root_hash);
+    statement_populate_roots.BindBlob(3, root.shard_data);
+    statement_populate_roots.BindInt64(4, 0);
+    if (!statement_populate_roots.Run()) {
+      NOTREACHED_IN_MIGRATION();
+      transaction.Rollback();
+      return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                    database_->GetErrorMessage()});
+    }
+  }
+
+  if (!transaction.Commit()) {
+    return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                  database_->GetErrorMessage()});
+  }
+
+  return true;
+}
+
+base::expected<bool, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::TruncateShards(mojom::AccountIdPtr account_id,
+                                    uint32_t shard_index) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement remove_checkpoint_by_id(
+      database_->GetCachedStatement(SQL_FROM_HERE, "DELETE FROM " kShardTree " "
+                                                  "WHERE shard_index >= ?"));
+
+  remove_checkpoint_by_id.BindInt64(0, shard_index);
+
+  if (!remove_checkpoint_by_id.Step()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  return true;
+}
+
+base::expected<bool, ZCashOrchardStorage::Error> ZCashOrchardStorage::PutShard(
+    mojom::AccountIdPtr account_id,
+    OrchardShard shard) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Transaction transaction(database_.get());
+  if (!transaction.Begin()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  // Insert found notes to the notes table
+  sql::Statement statement_put_shard(database_->GetCachedStatement(
+      SQL_FROM_HERE, "INSERT INTO " kShardTree " "
+                     "(shard_index, root_hash, shard_data) "
+                     "VALUES (:shard_index, :root_hash, :shard_data) "
+                     "ON CONFLICT (shard_index) DO UPDATE "
+                     "SET root_hash = :root_hash, "
+                     "shard_data = :shard_data"));
+
+  statement_put_shard.BindInt64(0, shard.address.index);
+  statement_put_shard.BindBlob(1, shard.root_hash);
+  statement_put_shard.BindBlob(2, shard.shard_data);
+
+  if (!statement_put_shard.Run()) {
+    NOTREACHED_IN_MIGRATION();
+    transaction.Rollback();
+    return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                  database_->GetErrorMessage()});
+  }
+
+  if (!transaction.Commit()) {
+    return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                  database_->GetErrorMessage()});
+  }
+
+  return true;
+}
+
+base::expected<std::optional<OrchardShard>, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::LastShard(mojom::AccountIdPtr account_id,
+                               uint8_t shard_height) {
+  auto shard_index = GetLatestShardIndex(account_id.Clone());
+  if (!shard_index.has_value()) {
+    return base::unexpected(shard_index.error());
+  }
+
+  return GetShard(account_id.Clone(),
+                  OrchardShardAddress{shard_height, shard_index.value()});
+}
+
+base::expected<std::vector<OrchardShardAddress>, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::GetShardRoots(mojom::AccountIdPtr account_id,
+                                   uint8_t shard_level) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  std::vector<OrchardShardAddress> result;
+
+  sql::Statement resolve_shards_statement(database_->GetCachedStatement(
+      SQL_FROM_HERE,
+      "SELECT shard_index FROM " kShardTree " ORDER BY shard_index"));
+
+  while (!resolve_shards_statement.Step()) {
+    auto shard_index = ReadUint32(resolve_shards_statement, 0);
+    if (!shard_index) {
+      NOTREACHED_IN_MIGRATION();
+      return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement, ""});
+    }
+    result.push_back(OrchardShardAddress{shard_level, shard_index.value()});
+  }
+
+  return result;
+}
+
+base::expected<size_t, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::CheckpointCount(mojom::AccountIdPtr account_id) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement resolve_checkpoints_count(database_->GetCachedStatement(
+      SQL_FROM_HERE, "SELECT COUNT(*) FROM " kShardTreeCheckpoints));
+
+  if (!resolve_checkpoints_count.Step()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  auto value = ReadUint32(resolve_checkpoints_count, 0);
+
+  if (!value) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  return *value;
+}
+
+base::expected<std::optional<uint32_t>, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::MinCheckpointId(mojom::AccountIdPtr account_id) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement resolve_min_checkpoint_id(database_->GetCachedStatement(
+      SQL_FROM_HERE, "SELECT MIN(checkpoint_id) " kShardTreeCheckpoints));
+
+  if (!resolve_min_checkpoint_id.Step()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  auto value = ReadUint32(resolve_min_checkpoint_id, 0);
+
+  if (!value) {
+    NOTREACHED_IN_MIGRATION();
+    return std::nullopt;
+  }
+
+  return *value;
+}
+
+base::expected<std::optional<uint32_t>, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::MaxCheckpointId(mojom::AccountIdPtr account_id) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement resolve_max_checkpoint_id(database_->GetCachedStatement(
+      SQL_FROM_HERE, "SELECT MAX(checkpoint_id) " kShardTreeCheckpoints));
+
+  if (!resolve_max_checkpoint_id.Step()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  auto value = ReadUint32(resolve_max_checkpoint_id, 0);
+
+  if (!value) {
+    NOTREACHED_IN_MIGRATION();
+    return std::nullopt;
+  }
+
+  return *value;
+}
+
+base::expected<std::optional<uint32_t>, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::GetCheckpointAtDepth(mojom::AccountIdPtr account_id,
+                                          uint32_t depth) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement get_checkpoint_at_depth_statement(
+      database_->GetCachedStatement(SQL_FROM_HERE,
+                                   "SELECT checkpoint_id, position "
+                                   "FROM " kShardTreeCheckpoints " "
+                                   "ORDER BY checkpoint_id DESC "
+                                   "LIMIT 1 "
+                                   "OFFSET ?"));
+
+  get_checkpoint_at_depth_statement.BindInt64(0, depth);
+
+  if (!get_checkpoint_at_depth_statement.Step()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  auto value = ReadUint32(get_checkpoint_at_depth_statement, 0);
+
+  if (!value) {
+    NOTREACHED_IN_MIGRATION();
+    return std::nullopt;
+  }
+
+  return *value;
+}
+
+base::expected<std::optional<OrchardCheckpointBundle>, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::GetCheckpoint(mojom::AccountIdPtr account_id,
+                                   uint32_t checkpoint_id) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement get_checkpoint_statement(
+      database_->GetCachedStatement(SQL_FROM_HERE,
+                                   "SELECT position "
+                                   "FROM " kShardTreeCheckpoints " "
+                                   "WHERE checkpoint_id = ?"));
+
+  get_checkpoint_statement.BindInt64(0, checkpoint_id);
+  if (!get_checkpoint_statement.Run()) {
+    return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                  database_->GetErrorMessage()});
+  }
+
+    sql::Statement marks_removed_statement(
+        database_->GetCachedStatement(SQL_FROM_HERE,
+                                     "SELECT mark_removed_position "
+                                     "FROM " kCheckpointsMarksRemoved " "
+                                     "WHERE checkpoint_id = ?"));
+
+    std::vector<uint32_t> positions;
+    while (!marks_removed_statement.Run()) {
+      auto position = ReadUint32(marks_removed_statement, 0);
+      if (position) {
+        positions.push_back(*position);
+      } else {
+        return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                      database_->GetErrorMessage()});
+      }
+    }
+
+    auto checkpoint_position = ReadUint32(get_checkpoint_statement, 0);
+
+    if (checkpoint_position) {
+      return OrchardCheckpointBundle{checkpoint_id, OrchardCheckpoint{ false, *checkpoint_position, std::move(positions) }};
+    } else {
+      return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                    database_->GetErrorMessage()});
+    }
+}
+
+base::expected<std::vector<OrchardCheckpointBundle>, ZCashOrchardStorage::Error> ZCashOrchardStorage::GetCheckpoints(mojom::AccountIdPtr account_id, size_t limit) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement get_checkpoints_statement(
+      database_->GetCachedStatement(SQL_FROM_HERE,
+                                   "SELECT checkpoint_id, position "
+                                   "FROM " kShardTreeCheckpoints " "
+                                   "ORDER BY position "
+                                   "LIMIT ?"));
+
+  get_checkpoints_statement.BindInt64(0, limit);
+
+  std::vector<OrchardCheckpointBundle> checkpoints;
+  while (!get_checkpoints_statement.Step()) {
+    sql::Statement marks_removed_statement(
+        database_->GetCachedStatement(SQL_FROM_HERE,
+                                     "SELECT mark_removed_position "
+                                     "FROM " kCheckpointsMarksRemoved " "
+                                     "WHERE checkpoint_id = ?"));
+
+    std::vector<uint32_t> positions;
+    while (!marks_removed_statement.Run()) {
+      auto position = ReadUint32(marks_removed_statement, 0);
+      if (position) {
+        positions.push_back(*position);
+      } else {
+        return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                      database_->GetErrorMessage()});
+      }
+    }
+
+    auto checkpoint_id = ReadUint32(get_checkpoints_statement, 0);
+    auto checkpoint_position = ReadUint32(get_checkpoints_statement, 1);
+
+    if (checkpoint_id && checkpoint_position) {
+      checkpoints.push_back(OrchardCheckpointBundle {
+        *checkpoint_id, OrchardCheckpoint { false, *checkpoint_position, std::move(positions)}});
+    } else {
+      return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+                                    database_->GetErrorMessage()});
+    }
+  }
+  return checkpoints;
+}
+
+base::expected<std::optional<uint32_t>, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::GetMaxCheckpointedHeight(mojom::AccountIdPtr account_id,
+                                              uint32_t chain_tip_height,
+                                              uint32_t min_confirmations) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  uint32_t max_checkpointed_height = chain_tip_height - min_confirmations - 1;
+
+  sql::Statement get_max_checkpointed_height(database_->GetCachedStatement(
+      SQL_FROM_HERE, "SELECT checkpoint_id FROM " kShardTreeCheckpoints " "
+                     "WHERE checkpoint_id <= :max_checkpoint_height "
+                     "ORDER BY checkpoint_id DESC "
+                     "LIMIT 1"));
+
+  get_max_checkpointed_height.BindInt64(0, max_checkpointed_height);
+
+  if (!get_max_checkpointed_height.Step()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  auto value = ReadUint32(get_max_checkpointed_height, 0);
+
+  if (!value) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  return *value;
+}
+
+base::expected<bool, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::RemoveCheckpoint(mojom::AccountIdPtr account_id,
+                                      uint32_t checkpoint_id) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement remove_checkpoint_by_id(database_->GetCachedStatement(
+      SQL_FROM_HERE, "DELETE FROM " kShardTreeCheckpoints " "
+                     "WHERE checkpoint_id = ?"));
+
+  remove_checkpoint_by_id.BindInt64(0, checkpoint_id);
+
+  if (!remove_checkpoint_by_id.Step()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  return true;
+}
+
+base::expected<bool, ZCashOrchardStorage::Error>
+ZCashOrchardStorage::TruncateCheckpoints(mojom::AccountIdPtr account_id,
+                                         uint32_t checkpoint_id) {
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+  if (!EnsureDbInit()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+  }
+
+  sql::Statement truncate_checkpoints(database_->GetCachedStatement(
+      SQL_FROM_HERE,
+      "DELETE FROM " kShardTreeCheckpoints " WHERE checkpoint_id >= ?"));
+
+  truncate_checkpoints.BindInt64(0, checkpoint_id);
+
+  if (!truncate_checkpoints.Step()) {
+    NOTREACHED_IN_MIGRATION();
+    return base::unexpected(
+        Error{ErrorCode::kNoCheckpoints, database_->GetErrorMessage()});
+  }
+
+  return true;
+}
+
+// // TODO(cypt4): Rewrite on JOIN
+// base::expected<bool, ZCashOrchardStorage::Error> ZCashOrchardStorage::WithCheckpoints(
+//     mojom::AccountIdPtr account_id,
+//     uint32_t limit,
+//     WithCheckpointsCallback callback) {
+//   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+
+//   if (!EnsureDbInit()) {
+//     NOTREACHED_IN_MIGRATION();
+//     return base::unexpected(Error{ErrorCode::kDbInitError, database_->GetErrorMessage()});
+//   }
+
+//   sql::Statement get_checkpoints_statement(
+//       database_->GetCachedStatement(SQL_FROM_HERE,
+//                                    "SELECT checkpoint_id, position "
+//                                    "FROM " kShardTreeCheckpoints " "
+//                                    "ORDER BY position "
+//                                    "LIMIT ?"));
+
+//   get_checkpoints_statement.BindInt64(0, limit);
+
+//   while (!get_checkpoints_statement.Step()) {
+//     sql::Statement marks_removed_statement(
+//         database_->GetCachedStatement(SQL_FROM_HERE,
+//                                      "SELECT mark_removed_position "
+//                                      "FROM " kCheckpointsMarksRemoved " "
+//                                      "WHERE checkpoint_id = ?"));
+
+//     std::vector<uint32_t> positions;
+//     while (!marks_removed_statement.Run()) {
+//       auto position = ReadUint32(marks_removed_statement, 0);
+//       if (position) {
+//         positions.push_back(*position);
+//       } else {
+//         return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+//                                       database_->GetErrorMessage()});
+//       }
+//     }
+
+//     auto checkpoint_id = ReadUint32(get_checkpoints_statement, 0);
+//     auto checkpoint_position = ReadUint32(get_checkpoints_statement, 1);
+
+//     if (checkpoint_id && checkpoint_position) {
+//       callback.Run(*checkpoint_id, OrchardCheckpoint{ false, *checkpoint_position, std::move(positions) });
+//     } else {
+//       return base::unexpected(Error{ErrorCode::kFailedToExecuteStatement,
+//                                     database_->GetErrorMessage()});
+//     }
+//   }
+//   return true;
+// }
 
 }  // namespace brave_wallet

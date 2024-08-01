@@ -33,8 +33,10 @@ size_t GetCode(ZCashShieldSyncService::ErrorCode error) {
       return 5;
     case ZCashShieldSyncService::ErrorCode::kFailedToRetrieveAccount:
       return 6;
-    case ZCashShieldSyncService::ErrorCode::kScannerError:
+    case ZCashShieldSyncService::ErrorCode::kDatabaseError:
       return 7;
+    case ZCashShieldSyncService::ErrorCode::kScannerError:
+      return 8;
   }
 }
 
@@ -75,7 +77,7 @@ ZCashShieldSyncService::ZCashShieldSyncService(
       observer_(std::move(observer)) {
   chain_id_ = GetNetworkForZCashKeyring(account_id->keyring_id);
   block_scanner_ = std::make_unique<OrchardBlockScannerProxy>(fvk);
-  background_orchard_storage_.emplace(
+  sync_state_.emplace(
       base::ThreadPool::CreateSequencedTaskRunner({base::MayBlock()}),
       db_dir_path_);
 }
@@ -133,6 +135,11 @@ void ZCashShieldSyncService::WorkOnTask() {
     return;
   }
 
+  if (!subtree_roots_updated_) {
+    UpdateSubtreeRoots();
+    return;
+  }
+
   if (!spendable_notes_) {
     UpdateSpendableNotes();
     return;
@@ -159,7 +166,7 @@ void ZCashShieldSyncService::WorkOnTask() {
 }
 
 void ZCashShieldSyncService::GetOrCreateAccount() {
-  background_orchard_storage_.AsyncCall(&ZCashOrchardStorage::GetAccountMeta)
+  sync_state_.AsyncCall(&ZCashOrchardSyncState::GetAccountMeta)
       .WithArgs(account_id_.Clone())
       .Then(base::BindOnce(&ZCashShieldSyncService::OnGetAccountMeta,
                            weak_ptr_factory_.GetWeakPtr()));
@@ -189,7 +196,7 @@ void ZCashShieldSyncService::OnGetAccountMeta(
 }
 
 void ZCashShieldSyncService::InitAccount() {
-  background_orchard_storage_.AsyncCall(&ZCashOrchardStorage::RegisterAccount)
+  sync_state_.AsyncCall(&ZCashOrchardSyncState::RegisterAccount)
       .WithArgs(account_id_.Clone(), account_birthday_->value,
                 account_birthday_->hash)
       .Then(base::BindOnce(&ZCashShieldSyncService::OnAccountInit,
@@ -275,8 +282,7 @@ void ZCashShieldSyncService::OnGetTreeStateForChainReorg(
     return;
   } else {
     // Reorg database so records related to removed blocks are wiped out
-    background_orchard_storage_
-        .AsyncCall(&ZCashOrchardStorage::HandleChainReorg)
+    sync_state_.AsyncCall(&ZCashOrchardSyncState::HandleChainReorg)
         .WithArgs(account_id_.Clone(), (*tree_state)->height,
                   (*tree_state)->hash)
         .Then(base::BindOnce(
@@ -299,7 +305,8 @@ void ZCashShieldSyncService::OnDatabaseUpdatedForChainReorg(
 }
 
 void ZCashShieldSyncService::UpdateSpendableNotes() {
-  background_orchard_storage_.AsyncCall(&ZCashOrchardStorage::GetSpendableNotes)
+  spendable_notes_ = std::nullopt;
+  sync_state_.AsyncCall(&ZCashOrchardSyncState::GetSpendableNotes)
       .WithArgs(account_id_.Clone())
       .Then(base::BindOnce(&ZCashShieldSyncService::OnGetSpendableNotes,
                            weak_ptr_factory_.GetWeakPtr()));
@@ -333,6 +340,54 @@ void ZCashShieldSyncService::OnGetLatestBlock(
   } else {
     chain_tip_block_ = (*result)->height;
   }
+  ScheduleWorkOnTask();
+}
+
+void ZCashShieldSyncService::UpdateSubtreeRoots() {
+  sync_state_.AsyncCall(&ZCashOrchardSyncState::GetLatestShardIndex)
+      .WithArgs(account_id_.Clone())
+      .Then(base::BindOnce(&ZCashShieldSyncService::OnGetLatestShardIndex,
+                           weak_ptr_factory_.GetWeakPtr()));
+}
+
+void ZCashShieldSyncService::OnGetLatestShardIndex(
+    base::expected<uint32_t, ZCashOrchardStorage::Error> result) {
+  if (!result.has_value()) {
+    error_ = Error{ErrorCode::kDatabaseError, ""};
+    ScheduleWorkOnTask();
+    return;
+  }
+
+  auto latest_shard_index = result.value();
+  zcash_rpc_->GetSubtreeRoots(
+      chain_id_, latest_shard_index, 0,
+      base::BindOnce(&ZCashShieldSyncService::OnGetSubtreeRoots,
+                     weak_ptr_factory_.GetWeakPtr()));
+}
+
+void ZCashShieldSyncService::OnGetSubtreeRoots(
+    base::expected<std::vector<zcash::mojom::SubtreeRootPtr>, std::string>
+        result) {
+  if (!result.has_value()) {
+    error_ = Error{ErrorCode::kDatabaseError, ""};
+    ScheduleWorkOnTask();
+    return;
+  }
+
+  sync_state_.AsyncCall(&ZCashOrchardSyncState::UpdateSubtreeRoots)
+      .WithArgs(account_id_.Clone(), std::move(result.value()))
+      .Then(base::BindOnce(&ZCashShieldSyncService::OnSubtreeRootsUpdated,
+                           weak_ptr_factory_.GetWeakPtr()));
+}
+
+void ZCashShieldSyncService::OnSubtreeRootsUpdated(
+    std::optional<ZCashOrchardStorage::Error> error) {
+  if (error) {
+    error_ = Error{ErrorCode::kDatabaseError, ""};
+  }
+
+  subtree_roots_updated_ = true;
+
   ScheduleWorkOnTask();
 }
 
@@ -392,7 +447,7 @@ void ZCashShieldSyncService::UpdateNotes(
     const std::vector<OrchardNullifier>& notes_to_delete,
     uint32_t latest_scanned_block,
     std::string latest_scanned_block_hash) {
-  background_orchard_storage_.AsyncCall(&ZCashOrchardStorage::UpdateNotes)
+  sync_state_.AsyncCall(&ZCashOrchardSyncState::UpdateNotes)
       .WithArgs(account_id_.Clone(), found_notes, notes_to_delete,
                 latest_scanned_block, latest_scanned_block_hash)
       .Then(base::BindOnce(&ZCashShieldSyncService::UpdateNotesComplete,
@@ -422,7 +477,7 @@ uint32_t ZCashShieldSyncService::GetSpendableBalance() {
 }
 
 void ZCashShieldSyncService::Reset() {
-  background_orchard_storage_.AsyncCall(&ZCashOrchardStorage::ResetDatabase);
+  // sync_state_.AsyncCall(&ZCashOrchardStorage::ResetDatabase);
 }
 
 }  // namespace brave_wallet

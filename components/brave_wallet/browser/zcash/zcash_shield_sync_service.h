@@ -15,7 +15,7 @@
 #include "base/threading/sequence_bound.h"
 #include "base/types/expected.h"
 #include "brave/components/brave_wallet/browser/internal/orchard_block_scanner.h"
-#include "brave/components/brave_wallet/browser/zcash/zcash_orchard_storage.h"
+#include "brave/components/brave_wallet/browser/zcash/zcash_orchard_sync_state.h"
 #include "brave/components/brave_wallet/browser/zcash/zcash_rpc.h"
 #include "brave/components/brave_wallet/common/brave_wallet.mojom.h"
 #include "mojo/public/cpp/bindings/remote.h"
@@ -36,6 +36,7 @@ class ZCashShieldSyncService {
     kFailedToReceiveTreeState,
     kFailedToInitAccount,
     kFailedToRetrieveAccount,
+    kDatabaseError,
     kScannerError,
   };
 
@@ -110,6 +111,14 @@ class ZCashShieldSyncService {
   void OnGetLatestBlock(
       base::expected<zcash::mojom::BlockIDPtr, std::string> result);
 
+  void UpdateSubtreeRoots();
+  void OnGetLatestShardIndex(
+      base::expected<uint32_t, ZCashOrchardStorage::Error> result);
+  void OnGetSubtreeRoots(
+      base::expected<std::vector<zcash::mojom::SubtreeRootPtr>, std::string>
+          root);
+  void OnSubtreeRootsUpdated(std::optional<ZCashOrchardStorage::Error> error);
+
   // Chain reorg flow
   // Chain reorg happens when latest blocks are removed from the blockchain
   // We assume that there is a limit of reorg depth - kChainReorgBlockDelta
@@ -166,7 +175,7 @@ class ZCashShieldSyncService {
   base::WeakPtr<Observer> observer_;
   std::string chain_id_;
 
-  base::SequenceBound<ZCashOrchardStorage> background_orchard_storage_;
+  base::SequenceBound<ZCashOrchardSyncState> sync_state_;
   std::unique_ptr<OrchardBlockScannerProxy> block_scanner_;
 
   std::optional<ZCashOrchardStorage::AccountMeta> account_meta_;
@@ -175,6 +184,8 @@ class ZCashShieldSyncService {
   // Latest block in the blockchain
   std::optional<size_t> chain_tip_block_;
   std::optional<std::vector<zcash::mojom::CompactBlockPtr>> downloaded_blocks_;
+  bool subtree_roots_updated_ = false;
+
   // Local cache of spendable notes to fast check on discovered nullifiers
   std::optional<std::vector<OrchardNote>> spendable_notes_;
   std::optional<Error> error_;

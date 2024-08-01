@@ -26,8 +26,11 @@ namespace brave_wallet {
 
 // Implements SQLite database to store found incoming notes,
 // nullifiers, wallet zcash accounts and commitment trees.
-class ZCashOrchardStorage {
+class ZCashOrchardStorage : public base::RefCounted<ZCashOrchardStorage> {
  public:
+  using WithCheckpointsCallback =
+      base::RepeatingCallback<void(uint32_t, OrchardCheckpoint checkpoint)>;
+
   struct AccountMeta {
     uint32_t account_birthday = 0;
     uint32_t latest_scanned_block_id = 0;
@@ -38,7 +41,8 @@ class ZCashOrchardStorage {
     kDbInitError,
     kAccountNotFound,
     kFailedToExecuteStatement,
-    kInternalError
+    kInternalError,
+    kNoCheckpoints
   };
 
   struct Error {
@@ -47,7 +51,6 @@ class ZCashOrchardStorage {
   };
 
   explicit ZCashOrchardStorage(base::FilePath path_to_database);
-  ~ZCashOrchardStorage();
 
   base::expected<AccountMeta, Error> RegisterAccount(
       mojom::AccountIdPtr account_id,
@@ -79,7 +82,64 @@ class ZCashOrchardStorage {
       const std::string& latest_scanned_block_hash);
   void ResetDatabase();
 
+  // Shard tree
+  base::expected<OrchardCap, Error> GetCap(mojom::AccountIdPtr account_id);
+  base::expected<bool, Error> PutCap(mojom::AccountIdPtr account_id,
+                                     OrchardCap cap);
+
+  base::expected<bool, Error> TruncateShards(mojom::AccountIdPtr account_id,
+                                             uint32_t shard_index);
+  base::expected<uint32_t, Error> GetLatestShardIndex(
+      mojom::AccountIdPtr account_id);
+  base::expected<bool, Error> PutShard(mojom::AccountIdPtr account_id,
+                                       OrchardShard shard);
+  base::expected<std::optional<OrchardShard>, Error> GetShard(
+      mojom::AccountIdPtr account_id,
+      OrchardShardAddress address);
+  base::expected<std::optional<OrchardShard>, Error> LastShard(
+      mojom::AccountIdPtr account_id,
+      uint8_t shard_height);
+
+  base::expected<size_t, Error> CheckpointCount(
+      mojom::AccountIdPtr account_id);
+  base::expected<std::optional<uint32_t>, Error> MinCheckpointId(
+      mojom::AccountIdPtr account_id);
+  base::expected<std::optional<uint32_t>, Error> MaxCheckpointId(
+      mojom::AccountIdPtr account_id);
+  base::expected<std::optional<uint32_t>, Error> GetCheckpointAtDepth(
+      mojom::AccountIdPtr account_id,
+      uint32_t depth);
+  base::expected<std::optional<uint32_t>, Error> GetMaxCheckpointedHeight(
+      mojom::AccountIdPtr account_id,
+      uint32_t chain_tip_height,
+      uint32_t min_confirmations);
+  base::expected<bool, Error> RemoveCheckpoint(mojom::AccountIdPtr account_id,
+                                               uint32_t checkpoint_id);
+  base::expected<bool, Error> RemoveCheckpointAt(mojom::AccountIdPtr account_id,
+                                                 uint32_t depth);
+  base::expected<bool, Error> TruncateCheckpoints(
+      mojom::AccountIdPtr account_id,
+      uint32_t checkpoint_id);
+  base::expected<bool, Error> AddCheckpoint(mojom::AccountIdPtr account_id,
+                                            uint32_t checkpoint_id,
+                                            OrchardCheckpoint checkpoint);
+  base::expected<std::vector<OrchardCheckpointBundle>, Error> GetCheckpoints(mojom::AccountIdPtr account_id, size_t limit);
+  base::expected<std::optional<OrchardCheckpointBundle>, Error> GetCheckpoint(mojom::AccountIdPtr account_id, uint32_t checkpoint_id);
+
+  base::expected<bool, Error> PutShardRoots(
+      mojom::AccountIdPtr account_id,
+      uint8_t shard_roots_height,
+      uint32_t start_position,
+      std::vector<OrchardShard> roots);
+  base::expected<std::vector<OrchardShardAddress>, Error> GetShardRoots(
+      mojom::AccountIdPtr account_id,
+      uint8_t shard_level);
+
  private:
+  friend class base::RefCounted<ZCashOrchardStorage>;
+
+  ~ZCashOrchardStorage();
+
   bool EnsureDbInit();
   bool CreateOrUpdateDatabase();
   bool CreateSchema();

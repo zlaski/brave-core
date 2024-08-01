@@ -117,6 +117,49 @@ DecodedZCashAddress::DecodedZCashAddress(DecodedZCashAddress&& other) = default;
 DecodedZCashAddress& DecodedZCashAddress::operator=(
     DecodedZCashAddress&& other) = default;
 
+
+OrchardCheckpoint::OrchardCheckpoint(bool empty, uint32_t position, std::vector<uint32_t> marks_removed) :
+      empty(empty), position(position), marks_removed(std::move(marks_removed)) {
+}
+OrchardCheckpoint::~OrchardCheckpoint() {
+}
+OrchardCheckpoint::OrchardCheckpoint(const OrchardCheckpoint& other) = default;
+OrchardCheckpoint& OrchardCheckpoint::operator=(const OrchardCheckpoint& other) = default;
+OrchardCheckpoint::OrchardCheckpoint(OrchardCheckpoint&& other) = default;
+OrchardCheckpoint& OrchardCheckpoint::operator=(OrchardCheckpoint&& other) = default;
+
+OrchardCheckpointBundle::OrchardCheckpointBundle(uint32_t checkpoint_id, OrchardCheckpoint checkpoint) : checkpoint_id(checkpoint_id), checkpoint(std::move(checkpoint)) {
+}
+OrchardCheckpointBundle::~OrchardCheckpointBundle() {
+}
+OrchardCheckpointBundle::OrchardCheckpointBundle(const OrchardCheckpointBundle& other) = default;
+OrchardCheckpointBundle& OrchardCheckpointBundle::operator=(const OrchardCheckpointBundle& other) = default;
+OrchardCheckpointBundle::OrchardCheckpointBundle(OrchardCheckpointBundle&& other) = default;
+OrchardCheckpointBundle& OrchardCheckpointBundle::operator=(OrchardCheckpointBundle&& other) = default;
+
+OrchardShard::OrchardShard(
+    OrchardShardAddress address,
+    std::array<uint8_t, kOrchardShardTreeHashSize> root_hash,
+    std::vector<uint8_t> shard_data,
+    bool contains_marked)
+    : address(std::move(address)),
+      root_hash(std::move(root_hash)),
+      shard_data(std::move(shard_data)),
+      contains_marked(contains_marked) {}
+OrchardShard::~OrchardShard() = default;
+OrchardShard::OrchardShard(const OrchardShard& other) = default;
+OrchardShard& OrchardShard::operator=(const OrchardShard& other) = default;
+OrchardShard::OrchardShard(OrchardShard&& other) = default;
+OrchardShard& OrchardShard::operator=(OrchardShard&& other) = default;
+
+OrchardCap::OrchardCap(std::vector<uint8_t> data)
+    : data(std::move(data)) {}
+OrchardCap::~OrchardCap() {}
+OrchardCap::OrchardCap(const OrchardCap& other) = default;
+OrchardCap& OrchardCap::operator=(const OrchardCap& other) = default;
+OrchardCap::OrchardCap(OrchardCap&& other) = default;
+OrchardCap& OrchardCap::operator=(OrchardCap&& other) = default;
+
 bool OutputZCashAddressSupported(const std::string& address, bool is_testnet) {
   auto decoded_address = DecodeZCashAddress(address);
   if (!decoded_address) {
