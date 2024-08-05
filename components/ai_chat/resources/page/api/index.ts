@@ -41,7 +41,7 @@ export default function getAPI() {
 
 export function bindConversation(id: string | undefined) {
   let conversationHandler: mojom.ConversationHandlerRemote =
-      new mojom.ConversationHandlerRemote()
+    new mojom.ConversationHandlerRemote()
   let callbackRouter = new mojom.ConversationUICallbackRouter()
 
   if (id !== undefined) {
@@ -56,6 +56,19 @@ export function bindConversation(id: string | undefined) {
       callbackRouter.$.bindNewPipeAndPassRemote()
     )
   }
+  return {
+    conversationHandler,
+    callbackRouter
+  }
+}
+
+export function newConversation() {
+  let conversationHandler: mojom.ConversationHandlerRemote =
+      new mojom.ConversationHandlerRemote()
+  let callbackRouter = new mojom.ConversationUICallbackRouter()
+  getAPI().UIHandler.newConversation(
+      conversationHandler.$.bindNewPipeAndPassReceiver(),
+      callbackRouter.$.bindNewPipeAndPassRemote())
   return {
     conversationHandler,
     callbackRouter
