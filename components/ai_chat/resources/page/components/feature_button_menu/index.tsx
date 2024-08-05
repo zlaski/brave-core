@@ -24,7 +24,7 @@ export default function FeatureMenu() {
   }
 
   const handleNewConversationClick = () => {
-    console.error('TODO: new conversation')
+    aiChatContext.onNewConversation()
   }
 
   const customModels = conversationContext.allModels.filter(model => model.options.customModelOptions !== undefined)

@@ -31,18 +31,10 @@ import styles from './style.module.scss'
 
 const SCROLL_BOTTOM_THRESHOLD = 10.0
 
-interface Props {
-  setSelectedConversationId: (id: string | undefined) => unknown
-}
 
-function Main(props: Props) {
+function Main() {
   const aiChatContext = useAIChat()
   const conversationContext = useConversation()
-
-  const handleNewConversation = () => {
-    // TODO: new conversation, get id, bind to id
-    console.error('TODO: new conversation')
-  }
 
   const shouldShowPremiumSuggestionForModel =
     aiChatContext.hasAcceptedAgreement &&
@@ -188,7 +180,7 @@ function Main(props: Props) {
                 kind='plain-faint'
                 aria-label={getLocale('startConversationLabel')}
                 title={getLocale('startConversationLabel')}
-                onClick={handleNewConversation}
+                onClick={aiChatContext.onNewConversation}
               >
                 <Icon name='edit-box' />
               </Button>
@@ -220,9 +212,9 @@ function Main(props: Props) {
         <div className={styles.conversationContent}
           ref={conversationContentElement}>
           <ul>
-            <li onClick={() => props.setSelectedConversationId(undefined)}>This page's conversation</li>
+            <li onClick={() => aiChatContext.onSelectConversationId(undefined)}>This page's conversation</li>
           {aiChatContext.visibleConversations.map(conversation => (
-            <li key={conversation.uuid} onClick={() => props.setSelectedConversationId(conversation.uuid)}>
+            <li key={conversation.uuid} onClick={() => aiChatContext.onSelectConversationId(conversation.uuid)}>
               <div>{conversation.uuid}</div>
               <div>{conversation.title}</div>
             </li>
