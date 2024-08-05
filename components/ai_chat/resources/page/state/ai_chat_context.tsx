@@ -7,7 +7,17 @@ import * as React from 'react'
 import getAPI, * as mojom from '../api'
 import { loadTimeData } from '$web-common/loadTimeData'
 
-export interface AIChatContext {
+
+interface Props {
+  // Which conversation to higlight in list
+  selectedConversationId?: string
+  // Create a new conversation and use it
+  onNewConversation: () => unknown
+  // Select a new conversation
+  onSelectConversationId: (id: string | undefined) => unknown
+}
+
+export interface AIChatContext extends Props {
   visibleConversations: mojom.Conversation[]
   hasAcceptedAgreement: boolean
   isPremiumStatusFetching: boolean
@@ -38,12 +48,14 @@ const defaultContext: AIChatContext = {
   handleAgreeClick: () => {},
   dismissPremiumPrompt: () => {},
   userRefreshPremiumSession: () => {},
+  onNewConversation: () => {},
+  onSelectConversationId: () => {}
 }
 
 export const AIChatReactContext =
   React.createContext<AIChatContext>(defaultContext)
 
-export function AIChatContextProvider(props: React.PropsWithChildren<{}>) {
+export function AIChatContextProvider(props: React.PropsWithChildren<Props>) {
   const [context, setContext] = React.useState<AIChatContext>(defaultContext)
 
   const setPartialContext = (partialContext: Partial<AIChatContext>) => {
@@ -51,7 +63,6 @@ export function AIChatContextProvider(props: React.PropsWithChildren<{}>) {
       ...value,
       ...partialContext
     }))
-    console.log('AIChatContext update', partialContext)
   }
 
   React.useEffect(() => {
@@ -74,10 +85,7 @@ export function AIChatContextProvider(props: React.PropsWithChildren<{}>) {
     }
 
     async function updateCurrentPremiumStatus () {
-      console.debug('Getting premium status...')
       const { status } = await getAPI().Service.getPremiumStatus()
-      console.debug('got premium status: ', status)
-      // setPremiumStatus(status)
       setPartialContext({
         isPremiumStatusFetching: false,
         isPremiumUser: (status !== undefined && status !== mojom.PremiumStatus.Inactive),
@@ -119,6 +127,7 @@ export function AIChatContextProvider(props: React.PropsWithChildren<{}>) {
 
   const store: AIChatContext = {
     ...context,
+    ...props,
     goPremium: UIHandler.goPremium,
     managePremium: UIHandler.managePremium,
     dismissPremiumPrompt: Service.dismissPremiumPrompt,

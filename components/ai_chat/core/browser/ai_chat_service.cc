@@ -206,6 +206,28 @@ AIChatService::GetOrCreateConversationHandlerForPageContent(
   return conversation;
 }
 
+ConversationHandler*
+AIChatService::CreateConversationHandlerForPageContent(
+    int associated_content_id,
+    base::WeakPtr<ConversationHandler::AssociatedContentDelegate>
+        associated_content) {
+  LOG(ERROR) << __func__ << " " << associated_content_id;
+  ConversationHandler* conversation =  CreateConversation();
+  // Provide the content delegate, if allowed
+  if (associated_content &&
+      base::Contains(kAllowedSchemes, associated_content->GetURL().scheme())) {
+    conversation->SetAssociatedContentDelegate(associated_content);
+  }
+  // Record that this is the latest conversation for this content. Even
+  // if we don't call SetAssociatedContentDelegate, the conversation still
+  // has a default Tab's navigation for which is is associated. The Conversation
+  // won't use that Tab's Page for context.
+  content_conversations_.insert_or_assign(
+      associated_content_id, conversation->get_conversation_uuid());
+
+  return conversation;
+}
+
 void AIChatService::MarkAgreementAccepted() {
   SetUserOptedIn(profile_prefs_, true);
 }

@@ -137,7 +137,7 @@ void ConversationHandler::Bind(
 }
 
 bool ConversationHandler::IsAnyClientConnected() {
-  LOG(ERROR) << " HAS " << receivers_.size() << " RECEIVERS!";
+  LOG(ERROR) << metadata_->uuid << " HAS " << receivers_.size() << " RECEIVERS!";
   return !receivers_.empty();
 }
 

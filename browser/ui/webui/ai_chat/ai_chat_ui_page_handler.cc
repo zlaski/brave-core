@@ -16,6 +16,7 @@
 #include "base/time/time.h"
 #include "brave/browser/ai_chat/ai_chat_service_factory.h"
 #include "brave/browser/ui/side_panel/ai_chat/ai_chat_side_panel_utils.h"
+#include "brave/components/ai_chat/core/browser/ai_chat_service.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-shared.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom.h"
@@ -250,6 +251,23 @@ void AIChatUIPageHandler::BindRelatedConversation(
           ->GetOrCreateConversationHandlerForPageContent(
               active_chat_tab_helper_->GetContentId(),
               active_chat_tab_helper_->GetWeakPtr());
+
+  conversation->Bind(std::move(receiver), std::move(conversation_ui_handler));
+}
+
+void AIChatUIPageHandler::NewConversation(
+    mojo::PendingReceiver<mojom::ConversationHandler> receiver,
+    mojo::PendingRemote<mojom::ConversationUI> conversation_ui_handler) {
+  ConversationHandler* conversation;
+  if (active_chat_tab_helper_) {
+    conversation = AIChatServiceFactory::GetForBrowserContext(profile_)
+                       ->CreateConversationHandlerForPageContent(
+                           active_chat_tab_helper_->GetContentId(),
+                           active_chat_tab_helper_->GetWeakPtr());
+  } else {
+    conversation = AIChatServiceFactory::GetForBrowserContext(profile_)
+                       ->CreateConversation();
+  }
 
   conversation->Bind(std::move(receiver), std::move(conversation_ui_handler));
 }

@@ -7,7 +7,7 @@ import * as React from 'react'
 
 import * as mojom from 'gen/brave/components/ai_chat/core/common/mojom/ai_chat.mojom.m.js'
 import usePromise from '$web-common/usePromise'
-import getAPI, * as API from '../api/'
+import * as API from '../api/'
 import { useAIChat } from './ai_chat_context'
 import { isLeoModel } from '../model_utils'
 import { loadTimeData } from '$web-common/loadTimeData'
@@ -15,8 +15,9 @@ import { loadTimeData } from '$web-common/loadTimeData'
 const MAX_INPUT_CHAR = 2000
 const CHAR_LIMIT_THRESHOLD = MAX_INPUT_CHAR * 0.8
 
-interface ConversationContextProps {
-  conversationId: string | undefined
+export interface ConversationContextProps {
+  conversationHandler: API.ConversationHandlerRemote,
+  callbackRouter: API.ConversationUICallbackRouter
 }
 
 export interface CharCountContext {
@@ -156,16 +157,10 @@ export const ConverationReactContext =
 export function ConversationContextProvider(
   props: React.PropsWithChildren<ConversationContextProps>
 ) {
-  // A token so that we can re-bind to a new default conversation when
-  // the associated content navigates
-  const [defaultConversationToken, setDefaultConversationToken] = React.useState(new Date().getTime())
-
-  const { conversationHandler, callbackRouter } = React.useMemo(() => {
-    return API.bindConversation(props.conversationId)
-  }, [props.conversationId, defaultConversationToken])
-
   const [context, setContext] =
     React.useState<ConversationContext>(defaultContext)
+
+  const { conversationHandler, callbackRouter } = props
 
   const [
     hasDismissedLongConversationInfo,
@@ -191,6 +186,7 @@ export function ConversationContextProvider(
 
   // Initialization
   React.useEffect(() => {
+    console.debug('conversation context init')
     async function updateHistory() {
       const { conversationHistory } =
         await conversationHandler.getConversationHistory()
@@ -223,7 +219,6 @@ export function ConversationContextProvider(
         shouldSendPageContents: shouldSendContent,
         currentError: error
       })
-      console.log('got associated content', associatedContentInfo, shouldSendContent)
     }
 
     // Initial data
@@ -232,30 +227,43 @@ export function ConversationContextProvider(
     initialize()
 
     // Bind the conversation handler
-    callbackRouter.onConversationHistoryUpdate.addListener(updateHistory)
-    callbackRouter.onAPIRequestInProgress.addListener(
+    let id: number
+    const listenerIds: number[] = []
+
+    id = callbackRouter.onConversationHistoryUpdate.addListener(updateHistory)
+    listenerIds.push(id)
+
+    id = callbackRouter.onAPIRequestInProgress.addListener(
       (isGenerating: boolean) =>
         setPartialContext({
           isGenerating
         })
     )
-    callbackRouter.onAPIResponseError.addListener((error: mojom.APIError) =>
+    listenerIds.push(id)
+
+    id = callbackRouter.onAPIResponseError.addListener((error: mojom.APIError) =>
       setPartialContext({
         currentError: error
       })
     )
-    callbackRouter.onModelDataChanged.addListener(
+    listenerIds.push(id)
+
+    id = callbackRouter.onModelDataChanged.addListener(
       (conversationModelKey: string, allModels: mojom.Model[]) =>
         setPartialContext(getModelContext(conversationModelKey, allModels))
     )
-    callbackRouter.onSuggestedQuestionsChanged.addListener(
+    listenerIds.push(id)
+
+    id = callbackRouter.onSuggestedQuestionsChanged.addListener(
       (questions: string[], status: mojom.SuggestionGenerationStatus) =>
         setPartialContext({
           suggestedQuestions: questions,
           suggestionStatus: status
         })
     )
-    callbackRouter.onAssociatedContentInfoChanged.addListener(
+    listenerIds.push(id)
+
+    id = callbackRouter.onAssociatedContentInfoChanged.addListener(
       (
         associatedContentInfo: mojom.SiteInfo,
         shouldSendPageContents: boolean
@@ -264,26 +272,22 @@ export function ConversationContextProvider(
           associatedContentInfo,
           shouldSendPageContents
         })
-        console.log('got associated', associatedContentInfo, shouldSendPageContents)
       }
     )
-    callbackRouter.onFaviconImageDataChanged.addListener(() =>
+    listenerIds.push(id)
+
+    id = callbackRouter.onFaviconImageDataChanged.addListener(() =>
       setPartialContext({
         favIconCacheKey: new Date().getTime().toFixed(0)
       })
     )
-
-    // Observe when default conversation changes
-    const onNewDefaultConversationListenerId =
-        getAPI().UIObserver.onNewDefaultConversation.addListener(() => {
-          setDefaultConversationToken(new Date().getTime())
-        })
+    listenerIds.push(id)
 
     // Remove bindings when changing conversations
     return () => {
-      conversationHandler.$.close()
-      callbackRouter.$.close()
-      getAPI().UIObserver.removeListener(onNewDefaultConversationListenerId)
+      for (const id of listenerIds) {
+        callbackRouter.removeListener(id)
+      }
     }
   }, [conversationHandler, callbackRouter])
 
