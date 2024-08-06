@@ -129,7 +129,6 @@ class AssociatedContentDriver
   base::ObserverList<Observer> observers_;
   std::unique_ptr<base::OneShotEvent> on_page_text_fetch_complete_;
   bool is_page_text_fetch_in_progress_ = false;
-  bool is_print_preview_fallback_requested_ = false;
   std::string cached_text_content_;
   std::string content_invalidation_token_;
   bool is_video_ = false;

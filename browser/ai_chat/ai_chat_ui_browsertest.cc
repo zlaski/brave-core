@@ -171,18 +171,6 @@ IN_PROC_BROWSER_TEST_F(AIChatUIBrowserTest, PrintPreviewPagesLimit) {
   FetchPageContent(FROM_HERE, expected_string);
 }
 
-IN_PROC_BROWSER_TEST_F(AIChatUIBrowserTest, PrintPreviewContextLimit) {
-  ai_chat::AIChatTabHelper::SetMaxContentLengthForTesting(10);
-  NavigateURL(https_server_.GetURL("docs.google.com", "/long_canvas.html"));
-  FetchPageContent(FROM_HERE, "This is the way.");
-
-  ai_chat::AIChatTabHelper::SetMaxContentLengthForTesting(20);
-  NavigateURL(https_server_.GetURL("docs.google.com", "/long_canvas.html"));
-  FetchPageContent(FROM_HERE, "This is the way.\n\nI have spoken.");
-
-  ai_chat::AIChatTabHelper::SetMaxContentLengthForTesting(std::nullopt);
-}
-
 #if BUILDFLAG(ENABLE_PRINT_PREVIEW)
 // Test print preview extraction while print dialog open
 IN_PROC_BROWSER_TEST_F(AIChatUIBrowserTest, PrintDiaglogExtraction) {

@@ -35,11 +35,6 @@
 
 namespace ai_chat {
 
-namespace {
-std::optional<uint32_t> g_max_page_content_length_for_testing;
-
-}  // namespace
-
 AIChatTabHelper::PDFA11yInfoLoadObserver::PDFA11yInfoLoadObserver(
     content::WebContents* web_contents,
     AIChatTabHelper* helper)
@@ -86,15 +81,14 @@ void AIChatTabHelper::BindPageContentExtractorHost(
   tab_helper->BindPageContentExtractorReceiver(std::move(receiver));
 }
 
-// static
-void AIChatTabHelper::SetMaxContentLengthForTesting(
-    std::optional<uint32_t> max_length) {
-  g_max_page_content_length_for_testing = max_length;
-}
-
-AIChatTabHelper::AIChatTabHelper(content::WebContents* web_contents)
+AIChatTabHelper::AIChatTabHelper(
+    content::WebContents* web_contents,
+    ExtractPrintPreviewContentFunction extract_print_preview_content_function)
     : content::WebContentsObserver(web_contents),
-      content::WebContentsUserData<AIChatTabHelper>(*web_contents) {
+      content::WebContentsUserData<AIChatTabHelper>(*web_contents),
+      extract_print_preview_content_function_(
+          extract_print_preview_content_function) {
+  CHECK(extract_print_preview_content_function);
   favicon::ContentFaviconDriver::FromWebContents(web_contents)
       ->AddObserver(this);
 }
@@ -116,13 +110,6 @@ void AIChatTabHelper::OnPDFA11yInfoLoaded() {
   pdf_load_observer_.reset();
   if (on_pdf_a11y_info_loaded_cb_) {
     std::move(on_pdf_a11y_info_loaded_cb_).Run();
-  }
-}
-
-void AIChatTabHelper::OnPreviewTextReady(std::string ocr_text) {
-  if (pending_get_page_content_callback_) {
-    std::move(pending_get_page_content_callback_)
-        .Run(std::move(ocr_text), false, "");
   }
 }
 
@@ -251,28 +238,56 @@ GURL AIChatTabHelper::GetPageURL() const {
 void AIChatTabHelper::GetPageContent(
     ConversationHandler::GetPageContentCallback callback,
     std::string_view invalidation_token) {
-  if (IsPdf(web_contents()) && !is_pdf_a11y_info_loaded_) {
+  bool is_pdf = IsPdf(web_contents());
+  if (is_pdf && !is_pdf_a11y_info_loaded_) {
     if (pending_get_page_content_callback_) {
+      // TODO(petemill): Queue the callback in a Signal, instead of only
+      // allowing a single pending callback.
       std::move(pending_get_page_content_callback_).Run("", false, "");
     }
     // invalidation_token doesn't matter for PDF extraction.
     pending_get_page_content_callback_ = std::move(callback);
+    return;
+  }
+  if (base::Contains(kPrintPreviewRetrievalHosts, GetPageURL().host_piece()) &&
+      !extract_print_preview_content_function_.is_null()) {
+    // Get content using a printing / OCR mechanism, instead of
+    // directly from the source.
+    extract_print_preview_content_function_.Run(
+        web_contents(), is_pdf,
+        base::BindOnce(&AIChatTabHelper::OnExtractPrintPreviewContentComplete,
+                       weak_ptr_factory_.GetWeakPtr(), std::move(callback)));
   } else {
-    // if (base::Contains(kPrintPreviewRetrievalHosts,
-    //                    GetPageURL().host_piece())) {
-    //   pending_get_page_content_callback_ = std::move(callback);
-    //   NotifyPrintPreviewRequested(false);
-    // } else {
-    FetchPageContent(web_contents(), invalidation_token, std::move(callback));
-    // }
+    FetchPageContent(
+        web_contents(), invalidation_token,
+        base::BindOnce(&AIChatTabHelper::OnFetchPageContentComplete,
+                       weak_ptr_factory_.GetWeakPtr(), std::move(callback)));
   }
 }
 
-void AIChatTabHelper::PrintPreviewFallback(
-    ConversationHandler::GetPageContentCallback callback) {
-  std::move(callback).Run("", false, "");
-  // pending_get_page_content_callback_ = std::move(callback);
-  // NotifyPrintPreviewRequested(IsPdf(web_contents()));
+void AIChatTabHelper::OnFetchPageContentComplete(
+    ConversationHandler::GetPageContentCallback callback,
+    std::string content,
+    bool is_video,
+    std::string invalidation_token) {
+  if (base::CollapseWhitespaceASCII(content, true).empty() && !is_video &&
+      !extract_print_preview_content_function_.is_null()) {
+    DVLOG(1) << "Initiating print preview fallback";
+    extract_print_preview_content_function_.Run(
+        web_contents(), IsPdf(web_contents()),
+        base::BindOnce(&AIChatTabHelper::OnExtractPrintPreviewContentComplete,
+                       weak_ptr_factory_.GetWeakPtr(), std::move(callback)));
+    return;
+  }
+  std::move(callback).Run(std::move(content), is_video,
+                          std::move(invalidation_token));
+}
+
+void AIChatTabHelper::OnExtractPrintPreviewContentComplete(
+    ConversationHandler::GetPageContentCallback callback,
+    std::string content) {
+  // Invalidation token not applicable for print preview OCR
+  std::move(callback).Run(std::move(content), false, "");
 }
 
 std::u16string AIChatTabHelper::GetPageTitle() const {
@@ -283,22 +298,6 @@ void AIChatTabHelper::BindPageContentExtractorReceiver(
     mojo::PendingAssociatedReceiver<mojom::PageContentExtractorHost> receiver) {
   page_content_extractor_receiver_.reset();
   page_content_extractor_receiver_.Bind(std::move(receiver));
-}
-
-uint32_t AIChatTabHelper::GetMaxPageContentLength() {
-  // TODO(petemill): Use ModelService to get the max page content length
-  // for any model, since this TabHelper might be used for multiple
-  // conversations with different models, or the current conversations' models
-  // could be changed.
-  if (g_max_page_content_length_for_testing) {
-    return *g_max_page_content_length_for_testing;
-  }
-  // auto& model = GetCurrentModel();
-  // if (model.options->is_leo_model_options()) {
-  //   return model.options->get_leo_model_options()->max_page_content_length;
-  // } else {
-  return kCustomModelMaxPageContentLength;
-  // }
 }
 
 void AIChatTabHelper::CheckPDFA11yTree(content::RenderFrameHost* primary_rfh) {

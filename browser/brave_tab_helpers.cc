@@ -10,6 +10,7 @@
 
 #include "base/command_line.h"
 #include "base/feature_list.h"
+#include "base/functional/callback_helpers.h"
 #include "brave/browser/ai_chat/ai_chat_service_factory.h"
 #include "brave/browser/brave_ads/creatives/search_result_ad/creative_search_result_ad_tab_helper.h"
 #include "brave/browser/brave_ads/tabs/ads_tab_helper.h"
@@ -42,6 +43,7 @@
 #include "content/public/browser/web_contents.h"
 #include "extensions/buildflags/buildflags.h"
 #include "net/base/features.h"
+#include "printing/buildflags/buildflags.h"
 #include "third_party/widevine/cdm/buildflags.h"
 
 #if BUILDFLAG(ENABLE_GREASELION)
@@ -63,9 +65,12 @@
 #endif
 
 #if BUILDFLAG(ENABLE_AI_CHAT)
+#if BUILDFLAG(ENABLE_PRINT_PREVIEW)
+#include "brave/browser/ui/ai_chat/print_preview_extractor.h"
+#endif  // BUILDFLAG(ENABLE_PRINT_PREVIEW)
 #include "brave/browser/ai_chat/ai_chat_utils.h"
 #include "brave/components/ai_chat/content/browser/ai_chat_tab_helper.h"
-#endif
+#endif  // BUILDFLAG(ENABLE_AI_CHAT)
 
 #if BUILDFLAG(ENABLE_WIDEVINE)
 #include "brave/browser/brave_drm_tab_helper.h"
@@ -137,7 +142,14 @@ void AttachTabHelpers(content::WebContents* web_contents) {
 #if BUILDFLAG(ENABLE_AI_CHAT)
   content::BrowserContext* context = web_contents->GetBrowserContext();
   if (ai_chat::IsAllowedForContext(context)) {
-    ai_chat::AIChatTabHelper::CreateForWebContents(web_contents);
+    ai_chat::AIChatTabHelper::CreateForWebContents(
+        web_contents,
+#if BUILDFLAG(ENABLE_PRINT_PREVIEW)
+        base::BindRepeating(&ai_chat::ExtractPrintPreviewContent)
+#else
+        base::NullCallback()
+#endif
+    );
   }
 #endif
 
