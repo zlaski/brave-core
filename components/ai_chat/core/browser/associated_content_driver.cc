@@ -35,8 +35,13 @@ AssociatedContentDriver::~AssociatedContentDriver() {
 }
 
 void AssociatedContentDriver::AddRelatedConversation(
-    base::WeakPtr<ConversationHandler> conversation) {
-  associated_conversations_.emplace_back(conversation);
+    ConversationHandler* conversation) {
+  associated_conversations_.insert(conversation);
+}
+
+void AssociatedContentDriver::OnRelatedConversationDestroyed(
+    ConversationHandler* conversation) {
+  associated_conversations_.erase(conversation);
 }
 
 void AssociatedContentDriver::AddObserver(Observer* observer) {
@@ -158,10 +163,8 @@ void AssociatedContentDriver::OnFaviconImageDataChanged() {
 
 void AssociatedContentDriver::OnNewPage(int64_t navigation_id) {
   // Tell the associated_conversations_ that we're breaking up
-  for (auto& handler : associated_conversations_) {
-    if (handler) {
-      handler->OnAssociatedContentDestroyed(cached_text_content_, is_video_);
-    }
+  for (auto& conversation : associated_conversations_) {
+    conversation->OnAssociatedContentDestroyed(cached_text_content_, is_video_);
   }
   // Tell the observer how to find the next conversation
   for (auto& observer : observers_) {

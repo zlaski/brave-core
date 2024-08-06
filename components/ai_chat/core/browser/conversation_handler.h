@@ -54,8 +54,9 @@ class ConversationHandler : public mojom::ConversationHandler,
   class AssociatedContentDelegate {
    public:
     virtual ~AssociatedContentDelegate();
-    virtual void AddRelatedConversation(
-        base::WeakPtr<ConversationHandler> conversation) {}
+    virtual void AddRelatedConversation(ConversationHandler* conversation) {}
+    virtual void OnRelatedConversationDestroyed(
+        ConversationHandler* conversation) {}
     // Unique ID for the content. For browser Tab content, this should be
     // a navigation ID that's re-used during back navigations.
     virtual int GetContentId() const = 0;

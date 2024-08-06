@@ -218,6 +218,7 @@ function Main() {
         <AlertCenter position='top-left' className={styles.alertCenter} />
         <div className={styles.conversationContent}
           ref={conversationContentElement}>
+          {aiChatContext.isHistoryEnabled &&
           <ul>
             <li onClick={() => aiChatContext.onSelectConversationId(undefined)}>This page's conversation</li>
           {aiChatContext.visibleConversations.map(conversation => (
@@ -227,6 +228,7 @@ function Main() {
             </li>
           ))}
           </ul>
+          }
           {aiChatContext.hasAcceptedAgreement && <>
             <ModelIntro />
             <ConversationList

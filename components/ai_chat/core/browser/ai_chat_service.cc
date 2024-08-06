@@ -153,6 +153,10 @@ ConversationHandler* AIChatService::CreateConversation() {
   conversation_handlers_.insert_or_assign(conversation_uuid,
                                           std::move(conversation_handler));
 
+  DVLOG(1) << "Created conversation " << conversation_uuid << "\nNow have "
+           << conversations_.size() << " conversations and "
+           << conversation_handlers_.size() << " loaded in memory.";
+
   // TODO(petemill): Is this neccessary? This conversation won't be
   // considered visible until it has entries.
   OnConversationListChanged();
@@ -175,13 +179,11 @@ AIChatService::GetOrCreateConversationHandlerForPageContent(
     int associated_content_id,
     base::WeakPtr<ConversationHandler::AssociatedContentDelegate>
         associated_content) {
-  LOG(ERROR) << __func__ << " " << associated_content_id;
   ConversationHandler* conversation = nullptr;
   auto conversation_uuid_it =
       content_conversations_.find(associated_content_id);
   if (conversation_uuid_it != content_conversations_.end()) {
     auto conversation_uuid = conversation_uuid_it->second;
-    LOG(ERROR) << __func__ << " got conversation: " << conversation_uuid;
     // Load from memory or database, but probably not database as if the
     // conversation is in the associated content map then it's probably recent
     // and still in memory.
@@ -206,13 +208,11 @@ AIChatService::GetOrCreateConversationHandlerForPageContent(
   return conversation;
 }
 
-ConversationHandler*
-AIChatService::CreateConversationHandlerForPageContent(
+ConversationHandler* AIChatService::CreateConversationHandlerForPageContent(
     int associated_content_id,
     base::WeakPtr<ConversationHandler::AssociatedContentDelegate>
         associated_content) {
-  LOG(ERROR) << __func__ << " " << associated_content_id;
-  ConversationHandler* conversation =  CreateConversation();
+  ConversationHandler* conversation = CreateConversation();
   // Provide the content delegate, if allowed
   if (associated_content &&
       base::Contains(kAllowedSchemes, associated_content->GetURL().scheme())) {
@@ -319,7 +319,8 @@ void AIChatService::OnPremiumStatusReceived(GetPremiumStatusCallback callback,
 void AIChatService::MaybeEraseConversation(
     ConversationHandler* conversation_handler) {
   if (!conversation_handler->IsAnyClientConnected() &&
-      !conversation_handler->HasAnyHistory()) {
+      (!features::IsAIChatHistoryEnabled() ||
+       !conversation_handler->HasAnyHistory())) {
     // Can erase because no active UI and no history, so it's
     // not a real / persistable conversation
     auto uuid = conversation_handler->get_conversation_uuid();
@@ -330,14 +331,13 @@ void AIChatService::MaybeEraseConversation(
              << conversations_.size() << " Conversation metadata items and "
              << conversation_handlers_.size()
              << " ConversationHandler instances.";
+    OnConversationListChanged();
   }
 }
 
 void AIChatService::OnConversationEntriesChanged(
     ConversationHandler* handler,
     std::vector<mojom::ConversationTurnPtr> entries) {
-  LOG(ERROR) << __func__ << " " << handler->get_conversation_uuid() << " "
-             << entries.size();
   auto conversation_it = conversations_.find(handler->get_conversation_uuid());
   CHECK(conversation_it != conversations_.end());
   auto& conversation = conversation_it->second;
@@ -373,8 +373,8 @@ void AIChatService::BindConversation(
     const std::string& uuid,
     mojo::PendingReceiver<mojom::ConversationHandler> receiver,
     mojo::PendingRemote<mojom::ConversationUI> conversation_ui_handler) {
-  auto* conversation = GetConversation(uuid);
-  CHECK(conversation);
+  ConversationHandler* conversation = GetConversation(uuid);
+  CHECK(conversation) << "Asked to bind a conversation which doesn't exist";
   conversation->Bind(std::move(receiver), std::move(conversation_ui_handler));
 }
 
