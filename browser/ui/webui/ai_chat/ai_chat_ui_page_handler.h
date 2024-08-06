@@ -23,11 +23,6 @@
 #include "mojo/public/cpp/bindings/pending_remote.h"
 #include "mojo/public/cpp/bindings/receiver.h"
 #include "mojo/public/cpp/bindings/remote.h"
-#include "printing/buildflags/buildflags.h"
-
-#if BUILDFLAG(ENABLE_PRINT_PREVIEW)
-#include "brave/browser/ui/webui/ai_chat/print_preview_extractor.h"
-#endif
 
 namespace content {
 class WebContents;
@@ -105,9 +100,6 @@ class AIChatUIPageHandler : public mojom::AIChatUIHandler,
       chat_tab_helper_observation_{this};
   std::unique_ptr<ChatContextObserver> chat_context_observer_;
 
-#if BUILDFLAG(ENABLE_PRINT_PREVIEW)
-  std::unique_ptr<PrintPreviewExtractor> print_preview_extractor_;
-#endif
   mojo::Receiver<ai_chat::mojom::AIChatUIHandler> receiver_;
   mojo::Remote<ai_chat::mojom::ChatUI> chat_ui_;
 

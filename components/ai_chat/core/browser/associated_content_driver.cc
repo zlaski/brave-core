@@ -76,8 +76,8 @@ void AssociatedContentDriver::GetContent(
   // Only perform a fetch once at a time, and then use the results from
   // an in-progress operation.
   if (is_page_text_fetch_in_progress_) {
-    VLOG(1) << "A page content fetch is in progress, waiting for the existing "
-               "operation to complete";
+    DVLOG(1) << "A page content fetch is in progress, waiting for the existing "
+                "operation to complete";
   } else {
     is_page_text_fetch_in_progress_ = true;
     GetPageContent(
@@ -110,22 +110,6 @@ void AssociatedContentDriver::OnGeneratePageContentComplete(
     return;
   }
 
-  // if (base::CollapseWhitespaceASCII(contents_text, true).empty() &&
-  //     !is_print_preview_fallback_requested_ && !is_video &&
-  //     // Don't fallback again for failed print preview retrieval.
-  //     !base::Contains(
-  //         kPrintPreviewRetrievalHosts,
-  //         GetPageURL().host_piece())) {
-  //   DVLOG(1) << "Initiating print preview fallback";
-  //   is_print_preview_fallback_requested_ = true;
-  //   PrintPreviewFallback(
-  //       base::BindOnce(&AssociatedContentDriver::OnGeneratePageContentComplete,
-  //                      weak_ptr_factory_.GetWeakPtr(),
-  //                      current_navigation_id_));
-  //   return;
-  // }
-  is_print_preview_fallback_requested_ = false;
-
   is_page_text_fetch_in_progress_ = false;
 
   // If invalidation token matches existing token, then
@@ -139,7 +123,7 @@ void AssociatedContentDriver::OnGeneratePageContentComplete(
     cached_text_content_ = contents_text;
     content_invalidation_token_ = invalidation_token;
     if (contents_text.empty()) {
-      VLOG(1) << __func__ << ": No data";
+      DVLOG(1) << __func__ << ": No data";
     }
   }
 
@@ -178,18 +162,5 @@ void AssociatedContentDriver::OnNewPage(int64_t navigation_id) {
   content_invalidation_token_.clear();
   is_video_ = false;
 }
-
-// TODO(petemill): Since this AssociatedContentDriver might be open in multiple
-// WebUIs (or none), we can no longer rely on the WebUI class observing its
-// conversation 1:1. We might end up with multiple UIs performing the print
-// preview fetching for a single conversation. Instead we need some single
-// entity that is able to perform this work, either by relocating
-// AIChatTabHelper to brave/browser/ui, or having a singleton/KeyedService
-// observe this event void
-// AssociatedContentDriver::NotifyPrintPreviewRequested(bool is_pdf) {
-//   for (auto& obs : observers_) {
-//     obs.OnPrintPreviewRequested(is_pdf);
-//   }
-// }
 
 }  // namespace ai_chat

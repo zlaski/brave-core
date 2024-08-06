@@ -9,8 +9,10 @@
 #include <memory>
 #include <string>
 
+#include "base/functional/callback_forward.h"
 #include "base/memory/raw_ptr.h"
 #include "brave/components/ai_chat/core/browser/associated_content_driver.h"
+#include "brave/components/ai_chat/core/browser/conversation_handler.h"
 #include "brave/components/ai_chat/core/common/mojom/page_content_extractor.mojom.h"
 #include "components/favicon/core/favicon_driver_observer.h"
 #include "content/public/browser/navigation_handle.h"
@@ -42,11 +44,12 @@ class AIChatTabHelper : public content::WebContentsObserver,
       mojo::PendingAssociatedReceiver<mojom::PageContentExtractorHost>
           receiver);
 
-  // Maximum length can be exceeded, the length will determine that no more
-  // pages will be processed in print preview. Ex. if we reach the maximum
-  // length in the middle of the 5th page, the 5th page will be the last page
-  // and the rest of the pages will be ignored.
-  static void SetMaxContentLengthForTesting(std::optional<uint32_t> max_length);
+  using ExtractPrintPreviewCallback =
+      base::OnceCallback<void(std::string text)>;
+  using ExtractPrintPreviewContentFunction = base::RepeatingCallback<void(
+      content::WebContents* web_contents,
+      bool is_pdf,
+      AIChatTabHelper::ExtractPrintPreviewCallback callback)>;
 
   AIChatTabHelper(const AIChatTabHelper&) = delete;
   AIChatTabHelper& operator=(const AIChatTabHelper&) = delete;
@@ -56,12 +59,6 @@ class AIChatTabHelper : public content::WebContentsObserver,
 
   // mojom::PageContentExtractorHost
   void OnInterceptedPageContentChanged() override;
-
-  // This will be called when print preview has been composited into image per
-  // page and finish OCR.
-  void OnPreviewTextReady(std::string ocr_text);
-
-  uint32_t GetMaxPageContentLength();
 
  private:
   friend class content::WebContentsUserData<AIChatTabHelper>;
@@ -81,7 +78,9 @@ class AIChatTabHelper : public content::WebContentsObserver,
     raw_ptr<AIChatTabHelper> helper_;
   };
 
-  explicit AIChatTabHelper(content::WebContents* web_contents);
+  AIChatTabHelper(content::WebContents* web_contents,
+                  ExtractPrintPreviewContentFunction
+                      extract_print_preview_content_function);
 
   void OnPDFA11yInfoLoaded();
 
@@ -111,17 +110,22 @@ class AIChatTabHelper : public content::WebContentsObserver,
                       std::string_view invalidation_token) override;
   std::u16string GetPageTitle() const override;
 
+  void OnFetchPageContentComplete(
+      ConversationHandler::GetPageContentCallback callback,
+      std::string content,
+      bool is_video,
+      std::string invalidation_token);
+
+  void OnExtractPrintPreviewContentComplete(
+      ConversationHandler::GetPageContentCallback callback,
+      std::string content);
+
   void BindPageContentExtractorReceiver(
       mojo::PendingAssociatedReceiver<mojom::PageContentExtractorHost>
           receiver);
 
   // Traverse through a11y tree to check existence of status node.
   void CheckPDFA11yTree();
-
-  // Get content using a printing / OCR mechanism, instead of
-  // directly from the source.
-  void PrintPreviewFallback(
-      ConversationHandler::GetPageContentCallback callback);
 
   raw_ptr<AIChatMetrics> ai_chat_metrics_;
 
@@ -134,6 +138,7 @@ class AIChatTabHelper : public content::WebContentsObserver,
   ConversationHandler::GetPageContentCallback
       pending_get_page_content_callback_;
 
+  ExtractPrintPreviewContentFunction extract_print_preview_content_function_;
   std::unique_ptr<PDFA11yInfoLoadObserver> pdf_load_observer_;
   base::OnceClosure on_pdf_a11y_info_loaded_cb_;
 
