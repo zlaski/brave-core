@@ -457,9 +457,9 @@ export function ConversationContextProvider(
     handleResetError,
     // Experimentally don't cache model key locally, browser should notify of model change quickly
     setCurrentModel: (model) => conversationHandler.changeModel(model.key),
-    generateSuggestedQuestions: conversationHandler.generateQuestions,
+    generateSuggestedQuestions: () => conversationHandler.generateQuestions(),
     resetSelectedActionType,
-    updateShouldSendPageContents: conversationHandler.setShouldSendPageContents,
+    updateShouldSendPageContents: (shouldSend) => conversationHandler.setShouldSendPageContents(shouldSend),
     setInputText: (inputText) => setPartialContext({ inputText }),
     handleActionTypeClick,
     submitInputTextToAPI,

@@ -13,8 +13,7 @@
 #include "brave/browser/ui/webui/ai_chat/ai_chat_ui.h"
 #endif  // BUILDFLAG(ENABLE_AI_CHAT)
 
-#define RegisterChromeWebUIConfigs \
-  RegisterChromeWebUIConfigs_ChromiumImpl
+#define RegisterChromeWebUIConfigs RegisterChromeWebUIConfigs_ChromiumImpl
 
 #include "src/chrome/browser/ui/webui/chrome_web_ui_configs.cc"
 

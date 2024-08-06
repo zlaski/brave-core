@@ -41,13 +41,13 @@ class AssociatedContentDriver
   AssociatedContentDriver(const AssociatedContentDriver&) = delete;
   AssociatedContentDriver& operator=(const AssociatedContentDriver&) = delete;
 
-  void AddRelatedConversation(
-      base::WeakPtr<ConversationHandler> conversation) override;
-
   void AddObserver(Observer* observer);
   void RemoveObserver(Observer* observer);
 
   // ConversationHandler::AssociatedContentDelegate
+  void AddRelatedConversation(ConversationHandler* conversation) override;
+  void OnRelatedConversationDestroyed(
+      ConversationHandler* conversation) override;
   int GetContentId() const override;
   GURL GetURL() const override;
   std::u16string GetTitle() const override;
@@ -135,8 +135,7 @@ class AssociatedContentDriver
   bool is_video_ = false;
 
   // Handlers that are interested in this content for the current navigation.
-  // TODO(petemill):
-  std::vector<base::WeakPtr<ConversationHandler>> associated_conversations_;
+  std::set<raw_ptr<ConversationHandler>> associated_conversations_;
 
   // Store the unique ID for each "page" so that
   // we can ignore API async responses against any navigated-away-from

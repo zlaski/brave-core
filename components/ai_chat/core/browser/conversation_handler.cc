@@ -112,7 +112,11 @@ ConversationHandler::ConversationHandler(
   ChangeModel(model_service->GetDefaultModelKey());
 }
 
-ConversationHandler::~ConversationHandler() = default;
+ConversationHandler::~ConversationHandler() {
+  if (associated_content_delegate_) {
+    associated_content_delegate_->OnRelatedConversationDestroyed(this);
+  }
+}
 
 void ConversationHandler::AddObserver(Observer* observer) {
   observers_.AddObserver(observer);
@@ -137,7 +141,7 @@ void ConversationHandler::Bind(
 }
 
 bool ConversationHandler::IsAnyClientConnected() {
-  LOG(ERROR) << metadata_->uuid << " HAS " << receivers_.size() << " RECEIVERS!";
+  DVLOG(2) << metadata_->uuid << " HAS " << receivers_.size() << " RECEIVERS!";
   return !receivers_.empty();
 }
 
@@ -235,8 +239,7 @@ void ConversationHandler::SetAssociatedContentDelegate(
   }
 
   associated_content_delegate_ = delegate;
-  associated_content_delegate_->AddRelatedConversation(
-      weak_ptr_factory_.GetWeakPtr());
+  associated_content_delegate_->AddRelatedConversation(this);
   // Default to send page contents when we have a valid contents.
   // This class should only be provided with a delegate when
   // it is allowed to use it (e.g. not internal WebUI content).
@@ -521,9 +524,9 @@ void ConversationHandler::ModifyConversation(uint32_t turn_index,
 
 void ConversationHandler::SubmitSummarizationRequest() {
   DCHECK(IsContentAssociationPossible())
-      << "This conversation request is not associated with content\n";
+      << "This conversation request is not associated with content";
   DCHECK(should_send_page_contents_)
-      << "This conversation request should send page contents\n";
+      << "This conversation request should send page contents";
 
   mojom::ConversationTurnPtr turn = mojom::ConversationTurn::New(
       CharacterType::HUMAN, mojom::ActionType::SUMMARIZE_PAGE,
