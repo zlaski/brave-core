@@ -25,6 +25,7 @@ export interface AIChatContext extends Props {
   isPremiumUserDisconnected: boolean
   canShowPremiumPrompt?: boolean
   isMobile: boolean
+  isHistoryEnabled: boolean
   allActions: mojom.ActionGroup[]
   goPremium: () => void
   managePremium: () => void
@@ -42,6 +43,7 @@ const defaultContext: AIChatContext = {
   isPremiumUserDisconnected: false,
   canShowPremiumPrompt: undefined,
   isMobile: loadTimeData.getBoolean('isMobile'),
+  isHistoryEnabled: loadTimeData.getBoolean('isHistoryEnabled'),
   allActions: [],
   goPremium: () => {},
   managePremium: () => {},
@@ -96,13 +98,16 @@ export function AIChatContextProvider(props: React.PropsWithChildren<Props>) {
     initialize()
     updateCurrentPremiumStatus()
 
-    Observer.onConversationListChanged.addListener(
-      (conversations: mojom.Conversation[]) => {
-        setPartialContext({
-          visibleConversations: conversations
-        })
-      }
-    )
+    if (context.isHistoryEnabled) {
+      Observer.onConversationListChanged.addListener(
+        (conversations: mojom.Conversation[]) => {
+          setPartialContext({
+            visibleConversations: conversations
+          })
+        }
+      )
+    }
+
     Observer.onAgreementAccepted.addListener(() =>
       setPartialContext({
         hasAcceptedAgreement: true

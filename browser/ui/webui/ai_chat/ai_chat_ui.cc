@@ -13,6 +13,7 @@
 #include "brave/browser/ui/webui/brave_webui_source.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
 #include "brave/components/ai_chat/core/browser/utils.h"
+#include "brave/components/ai_chat/core/common/features.h"
 #include "brave/components/ai_chat/core/common/pref_names.h"
 #include "brave/components/ai_chat/resources/page/grit/ai_chat_ui_generated_map.h"
 #include "brave/components/constants/webui_url_constants.h"
@@ -57,26 +58,23 @@ content::WebContents* GetActiveWebContents(content::BrowserContext* context) {
 #endif
 
 AIChatUI::AIChatUI(content::WebUI* web_ui)
-    : WebUIController(web_ui),
-      profile_(Profile::FromWebUI(web_ui)) {
+    : WebUIController(web_ui), profile_(Profile::FromWebUI(web_ui)) {
   DCHECK(profile_);
   DCHECK(profile_->IsRegularProfile());
 
   // Create a URLDataSource and add resources.
-  content::WebUIDataSource* source =
-      content::WebUIDataSource::CreateAndAdd(
-          web_ui->GetWebContents()->GetBrowserContext(), kChatUIHost);
+  content::WebUIDataSource* source = content::WebUIDataSource::CreateAndAdd(
+      web_ui->GetWebContents()->GetBrowserContext(), kChatUIHost);
 
   webui::SetupWebUIDataSource(
-      source,
-      base::make_span(kAiChatUiGenerated, kAiChatUiGeneratedSize),
+      source, base::make_span(kAiChatUiGenerated, kAiChatUiGeneratedSize),
       IDR_CHAT_UI_HTML);
 
   source->AddResourcePath("styles.css", IDR_CHAT_UI_CSS);
 
   for (const auto& str : ai_chat::GetLocalizedStrings()) {
-    source->AddString(
-        str.name, brave_l10n::GetLocalizedResourceUTF16String(str.id));
+    source->AddString(str.name,
+                      brave_l10n::GetLocalizedResourceUTF16String(str.id));
   }
 
   base::Time last_accepted_disclaimer =
@@ -84,11 +82,11 @@ AIChatUI::AIChatUI(content::WebUI* web_ui)
           ai_chat::prefs::kLastAcceptedDisclaimer);
 
   source->AddBoolean("hasAcceptedAgreement",
-                               !last_accepted_disclaimer.is_null());
+                     !last_accepted_disclaimer.is_null());
   source->AddInteger("customModelMaxPageContentLength",
-                               ai_chat::kCustomModelMaxPageContentLength);
+                     ai_chat::kCustomModelMaxPageContentLength);
   source->AddInteger("customModelLongConversationCharLimit",
-                               ai_chat::kCustomModelLongConversationCharLimit);
+                     ai_chat::kCustomModelLongConversationCharLimit);
 
 #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS)
   constexpr bool kIsMobile = true;
@@ -97,11 +95,12 @@ AIChatUI::AIChatUI(content::WebUI* web_ui)
 #endif
 
   source->AddBoolean("isMobile", kIsMobile);
+  source->AddBoolean("isHistoryEnabled",
+                     ai_chat::features::IsAIChatHistoryEnabled());
 
-  source->AddBoolean(
-      "hasUserDismissedPremiumPrompt",
-      profile_->GetOriginalProfile()->GetPrefs()->GetBoolean(
-          ai_chat::prefs::kUserDismissedPremiumPrompt));
+  source->AddBoolean("hasUserDismissedPremiumPrompt",
+                     profile_->GetOriginalProfile()->GetPrefs()->GetBoolean(
+                         ai_chat::prefs::kUserDismissedPremiumPrompt));
 
   source->OverrideContentSecurityPolicy(
       network::mojom::CSPDirectiveName::ScriptSrc,
@@ -121,7 +120,7 @@ AIChatUI::AIChatUI(content::WebUI* web_ui)
 
   content::URLDataSource::Add(
       profile_, std::make_unique<FaviconSource>(
-                   profile_, chrome::FaviconUrlFormat::kFavicon2));
+                    profile_, chrome::FaviconUrlFormat::kFavicon2));
 }
 
 AIChatUI::~AIChatUI() = default;
@@ -162,13 +161,13 @@ void AIChatUI::BindInterface(
       std::move(receiver));
 }
 
-AIChatUIConfig::CreateWebUIController(content::WebUI* web_ui,
-                                             const GURL& url) {
+std::unique_ptr<content::WebUIController> AIChatUIConfig::CreateWebUIController(
+    content::WebUI* web_ui,
+    const GURL& url) {
   return std::make_unique<AIChatUI>(web_ui);
 }
 
-bool AIChatUIConfig::IsWebUIEnabled(
-    content::BrowserContext* browser_context) {
+bool AIChatUIConfig::IsWebUIEnabled(content::BrowserContext* browser_context) {
   return ai_chat::IsAIChatEnabled(
              user_prefs::UserPrefs::Get(browser_context)) &&
          Profile::FromBrowserContext(browser_context)->IsRegularProfile();
