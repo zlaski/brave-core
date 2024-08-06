@@ -192,14 +192,6 @@ void AIChatUIPageHandler::OnAssociatedContentNavigated(int new_navigation_id) {
   chat_ui_->OnNewDefaultConversation();
 }
 
-// void AIChatUIPageHandler::OnPrintPreviewRequested(bool is_pdf) {
-// #if BUILDFLAG(ENABLE_PRINT_PREVIEW)
-//   print_preview_extractor_ = std::make_unique<PrintPreviewExtractor>(
-//       active_chat_tab_helper_->web_contents(), profile_, is_pdf);
-//   print_preview_extractor_->CreatePrintPreview();
-// #endif
-// }
-
 void AIChatUIPageHandler::OnVisibilityChanged(content::Visibility visibility) {
   // TODO(petemill): perhaps the ConversationHandler can check to see if
   // anything is bound to determine ConversationActive, instead of using
