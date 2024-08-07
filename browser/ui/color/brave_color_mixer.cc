@@ -866,6 +866,8 @@ void AddBraveOmniboxColorMixer(ui::ColorProvider* provider,
 
   mixer[kColorBraveOmniboxResultViewSeparator] = {
       pick_color(leo::Color::kColorDividerSubtle)};
+  mixer[kColorBravePlayerActionViewBorder] = {
+      pick_color(leo::Color::kColorDividerSubtle)};
 
   // Re-apply non-material color.
   mixer[kColorOmniboxResultsButtonBorder] = ui::BlendTowardMaxContrast(
