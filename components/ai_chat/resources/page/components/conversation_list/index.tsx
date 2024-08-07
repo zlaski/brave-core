@@ -184,7 +184,7 @@ function ConversationList(props: ConversationListProps) {
                           <CopyButton onClick={handleCopyText} />
                           <EditButton
                             onClick={() => setEditInputId(id)}
-                            isDisabled={isAIAssistant && shouldDisableUserInput}
+                            isDisabled={isAIAssistant && conversationContext.shouldDisableUserInput}
                           />
                           {isAIAssistant &&
                             conversationContext.currentModel?.options.leoModelOptions && (
