@@ -37,13 +37,13 @@ export interface AIChatContext extends Props {
 
 const defaultContext: AIChatContext = {
   visibleConversations: [],
-  hasAcceptedAgreement: loadTimeData.getBoolean('hasAcceptedAgreement'),
+  hasAcceptedAgreement: Boolean(loadTimeData.getBoolean('hasAcceptedAgreement')),
   isPremiumStatusFetching: true,
   isPremiumUser: false,
   isPremiumUserDisconnected: false,
   canShowPremiumPrompt: undefined,
-  isMobile: loadTimeData.getBoolean('isMobile'),
-  isHistoryEnabled: loadTimeData.getBoolean('isHistoryEnabled'),
+  isMobile: Boolean(loadTimeData.getBoolean('isMobile')),
+  isHistoryEnabled: Boolean(loadTimeData.getBoolean('isHistoryEnabled')),
   allActions: [],
   goPremium: () => {},
   managePremium: () => {},
@@ -133,11 +133,11 @@ export function AIChatContextProvider(props: React.PropsWithChildren<Props>) {
   const store: AIChatContext = {
     ...context,
     ...props,
-    goPremium: UIHandler.goPremium,
-    managePremium: UIHandler.managePremium,
-    dismissPremiumPrompt: Service.dismissPremiumPrompt,
-    userRefreshPremiumSession: UIHandler.refreshPremiumSession,
-    handleAgreeClick: Service.markAgreementAccepted,
+    goPremium: () => UIHandler.goPremium(),
+    managePremium: () => UIHandler.managePremium(),
+    dismissPremiumPrompt: () => Service.dismissPremiumPrompt(),
+    userRefreshPremiumSession: () => UIHandler.refreshPremiumSession(),
+    handleAgreeClick: () => Service.markAgreementAccepted(),
     uiHandler: UIHandler
   }
 

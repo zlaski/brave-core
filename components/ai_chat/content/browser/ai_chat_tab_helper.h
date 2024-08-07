@@ -22,8 +22,6 @@
 #include "mojo/public/cpp/bindings/associated_receiver.h"
 #include "mojo/public/cpp/bindings/pending_associated_receiver.h"
 
-class PrefService;
-
 namespace content {
 class ScopedAccessibilityMode;
 }

@@ -13,8 +13,7 @@ import styles from './alerts.module.scss'
 export default function LongPageInfo() {
   const context = useConversation()
 
-
-  const warningText = context.siteInfo.isContentRefined
+  const warningText = context.associatedContentInfo?.isContentRefined
     ? getLocale('pageContentRefinedWarning')
     : formatMessage(getLocale('pageContentTooLongWarning'), {
     placeholders: {

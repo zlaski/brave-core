@@ -5,35 +5,25 @@
 
 #include "brave/browser/ui/webui/ai_chat/ai_chat_ui_page_handler.h"
 
-#include <algorithm>
 #include <memory>
-#include <optional>
 #include <utility>
-#include <vector>
 
-#include "base/notreached.h"
-#include "base/strings/utf_string_conversions.h"
-#include "base/time/time.h"
 #include "brave/browser/ai_chat/ai_chat_service_factory.h"
 #include "brave/browser/ui/side_panel/ai_chat/ai_chat_side_panel_utils.h"
 #include "brave/components/ai_chat/core/browser/ai_chat_service.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-shared.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom.h"
-#include "brave/components/ai_chat/core/common/pref_names.h"
 #include "chrome/browser/favicon/favicon_service_factory.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "chrome/browser/ui/singleton_tabs.h"
 #include "components/favicon/core/favicon_service.h"
-#include "components/prefs/pref_service.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/storage_partition.h"
-#include "content/public/browser/visibility.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_observer.h"
 #include "content/public/common/url_constants.h"
-#include "ui/base/l10n/l10n_util.h"
 
 #if BUILDFLAG(IS_ANDROID)
 #include "brave/browser/ui/android/ai_chat/brave_leo_settings_launcher_helper.h"
@@ -69,7 +59,7 @@ AIChatUIPageHandler::AIChatUIPageHandler(
     content::WebContents* chat_context_web_contents,
     Profile* profile,
     mojo::PendingReceiver<ai_chat::mojom::AIChatUIHandler> receiver)
-    : content::WebContentsObserver(owner_web_contents),
+    : owner_web_contents_(owner_web_contents),
       profile_(profile),
       receiver_(this, std::move(receiver)) {
   // Standalone mode means Chat is opened as its own tab in the tab strip and
@@ -106,9 +96,9 @@ void AIChatUIPageHandler::HandleVoiceRecognition() {
 }
 
 void AIChatUIPageHandler::OpenAIChatSettings() {
-  auto* contents_to_navigate = (active_chat_tab_helper_)
-                                   ? active_chat_tab_helper_->web_contents()
-                                   : web_contents();
+  content::WebContents* contents_to_navigate =
+      (active_chat_tab_helper_) ? active_chat_tab_helper_->web_contents()
+                                : owner_web_contents_.get();
 #if !BUILDFLAG(IS_ANDROID)
   const GURL url("brave://settings/leo-assistant");
   if (auto* browser = chrome::FindBrowserWithTab(contents_to_navigate)) {
@@ -131,9 +121,9 @@ void AIChatUIPageHandler::OpenURL(const GURL& url) {
   }
 
 #if !BUILDFLAG(IS_ANDROID)
-  auto* contents_to_navigate = (active_chat_tab_helper_)
-                                   ? active_chat_tab_helper_->web_contents()
-                                   : web_contents();
+  content::WebContents* contents_to_navigate =
+      (active_chat_tab_helper_) ? active_chat_tab_helper_->web_contents()
+                                : owner_web_contents_.get();
   contents_to_navigate->OpenURL(
       {url, content::Referrer(), WindowOpenDisposition::NEW_FOREGROUND_TAB,
        ui::PAGE_TRANSITION_LINK, false},
@@ -191,25 +181,11 @@ void AIChatUIPageHandler::HandleWebContentsDestroyed() {
 void AIChatUIPageHandler::OnAssociatedContentNavigated(int new_navigation_id) {
   chat_ui_->OnNewDefaultConversation();
 }
-
-void AIChatUIPageHandler::OnVisibilityChanged(content::Visibility visibility) {
-  // TODO(petemill): perhaps the ConversationHandler can check to see if
-  // anything is bound to determine ConversationActive, instead of using
-  // OnVisiblityChanged.
-
-  // WebUI visibility changed (not target tab)
-  // if (!active_chat_tab_helper_) {
-  //   return;
-  // }
-  // bool is_visible = (visibility == content::Visibility::VISIBLE) ? true :
-  // false; active_chat_tab_helper_->OnConversationActiveChanged(is_visible);
-}
-
 void AIChatUIPageHandler::CloseUI() {
 #if !BUILDFLAG(IS_ANDROID)
-  ai_chat::ClosePanel(web_contents());
+  ai_chat::ClosePanel(owner_web_contents_);
 #else
-  ai_chat::CloseActivity(web_contents());
+  ai_chat::CloseActivity(owner_web_contents_);
 #endif
 }
 
@@ -221,9 +197,6 @@ void AIChatUIPageHandler::SetChatUI(
 void AIChatUIPageHandler::BindRelatedConversation(
     mojo::PendingReceiver<mojom::ConversationHandler> receiver,
     mojo::PendingRemote<mojom::ConversationUI> conversation_ui_handler) {
-  // TODO(petemill): This function and the service's BindConversation should
-  // be the only things that actually create conversation instances.
-
   if (!active_chat_tab_helper_) {
     // No initial conversation for standalone page
     return;
