@@ -6,7 +6,9 @@
 #ifndef BRAVE_COMPONENTS_AI_CHAT_CORE_BROWSER_CONVERSATION_HANDLER_H_
 #define BRAVE_COMPONENTS_AI_CHAT_CORE_BROWSER_CONVERSATION_HANDLER_H_
 
+#include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "base/functional/callback_forward.h"
@@ -20,7 +22,6 @@
 #include "mojo/public/cpp/bindings/pending_receiver.h"
 #include "mojo/public/cpp/bindings/receiver_set.h"
 #include "mojo/public/cpp/bindings/remote_set.h"
-#include "partition_alloc/pointers/raw_ptr.h"
 #include "url/gurl.h"
 
 namespace network {
@@ -37,7 +38,7 @@ class AssociatedArchiveContent;
 // messages to the conversation engine, handling the responses, and owning
 // the in-memory conversation history.
 class ConversationHandler : public mojom::ConversationHandler,
-                            ModelService::Observer {
+                            public ModelService::Observer {
  public:
   // |invalidation_token| is an optional parameter that will be passed back on
   // the next call to |GetPageContent| so that the implementer may determine if
@@ -50,7 +51,7 @@ class ConversationHandler : public mojom::ConversationHandler,
   using GeneratedTextCallback =
       base::RepeatingCallback<void(const std::string& text)>;
 
-  // Supplements a conversation with active page content
+  // Supplements a conversation with associated page content
   class AssociatedContentDelegate {
    public:
     virtual ~AssociatedContentDelegate();
@@ -281,10 +282,10 @@ class ConversationHandler : public mojom::ConversationHandler,
 
   // Data store UUID for conversation
   raw_ptr<const mojom::Conversation> metadata_;
-  base::raw_ptr<AIChatService> ai_chat_service_;
-  base::raw_ptr<ModelService> model_service_;
-  base::raw_ptr<AIChatCredentialManager> credential_manager_;
-  base::raw_ptr<AIChatFeedbackAPI> feedback_api_;
+  raw_ptr<AIChatService> ai_chat_service_;
+  raw_ptr<ModelService> model_service_;
+  raw_ptr<AIChatCredentialManager> credential_manager_;
+  raw_ptr<AIChatFeedbackAPI> feedback_api_;
   scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory_;
 
   // Temporary

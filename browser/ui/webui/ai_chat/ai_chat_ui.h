@@ -49,16 +49,12 @@ class AIChatUI : public content::WebUIController {
   WEB_UI_CONTROLLER_TYPE_DECL();
 };
 
-class AIChatUIConfig : public content::WebUIConfig {
+class AIChatUIConfig : public DefaultTopChromeWebUIConfig<AIChatUI> {
  public:
   AIChatUIConfig();
   ~AIChatUIConfig() override = default;
 
   bool IsWebUIEnabled(content::BrowserContext* browser_context) override;
-
-  std::unique_ptr<content::WebUIController> CreateWebUIController(
-      content::WebUI* web_ui,
-      const GURL& url) override;
 };
 
 #endif  // BRAVE_BROWSER_UI_WEBUI_AI_CHAT_AI_CHAT_UI_H_

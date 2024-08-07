@@ -118,7 +118,7 @@ function Main() {
 
     React.useEffect(() => {
       const handler = () => {
-        if (!context.isMobile || !inputFocused.current ||
+        if (!aiChatContext.isMobile || !inputFocused.current ||
             !window.visualViewport) {
           return
         }

@@ -70,7 +70,6 @@ class AIChatService : public KeyedService,
   // Creates and owns a ConversationHandler if one hasn't been made for the
   // associated_content_id yet. associated_content_id should not be stored. It
   // is an ephemeral identifier for active browser content.
-  // TODO(petemill): Maybe this should be a raw_ptr since we won't destroy it?
   ConversationHandler* GetOrCreateConversationHandlerForPageContent(
       int associated_content_id,
       base::WeakPtr<ConversationHandler::AssociatedContentDelegate>
@@ -79,7 +78,6 @@ class AIChatService : public KeyedService,
   // Creates and owns a ConversationHandler if one hasn't been made for the
   // associated_content_id yet. associated_content_id should not be stored. It
   // is an ephemeral identifier for active browser content.
-  // TODO(petemill): Maybe this should be a raw_ptr since we won't destroy it?
   ConversationHandler* CreateConversationHandlerForPageContent(
       int associated_content_id,
       base::WeakPtr<ConversationHandler::AssociatedContentDelegate>

@@ -5,6 +5,8 @@
 
 #include "brave/components/ai_chat/core/browser/conversation_handler.h"
 
+#include <algorithm>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -233,9 +235,13 @@ void ConversationHandler::SetAssociatedContentDelegate(
   if (archive_content_) {
     associated_content_delegate_ = nullptr;
     archive_content_ = nullptr;
-  } else {
-    CHECK(chat_history_.empty()) << "Cannot associate new content with a "
-                                    "conversation which already has messages";
+  } else if (!chat_history_.empty()) {
+    // Cannot associate new content with a conversation which already has
+    // messages but this is ok since we're probably just defaulting this
+    // conversation to be "alongside" this target content (e.g. sidebar). The
+    // service will do the association and we can ignore the request to
+    // associate content.
+    return;
   }
 
   associated_content_delegate_ = delegate;
@@ -1123,7 +1129,7 @@ bool ConversationHandler::IsContentAssociationPossible() {
 
 void ConversationHandler::BuildAssociatedContentInfo() {
   // Save in class instance so that we have a cache for when live
-  // AssociatedContentDelegate disconnects.
+  // AssociatedContentDelegate disconnects. Only modify in this function.
   associated_content_info_ = mojom::SiteInfo::New();
   if (associated_content_delegate_) {
     associated_content_info_->title =

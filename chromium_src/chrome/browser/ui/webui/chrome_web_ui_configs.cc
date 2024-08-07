@@ -5,6 +5,7 @@
 
 #include "chrome/browser/ui/webui/chrome_web_ui_configs.h"
 
+#include "brave/components/ai_chat/core/common/buildflags/buildflags.h"
 #include "content/public/browser/webui_config_map.h"
 
 #define RegisterChromeWebUIConfigs RegisterChromeWebUIConfigs_ChromiumImpl

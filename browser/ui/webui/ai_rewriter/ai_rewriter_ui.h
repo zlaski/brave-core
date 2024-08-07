@@ -6,6 +6,7 @@
 #ifndef BRAVE_BROWSER_UI_WEBUI_AI_REWRITER_AI_REWRITER_UI_H_
 #define BRAVE_BROWSER_UI_WEBUI_AI_REWRITER_AI_REWRITER_UI_H_
 
+#include <memory>
 #include <string>
 
 #include "base/memory/weak_ptr.h"

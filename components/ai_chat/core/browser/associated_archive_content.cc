@@ -5,6 +5,8 @@
 
 #include "brave/components/ai_chat/core/browser/associated_archive_content.h"
 
+#include <utility>
+
 #include "base/memory/weak_ptr.h"
 #include "brave/components/ai_chat/core/browser/conversation_handler.h"
 

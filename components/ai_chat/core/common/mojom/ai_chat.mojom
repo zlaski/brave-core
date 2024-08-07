@@ -336,7 +336,8 @@ interface ConversationHandler {
   // Get associated page information. If there is none then |site_info| will be
   // |null|. If the reason for that is it's still being fetched, then
   // |is_fetching| will be |true|.
-  GetAssociatedContentInfo() => (SiteInfo associated_content_info, bool should_send_content);
+  GetAssociatedContentInfo() => (
+      SiteInfo associated_content_info, bool should_send_content);
 
   SetShouldSendPageContents(bool should_send);
 

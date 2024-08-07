@@ -7,9 +7,9 @@
 #define BRAVE_COMPONENTS_AI_CHAT_CORE_BROWSER_ASSOCIATED_CONTENT_DRIVER_H_
 
 #include <memory>
+#include <set>
 #include <string>
 #include <string_view>
-#include <vector>
 
 #include "base/gtest_prod_util.h"
 #include "base/memory/raw_ptr.h"
@@ -35,7 +35,7 @@ class AssociatedContentDriver
     virtual void OnAssociatedContentNavigated(int new_navigation_id) {}
   };
 
-  explicit AssociatedContentDriver();
+  AssociatedContentDriver();
   ~AssociatedContentDriver() override;
 
   AssociatedContentDriver(const AssociatedContentDriver&) = delete;

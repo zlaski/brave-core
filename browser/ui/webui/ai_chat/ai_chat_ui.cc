@@ -161,12 +161,6 @@ void AIChatUI::BindInterface(
       std::move(receiver));
 }
 
-std::unique_ptr<content::WebUIController> AIChatUIConfig::CreateWebUIController(
-    content::WebUI* web_ui,
-    const GURL& url) {
-  return std::make_unique<AIChatUI>(web_ui);
-}
-
 bool AIChatUIConfig::IsWebUIEnabled(content::BrowserContext* browser_context) {
   return ai_chat::IsAIChatEnabled(
              user_prefs::UserPrefs::Get(browser_context)) &&
@@ -174,7 +168,6 @@ bool AIChatUIConfig::IsWebUIEnabled(content::BrowserContext* browser_context) {
 }
 
 AIChatUIConfig::AIChatUIConfig()
-    : WebUIConfig(content::kChromeUIScheme, kChatUIHost) {}
-                                  kChatUIHost) {}
+    : DefaultTopChromeWebUIConfig(content::kChromeUIScheme, kChatUIHost) {}
 
 WEB_UI_CONTROLLER_TYPE_IMPL(AIChatUI)
