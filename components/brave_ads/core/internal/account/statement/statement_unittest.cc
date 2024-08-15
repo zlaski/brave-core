@@ -44,8 +44,8 @@ TEST_F(BraveAdsStatementTest, GetForTransactionsThisMonth) {
   // Act & Assert
   const mojom::StatementInfoPtr expected_statement =
       mojom::StatementInfo::New();
-  expected_statement->min_earnings_last_month = 0.0;
-  expected_statement->max_earnings_last_month = 0.0;
+  expected_statement->min_earnings_previous_month = 0.0;
+  expected_statement->max_earnings_previous_month = 0.0;
   expected_statement->min_earnings_this_month =
       0.02 * kMinEstimatedEarningsMultiplier.Get();
   expected_statement->max_earnings_this_month = 0.02;
@@ -122,9 +122,9 @@ TEST_F(BraveAdsStatementTest,
   // Act & Assert
   const mojom::StatementInfoPtr expected_statement =
       mojom::StatementInfo::New();
-  expected_statement->min_earnings_last_month =
+  expected_statement->min_earnings_previous_month =
       0.01 * kMinEstimatedEarningsMultiplier.Get();
-  expected_statement->max_earnings_last_month = 0.01;
+  expected_statement->max_earnings_previous_month = 0.01;
   expected_statement->min_earnings_this_month =
       0.05 * kMinEstimatedEarningsMultiplier.Get();
   expected_statement->max_earnings_this_month = 0.05;
@@ -186,9 +186,9 @@ TEST_F(BraveAdsStatementTest, GetForTransactionsSplitOverTwoYears) {
   // Act & Assert
   const mojom::StatementInfoPtr expected_statement =
       mojom::StatementInfo::New();
-  expected_statement->min_earnings_last_month =
+  expected_statement->min_earnings_previous_month =
       0.01 * kMinEstimatedEarningsMultiplier.Get();
-  expected_statement->max_earnings_last_month = 0.01;
+  expected_statement->max_earnings_previous_month = 0.01;
   expected_statement->min_earnings_this_month =
       0.04 * kMinEstimatedEarningsMultiplier.Get();
   expected_statement->max_earnings_this_month = 0.04;
@@ -209,8 +209,8 @@ TEST_F(BraveAdsStatementTest, GetForNoTransactions) {
   // Act & Assert
   const mojom::StatementInfoPtr expected_statement =
       mojom::StatementInfo::New();
-  expected_statement->min_earnings_last_month = 0.0;
-  expected_statement->max_earnings_last_month = 0.0;
+  expected_statement->min_earnings_previous_month = 0.0;
+  expected_statement->max_earnings_previous_month = 0.0;
   expected_statement->min_earnings_this_month = 0.0;
   expected_statement->max_earnings_this_month = 0.0;
   expected_statement->next_payment_date =
@@ -261,9 +261,9 @@ TEST_F(BraveAdsStatementTest, GetWithFilteredTransactions) {
   // Act & Assert
   const mojom::StatementInfoPtr expected_statement =
       mojom::StatementInfo::New();
-  expected_statement->min_earnings_last_month =
+  expected_statement->min_earnings_previous_month =
       0.01 * kMinEstimatedEarningsMultiplier.Get();
-  expected_statement->max_earnings_last_month = 0.03;
+  expected_statement->max_earnings_previous_month = 0.03;
   expected_statement->min_earnings_this_month =
       0.01 * kMinEstimatedEarningsMultiplier.Get();
   expected_statement->max_earnings_this_month = 0.02;

@@ -18,22 +18,23 @@ constexpr bool IsLeapYear(const int year) noexcept {
   return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
 }
 
-// Four digit year "2007", 1-based month (values 1 = January, etc.), 1-based day
-// of month (1-31).
-int DayOfWeek(int year, int month, int day);
-
 int DayOfWeek(base::Time time, bool is_local);
 
 // 1-based month (values 1 = January, etc.).
-constexpr int DaysPerMonth(const int year, const int month) noexcept {
+constexpr int DaysInMonth(const int year, const int month) noexcept {
   CHECK((month >= 1 && month <= 12));
 
-  constexpr int kDaysPerMonth[] = {
+  constexpr int kDaysInMonth[] = {
       31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31  // non leap year.
   };
 
-  return kDaysPerMonth[month - 1] +
-         static_cast<int>(month == /*february*/ 2 && IsLeapYear(year));
+  int days_in_month = kDaysInMonth[month - 1];
+  if (month == /*february*/ 2 && IsLeapYear(year)) {
+    // February has 29 days in leap years.
+    days_in_month++;
+  }
+
+  return days_in_month;
 }
 
 }  // namespace brave_ads

@@ -14,29 +14,14 @@ class Time;
 
 namespace brave_ads {
 
-int GetLocalTimeInMinutes(base::Time time);
+int LocalTimeInMinutes(base::Time time);
 
-base::Time AdjustLocalTimeToBeginningOfPreviousMonth(base::Time time);
-base::Time AdjustLocalTimeToEndOfPreviousMonth(base::Time time);
-base::Time AdjustLocalTimeToBeginningOfMonth(base::Time time);
-base::Time AdjustLocalTimeToEndOfMonth(base::Time time);
-
-base::Time GetTimeInDistantPast();
-
-base::Time GetLocalTimeAtBeginningOfLastMonth();
-base::Time GetLocalTimeAtEndOfLastMonth();
-base::Time GetLocalTimeAtBeginningOfThisMonth();
-base::Time GetLocalTimeAtEndOfThisMonth();
+base::Time LocalTimeAtBeginningOfPreviousMonth();
+base::Time LocalTimeAtEndOfPreviousMonth();
+base::Time LocalTimeAtBeginningOfThisMonth();
+base::Time LocalTimeAtEndOfThisMonth();
 
 std::string TimeToPrivacyPreservingIso8601(base::Time time);
-
-// TODO(https://github.com/brave/brave-browser/issues/20169): Remove this
-// function when base::Time::FromLocalExploded for linux sandbox will be fixed.
-base::Time GetLocalMidnight(base::Time time);
-
-// TODO(https://github.com/brave/brave-browser/issues/20169): Remove this
-// function when base::Time::FromLocalExploded for linux sandbox will be fixed.
-void SetFromLocalExplodedFailedForTesting(bool set_failed);
 
 }  // namespace brave_ads
 

@@ -54,7 +54,7 @@ TEST_F(BraveAdsReconciledTransactionsUtilTest,
 }
 
 TEST_F(BraveAdsReconciledTransactionsUtilTest,
-       DidReconcileTransactionsLastMonth) {
+       DidReconcileTransactionsPreviousMonth) {
   // Arrange
   AdvanceClockTo(test::TimeFromString("5 November 2020"));
 
@@ -68,7 +68,7 @@ TEST_F(BraveAdsReconciledTransactionsUtilTest,
   AdvanceClockTo(test::TimeFromString("25 December 2020"));
 
   // Act & Assert
-  EXPECT_TRUE(DidReconcileTransactionsLastMonth(transactions));
+  EXPECT_TRUE(DidReconcileTransactionsPreviousMonth(transactions));
 }
 
 TEST_F(BraveAdsReconciledTransactionsUtilTest,
@@ -84,7 +84,7 @@ TEST_F(BraveAdsReconciledTransactionsUtilTest,
   transactions.push_back(transaction);
 
   // Act & Assert
-  EXPECT_FALSE(DidReconcileTransactionsLastMonth(transactions));
+  EXPECT_FALSE(DidReconcileTransactionsPreviousMonth(transactions));
 }
 
 TEST_F(BraveAdsReconciledTransactionsUtilTest, DidReconcileTransaction) {

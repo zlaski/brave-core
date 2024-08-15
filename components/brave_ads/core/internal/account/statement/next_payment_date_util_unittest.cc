@@ -31,7 +31,7 @@ class BraveAdsNextPaymentDateUtilTest : public test::TestBase {
 };
 
 TEST_F(BraveAdsNextPaymentDateUtilTest,
-       TimeNowIsBeforeNextPaymentDayWithReconciledTransactionsLastMonth) {
+       TimeNowIsBeforeNextPaymentDayWithReconciledTransactionsPreviousMonth) {
   // Arrange
   AdvanceClockTo(test::TimeFromUTCString("1 January 2020"));
 
@@ -57,7 +57,7 @@ TEST_F(BraveAdsNextPaymentDateUtilTest,
 }
 
 TEST_F(BraveAdsNextPaymentDateUtilTest,
-       TimeNowIsBeforeNextPaymentDayWithNoReconciledTransactionsLastMonth) {
+       TimeNowIsBeforeNextPaymentDayWithNoReconciledTransactionsPreviousMonth) {
   // Arrange
   AdvanceClockTo(test::TimeFromUTCString("1 February 2020"));
 

@@ -26,14 +26,13 @@ bool DoesRespectCap(const CreativeAdInfo& creative_ad) {
 
   const base::Time now = base::Time::Now();
 
-  const int day_of_week = DayOfWeek(now, /*is_local=*/true);
-
-  const int local_time_in_minutes = GetLocalTimeInMinutes(now);
+  const int local_day_of_week = DayOfWeek(now, /*is_local=*/true);
+  const int local_time_in_minutes = LocalTimeInMinutes(now);
 
   return base::ranges::any_of(
-      creative_ad.dayparts,
-      [day_of_week, local_time_in_minutes](const CreativeDaypartInfo& daypart) {
-        return MatchDayOfWeek(daypart, day_of_week) &&
+      creative_ad.dayparts, [local_day_of_week, local_time_in_minutes](
+                                const CreativeDaypartInfo& daypart) {
+        return MatchDayOfWeek(daypart, local_day_of_week) &&
                MatchTimeSlot(daypart, local_time_in_minutes);
       });
 }
