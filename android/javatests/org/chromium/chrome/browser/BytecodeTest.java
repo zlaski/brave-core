@@ -974,8 +974,6 @@ public class BytecodeTest {
                         true,
                         boolean.class,
                         int.class,
-                        float.class,
-                        float.class,
                         int.class));
         Assert.assertTrue(
                 methodExists(
