@@ -7,6 +7,21 @@ import("//build/config/apple/symbols.gni")
 import("//build/util/branding.gni")
 import("//chrome/version.gni")
 
+env_content = exec_script("//brave/build/env_to_gni.py",
+                  [ rebase_path("//brave/.env2") ],
+                  "scope",
+                  ["//brave/.env2"])
+
+# group("env_includes") {
+#   deps = env_content.extra_env_deps
+# }
+
+exec_script("//brave/build/dummy.py", [], "scope", env_content.extra_env_deps)
+
+# print(env_content.sardine_client_id)
+
+# print(env_content)
+
 declare_args() {
   # Release channel support.
   # "beta" for beta release.

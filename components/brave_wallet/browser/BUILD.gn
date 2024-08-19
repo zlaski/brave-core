@@ -11,11 +11,18 @@ import("//tools/json_schema_compiler/json_schema_api.gni")
 
 declare_args() {
   sardine_client_id = ""
-  sardine_client_secret = ""
+  sardine_client_secret = "" #env_content.sardine_client_secret
 }
 
+
+# if (sardine_client_id == "" && defined(env_content.sardine_client_id)) {
+#   sardine_client_id = env_content.sardine_client_id
+# }
+
+#print(sardine_client_id)
+print(sardine_client_secret)
 if (is_official_build) {
-  assert(sardine_client_id != "")
+  #assert(sardine_client_id != "")
   assert(sardine_client_secret != "")
 }
 
@@ -519,6 +526,12 @@ generated_types("generated_swap_responses") {
 }
 
 config("sardine_config") {
+  if (defined(env_content.sardine_client_id)) {
+    sardine_client_id = env_content.sardine_client_id
+  } else {
+    assert(!is_official_build)
+    sardine_client_id = ""
+  }
   defines = [
     "SARDINE_CLIENT_ID=\"$sardine_client_id\"",
     "SARDINE_CLIENT_SECRET=\"$sardine_client_secret\"",

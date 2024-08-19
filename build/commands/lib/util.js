@@ -603,6 +603,7 @@ const util = {
   },
 
   runGnGen: (outputDir, buildArgs, extraGnGenOpts = [], options = config.defaultOptions) => {
+    return
     // Store extraGnGenOpts in buildArgs as a comment to rerun gn gen on change.
     assert(Array.isArray(extraGnGenOpts))
     if (extraGnGenOpts.length) {

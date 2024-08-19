@@ -7,12 +7,37 @@ import("//third_party/protobuf/proto_library.gni")
 
 import("//brave/components/brave_rewards/core/config.gni")
 import("//build/buildflag_header.gni")
+import("//brave/build/config.gni")
 
 if (is_android) {
   import("//build/config/android/rules.gni")
 }
 
 buildflag_header("buildflags") {
+  myflags = [
+    "BITFLYER_PRODUCTION_CLIENT_ID",
+    "BITFLYER_PRODUCTION_CLIENT_SECRET",
+  ]
+  fflags = []
+  foreach(name, myflags) {
+    if (defined(env_content[name])) {
+      fflags += ["$name=\"${env_content[name]}\""]
+    } else {
+      assert(!is_official_build, "$name is not set")
+      fflags += ["$name=\"\""]
+    }
+  }
+  print(fflags)
+
+  # bitflyer_production_fee_address = env_content("bitflyer_production_fee_address")
+
+  if (defined(env_content.bitflyer_production_fee_address)) {
+    bitflyer_production_fee_address = env_content.bitflyer_production_fee_address
+  } else {
+    assert(!is_official_build)
+    bitflyer_production_fee_address = ""
+  }
+
   header_dir = "brave/components/brave_rewards/core"
   header = "buildflags.h"
   flags = [
