@@ -120,8 +120,13 @@ generated_types("generated_api_types") {
 
 group("api") {
   public_deps = [
+    ":api_features",
+    ":behavior_features",
     ":generated_api_json_strings",
     ":generated_api_registration",
     ":generated_api_types",
+    ":manifest_features",
+    ":permission_features",
+    ":resources",
   ]
 }
