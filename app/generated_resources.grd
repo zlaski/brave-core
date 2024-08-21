@@ -2678,11 +2678,6 @@ are declared in tools/grit/grit_rule.gni.
             &amp;Learn More
           </message>
         </if>  <!-- not use_titlecase -->
-        <if expr="is_win">
-          <message name="IDS_DOWNLOAD_MENU_ALWAYS_OPEN_PDF_IN_READER" desc="Download context menu: Always open PDFs using Adobe Reader">
-            Always open in Adobe Reader
-          </message>
-        </if>
         <message name="IDS_DOWNLOAD_MENU_DEEP_SCAN" desc="Download context menu: send file for deep scanning">
           Scan file
         </message>
@@ -13421,6 +13416,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
           <message name="IDS_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="Text for the menu item that lets the user open a dialog to choose another source language for translation, from a list of available languages.">
             Page is not in <ph name="language">$1<ex>French</ex></ph>
           </message>
+          <message name="IDS_TRANSLATE_BUBBLE_OPEN_LANGUAGE_SETTINGS" desc="Text to show for the translate bubble menu item that opens language settings.">
+            Open language settings
+          </message>
           <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="Text for the partial translate bubble menu item that lets the user open a dialog to choose another source language for translation, from a list of available languages.">
             Selection is not in <ph name="language">$1<ex>French</ex></ph>
           </message>
@@ -13485,6 +13483,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
           </message>
           <message name="IDS_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="In Title Case: Text to show for the translate bubble menu item which invokes the source language menu.">
             Page Is Not in <ph name="language">$1<ex>French</ex></ph>
+          </message>
+          <message name="IDS_TRANSLATE_BUBBLE_OPEN_LANGUAGE_SETTINGS" desc="In Title Case: Text to show for the translate bubble menu item that opens language settings.">
+            Open Language Settings
           </message>
           <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="In Title Case: Text to show for the partial translate bubble menu item which invokes the source language menu.">
             Selection Is Not in <ph name="language">$1<ex>French</ex></ph>
