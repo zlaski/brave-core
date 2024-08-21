@@ -20,6 +20,7 @@
 #include "brave/browser/brave_browser_features.h"
 #include "brave/browser/brave_browser_main_extra_parts.h"
 #include "brave/browser/brave_browser_process.h"
+#include "brave/browser/brave_rewards/rewards_tab_helper.h"
 #include "brave/browser/brave_shields/brave_farbling_service_factory.h"
 #include "brave/browser/brave_shields/brave_shields_web_contents_observer.h"
 #include "brave/browser/brave_wallet/brave_wallet_context_utils.h"
@@ -554,6 +555,16 @@ void BraveContentBrowserClient::
             std::move(receiver), render_frame_host);
       },
       &render_frame_host));
+
+  associated_registry.AddInterface<brave_rewards::mojom::CreatorDetectionHost>(
+      base::BindRepeating(
+          [](content::RenderFrameHost* render_frame_host,
+             mojo::PendingAssociatedReceiver<
+                 brave_rewards::mojom::CreatorDetectionHost> receiver) {
+            brave_rewards::RewardsTabHelper::BindCreatorDetectionHost(
+                std::move(receiver), render_frame_host);
+          },
+          &render_frame_host));
 
 #if BUILDFLAG(ENABLE_SPEEDREADER)
   associated_registry.AddInterface<speedreader::mojom::SpeedreaderHost>(

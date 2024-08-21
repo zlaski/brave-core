@@ -5,9 +5,11 @@
 
 #include "brave/browser/brave_rewards/rewards_tab_helper.h"
 
+#include <utility>
+
 #include "brave/browser/brave_rewards/rewards_service_factory.h"
-#include "brave/components/brave_rewards/browser/publisher_utils.h"
 #include "brave/components/brave_rewards/browser/rewards_service.h"
+#include "brave/components/brave_rewards/common/publisher_utils.h"
 #include "chrome/browser/profiles/profile.h"
 #include "components/sessions/content/session_tab_helper.h"
 #include "content/public/browser/navigation_entry.h"
@@ -51,6 +53,21 @@ RewardsTabHelper::~RewardsTabHelper() {
 #if !BUILDFLAG(IS_ANDROID)
   BrowserList::RemoveObserver(this);
 #endif
+}
+
+void RewardsTabHelper::BindCreatorDetectionHost(
+    mojo::PendingAssociatedReceiver<mojom::CreatorDetectionHost> receiver,
+    content::RenderFrameHost* rfh) {
+  auto* web_contents = content::WebContents::FromRenderFrameHost(rfh);
+  if (!web_contents) {
+    return;
+  }
+  auto* tab_helper = RewardsTabHelper::FromWebContents(web_contents);
+  if (!tab_helper) {
+    return;
+  }
+  tab_helper->receiver_.reset();
+  tab_helper->receiver_.Bind(std::move(receiver));
 }
 
 void RewardsTabHelper::AddObserver(Observer* observer) {
@@ -170,13 +187,51 @@ void RewardsTabHelper::OnRewardsInitialized(RewardsService* rewards_service) {
   }
 }
 
+void RewardsTabHelper::ShouldDetectCreator(
+    ShouldDetectCreatorCallback callback) {
+#if BUILDFLAG(IS_ANDROID)
+  std::move(callback).Run(false);
+#else
+  std::move(callback).Run(rewards_service_ &&
+                          rewards_service_->IsInitialized());
+#endif
+}
+
+void RewardsTabHelper::OnCreatorDetected(const std::string& id,
+                                         const std::string& name,
+                                         const std::string& url,
+                                         const std::string& image_url) {
+  SetPublisherIdForTab(id);
+
+  if (rewards_service_ && !id.empty()) {
+    // When a creator has been detected for the current tab (e.g. by a script
+    // injected from a render frame observer), we must send the creator data to
+    // the utility process so that the "publisher_info" database table can be
+    // populated. We must also notify utility process that a "page view" has
+    // started for this creator.
+    auto visit = mojom::VisitData::New();
+    visit->tab_id = static_cast<uint32_t>(tab_id_.id());
+    visit->domain = id;
+    visit->name = name;
+    visit->path = "";
+    visit->url = url;
+    visit->favicon_url = image_url;
+    if (auto platform = GetMediaPlatformFromPublisherId(id)) {
+      visit->provider = *platform;
+    }
+    rewards_service_->GetPublisherActivityFromUrl(visit->Clone());
+    rewards_service_->OnShow(tab_id_);
+    rewards_service_->OnLoad(std::move(visit));
+  }
+}
+
 void RewardsTabHelper::MaybeSavePublisherInfo() {
   if (!rewards_service_) {
     return;
   }
 
   // The Rewards system currently assumes that the |publisher_info| table is
-  // populated by calling `GetPublisherActivityFromUrl` as the user nativates
+  // populated by calling `GetPublisherActivityFromUrl` as the user navigates
   // the web. Previously, this was accomplished within the background script of
   // the Rewards extension.
   rewards_service_->GetPublisherActivityFromUrl(
