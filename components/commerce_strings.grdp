@@ -466,7 +466,7 @@
     Price Insights
   </message>
   <message name="IDS_PRICE_INSIGHTS_SNACKBAR_BUTTON_TITLE" desc="The snackbar button title for Price Insights when the user has notification enabled.">
-    VIEW
+    View
   </message>
   <message name="IDS_PRICE_INSIGHTS_SNACKBAR_MESSAGE_TITLE_NOTIFICATION_DISABLED" desc="The snackbar title for Price Insights when the user has notification disabled.">
     You can view price drops for products you track anytime.
@@ -526,6 +526,9 @@
   </message>
 
   <!-- For Compare -->
+  <message name="IDS_COMPARE_CITATION_A11Y_LABEL" desc="The accessibility label for a citation in the compare feature's UI.">
+    Citation <ph name="CURRENT_CITATION">$1<ex>1</ex></ph> of <ph name="MAX_CITATIONS">$2<ex>3</ex></ph>, <ph name="PRODUCT_NAME">$3<ex>Laptop</ex></ph>, <ph name="URL">$4<ex>http://example.com</ex></ph>
+  </message>
   <message name="IDS_COMPARE_DEFAULT_PAGE_TITLE" desc="The default page title for the tab compare feature.">
     Compare
   </message>
@@ -536,7 +539,7 @@
     Delete comparison table
   </message>
   <message name="IDS_COMPARE_DISCLAIMER" desc="Disclaimer text shown in tab compare UIs.">
-    This is an experimental feature and won't always get it right.
+    The tab titles and URLs of pages you add to the table are sent to Brave, saved to your account <ph name="EMAIL">$1<ex>test@gmail.com</ex></ph>, and may be seen by human reviewers to improve this feature.
   </message>
   <message name="IDS_COMPARE_EMPTY_PRODUCT_SELECTOR" desc="The text displayed in the product selector when there is no currently selected product.">
     Add a tab
@@ -559,8 +562,11 @@
   <message name="IDS_COMPARE_FEEDBACK_PLACEHOLDER" desc="Placeholder text for the Compare feedback form.">
     Send feedback for Compare
   </message>
-  <message name="IDS_COMPARE_LEARN_MORE_A11Y_LABEL" desc="Accessibility label for a link labeled 'Learn more' that links to a help article about tab compare.">
-    Learn more about Compare.
+  <message name="IDS_COMPARE_LEARN_MORE" desc="Text for a link in the compare page that links to a help article about tab compare.">
+    Learn about comparison tables
+  </message>
+  <message name="IDS_COMPARE_LEARN_MORE_A11Y_LABEL" desc="Accessibility label for a link that links to a help article about tab compare.">
+    Learn about comparison tables
   </message>
   <message name="IDS_COMPARE_OFFLINE_TOAST_MESSAGE" desc="The message that shows when tab compare is offline.">
     Check your connection and try again.
@@ -598,8 +604,29 @@
   <message name="IDS_COMPARE_SUGGESTIONS_SECTION" desc="The title of the section in the product selection drop-down in the tab compare UI that shows a list of tabs suggested by the browser to be put into the table.">
     Suggestions
   </message>
+  <message name="IDS_COMPARE_TABLE_MENU_A11Y_LABEL" desc="The accessibility label for the 3-dot menu containing actions for the table in the compare UI.">
+    More actions for Compare table
+  </message>
+  <message name="IDS_COMPARE_TITLE_INPUT_A11Y_LABEL" desc="The accessibility label for the input field for the table name in the compare feature's UI.">
+    Compare table title, edit text
+  </message>
   <message name="IDS_TOOLTIP_COMPARE_ENTRY_POINT_CLOSE" desc="The tooltip text for the close button within the Compare entry point button.">
     Dismiss suggestion
+  </message>
+  <message name="IDS_COMPARE_SYNC_PROMO_MESSAGE" desc="The message on the sync promo for compare when user does not have sync enabled.">
+    Compare products
+  </message>
+  <message name="IDS_COMPARE_SYNC_PROMO_DESCRIPTION" desc="The description on the sync promo for compare when user does not have sync enabled">
+    To see comparison tables, turn on sync
+  </message>
+  <message name="IDS_COMPARE_SYNC_PROMO_BUTTON" desc="The text on the sync button of the sync promo for compare, when user does not have sync enabled.">
+    Turn on sync
+  </message>
+  <message name="IDS_COMPARE_ERROR_TITLE" desc="The title for the error message in the compare UI when data cannot be loaded.">
+    Compare isn't available right now
+  </message>
+  <message name="IDS_COMPARE_ERROR_DESCRIPTION" desc="The description in the compare UI when data cannot be loaded.">
+    Something went wrong. Try again later
   </message>
   <!-- For Compare Disclosure -->
   <message name="IDS_COMPARE_DISCLOSURE_TITLE" desc="The text for the title of the Compare first-run experience disclosure bubble.">
@@ -618,7 +645,7 @@
     Comparison tables are saved to your account <ph name="EMAIL">$1<ex>test@gmail.com</ex></ph>
   </message>
   <message name="IDS_COMPARE_DISCLOSURE_DATA_ITEM" desc="The text for the Compare disclosure item that states who might see the data.">
-    Data may be seen by trained reviewers to improve the feature
+    Data may be seen by trained reviewers to improve this feature
   </message>
   <message name="IDS_COMPARE_DISCLOSURE_LEARN_MORE" desc="The text for the Compare disclosure statement if user wants to learn more about the feature.">
     <ph name="BEGIN_LINK">&lt;a href="#"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph> about comparison tables

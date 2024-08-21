@@ -474,15 +474,24 @@ For more settings that use data to improve your Brave experience, go to <ph name
         You can choose your search engine
       </message>
 
-      <!-- Search engine choice screen. TODO(b/280753530): replace with final versions -->
-      <message name="IDS_SEARCH_ENGINE_CHOICE_SCREEN_TITLE" desc="" translateable="false">
-        *Title*
+      <!-- Blocking choice dialog strings. TODO(b/355054464): replace with final versions -->
+      <message name="IDS_BLOCKING_CHOICE_DIALOG_FIRST_TITLE" desc="" translateable="false">
+        To continue, update your Android settings
       </message>
-      <message name="IDS_SEARCH_ENGINE_CHOICE_SCREEN_SUBTITLE" desc="" translateable="false">
-        *Subtitle*
+      <message name="IDS_BLOCKING_CHOICE_DIALOG_FIRST_MESSAGE" desc="" translateable="false">
+        Based on a law in your region, your need to finish selecting your device\u2019s default apps
       </message>
-      <message name="IDS_SEARCH_ENGINE_CHOICE_SCREEN_PRIMARY_ACTION" desc="" translateable="false">
-        *Primary Action*
+      <message name="IDS_BLOCKING_CHOICE_DIALOG_FIRST_BUTTON" desc="" translateable="false">
+        Next
+      </message>
+      <message name="IDS_BLOCKING_CHOICE_DIALOG_SECOND_TITLE" desc="" translateable="false">
+        You're all set!
+      </message>
+      <message name="IDS_BLOCKING_CHOICE_DIALOG_SECOND_MESSAGE" desc="" translateable="false">
+        If you have selected another browser it will be downloaded in the background
+      </message>
+      <message name="IDS_BLOCKING_CHOICE_DIALOG_SECOND_BUTTON" desc="" translateable="false">
+        Got it
       </message>
 
       <!-- Autofill and Payments preferences -->
@@ -590,8 +599,16 @@ For more settings that use data to improve your Brave experience, go to <ph name
         Disabled by the administrator of this device
       </message>
       <!-- TODO(crbug.com/40898980): Use finalized string.-->
-      <message translateable="false" name="IDS_AUTOFILL_OPTIONS_HINT_3P_SETTING" desc="Explanation that a 3P password manager must be selected to toggle the use of third-party autofill in Brave." formatter_data="android_java">
-        Disabled because a different password manager must be set up in <ph name="BEGIN_LINK">&lt;link&gt;</ph>Android System Settings<ph name="END_LINK">&lt;/link&gt;</ph> to use this setting.
+      <message translateable="false" name="IDS_AUTOFILL_OPTIONS_HINT_3P_SETTING_DISABLED" desc="Explanation that a 3P password manager must be selected to toggle the use of third-party autofill in Brave." formatter_data="android_java">
+        Disabled because a different autofill service must be set up in <ph name="BEGIN_LINK">&lt;link&gt;</ph>Android System Settings<ph name="END_LINK">&lt;/link&gt;</ph> to use this setting.
+      </message>
+      <!-- TODO(crbug.com/40898980): Use finalized string.-->
+      <message translateable="false" name="IDS_AUTOFILL_OPTIONS_HINT_3P_SETTING_READY" desc="Explanation that third-party autofill in Brave will defer to the 3P password manager as selected in Android settings." formatter_data="android_java">
+        Ready to use the autofill service that is configured in <ph name="BEGIN_LINK">&lt;link&gt;</ph>Android System Settings<ph name="END_LINK">&lt;/link&gt;</ph>.
+      </message>
+      <!-- TODO(crbug.com/40898980): Use finalized string.-->
+      <message translateable="false" name="IDS_AUTOFILL_OPTIONS_HINT_3P_IN_INCOGNITO" desc="Explanation that a 3P password manager may prompt to save passwords in private." formatter_data="android_java">
+        Note: When using “other providers”, the browser informs the configured AutofillService about sites and fields visited in private.\nThe AutofillService uses this information to autofill your data and may store data in the process. Autofill data saved in private mode is stored even after private mode ends and available outside private mode.
       </message>
       <message name="IDS_AUTOFILL_DELETE_SAVED_CVCS_CONFIRMATION_DIALOG_TITLE" desc="Title for the dialog where the user confirms their intention to delete their saved CVCs.">
         Delete saved security codes?
@@ -836,6 +853,24 @@ For more settings that use data to improve your Brave experience, go to <ph name
       <message name="IDS_PWD_ACCESS_LOSS_WARNING_NO_GMS_CORE_BUTTON_TEXT" desc="The button text of the password access loss warning sheet when there is no GMS Core." formatter_data="android_java">
         Export passwords
       </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_MANUAL_MIGRATION_TITLE" desc="The title of the password access loss warning sheet when the automatic password migration failed." formatter_data="android_java">
+        Fix problem with saved passwords
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_MANUAL_MIGRATION_TEXT" desc="The text of the password access loss warning sheet when the automatic password migration failed." formatter_data="android_java">
+        Some passwords on this device will stop working soon. You can move these passwords to Brave Password Manager.
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_MANUAL_MIGRATION_BUTTON_TEXT" desc="The button text of the password access loss warning sheet when the automatic password migration failed." formatter_data="android_java">
+        Help me fix this
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_UPDATE_GMS_CORE_TITLE" desc="The title of the password access loss warning sheet when the GMS Core version doesn't support local passwords." formatter_data="android_java">
+        Update Google Play services
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_UPDATE_GMS_CORE_TEXT" desc="The text of the password access loss warning sheet when the GMS Core version doesn't support local passwords." formatter_data="android_java">
+        Passwords may stop working soon on this device. To keep using your passwords, update Google Play services. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_UPDATE_GMS_CORE_BUTTON_TEXT" desc="The button text of the password access loss warning sheet when the GMS Core version doesn't support local passwords." formatter_data="android_java">
+        Update
+      </message>
       <message name="IDS_PASSWORD_MIGRATION_WARNING_TITLE" desc="The title of the password migration warning sheet.">
         We’re changing how passwords are saved on this device
       </message>
@@ -940,6 +975,9 @@ For more settings that use data to improve your Brave experience, go to <ph name
       </message>
       <message name="IDS_ACCESS_LOSS_EXPORT_DIALOG_POSITIVE_BUTTON_TEXT" desc="The text on the button, confirming the user's agreement to export passwords and remove them from Brave's database.">
         Export and delete
+      </message>
+      <message name="IDS_ACCESS_LOSS_PREF_DESC" desc="The subtitle of the Brave Password Manager item in Brave main settings. Displayed only if the UPM is not functioning properly.">
+        Some passwords will stop working soon
       </message>
 
       <!-- Lock Screen Fragment -->
@@ -4247,7 +4285,7 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
         Close all tabs
       </message>
       <message name="IDS_MENU_CLOSE_ALL_INCOGNITO_TABS" desc="Menu item for closing all open Private tabs. [CHAR_LIMIT=27]">
-        Close Private tabs
+        Close all Private tabs
       </message>
       <message name="IDS_MENU_SELECT_TABS" desc="Menu item for bulk editing tabs. [CHAR_LIMIT=27]">
         Select tabs
@@ -4731,6 +4769,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       <message name="IDS_ACCESSIBILITY_INCOGNITO_BADGE" desc="Content description for the badge indicating that the user is in Private mode.">
         Private mode
       </message>
+      <message name="IDS_INCOGNITO_BADGE" desc="Text appearing in the private badge on toolbar indicating that the user is in Private mode.">
+        Private
+      </message>
 
       <message name="IDS_TABSWITCHER_NO_TABS_EMPTY_STATE" desc="Text appearing on an empty tab switcher that indicates that tabs opened will appear here.">
         You’ll find your tabs here
@@ -4827,9 +4868,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_ACCESSIBILITY_OMNIBOX_MOST_VISITED_LIST" desc="Category name of the most visited sites. Announced as: 'amazon.com, 1 of 10 in list Most Visited Sites, 10 items.'">
         Most visited sites
-      </message>
-      <message name="IDS_ACCESSIBILITY_OMNIBOX_QUERY_TILES_LIST" desc="Category name of the most visited sites. Announced as: 'News, 1 of 10 in list Query Tiles, 10 items.'">
-        Query tiles
       </message>
 
       <message name="IDS_ACCESSIBILITY_SHARE_SELECTED_ITEMS" desc="Content description for the button to share selected items. [ICU Syntax]">
@@ -5439,6 +5477,18 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_IPH_ANDROID_TAB_DECLUTTER_ACCESSIBILITY_TEXT" desc="The in-product-help accessibility text for the android tab declutter feature.">
         To open tabs and visit different pages at the same time, tap the open tabs button
+      </message>
+      <message name="IDS_IPH_TAB_SWITCHER_SWITCH_INTO_INCOGNITO_TEXT" desc="The in-product-help message to long press the tab switcher button to switch to private.">
+        Touch and hold to switch to Private
+      </message>
+      <message name="IDS_IPH_TAB_SWITCHER_SWITCH_INTO_INCOGNITO_ACCESSIBILITY_TEXT" desc="The in-product-help message to long press the tab switcher button to switch to private.">
+        Double tap and hold to switch to Private
+      </message>
+      <message name="IDS_IPH_TAB_SWITCHER_SWITCH_OUT_OF_INCOGNITO_TEXT" desc="The in-product-help message to long press the tab switcher button to switch to private.">
+        Touch and hold to switch out of Private
+      </message>
+      <message name="IDS_IPH_TAB_SWITCHER_SWITCH_OUT_OF_INCOGNITO_ACCESSIBILITY_TEXT" desc="The in-product-help message to long press the tab switcher button to switch to private.">
+        Double tap and hold to switch out of Private
       </message>
       <message name="IDS_IPH_TRANSLATE_MENU_BUTTON_TEXT" desc="The in-product-help message after a successful navigation prompting user to translate current page.">
         Translate this page to any language
