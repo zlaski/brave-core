@@ -49,8 +49,12 @@ namespace brave {
 // Register here for an entry that is used for all tabs and its life time is
 // tied with tab. If it has specific life time, use separated manager for
 // registering it.
-void RegisterContextualSidePanel(SidePanelRegistry* registry,
-                                 content::WebContents* web_contents) {
+void RegisterContextualSidePanel(content::WebContents* web_contents) {
+  auto* registry = SidePanelRegistry::GetDeprecated(web_contents);
+  if (!registry) {
+    return;
+  }
+
 #if BUILDFLAG(ENABLE_AI_CHAT)
   content::BrowserContext* context = web_contents->GetBrowserContext();
   if (ai_chat::IsAIChatEnabled(user_prefs::UserPrefs::Get(context)) &&
