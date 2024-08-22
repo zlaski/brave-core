@@ -10,15 +10,12 @@ namespace content {
 class WebContents;
 }  // namespace content
 
-class SidePanelRegistry;
-
 namespace brave {
 
 // Register per-tab(contextual) side-panel registry.
 // Defined at //brave/browser/ui/views/side_panel/brave_side_panel_utils.cc as
 // the implementation is view-layer specific.
-void RegisterContextualSidePanel(SidePanelRegistry* registry,
-                                 content::WebContents* web_contents);
+void RegisterContextualSidePanel(content::WebContents* web_contents);
 
 }  // namespace brave
 
