@@ -125,3 +125,13 @@ group("api") {
     ":generated_api_types",
   ]
 }
+
+group("extensions_features") {
+  public_deps = [
+    ":api_features",
+    ":behavior_features",
+    ":manifest_features",
+    ":permission_features",
+    ":resources",
+  ]
+}
