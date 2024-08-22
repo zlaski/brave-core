@@ -105,6 +105,11 @@ function Main() {
   const showAgreementModal = !aiChatContext.hasAcceptedAgreement &&
       conversationContext.conversationHistory.length
 
+  const conversationToShowInHeader =
+    (!aiChatContext.isStandalone && !aiChatContext.isDefaultConversation)
+      ? aiChatContext.visibleConversations.find(c => c.uuid === aiChatContext.selectedConversationId)
+      : undefined
+
   const inputFocused = React.useRef(false)
   const viewPortWithoutKeyboard = React.useRef(0)
   const keyboardSize = React.useRef(0)
@@ -167,7 +172,6 @@ function Main() {
         <div className={styles.conversationList}>
           <SidebarNav
             enableBackButton={true}
-            isConversationListOpen={isConversationListOpen}
             setIsConversationListOpen={setIsConversationListOpen}
           />
         </div>
@@ -176,7 +180,7 @@ function Main() {
       <PageTitleHeader ref={headerElement}
         isConversationListOpen={isConversationListOpen}
         setIsConversationListOpen={setIsConversationListOpen}
-        title={aiChatContext.selectedConversationId}
+        title={conversationToShowInHeader?.title ? conversationToShowInHeader.title : conversationToShowInHeader?.summary ? conversationToShowInHeader.summary : conversationToShowInHeader?.uuid}
       />
       <div className={classnames({
         [styles.scroller]: true,

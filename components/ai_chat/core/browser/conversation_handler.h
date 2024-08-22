@@ -119,6 +119,8 @@ class ConversationHandler : public mojom::ConversationHandler,
         ConversationHandler* handler,
         std::vector<mojom::ConversationTurnPtr> entries) {}
     virtual void OnClientConnectionChanged(ConversationHandler* handler) {}
+    virtual void OnConversationTitleChanged(ConversationHandler* handler,
+                                std::string title) {}
   };
 
   ConversationHandler(
@@ -141,6 +143,7 @@ class ConversationHandler : public mojom::ConversationHandler,
 
   bool IsAnyClientConnected();
   bool HasAnyHistory();
+  void OnConversationDeleted();
 
   // Called when the associated content is destroyed or navigated away. If
   // it's a navigation, the AssociatedContentDelegate will set itself to a new
@@ -156,6 +159,7 @@ class ConversationHandler : public mojom::ConversationHandler,
   const std::vector<mojom::ConversationTurnPtr>& GetConversationHistory();
 
   // mojom::ConversationHandler
+  void GetConversationId(GetConversationIdCallback callback) override;
   void GetConversationHistory(GetConversationHistoryCallback callback) override;
   void RateMessage(bool is_liked,
                    uint32_t turn_id,
@@ -276,7 +280,9 @@ class ConversationHandler : public mojom::ConversationHandler,
   void OnHistoryUpdate();
   void OnSuggestedQuestionsChanged();
   void OnAssociatedContentInfoChanged();
+  void OnConversationEntriesChanged();
   void OnClientConnectionChanged();
+  void OnConversationTitleChanged(std::string title);
   void OnAssociatedContentFaviconImageDataChanged();
   void OnAPIRequestInProgressChanged();
 
