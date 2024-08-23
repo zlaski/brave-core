@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.chromium.base.ApplicationStatus;
 import org.chromium.base.ContextUtils;
 import org.chromium.chrome.browser.notifications.NotificationPlatformBridge.NotificationIdentifyingAttributes;
@@ -88,5 +90,10 @@ public class BraveNotificationPlatformBridge {
         }
 
         return result;
+    }
+
+    @VisibleForTesting
+    public static Class<ActionInfo[]> getActionInfoArrayClass() {
+        return ActionInfo[].class;
     }
 }

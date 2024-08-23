@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -74,6 +75,9 @@ import org.chromium.chrome.browser.lifecycle.ActivityLifecycleDispatcher;
 import org.chromium.chrome.browser.multiwindow.MultiInstanceManager;
 import org.chromium.chrome.browser.multiwindow.MultiWindowModeStateDispatcher;
 import org.chromium.chrome.browser.new_tab_url.DseNewTabUrlManager;
+import org.chromium.chrome.browser.notifications.BraveNotificationPlatformBridge;
+import org.chromium.chrome.browser.notifications.NotificationBuilderBase;
+import org.chromium.chrome.browser.notifications.NotificationPlatformBridge.NotificationIdentifyingAttributes;
 import org.chromium.chrome.browser.ntp.NewTabPageUma;
 import org.chromium.chrome.browser.omnibox.BackKeyBehaviorDelegate;
 import org.chromium.chrome.browser.omnibox.BraveLocationBarMediator;
@@ -335,6 +339,9 @@ public class BytecodeTest {
         Assert.assertTrue(
                 classExists(
                         "org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAdvanced")); // presubmit: ignore-long-line
+        Assert.assertTrue(
+                classExists(
+                        "org/chromium/chrome/browser/notifications/NotificationPlatformBridge"));
     }
 
     @Test
@@ -804,6 +811,33 @@ public class BytecodeTest {
                         true,
                         int.class,
                         Context.class));
+        Assert.assertTrue(
+                methodExists(
+                        "org/chromium/chrome/browser/notifications/NotificationPlatformBridge",
+                        "dispatchNotificationEvent",
+                        MethodModifier.STATIC,
+                        true,
+                        boolean.class,
+                        Intent.class));
+        Assert.assertTrue(
+                methodExists(
+                        "org/chromium/chrome/browser/notifications/NotificationPlatformBridge",
+                        "prepareNotificationBuilder",
+                        MethodModifier.STATIC,
+                        true,
+                        NotificationBuilderBase.class,
+                        NotificationIdentifyingAttributes.class,
+                        boolean.class,
+                        String.class,
+                        String.class,
+                        Bitmap.class,
+                        Bitmap.class,
+                        Bitmap.class,
+                        int[].class,
+                        long.class,
+                        boolean.class,
+                        boolean.class,
+                        BraveNotificationPlatformBridge.getActionInfoArrayClass()));
     }
 
     @Test
