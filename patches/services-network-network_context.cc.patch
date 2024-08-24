@@ -1,0 +1,12 @@
+diff --git a/services/network/network_context.cc b/services/network/network_context.cc
+index dff1afbe01fcd5904c50d5a546934fada8efd491..69f6e93286a6aeb5657b415aa8f47af40726d65b 100644
+--- a/services/network/network_context.cc
++++ b/services/network/network_context.cc
+@@ -1900,6 +1900,7 @@ void NetworkContext::ResolveHost(
+     mojo::PendingRemote<mojom::ResolveHostClient> response_client) {
+   // Dns request is disallowed if network access is disabled for the nonce.
+   if (network_anonymization_key.GetNonce().has_value() &&
++      host->is_scheme_host_port() &&
+       !IsNetworkForNonceAndUrlAllowed(
+           network_anonymization_key.GetNonce().value(),
+           host->get_scheme_host_port().GetURL())) {
