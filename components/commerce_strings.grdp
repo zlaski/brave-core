@@ -466,7 +466,7 @@
     Price Insights
   </message>
   <message name="IDS_PRICE_INSIGHTS_SNACKBAR_BUTTON_TITLE" desc="The snackbar button title for Price Insights when the user has notification enabled.">
-    VIEW
+    View
   </message>
   <message name="IDS_PRICE_INSIGHTS_SNACKBAR_MESSAGE_TITLE_NOTIFICATION_DISABLED" desc="The snackbar title for Price Insights when the user has notification disabled.">
     You can view price drops for products you track anytime.
@@ -478,10 +478,7 @@
     Typical price for <ph name="PRODUCT_NAME">$1<ex>iPhone 15 Pro</ex></ph> is <ph name="LOW_PRICE">$2<ex>500</ex></ph> - <ph name="HIGH_PRICE">$3<ex>600</ex></ph> but current price is <ph name="CURRENT_PRICE">$4<ex>600</ex></ph> across the web.
   </message>
   <message name="IDS_BUYING_OPTIONS_ACCESSIBILITY_DESCRIPTION" is_accessibility_with_no_ui="true" desc="Accessibility string for the buying option component of Price Insights.">
-    Open a page that shows other stores that sell this product.
-  </message>
-  <message name="IDS_PRICE_TRACKING_NOT_TRACKING_ACCESSIBILITY_DESCRIPTION" is_accessibility_with_no_ui="true" desc="Accessibility string for the price tracking button when the current product is not being tracked.">
-    Not tracking
+    Search more buying options from other stores that sell this product.
   </message>
   <message name="IDS_PRICE_TRACKING_DESCRIPTION_TRACKED" desc="The description text for the price tracking section of price insights when the product is already being tracked.">
     You're already tracking this product
@@ -604,6 +601,21 @@
   <message name="IDS_TOOLTIP_COMPARE_ENTRY_POINT_CLOSE" desc="The tooltip text for the close button within the Compare entry point button.">
     Dismiss suggestion
   </message>
+  <message name="IDS_COMPARE_SYNC_PROMO_MESSAGE" desc="The message on the sync promo for compare when user does not have sync enabled.">
+    Compare products
+  </message>
+  <message name="IDS_COMPARE_SYNC_PROMO_DESCRIPTION" desc="The description on the sync promo for compare when user does not have sync enabled">
+    To see comparison tables, turn on sync
+  </message>
+  <message name="IDS_COMPARE_SYNC_PROMO_BUTTON" desc="The text on the sync button of the sync promo for compare, when user does not have sync enabled.">
+    Turn on sync
+  </message>
+  <message name="IDS_COMPARE_ERROR_TITLE" desc="The title for the error message in the compare UI when data cannot be loaded.">
+    Compare isn't available right now
+  </message>
+  <message name="IDS_COMPARE_ERROR_DESCRIPTION" desc="The description in the compare UI when data cannot be loaded.">
+    Something went wrong. Try again later
+  </message>
   <!-- For Compare Disclosure -->
   <message name="IDS_COMPARE_DISCLOSURE_TITLE" desc="The text for the title of the Compare first-run experience disclosure bubble.">
     Brave can help you compare similar products side-by-side
@@ -621,7 +633,7 @@
     Comparison tables are saved to your account <ph name="EMAIL">$1<ex>test@gmail.com</ex></ph>
   </message>
   <message name="IDS_COMPARE_DISCLOSURE_DATA_ITEM" desc="The text for the Compare disclosure item that states who might see the data.">
-    Data may be seen by trained reviewers to improve the feature
+    Data may be seen by trained reviewers to improve this feature
   </message>
   <message name="IDS_COMPARE_DISCLOSURE_LEARN_MORE" desc="The text for the Compare disclosure statement if user wants to learn more about the feature.">
     <ph name="BEGIN_LINK">&lt;a href="#"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph> about comparison tables

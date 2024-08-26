@@ -199,7 +199,7 @@ CHAR_LIMIT guidelines:
         New Private tab
       </message>
       <message name="IDS_MENU_CLOSE_ALL_INCOGNITO_TABS" desc="Menu item for closing all open Private tabs. [CHAR_LIMIT=27]">
-        Close Private tabs
+        Close all Private tabs
       </message>
       <message name="IDS_MENU_SWITCH_TO_INCOGNITO" desc="Menu item for switching to private.">
         Switch to Private

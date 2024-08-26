@@ -845,6 +845,24 @@ For more settings that use data to improve your Brave experience, go to <ph name
       <message name="IDS_PWD_ACCESS_LOSS_WARNING_NO_GMS_CORE_BUTTON_TEXT" desc="The button text of the password access loss warning sheet when there is no GMS Core." formatter_data="android_java">
         Export passwords
       </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_MANUAL_MIGRATION_TITLE" desc="The title of the password access loss warning sheet when the automatic password migration failed." formatter_data="android_java">
+        Fix problem with saved passwords
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_MANUAL_MIGRATION_TEXT" desc="The text of the password access loss warning sheet when the automatic password migration failed." formatter_data="android_java">
+        Some passwords on this device will stop working soon. You can move these passwords to Brave Password Manager.
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_MANUAL_MIGRATION_BUTTON_TEXT" desc="The button text of the password access loss warning sheet when the automatic password migration failed." formatter_data="android_java">
+        Help me fix this
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_UPDATE_GMS_CORE_TITLE" desc="The title of the password access loss warning sheet when the GMS Core version doesn't support local passwords." formatter_data="android_java">
+        Update Google Play services
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_UPDATE_GMS_CORE_TEXT" desc="The text of the password access loss warning sheet when the GMS Core version doesn't support local passwords." formatter_data="android_java">
+        Passwords may stop working soon on this device. To keep using your passwords, update Google Play services. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
+      </message>
+      <message name="IDS_PWD_ACCESS_LOSS_WARNING_UPDATE_GMS_CORE_BUTTON_TEXT" desc="The button text of the password access loss warning sheet when the GMS Core version doesn't support local passwords." formatter_data="android_java">
+        Update
+      </message>
       <message name="IDS_PASSWORD_MIGRATION_WARNING_TITLE" desc="The title of the password migration warning sheet.">
         We’re changing how passwords are saved on this device
       </message>
@@ -949,6 +967,9 @@ For more settings that use data to improve your Brave experience, go to <ph name
       </message>
       <message name="IDS_ACCESS_LOSS_EXPORT_DIALOG_POSITIVE_BUTTON_TEXT" desc="The text on the button, confirming the user's agreement to export passwords and remove them from Brave's database.">
         Export and delete
+      </message>
+      <message name="IDS_ACCESS_LOSS_PREF_DESC" desc="The subtitle of the Brave Password Manager item in Brave main settings. Displayed only if the UPM is not functioning properly.">
+        Some passwords will stop working soon
       </message>
 
       <!-- Lock Screen Fragment -->
@@ -4256,7 +4277,7 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
         Close all tabs
       </message>
       <message name="IDS_MENU_CLOSE_ALL_INCOGNITO_TABS" desc="Menu item for closing all open Private tabs. [CHAR_LIMIT=27]">
-        Close Private tabs
+        Close all Private tabs
       </message>
       <message name="IDS_MENU_SELECT_TABS" desc="Menu item for bulk editing tabs. [CHAR_LIMIT=27]">
         Select tabs
@@ -4836,9 +4857,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Brave da
       </message>
       <message name="IDS_ACCESSIBILITY_OMNIBOX_MOST_VISITED_LIST" desc="Category name of the most visited sites. Announced as: 'amazon.com, 1 of 10 in list Most Visited Sites, 10 items.'">
         Most visited sites
-      </message>
-      <message name="IDS_ACCESSIBILITY_OMNIBOX_QUERY_TILES_LIST" desc="Category name of the most visited sites. Announced as: 'News, 1 of 10 in list Query Tiles, 10 items.'">
-        Query tiles
       </message>
 
       <message name="IDS_ACCESSIBILITY_SHARE_SELECTED_ITEMS" desc="Content description for the button to share selected items. [ICU Syntax]">
