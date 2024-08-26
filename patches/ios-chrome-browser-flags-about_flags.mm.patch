@@ -1,5 +1,5 @@
 diff --git a/ios/chrome/browser/flags/about_flags.mm b/ios/chrome/browser/flags/about_flags.mm
-index a25298173504ab4e5b138404270919d10e0d92b4..4eef39014c12f8cc80743e6343ee7b126aaa3246 100644
+index bc0e83fcb23c7dc0ebdc438ce72d0dcbf17adfd0..bf0c26b49deed93df6b163cfb897781a445e0383 100644
 --- a/ios/chrome/browser/flags/about_flags.mm
 +++ b/ios/chrome/browser/flags/about_flags.mm
 @@ -987,6 +987,7 @@ const FeatureEntry::FeatureVariation kTabResumption2Variations[] = {

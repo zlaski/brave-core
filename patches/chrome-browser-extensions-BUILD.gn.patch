@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/extensions/BUILD.gn b/chrome/browser/extensions/BUILD.gn
-index 87c265a54975b1561b95fe1a8c7a6641fd45b46f..dfb7553c9fd29d428a8f5f0e8c5bf931f1e48c2d 100644
+index 92688d1c634626fbf7bd0157dc420a3747735a13..19479104cdf8197604c3b8cd0806bf7f9b4730a6 100644
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -1581,6 +1581,7 @@ source_set("extensions") {
+@@ -1583,6 +1583,7 @@ source_set("extensions") {
        "//components/enterprise/data_controls/core/browser",
      ]
    }
