@@ -1191,6 +1191,9 @@ void ConversationDriver::PerformAssistantGeneration(
                          std::move(data_received_callback),
                          std::move(data_completed_callback), page_content,
                          is_video));
+      UpdateOrCreateLastAssistantEntry(
+          mojom::ConversationEntryEvent::NewPageContentRefineEvent(
+              mojom::PageContentRefineEvent::New()));
     } else {
       text_embedder_->Initialize(base::BindOnce(
           &ConversationDriver::OnTextEmbedderInitialized,
@@ -1220,6 +1223,9 @@ void ConversationDriver::OnTextEmbedderInitialized(
                        std::move(data_received_callback),
                        std::move(data_completed_callback), page_content,
                        is_video));
+    UpdateOrCreateLastAssistantEntry(
+        mojom::ConversationEntryEvent::NewPageContentRefineEvent(
+            mojom::PageContentRefineEvent::New()));
   } else {
     VLOG(1) << "Failed to initialize TextEmbedder";
     engine_->GenerateAssistantResponse(
