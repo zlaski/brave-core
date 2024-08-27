@@ -120,7 +120,7 @@ class ConversationHandler : public mojom::ConversationHandler,
         std::vector<mojom::ConversationTurnPtr> entries) {}
     virtual void OnClientConnectionChanged(ConversationHandler* handler) {}
     virtual void OnConversationTitleChanged(ConversationHandler* handler,
-                                std::string title) {}
+                                            std::string title) {}
   };
 
   ConversationHandler(
