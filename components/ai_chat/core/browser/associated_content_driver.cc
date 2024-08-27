@@ -161,6 +161,7 @@ void AssociatedContentDriver::OnNewPage(int64_t navigation_id) {
   cached_text_content_.clear();
   content_invalidation_token_.clear();
   is_video_ = false;
+  ConversationHandler::AssociatedContentDelegate::OnNewPage(navigation_id);
 }
 
 }  // namespace ai_chat
