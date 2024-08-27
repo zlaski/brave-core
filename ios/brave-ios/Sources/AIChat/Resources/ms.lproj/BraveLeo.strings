@@ -13,9 +13,6 @@
 /* The title for the settings to change default model for conversations */
 "aichat.advancedSettingsDefaultModelTitle" = "Model Lalai";
 
-/* The title for the header for adjusting leo ai settings */
-"aichat.advancedSettingsHeaderTitle" = "Leo ialah pembantu pintar yang dikuasakan oleh AI. Terbina terus dalam pelayar.";
-
 /* The subtitle for the button which links purchase to Brave Account */
 "aichat.advancedSettingsLinkPurchaseActionSubTitle" = "Pautkan pembelian App Store anda pada akaun Brave anda untuk menggunakan Leo pada peranti lain.";
 

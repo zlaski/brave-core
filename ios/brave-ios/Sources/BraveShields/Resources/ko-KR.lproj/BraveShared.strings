@@ -145,8 +145,14 @@
 /* This is a placeholder for the custom filter list url text field where a user may enter a custom filter list URL */
 "FilterListURLTextFieldPlaceholder" = "여기에 필터 목록 URL 입력";
 
+/* A description of what the forget me toggle does */
+"ForgetMeDescription" = "사이트를 닫을 때 쿠키와 다른 사이트 데이터 삭제";
+
 /* The option the user can select to do strict https upgrading */
 "HttpsUpgradeLevelStrict" = "엄격";
+
+/* An option setting for never automatically shreding site data */
+"ShredNever" = "사용하지 않음";
 
 /* A page title for the warning page that appears when http was blocked */
 "SiteIsNotSecure" = "사이트가 비보안임";

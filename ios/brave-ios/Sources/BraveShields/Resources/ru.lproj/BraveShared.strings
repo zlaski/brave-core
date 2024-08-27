@@ -145,8 +145,14 @@
 /* This is a placeholder for the custom filter list url text field where a user may enter a custom filter list URL */
 "FilterListURLTextFieldPlaceholder" = "Введите URL-адрес списка фильтров";
 
+/* A description of what the forget me toggle does */
+"ForgetMeDescription" = "Удалять файлы cookie и другие данные сайта после закрытия страницы.";
+
 /* The option the user can select to do strict https upgrading */
 "HttpsUpgradeLevelStrict" = "Строгое соответствие";
+
+/* An option setting for never automatically shreding site data */
+"ShredNever" = "Никогда";
 
 /* A page title for the warning page that appears when http was blocked */
 "SiteIsNotSecure" = "Небезопасный сайт";

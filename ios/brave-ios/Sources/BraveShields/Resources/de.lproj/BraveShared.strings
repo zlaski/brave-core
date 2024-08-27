@@ -145,8 +145,14 @@
 /* This is a placeholder for the custom filter list url text field where a user may enter a custom filter list URL */
 "FilterListURLTextFieldPlaceholder" = "URL der Filterliste eingeben";
 
+/* A description of what the forget me toggle does */
+"ForgetMeDescription" = "Löscht Cookies und andere Seitendaten, wenn Sie eine Seite schließen";
+
 /* The option the user can select to do strict https upgrading */
 "HttpsUpgradeLevelStrict" = "Streng";
+
+/* An option setting for never automatically shreding site data */
+"ShredNever" = "Nie";
 
 /* A page title for the warning page that appears when http was blocked */
 "SiteIsNotSecure" = "Website ist nicht sicher";

@@ -13,9 +13,6 @@
 /* The title for the settings to change default model for conversations */
 "aichat.advancedSettingsDefaultModelTitle" = "기본 모델";
 
-/* The title for the header for adjusting leo ai settings */
-"aichat.advancedSettingsHeaderTitle" = "레오는 브라우저에 바로 통합된 AI 기반 스마트 어시스턴트입니다.";
-
 /* The subtitle for the button which links purchase to Brave Account */
 "aichat.advancedSettingsLinkPurchaseActionSubTitle" = "다른 기기에서도 레오를 사용하려면 App Store 구매 항목을 Brave 계정에 연결하세요.";
 
