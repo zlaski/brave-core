@@ -89,7 +89,7 @@ class AssociatedContentDriver
 
   // To be called when a page navigation is detected and a new conversation
   // is expected.
-  void OnNewPage(int64_t navigation_id);
+  void OnNewPage(int64_t navigation_id) override;
 
   // Begin the alternative content fetching (print preview / OCR) by
   // sending a message to an observer with access to the layer this can

@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -17,6 +18,7 @@
 #include "brave/components/ai_chat/core/browser/ai_chat_credential_manager.h"
 #include "brave/components/ai_chat/core/browser/engine/engine_consumer.h"
 #include "brave/components/ai_chat/core/browser/model_service.h"
+#include "brave/components/ai_chat/core/browser/text_embedder.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-forward.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom.h"
 #include "mojo/public/cpp/bindings/pending_receiver.h"
@@ -54,6 +56,7 @@ class ConversationHandler : public mojom::ConversationHandler,
   // Supplements a conversation with associated page content
   class AssociatedContentDelegate {
    public:
+    AssociatedContentDelegate();
     virtual ~AssociatedContentDelegate();
     virtual void AddRelatedConversation(ConversationHandler* conversation) {}
     virtual void OnRelatedConversationDestroyed(
@@ -74,6 +77,38 @@ class ConversationHandler : public mojom::ConversationHandler,
     // fetch for the content.
     virtual std::string_view GetCachedTextContent() = 0;
     virtual bool GetCachedIsVideo() = 0;
+
+    void GetTopSimilarityWithPromptTilContextLimit(
+        const std::string& prompt,
+        const std::string& text,
+        uint32_t context_limit,
+        TextEmbedder::TopSimilarityCallback callback);
+
+    void SetTextEmbedderForTesting(
+        std::unique_ptr<TextEmbedder, base::OnTaskRunnerDeleter>
+            text_embedder) {
+      text_embedder_ = std::move(text_embedder);
+    }
+    TextEmbedder* GetTextEmbedderForTesting() { return text_embedder_.get(); }
+
+   protected:
+    // Content has navigated
+    virtual void OnNewPage(int64_t navigation_id);
+
+   private:
+    void OnTextEmbedderInitialized(bool initialized);
+
+    // Owned by this class so that all associated conversation can benefit from
+    // a single cache as page content is unlikely to change between messages
+    // and conversations.
+    std::unique_ptr<TextEmbedder, base::OnTaskRunnerDeleter> text_embedder_;
+    std::vector<std::tuple<const std::string&,
+                           const std::string&,
+                           uint32_t,
+                           TextEmbedder::TopSimilarityCallback>>
+        pending_top_similarity_requests_;
+
+    base::WeakPtrFactory<AssociatedContentDelegate> weak_ptr_factory_{this};
   };
 
   class Observer : public base::CheckedObserver {
@@ -194,6 +229,10 @@ class ConversationHandler : public mojom::ConversationHandler,
   void OnModelRemoved(const std::string& removed_key) override;
 
  private:
+  FRIEND_TEST_ALL_PREFIXES(PageContentRefineTest, LeoLocalModelsUpdater);
+  FRIEND_TEST_ALL_PREFIXES(PageContentRefineTest, TextEmbedder);
+  FRIEND_TEST_ALL_PREFIXES(PageContentRefineTest, TextEmbedderInitialized);
+
   void InitEngine();
   void BuildAssociatedContentInfo();
   bool IsContentAssociationPossible();
@@ -218,7 +257,13 @@ class ConversationHandler : public mojom::ConversationHandler,
                                      std::string contents_text,
                                      bool is_video,
                                      std::string invalidation_token);
-  void OnExistingGeneratePageContentComplete(GetPageContentCallback callback);
+  void OnGetRefinedPageContent(
+      const std::string& input,
+      EngineConsumer::GenerationDataCallback data_received_callback,
+      EngineConsumer::GenerationCompletedCallback data_completed_callback,
+      std::string page_content,
+      bool is_video,
+      base::expected<std::string, std::string> refined_page_content);
   void OnEngineCompletionDataReceived(int associated_content_uuid,
                                       mojom::ConversationEntryEventPtr result);
   void OnEngineCompletionComplete(int associated_content_uuid,
@@ -274,6 +319,7 @@ class ConversationHandler : public mojom::ConversationHandler,
   // but change AssociatedContentDelegate as the active Tab navigates to
   // different pages.
   bool should_send_page_contents_ = false;
+  bool is_content_refined_ = false;
 
   bool is_print_preview_fallback_requested_ = false;
 
