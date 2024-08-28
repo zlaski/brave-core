@@ -117,12 +117,6 @@ class TxService : public mojom::TxService,
                         const std::string& tx_meta_id,
                         RetryTransactionCallback callback) override;
 
-  void GetTransactionMessageToSign(
-      mojom::CoinType coin_type,
-      const std::string& chain_id,
-      const std::string& tx_meta_id,
-      GetTransactionMessageToSignCallback callback) override;
-
   void AddObserver(
       ::mojo::PendingRemote<mojom::TxServiceObserver> observer) override;
 
@@ -184,13 +178,15 @@ class TxService : public mojom::TxService,
       const std::string& chain_id,
       const std::string& tx_meta_id,
       GetNonceForHardwareTransactionCallback callback) override;
-  void ProcessHardwareSignature(
-      const std::string& chain_id,
+  void GetEthTransactionMessageToSign(
+      const std::string& tx_meta_id,
+      GetEthTransactionMessageToSignCallback callback) override;
+  void ProcessEthHardwareSignature(
       const std::string& tx_meta_id,
       const std::string& v,
       const std::string& r,
       const std::string& s,
-      ProcessHardwareSignatureCallback callback) override;
+      ProcessEthHardwareSignatureCallback callback) override;
   // Gas estimation API via eth_feeHistory API
   void GetGasEstimation1559(const std::string& chain_id,
                             GetGasEstimation1559Callback callback) override;
@@ -224,16 +220,19 @@ class TxService : public mojom::TxService,
       const std::string& from_wallet_address,
       const std::string& to_wallet_address,
       MakeBubbleGumProgramTransferTxDataCallback callback) override;
-
-  void ProcessSolanaHardwareSignature(
-      const std::string& chain_id,
+  void GetSolTransactionMessageToSign(
       const std::string& tx_meta_id,
-      const std::vector<uint8_t>& signature,
+      GetSolTransactionMessageToSignCallback callback) override;
+  void ProcessSolanaHardwareSignature(
+      const std::string& tx_meta_id,
+      mojom::SignatureBytesPtr signature,
       ProcessSolanaHardwareSignatureCallback callback) override;
 
   // mojom::FilTxManagerProxy
+  void GetFilTransactionMessageToSign(
+      const std::string& tx_meta_id,
+      GetFilTransactionMessageToSignCallback callback) override;
   void ProcessFilHardwareSignature(
-      const std::string& chain_id,
       const std::string& tx_meta_id,
       const std::string& signed_message,
       ProcessFilHardwareSignatureCallback callback) override;

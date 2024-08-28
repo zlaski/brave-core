@@ -8,7 +8,8 @@ import {
   SignHardwareTransactionType,
   SignHardwareOperationResult,
   FetchHardwareWalletAccountsProps,
-  GetAccountsHardwareOperationResult
+  GetAccountsHardwareOperationResult,
+  SignMessageHardwareOperationResult
 } from '../hardware/types'
 import { StatusCodes as LedgerStatusCodes } from '@ledgerhq/errors'
 import { getLocale } from '../../../common/locale'
@@ -118,8 +119,7 @@ export async function signTrezorTransaction(
     return { success: false }
   }
   const { v, r, s } = ethereumSignedTx
-  const result = await apiProxy.ethTxManagerProxy.processHardwareSignature(
-    tx.chainId,
+  const result = await apiProxy.ethTxManagerProxy.processEthHardwareSignature(
     tx.id,
     v,
     r,
@@ -151,22 +151,16 @@ export async function signLedgerEthereumTransaction(
       error: getLocale('braveWalletApproveTransactionError')
     }
   }
-  const data = await apiProxy.txService.getTransactionMessageToSign(
-    coin,
-    txInfo.chainId,
-    txInfo.id
-  )
-  if (!data || !data.message || !data.message.messageStr) {
+  const { hexMessage } =
+    await apiProxy.ethTxManagerProxy.getEthTransactionMessageToSign(txInfo.id)
+  if (!hexMessage) {
     return {
       success: false,
       error: getLocale('braveWalletNoMessageToSignError')
     }
   }
 
-  const signed = await deviceKeyring.signTransaction(
-    path,
-    data.message.messageStr?.replace('0x', '')
-  )
+  const signed = await deviceKeyring.signTransaction(path, hexMessage)
 
   if (!signed || !signed.success || !signed.payload) {
     const error = signed?.error ?? getLocale('braveWalletSignOnDeviceError')
@@ -174,8 +168,7 @@ export async function signLedgerEthereumTransaction(
     return { success: false, error: error, code: code }
   }
   const { v, r, s } = signed.payload as EthereumSignedTx
-  const result = await apiProxy.ethTxManagerProxy.processHardwareSignature(
-    txInfo.chainId,
+  const result = await apiProxy.ethTxManagerProxy.processEthHardwareSignature(
     txInfo.id,
     '0x' + v,
     '0x' + r,
@@ -196,19 +189,16 @@ export async function signLedgerFilecoinTransaction(
   coin: BraveWallet.CoinType,
   deviceKeyring: LedgerFilecoinKeyring = getLedgerFilecoinHardwareKeyring()
 ): Promise<SignHardwareOperationResult> {
-  const data = await apiProxy.txService.getTransactionMessageToSign(
-    coin,
-    txInfo.chainId,
-    txInfo.id
-  )
-  if (!data || !data.message || !data.message.messageStr) {
+  const { jsonMessage } =
+    await apiProxy.filTxManagerProxy.getFilTransactionMessageToSign(txInfo.id)
+  if (!jsonMessage) {
     return {
       success: false,
       error: getLocale('braveWalletNoMessageToSignError')
     }
   }
 
-  const signed = await deviceKeyring.signTransaction(data.message.messageStr)
+  const signed = await deviceKeyring.signTransaction(jsonMessage)
   if (!signed || !signed.success || !signed.payload) {
     const error = signed?.error ?? getLocale('braveWalletSignOnDeviceError')
     const code = signed?.code ?? ''
@@ -220,7 +210,6 @@ export async function signLedgerFilecoinTransaction(
   }
 
   const result = await apiProxy.filTxManagerProxy.processFilHardwareSignature(
-    txInfo.chainId,
     txInfo.id,
     JSON.stringify(signedMessage)
   )
@@ -240,21 +229,17 @@ export async function signLedgerSolanaTransaction(
   coin: BraveWallet.CoinType,
   deviceKeyring: LedgerSolanaKeyring = getLedgerSolanaHardwareKeyring()
 ): Promise<SignHardwareOperationResult> {
-  const data = await apiProxy.txService.getTransactionMessageToSign(
-    coin,
-    txInfo.chainId,
-    txInfo.id
-  )
-  if (!data || !data.message || !data.message.messageBytes) {
+  const { message } =
+    await apiProxy.solanaTxManagerProxy.getSolTransactionMessageToSign(
+      txInfo.id
+    )
+  if (!message) {
     return {
       success: false,
       error: getLocale('braveWalletNoMessageToSignError')
     }
   }
-  const signed = await deviceKeyring.signTransaction(
-    path,
-    Buffer.from(data.message.messageBytes)
-  )
+  const signed = await deviceKeyring.signTransaction(path, Buffer.from(message))
   if (!signed || !signed.success || !signed.payload) {
     const error = signed?.error ?? getLocale('braveWalletSignOnDeviceError')
     const code = signed?.code ?? ''
@@ -268,9 +253,8 @@ export async function signLedgerSolanaTransaction(
 
   const result =
     await apiProxy.solanaTxManagerProxy.processSolanaHardwareSignature(
-      txInfo.chainId,
       txInfo.id,
-      [...signedMessage]
+      { signatureBytes: [...signedMessage] }
     )
   if (!result || !result.status) {
     return {
@@ -286,7 +270,7 @@ export async function signMessageWithHardwareKeyring(
   vendor: BraveWallet.HardwareVendor,
   path: string,
   messageData: Omit<BraveWallet.SignMessageRequest, 'originInfo'>
-): Promise<SignHardwareOperationResult> {
+): Promise<SignMessageHardwareOperationResult> {
   const deviceKeyring = getHardwareKeyring(vendor, messageData.coin)
   const signTypedData = messageData.signData.ethSignTypedData
   const standardSignData = messageData.signData.ethStandardSignData
@@ -343,20 +327,20 @@ export async function signMessageWithHardwareKeyring(
   return { success: false, error: getLocale('braveWalletUnknownKeyringError') }
 }
 
-export async function signRawTransactionWithHardwareKeyring(
+export async function signSolTransactionWithHardwareKeyring(
   vendor: BraveWallet.HardwareVendor,
   path: string,
-  message: BraveWallet.ByteArrayStringUnion,
+  message: Buffer,
   onAuthorized?: () => void
-): Promise<SignHardwareOperationResult> {
+): Promise<SignMessageHardwareOperationResult> {
   const deviceKeyring = getHardwareKeyring(
     vendor,
     BraveWallet.CoinType.SOL,
     onAuthorized
   )
 
-  if (deviceKeyring instanceof SolanaLedgerBridgeKeyring && message.bytes) {
-    return deviceKeyring.signTransaction(path, Buffer.from(message.bytes))
+  if (deviceKeyring instanceof SolanaLedgerBridgeKeyring) {
+    return deviceKeyring.signTransaction(path, message)
   }
 
   assertNotReached(`Unsupported  vendor ${vendor}`)

@@ -190,7 +190,7 @@ public class SignTransactionFragment extends BaseDAppsBottomSheetDialogFragment 
                 originInfo = mSignTransactionRequest.originInfo;
                 chainId = mSignTransactionRequest.chainId;
                 break;
-            case SIGN_ALL_TRANSACTIONS:
+            case SIGN_SOL_TRANSACTIONS:
                 if (mTxRequestNumber >= mSignAllTransactionRequests.size()) {
                     mTxRequestNumber = 0;
                 }
@@ -254,7 +254,7 @@ public class SignTransactionFragment extends BaseDAppsBottomSheetDialogFragment 
                     return;
                 }
                 break;
-            case SIGN_ALL_TRANSACTIONS:
+            case SIGN_SOL_TRANSACTIONS:
                 if (mSignAllTransactionRequests.size() == 0) return;
                 if (mTxRequestNumber >= mSignAllTransactionRequests.size()) {
                     mTxRequestNumber = 0;
@@ -290,8 +290,8 @@ public class SignTransactionFragment extends BaseDAppsBottomSheetDialogFragment 
                             updateSignDataAndDetails();
                         });
                 break;
-            case SIGN_ALL_TRANSACTIONS:
-                mWalletModel.getDappsModel().fetchSignAllTxRequest().observe(
+            case SIGN_SOL_TRANSACTIONS:
+                mWalletModel.getDappsModel().fetchSignSolTransactionsRequest().observe(
                         getViewLifecycleOwner(), requests -> {
                             if (requests.size() == 0) return;
                             mSignAllTransactionRequests = requests;
@@ -334,7 +334,7 @@ public class SignTransactionFragment extends BaseDAppsBottomSheetDialogFragment 
             case SIGN_TRANSACTION:
                 mWalletModel.getDappsModel().signTxRequest(isApproved, mSignTransactionRequest);
                 break;
-            case SIGN_ALL_TRANSACTIONS:
+            case SIGN_SOL_TRANSACTIONS:
                 mWalletModel.getDappsModel().signAllTxRequest(
                         isApproved, mSignAllTransactionsRequest);
                 break;

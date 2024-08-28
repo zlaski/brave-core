@@ -288,7 +288,7 @@ class SolanaProviderImplUnitTest : public testing::Test {
       std::string* error_message_out,
       bool run_notify = false,
       bool approve = true,
-      mojom::ByteArrayStringUnionPtr hw_sig = nullptr,
+      mojom::SignatureBytesPtr hw_sig = nullptr,
       const std::optional<std::string>& err_in = std::nullopt) {
     std::string signature_out;
     base::RunLoop run_loop;
@@ -349,7 +349,7 @@ class SolanaProviderImplUnitTest : public testing::Test {
       const std::string& expected_error_message,
       bool run_notify = false,
       bool approve = true,
-      mojom::ByteArrayStringUnionPtr hw_sig = nullptr,
+      mojom::SignatureBytesPtr hw_sig = nullptr,
       const std::optional<std::string>& err_in = std::nullopt) {
     std::vector<uint8_t> result_out;
     base::RunLoop run_loop;
@@ -368,12 +368,17 @@ class SolanaProviderImplUnitTest : public testing::Test {
         }));
 
     if (run_notify) {
-      brave_wallet_service_->SetSignTransactionRequestAddedCallbackForTesting(
-          base::BindLambdaForTesting([&]() {
-            brave_wallet_service_->NotifySignTransactionRequestProcessed(
-                approve, brave_wallet_service_->sign_transaction_id_ - 1,
-                std::move(hw_sig), err_in);
-          }));
+      brave_wallet_service_
+          ->SetSignSolTransactionsRequestAddedCallbackForTesting(
+              base::BindLambdaForTesting([&]() {
+                std::vector<mojom::SignatureBytesPtr> hw_signatures;
+                hw_signatures.push_back(std::move(hw_sig));
+                brave_wallet_service_
+                    ->NotifySignSolTransactionsRequestProcessed(
+                        approve,
+                        brave_wallet_service_->sign_sol_transactions_id_ - 1,
+                        std::move(hw_signatures), err_in);
+              }));
     }
 
     run_loop.Run();
@@ -386,7 +391,7 @@ class SolanaProviderImplUnitTest : public testing::Test {
       const std::string& expected_error_message,
       bool run_notify = false,
       bool approve = true,
-      std::optional<std::vector<mojom::ByteArrayStringUnionPtr>> hw_sigs =
+      std::optional<std::vector<mojom::SignatureBytesPtr>> hw_sigs =
           std::nullopt,
       const std::optional<std::string>& err_in = std::nullopt) {
     std::vector<std::vector<uint8_t>> result_out;
@@ -412,12 +417,12 @@ class SolanaProviderImplUnitTest : public testing::Test {
 
     if (run_notify) {
       brave_wallet_service_
-          ->SetSignAllTransactionsRequestAddedCallbackForTesting(
+          ->SetSignSolTransactionsRequestAddedCallbackForTesting(
               base::BindLambdaForTesting([&]() {
                 brave_wallet_service_
-                    ->NotifySignAllTransactionsRequestProcessed(
+                    ->NotifySignSolTransactionsRequestProcessed(
                         approve,
-                        brave_wallet_service_->sign_all_transactions_id_ - 1,
+                        brave_wallet_service_->sign_sol_transactions_id_ - 1,
                         std::move(hw_sigs), err_in);
               }));
     }
@@ -840,8 +845,8 @@ TEST_F(SolanaProviderImplUnitTest, SignMessage) {
 TEST_F(SolanaProviderImplUnitTest, SignMessage_Hardware) {
   mojom::SolanaProviderError error;
   std::string error_message;
-  auto mock_hw_sig = mojom::ByteArrayStringUnion::NewBytes(
-      std::vector<uint8_t>(kSolanaSignatureSize, 1));
+  auto mock_hw_sig =
+      mojom::SignatureBytes::New(std::vector<uint8_t>(kSolanaSignatureSize, 1));
   const std::vector<uint8_t> mock_msg({1, 2, 3, 4});
 
   CreateWallet();
@@ -857,7 +862,7 @@ TEST_F(SolanaProviderImplUnitTest, SignMessage_Hardware) {
   std::string signature =
       SignMessage(mock_msg, std::nullopt, &error, &error_message, true, true,
                   mock_hw_sig.Clone());
-  EXPECT_EQ(signature, Base58Encode(mock_hw_sig->get_bytes()));
+  EXPECT_EQ(signature, Base58Encode(mock_hw_sig->signature_bytes));
   EXPECT_EQ(error, mojom::SolanaProviderError::kSuccess);
   EXPECT_TRUE(error_message.empty());
 
@@ -874,11 +879,10 @@ TEST_F(SolanaProviderImplUnitTest, SignMessage_Hardware) {
   EXPECT_EQ(error, mojom::SolanaProviderError::kInternalError);
   EXPECT_EQ(error_message, "error");
 
-  // Invalid signatures: null signature, empty signature, non-bytes signature.
-  std::vector<mojom::ByteArrayStringUnionPtr> invalid_sigs;
+  // Invalid signatures: null signature, empty signature.
+  std::vector<mojom::SignatureBytesPtr> invalid_sigs;
   invalid_sigs.push_back(nullptr);
-  invalid_sigs.push_back(mojom::ByteArrayStringUnion::NewBytes({}));
-  invalid_sigs.push_back(mojom::ByteArrayStringUnion::NewStr("str"));
+  invalid_sigs.push_back(mojom::SignatureBytes::New());
 
   for (auto& invalid_sig : invalid_sigs) {
     signature = SignMessage(mock_msg, std::nullopt, &error, &error_message,
@@ -979,15 +983,15 @@ TEST_F(SolanaProviderImplUnitTest, SignTransactionAPIs_Hardware) {
   ASSERT_TRUE(serialized_msg);
   auto encoded_serialized_msg = Base58Encode(*serialized_msg);
 
-  auto mock_hw_sig = mojom::ByteArrayStringUnion::NewBytes(
-      std::vector<uint8_t>(kSolanaSignatureSize, 2));
-  std::vector<mojom::ByteArrayStringUnionPtr> mock_hw_sigs;
+  auto mock_hw_sig =
+      mojom::SignatureBytes::New(std::vector<uint8_t>(kSolanaSignatureSize, 2));
+  std::vector<mojom::SignatureBytesPtr> mock_hw_sigs;
   mock_hw_sigs.push_back(mock_hw_sig.Clone());
   mock_hw_sigs.push_back(mock_hw_sig.Clone());
   std::vector<uint8_t> expected_signed_tx = {1};  // size of sig array
   expected_signed_tx.insert(expected_signed_tx.end(),
-                            mock_hw_sig->get_bytes().begin(),
-                            mock_hw_sig->get_bytes().end());
+                            mock_hw_sig->signature_bytes.begin(),
+                            mock_hw_sig->signature_bytes.end());
   expected_signed_tx.insert(expected_signed_tx.end(), serialized_msg->begin(),
                             serialized_msg->end());
   std::vector<std::vector<uint8_t>> expected_signed_txs;
@@ -1027,18 +1031,17 @@ TEST_F(SolanaProviderImplUnitTest, SignTransactionAPIs_Hardware) {
                                    "error", true, true, std::nullopt, "error");
   EXPECT_TRUE(signed_txs.empty());
 
-  // Invalid signatures: null signature, empty signature, non-bytes signature.
-  std::vector<mojom::ByteArrayStringUnionPtr> invalid_sigs;
+  // Invalid signatures: null signature, empty signature.
+  std::vector<mojom::SignatureBytesPtr> invalid_sigs;
   invalid_sigs.push_back(nullptr);
-  invalid_sigs.push_back(mojom::ByteArrayStringUnion::NewBytes({}));
-  invalid_sigs.push_back(mojom::ByteArrayStringUnion::NewStr("str"));
+  invalid_sigs.push_back(mojom::SignatureBytes::New());
 
   for (auto& invalid_sig : invalid_sigs) {
     signed_tx = SignTransaction(
         encoded_serialized_msg, mojom::SolanaProviderError::kInternalError,
         l10n_util::GetStringUTF8(IDS_WALLET_INTERNAL_ERROR), true, true,
         invalid_sig.Clone());
-    std::vector<mojom::ByteArrayStringUnionPtr> sigs;
+    std::vector<mojom::SignatureBytesPtr> sigs;
     sigs.push_back(std::move(invalid_sig));
     signed_txs = SignAllTransactions(
         {encoded_serialized_msg}, mojom::SolanaProviderError::kInternalError,

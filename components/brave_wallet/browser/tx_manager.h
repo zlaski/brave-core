@@ -45,8 +45,6 @@ class TxManager : public TxStateManager::Observer,
   using SpeedupOrCancelTransactionCallback =
       mojom::TxService::SpeedupOrCancelTransactionCallback;
   using RetryTransactionCallback = mojom::TxService::RetryTransactionCallback;
-  using GetTransactionMessageToSignCallback =
-      mojom::TxService::GetTransactionMessageToSignCallback;
 
   virtual void AddUnapprovedTransaction(
       const std::string& chain_id,
@@ -70,10 +68,6 @@ class TxManager : public TxStateManager::Observer,
       SpeedupOrCancelTransactionCallback callback) = 0;
   virtual void RetryTransaction(const std::string& tx_meta_id,
                                 RetryTransactionCallback callback) = 0;
-
-  virtual void GetTransactionMessageToSign(
-      const std::string& tx_meta_id,
-      GetTransactionMessageToSignCallback callback) = 0;
 
   virtual void Reset();
 

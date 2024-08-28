@@ -10,7 +10,7 @@ import {
   HardwareImportScheme,
   DerivationSchemes,
   GetAccountsHardwareOperationResult,
-  SignHardwareOperationResult
+  SignMessageHardwareOperationResult
 } from '../types'
 import { BridgeType, BridgeTypes } from '../untrusted_shared_types'
 import {
@@ -61,7 +61,7 @@ export default class SolanaLedgerBridgeKeyring
   signTransaction = async (
     path: string,
     rawTxBytes: Buffer
-  ): Promise<SignHardwareOperationResult> => {
+  ): Promise<SignMessageHardwareOperationResult> => {
     const result = await this.unlock()
     if (!result.success) {
       return result

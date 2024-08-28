@@ -302,13 +302,11 @@ void TxService::RetryTransaction(mojom::CoinType coin_type,
   GetTxManager(coin_type)->RetryTransaction(tx_meta_id, std::move(callback));
 }
 
-void TxService::GetTransactionMessageToSign(
-    mojom::CoinType coin_type,
-    const std::string& chain_id,
+void TxService::GetEthTransactionMessageToSign(
     const std::string& tx_meta_id,
-    GetTransactionMessageToSignCallback callback) {
-  GetTxManager(coin_type)->GetTransactionMessageToSign(tx_meta_id,
-                                                       std::move(callback));
+    GetEthTransactionMessageToSignCallback callback) {
+  GetEthTxManager()->GetEthTransactionMessageToSign(tx_meta_id,
+                                                    std::move(callback));
 }
 
 void TxService::AddObserver(
@@ -435,13 +433,12 @@ void TxService::GetNonceForHardwareTransaction(
                                                     std::move(callback));
 }
 
-void TxService::ProcessHardwareSignature(
-    const std::string& chain_id,
+void TxService::ProcessEthHardwareSignature(
     const std::string& tx_meta_id,
     const std::string& v,
     const std::string& r,
     const std::string& s,
-    ProcessHardwareSignatureCallback callback) {
+    ProcessEthHardwareSignatureCallback callback) {
   GetEthTxManager()->ProcessHardwareSignature(tx_meta_id, v, r, s,
                                               std::move(callback));
 }
@@ -502,17 +499,29 @@ void TxService::MakeBubbleGumProgramTransferTxData(
       std::move(callback));
 }
 
-void TxService::ProcessSolanaHardwareSignature(
-    const std::string& chain_id,
+void TxService::GetSolTransactionMessageToSign(
     const std::string& tx_meta_id,
-    const std::vector<uint8_t>& signature,
-    ProcessSolanaHardwareSignatureCallback callback) {
-  GetSolanaTxManager()->ProcessSolanaHardwareSignature(tx_meta_id, signature,
+    GetSolTransactionMessageToSignCallback callback) {
+  GetSolanaTxManager()->GetSolTransactionMessageToSign(tx_meta_id,
                                                        std::move(callback));
 }
 
+void TxService::ProcessSolanaHardwareSignature(
+    const std::string& tx_meta_id,
+    mojom::SignatureBytesPtr signature,
+    ProcessSolanaHardwareSignatureCallback callback) {
+  GetSolanaTxManager()->ProcessSolanaHardwareSignature(
+      tx_meta_id, std::move(signature), std::move(callback));
+}
+
+void TxService::GetFilTransactionMessageToSign(
+    const std::string& tx_meta_id,
+    GetFilTransactionMessageToSignCallback callback) {
+  GetFilTxManager()->GetFilTransactionMessageToSign(tx_meta_id,
+                                                    std::move(callback));
+}
+
 void TxService::ProcessFilHardwareSignature(
-    const std::string& chain_id,
     const std::string& tx_meta_id,
     const std::string& signed_message,
     ProcessFilHardwareSignatureCallback callback) {

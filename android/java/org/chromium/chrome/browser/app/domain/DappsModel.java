@@ -44,9 +44,9 @@ public class DappsModel implements KeyringServiceObserver {
     private final MutableLiveData<BraveWalletDAppsActivity.ActivityType> _mProcessNextDAppsRequest =
             new MutableLiveData<>();
     private final MutableLiveData<List<SignTransactionRequest>> _mSignTxRequests;
-    private final MutableLiveData<List<SignAllTransactionsRequest>> _mSignAllTxRequests;
+    private final MutableLiveData<List<SignAllTransactionsRequest>> _mSignSolTransactionsRequests;
     private final LiveData<List<SignTransactionRequest>> mSignTxRequests;
-    private final LiveData<List<SignAllTransactionsRequest>> mSignAllTxRequests;
+    private final LiveData<List<SignAllTransactionsRequest>> mSignSolTransactionsRequests;
     private List<WalletAccountCreationRequest> mPendingWalletAccountCreationRequests;
     private MutableLiveData<WalletAccountCreationRequest> _mPendingWalletAccountCreationRequest;
     public LiveData<WalletAccountCreationRequest> mPendingWalletAccountCreationRequest;
@@ -62,8 +62,8 @@ public class DappsModel implements KeyringServiceObserver {
         mPendingTxHelper = pendingTxHelper;
         _mSignTxRequests = new MutableLiveData<>(Collections.emptyList());
         mSignTxRequests = _mSignTxRequests;
-        _mSignAllTxRequests = new MutableLiveData<>(Collections.emptyList());
-        mSignAllTxRequests = _mSignAllTxRequests;
+        _mSignSolTransactionsRequests = new MutableLiveData<>(Collections.emptyList());
+        mSignSolTransactionsRequests = _mSignSolTransactionsRequests;
         _mPendingWalletAccountCreationRequest = new MutableLiveData<>();
         mPendingWalletAccountCreationRequest = _mPendingWalletAccountCreationRequest;
         mPendingWalletAccountCreationRequests = new ArrayList<>();
@@ -104,21 +104,21 @@ public class DappsModel implements KeyringServiceObserver {
         });
     }
 
-    public LiveData<List<SignAllTransactionsRequest>> fetchSignAllTxRequest() {
-        mBraveWalletService.getPendingSignAllTransactionsRequests(requests -> {
-            _mSignAllTxRequests.postValue(new ArrayList<>(Arrays.asList(requests)));
+    public LiveData<List<SignAllTransactionsRequest>> fetchSignSolTransactionsRequest() {
+        mBraveWalletService.getPendingSignSolTransactionsRequests(requests -> {
+            _mSignSolTransactionsRequests.postValue(new ArrayList<>(Arrays.asList(requests)));
         });
-        return mSignAllTxRequests;
+        return mSignSolTransactionsRequests;
     }
 
     public void signAllTxRequest(boolean isApproved, SignAllTransactionsRequest request) {
         mBraveWalletService.notifySignAllTransactionsRequestProcessed(
                 isApproved, request.id, null, null);
-        mBraveWalletService.getPendingSignAllTransactionsRequests(requests -> {
+        mBraveWalletService.getPendingSignSolTransactionsRequests(requests -> {
             if (requests.length == 0) {
                 _mProcessNextDAppsRequest.postValue(BraveWalletDAppsActivity.ActivityType.FINISH);
             } else {
-                _mSignAllTxRequests.postValue(new ArrayList<>(Arrays.asList(requests)));
+                _mSignSolTransactionsRequests.postValue(new ArrayList<>(Arrays.asList(requests)));
             }
         });
     }
@@ -264,7 +264,7 @@ public class DappsModel implements KeyringServiceObserver {
                 setWalletBadgeVisible();
             }
         });
-        mBraveWalletService.getPendingSignAllTransactionsRequests(requests -> {
+        mBraveWalletService.getPendingSignSolTransactionsRequests(requests -> {
             if (requests != null && requests.length > 0) {
                 setWalletBadgeVisible();
             }

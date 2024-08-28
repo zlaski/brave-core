@@ -8,7 +8,8 @@ import {
   HardwareImportScheme,
   GetAccountsHardwareOperationResult,
   HardwareOperationResult,
-  SignHardwareOperationResult
+  SignHardwareOperationResult,
+  SignMessageHardwareOperationResult
 } from './types'
 import { BridgeType } from './untrusted_shared_types'
 
@@ -31,12 +32,12 @@ export abstract class TrezorKeyring extends HardwareKeyring {
   abstract signPersonalMessage(
     path: string,
     message: string
-  ): Promise<SignHardwareOperationResult>
+  ): Promise<SignMessageHardwareOperationResult>
   abstract signEip712Message(
     path: string,
     domainSeparatorHex: string,
     hashStructMessageHex: string
-  ): Promise<SignHardwareOperationResult>
+  ): Promise<SignMessageHardwareOperationResult>
 }
 
 export abstract class LedgerEthereumKeyring extends HardwareKeyring {
@@ -44,7 +45,7 @@ export abstract class LedgerEthereumKeyring extends HardwareKeyring {
     path: string,
     address: string,
     message: string
-  ): Promise<SignHardwareOperationResult>
+  ): Promise<SignMessageHardwareOperationResult>
   abstract signTransaction(
     path: string,
     rawTxHex: string
@@ -53,7 +54,7 @@ export abstract class LedgerEthereumKeyring extends HardwareKeyring {
     path: string,
     domainSeparatorHex: string,
     hashStructMessageHex: string
-  ): Promise<SignHardwareOperationResult>
+  ): Promise<SignMessageHardwareOperationResult>
 }
 
 export abstract class LedgerFilecoinKeyring extends HardwareKeyring {

@@ -16,8 +16,6 @@
 #include "brave/components/brave_wallet/browser/simulation_response_parser.h"
 #include "brave/components/brave_wallet/common/common_utils.h"
 #include "brave/components/constants/brave_services_key.h"
-#include "brave/components/json/rs/src/lib.rs.h"
-#include "net/base/load_flags.h"
 #include "net/base/url_util.h"
 #include "net/http/http_request_headers.h"
 #include "services/network/public/cpp/shared_url_loader_factory.h"
@@ -221,10 +219,8 @@ void SimulationService::ScanSolanaTransaction(
   std::string chain_id;
   if (request->is_transaction_info()) {
     chain_id = request->get_transaction_info()->chain_id;
-  } else if (request->is_sign_transaction_request()) {
-    chain_id = request->get_sign_transaction_request()->chain_id;
-  } else if (request->is_sign_all_transactions_request()) {
-    chain_id = request->get_sign_all_transactions_request()->chain_id;
+  } else if (request->is_sign_sol_transactions_request()) {
+    chain_id = request->get_sign_sol_transactions_request()->chain_id;
   }
 
   if (chain_id.empty()) {
@@ -241,8 +237,7 @@ void SimulationService::ScanSolanaTransaction(
     return;
   }
 
-  auto has_empty_recent_blockhash =
-      solana::HasEmptyRecentBlockhash(request->Clone());
+  auto has_empty_recent_blockhash = solana::HasEmptyRecentBlockhash(*request);
   if (!has_empty_recent_blockhash) {
     std::move(callback).Run(
         nullptr, "", l10n_util::GetStringUTF8(IDS_WALLET_INTERNAL_ERROR));
@@ -271,7 +266,7 @@ void SimulationService::OnGetLatestSolanaBlockhash(
     uint64_t last_valid_block_height,
     mojom::SolanaProviderError error,
     const std::string& error_message) {
-  DCHECK(request);
+  CHECK(request);
 
   if (error != mojom::SolanaProviderError::kSuccess) {
     std::move(callback).Run(
@@ -283,7 +278,7 @@ void SimulationService::OnGetLatestSolanaBlockhash(
     solana::PopulateRecentBlockhash(*request, latest_blockhash);
   }
 
-  const auto& params = solana::EncodeScanTransactionParams(request);
+  const auto& params = solana::EncodeScanTransactionParams(*request);
   if (!params) {
     std::move(callback).Run(
         nullptr, "", l10n_util::GetStringUTF8(IDS_WALLET_INTERNAL_ERROR));

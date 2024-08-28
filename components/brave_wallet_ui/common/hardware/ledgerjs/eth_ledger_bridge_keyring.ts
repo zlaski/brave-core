@@ -9,7 +9,8 @@ import {
   GetAccountsHardwareOperationResult,
   SignHardwareOperationResult,
   HardwareImportScheme,
-  AccountFromDevice
+  AccountFromDevice,
+  SignMessageHardwareOperationResult
 } from '../types'
 import { BridgeType, BridgeTypes } from '../untrusted_shared_types'
 import {
@@ -100,7 +101,7 @@ export default class EthereumLedgerBridgeKeyring
   signPersonalMessage = async (
     path: string,
     message: string
-  ): Promise<SignHardwareOperationResult> => {
+  ): Promise<SignMessageHardwareOperationResult> => {
     const result = await this.unlock()
     if (!result.success) {
       return result
@@ -145,7 +146,7 @@ export default class EthereumLedgerBridgeKeyring
     path: string,
     domainSeparatorHex: string,
     hashStructMessageHex: string
-  ): Promise<SignHardwareOperationResult> => {
+  ): Promise<SignMessageHardwareOperationResult> => {
     const result = await this.unlock()
     if (!result.success) {
       return result
@@ -188,7 +189,7 @@ export default class EthereumLedgerBridgeKeyring
   private readonly createMessageSignature = (
     result:
       | EthSignPersonalMessageResponsePayload
-      | EthSignPersonalMessageResponsePayload
+      | EthSignEip712MessageResponsePayload
   ) => {
     // Convert the recovery identifier to standard ECDSA if using bitcoin
     // secp256k1 convention.
@@ -199,8 +200,7 @@ export default class EthereumLedgerBridgeKeyring
     if (v.length < 2) {
       v = `0${v}`
     }
-    const signature = `0x${result.r}${result.s}${v}`
-    return signature
+    return Buffer.from(`${result.r}${result.s}${v}`, 'hex')
   }
 
   private readonly getAccountsFromDevice = async (

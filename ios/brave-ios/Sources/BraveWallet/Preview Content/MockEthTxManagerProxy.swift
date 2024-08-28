@@ -89,7 +89,7 @@ class MockEthTxManagerProxy: BraveWalletEthTxManagerProxy {
     completion(nil)
   }
 
-  func processHardwareSignature(
+  func processEthHardwareSignature(
     chainId: String,
     txMetaId: String,
     v: String,

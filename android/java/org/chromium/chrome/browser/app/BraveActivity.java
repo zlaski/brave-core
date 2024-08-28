@@ -508,7 +508,7 @@ public abstract class BraveActivity extends ChromeActivity
                 return;
             }
             maybeShowPendingTransactions();
-            maybeShowSignTxRequestLayout();
+            maybeShowSignSolTransactionsRequestLayout();
         });
     }
 
@@ -526,24 +526,12 @@ public abstract class BraveActivity extends ChromeActivity
         }
     }
 
-    private void maybeShowSignTxRequestLayout() {
+    private void maybeShowSignSolTransactionsRequestLayout() {
         assert mBraveWalletService != null;
-        mBraveWalletService.getPendingSignTransactionRequests(requests -> {
+        mBraveWalletService.getPendingSignSolTransactionsRequests(requests -> {
             if (requests != null && requests.length != 0) {
                 openBraveWalletDAppsActivity(
-                        BraveWalletDAppsActivity.ActivityType.SIGN_TRANSACTION);
-                return;
-            }
-            maybeShowSignAllTxRequestLayout();
-        });
-    }
-
-    private void maybeShowSignAllTxRequestLayout() {
-        assert mBraveWalletService != null;
-        mBraveWalletService.getPendingSignAllTransactionsRequests(requests -> {
-            if (requests != null && requests.length != 0) {
-                openBraveWalletDAppsActivity(
-                        BraveWalletDAppsActivity.ActivityType.SIGN_ALL_TRANSACTIONS);
+                        BraveWalletDAppsActivity.ActivityType.SIGN_SOL_TRANSACTIONS);
                 return;
             }
             maybeShowSignMessageErrorsLayout();

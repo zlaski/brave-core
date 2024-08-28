@@ -39,6 +39,8 @@ class FilTxManager : public TxManager, public FilBlockTracker::Observer {
   FilTxManager(const FilTxManager&) = delete;
   FilTxManager operator=(const FilTxManager&) = delete;
 
+  using GetFilTransactionMessageToSignCallback =
+      mojom::FilTxManagerProxy::GetFilTransactionMessageToSignCallback;
   using ProcessFilHardwareSignatureCallback =
       mojom::FilTxManagerProxy::ProcessFilHardwareSignatureCallback;
 
@@ -49,9 +51,9 @@ class FilTxManager : public TxManager, public FilBlockTracker::Observer {
                                 AddUnapprovedTransactionCallback) override;
   void ApproveTransaction(const std::string& tx_meta_id,
                           ApproveTransactionCallback) override;
-  void GetTransactionMessageToSign(
+  void GetFilTransactionMessageToSign(
       const std::string& tx_meta_id,
-      GetTransactionMessageToSignCallback callback) override;
+      GetFilTransactionMessageToSignCallback callback);
 
   void SpeedupOrCancelTransaction(
       const std::string& tx_meta_id,
@@ -83,10 +85,11 @@ class FilTxManager : public TxManager, public FilBlockTracker::Observer {
                       ApproveTransactionCallback callback,
                       bool success,
                       uint256_t nonce);
-  void OnGetNextNonceForHardware(std::unique_ptr<FilTxMeta> meta,
-                                 GetTransactionMessageToSignCallback callback,
-                                 bool success,
-                                 uint256_t nonce);
+  void OnGetNextNonceForHardware(
+      std::unique_ptr<FilTxMeta> meta,
+      GetFilTransactionMessageToSignCallback callback,
+      bool success,
+      uint256_t nonce);
   void OnSendFilecoinTransaction(const std::string& tx_meta_id,
                                  ApproveTransactionCallback callback,
                                  const std::string& tx_hash,

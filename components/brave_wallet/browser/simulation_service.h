@@ -7,18 +7,14 @@
 #define BRAVE_COMPONENTS_BRAVE_WALLET_BROWSER_SIMULATION_SERVICE_H_
 
 #include <string>
-#include <vector>
 
-#include "base/functional/callback.h"
 #include "base/memory/raw_ptr.h"
 #include "base/memory/weak_ptr.h"
-#include "base/time/time.h"
 #include "brave/components/api_request_helper/api_request_helper.h"
 #include "brave/components/brave_wallet/common/brave_wallet.mojom.h"
 #include "components/keyed_service/core/keyed_service.h"
 #include "mojo/public/cpp/bindings/pending_remote.h"
 #include "mojo/public/cpp/bindings/receiver_set.h"
-#include "mojo/public/cpp/bindings/remote.h"
 #include "url/gurl.h"
 
 namespace network {

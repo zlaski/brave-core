@@ -494,9 +494,9 @@ class EthereumProviderImplUnitTest : public testing::Test {
   void SignMessageHardware(bool user_approved,
                            const std::string& address,
                            const std::string& message,
-                           const std::string& hardware_signature,
+                           const mojom::SignatureBytesPtr& hardware_signature,
                            const std::string& error_in,
-                           std::string* signature_out,
+                           mojom::SignatureBytesPtr* signature_out,
                            mojom::ProviderError* error_out,
                            std::string* error_message_out) {
     if (!signature_out || !error_out || !error_message_out) {
@@ -510,9 +510,10 @@ class EthereumProviderImplUnitTest : public testing::Test {
             [&](base::Value id, base::Value formed_response, const bool reject,
                 const std::string& first_allowed_account,
                 const bool update_bind_js_properties) {
-              signature_out->clear();
+              signature_out->reset();
               if (formed_response.type() == base::Value::Type::STRING) {
-                *signature_out = formed_response.GetString();
+                *signature_out = mojom::SignatureBytes::New(
+                    *PrefixedHexStringToBytes(formed_response.GetString()));
               }
               GetErrorCodeMessage(std::move(formed_response), error_out,
                                   error_message_out);
@@ -523,7 +524,7 @@ class EthereumProviderImplUnitTest : public testing::Test {
     browser_task_environment_.RunUntilIdle();
     brave_wallet_service_->NotifySignMessageRequestProcessed(
         user_approved, brave_wallet_service_->sign_message_id_ - 1,
-        mojom::ByteArrayStringUnion::NewStr(hardware_signature), error_in);
+        hardware_signature.Clone(), error_in);
     run_loop.Run();
   }
 
@@ -2573,8 +2574,9 @@ TEST_F(EthereumProviderImplUnitTest, SignMessageHardware) {
   CreateWallet();
   std::string address = "0xA99D71De40D67394eBe68e4D0265cA6C9D421029";
   auto added_hw_account = AddHardwareAccount(address);
-  std::string signature;
-  std::string expected_signature = "0xExpectedSignature";
+  mojom::SignatureBytesPtr signature;
+  const mojom::SignatureBytesPtr expected_signature =
+      mojom::SignatureBytes::New(std::vector<uint8_t>{1, 2, 3, 4, 5, 6});
   mojom::ProviderError error = mojom::ProviderError::kUnknown;
   std::string error_message;
   GURL url("https://brave.com");
@@ -2584,7 +2586,6 @@ TEST_F(EthereumProviderImplUnitTest, SignMessageHardware) {
   // success
   SignMessageHardware(true, address, "0x1234", expected_signature, "",
                       &signature, &error, &error_message);
-  EXPECT_FALSE(signature.empty());
   EXPECT_EQ(signature, expected_signature);
   EXPECT_EQ(error, mojom::ProviderError::kSuccess);
   EXPECT_TRUE(error_message.empty());
@@ -2593,14 +2594,12 @@ TEST_F(EthereumProviderImplUnitTest, SignMessageHardware) {
   std::string expected_error = "error text";
   SignMessageHardware(false, address, "0x1234", expected_signature,
                       expected_error, &signature, &error, &error_message);
-  EXPECT_TRUE(signature.empty());
   EXPECT_EQ(error, mojom::ProviderError::kInternalError);
   EXPECT_EQ(error_message, expected_error);
 
   // user rejected request
   SignMessageHardware(false, address, "0x1234", expected_signature, "",
                       &signature, &error, &error_message);
-  EXPECT_TRUE(signature.empty());
   EXPECT_EQ(error, mojom::ProviderError::kUserRejectedRequest);
   EXPECT_EQ(error_message,
             l10n_util::GetStringUTF8(IDS_WALLET_USER_REJECTED_REQUEST));

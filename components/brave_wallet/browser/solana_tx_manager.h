@@ -40,9 +40,6 @@ class SolanaTxManager : public TxManager, public SolanaBlockTracker::Observer {
                   AccountResolverDelegate* account_resolver_delegate);
   ~SolanaTxManager() override;
 
-  using ProcessSolanaHardwareSignatureCallback =
-      mojom::SolanaTxManagerProxy::ProcessSolanaHardwareSignatureCallback;
-
   // TxManager
   void AddUnapprovedTransaction(const std::string& chain_id,
                                 mojom::TxDataUnionPtr tx_data_union,
@@ -59,10 +56,6 @@ class SolanaTxManager : public TxManager, public SolanaBlockTracker::Observer {
   void RetryTransaction(const std::string& tx_meta_id,
                         RetryTransactionCallback callback) override;
 
-  void GetTransactionMessageToSign(
-      const std::string& tx_meta_id,
-      GetTransactionMessageToSignCallback callback) override;
-
   using MakeSystemProgramTransferTxDataCallback =
       mojom::SolanaTxManagerProxy::MakeSystemProgramTransferTxDataCallback;
   using MakeTokenProgramTransferTxDataCallback =
@@ -78,6 +71,11 @@ class SolanaTxManager : public TxManager, public SolanaBlockTracker::Observer {
                               const std::string& error_message)>;
   using MakeBubbleGumProgramTransferTxDataCallback =
       mojom::SolanaTxManagerProxy::MakeBubbleGumProgramTransferTxDataCallback;
+  using GetSolTransactionMessageToSignCallback =
+      mojom::SolanaTxManagerProxy::GetSolTransactionMessageToSignCallback;
+  using ProcessSolanaHardwareSignatureCallback =
+      mojom::SolanaTxManagerProxy::ProcessSolanaHardwareSignatureCallback;
+
   void MakeSystemProgramTransferTxData(
       const std::string& from,
       const std::string& to,
@@ -108,9 +106,12 @@ class SolanaTxManager : public TxManager, public SolanaBlockTracker::Observer {
       const std::string& from_wallet_address,
       const std::string& to_wallet_address,
       MakeBubbleGumProgramTransferTxDataCallback callback);
+  void GetSolTransactionMessageToSign(
+      const std::string& tx_meta_id,
+      GetSolTransactionMessageToSignCallback callback);
   void ProcessSolanaHardwareSignature(
       const std::string& tx_meta_id,
-      const std::vector<uint8_t>& signature_bytes,
+      mojom::SignatureBytesPtr signature,
       ProcessSolanaHardwareSignatureCallback callback);
 
   std::unique_ptr<SolanaTxMeta> GetTxForTesting(const std::string& tx_meta_id);
@@ -123,7 +124,7 @@ class SolanaTxManager : public TxManager, public SolanaBlockTracker::Observer {
   FRIEND_TEST_ALL_PREFIXES(SolanaTxManagerUnitTest,
                            DropTxAfterSafeDropThreshold);
   FRIEND_TEST_ALL_PREFIXES(SolanaTxManagerUnitTest,
-                           GetTransactionMessageToSign);
+                           GetSolTransactionMessageToSign);
   FRIEND_TEST_ALL_PREFIXES(SolanaTxManagerUnitTest,
                            ProcessSolanaHardwareSignature);
   FRIEND_TEST_ALL_PREFIXES(SolanaTxManagerUnitTest, RetryTransaction);
@@ -148,7 +149,7 @@ class SolanaTxManager : public TxManager, public SolanaBlockTracker::Observer {
 
   void OnGetBlockHeightForBlockhashHardware(
       std::unique_ptr<SolanaTxMeta> meta,
-      GetTransactionMessageToSignCallback callback,
+      GetSolTransactionMessageToSignCallback callback,
       const std::string& blockhash,
       uint64_t block_height,
       mojom::SolanaProviderError error,
@@ -167,7 +168,7 @@ class SolanaTxManager : public TxManager, public SolanaBlockTracker::Observer {
                             const std::string& error_message);
   void OnGetLatestBlockhashHardware(
       std::unique_ptr<SolanaTxMeta> meta,
-      GetTransactionMessageToSignCallback callback,
+      GetSolTransactionMessageToSignCallback callback,
       const std::string& latest_blockhash,
       uint64_t last_valid_block_height,
       mojom::SolanaProviderError error,

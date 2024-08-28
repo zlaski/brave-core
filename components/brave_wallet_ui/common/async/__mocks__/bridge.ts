@@ -206,10 +206,8 @@ export class MockedWalletApiProxy {
     mockGetEncryptionPublicKeyRequest
   ]
 
-  private signTransactionRequests: BraveWallet.SignTransactionRequest[] = []
-
-  private signAllTransactionsRequests =
-    [] as BraveWallet.SignAllTransactionsRequest[]
+  private SignSolTransactionsRequests =
+    [] as BraveWallet.SignSolTransactionsRequest[]
 
   constructor(overrides?: WalletApiDataOverrides | undefined) {
     this.applyOverrides(overrides)
@@ -240,10 +238,8 @@ export class MockedWalletApiProxy {
       overrides.svmSimulationResponse ?? this.svmSimulationResponse
     this.txSimulationOptInStatus =
       overrides.simulationOptInStatus ?? this.txSimulationOptInStatus
-    this.signTransactionRequests =
-      overrides.signTransactionRequests ?? this.signTransactionRequests
-    this.signAllTransactionsRequests =
-      overrides.signAllTransactionsRequests ?? this.signAllTransactionsRequests
+    this.SignSolTransactionsRequests =
+      overrides.signSolTransactionsRequests ?? this.signSolTransactionsRequests
   }
 
   assetsRatioService: Partial<
@@ -451,29 +447,19 @@ export class MockedWalletApiProxy {
           (req) => req.requestId !== requestId
         )
     },
-    getPendingSignTransactionRequests: async () => {
+    getPendingSignSolTransactionsRequests: async () => {
       return {
-        requests: this.signTransactionRequests
+        requests: this.signSolTransactionsRequests
       }
     },
-    getPendingSignAllTransactionsRequests: async () => {
-      return {
-        requests: this.signAllTransactionsRequests
-      }
-    },
-    notifySignTransactionRequestProcessed: (approved, id, signature, error) => {
-      this.signTransactionRequests = this.signTransactionRequests.filter(
-        (req) => req.id !== id
-      )
-    },
-    notifySignAllTransactionsRequestProcessed: (
+    notifySignSolTransactionsRequestProcessed: (
       approved,
       id,
-      signatures,
+      hwSignatures,
       error
     ) => {
-      this.signAllTransactionsRequests =
-        this.signAllTransactionsRequests.filter((req) => req.id !== id)
+      this.signSolTransactionsRequests =
+        this.signSolTransactionsRequests.filter((req) => req.id !== id)
     },
     getPendingSignMessageRequests: async () => {
       return {

@@ -3,7 +3,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import { assert } from 'chrome://resources/js/assert.js'
 import { mapLimit } from 'async'
 
 // types
@@ -31,9 +30,6 @@ import {
   SpeedupTransactionPayload
 } from '../../constants/action_types'
 import { WalletApiEndpointBuilderParams } from '../api-base.slice'
-import {
-  SignAllTransactionsProcessedPayload //
-} from '../../../panel/constants/action_types'
 
 // Actions
 import { PanelActions } from '../../../panel/actions'
@@ -58,16 +54,15 @@ import {
   signLedgerSolanaTransaction,
   dialogErrorFromLedgerErrorCode,
   signTrezorTransaction,
-  signRawTransactionWithHardwareKeyring
+  signSolTransactionWithHardwareKeyring
 } from '../../async/hardware'
 import { getLocale } from '../../../../common/locale'
-import { toByteArrayStringUnion } from '../../../utils/mojo-utils'
 
-interface ProcessSignTransactionRequestPayload {
+interface ProcessSignSolTransactionsRequestPayload {
   approved: boolean
   id: number
-  signature?: BraveWallet.ByteArrayStringUnion | null
-  error?: string | null
+  hwSignatures: BraveWallet.SignatureBytes[] | null
+  error: string | null
 }
 
 export const transactionEndpoints = ({
@@ -390,8 +385,8 @@ export const transactionEndpoints = ({
       }
     }),
 
-    getPendingSignTransactionRequests: query<
-      BraveWallet.SignTransactionRequest[],
+    getPendingSignSolTransactionsRequests: query<
+      BraveWallet.SignSolTransactionsRequest[],
       void
     >({
       queryFn: async (arg, { endpoint }, extraOptions, baseQuery) => {
@@ -399,32 +394,7 @@ export const transactionEndpoints = ({
           const { data: api } = baseQuery(undefined)
 
           const { requests } =
-            await api.braveWalletService.getPendingSignTransactionRequests()
-
-          return {
-            data: requests
-          }
-        } catch (error) {
-          return handleEndpointError(
-            endpoint,
-            'Failed to get pending Sign-Transaction Requests',
-            error
-          )
-        }
-      },
-      providesTags: ['PendingSignTransactionRequests']
-    }),
-
-    getPendingSignAllTransactionsRequests: query<
-      BraveWallet.SignAllTransactionsRequest[],
-      void
-    >({
-      queryFn: async (arg, { endpoint }, extraOptions, baseQuery) => {
-        try {
-          const { data: api } = baseQuery(undefined)
-
-          const { requests } =
-            await api.braveWalletService.getPendingSignAllTransactionsRequests()
+            await api.braveWalletService.getPendingSignSolTransactionsRequests()
 
           return {
             data: requests
@@ -437,157 +407,19 @@ export const transactionEndpoints = ({
           )
         }
       },
-      providesTags: ['PendingSignAllTransactionsRequests']
+      providesTags: ['PendingSignSolTransactionsRequests']
     }),
 
-    processSignTransactionRequest: mutation<
+    processSignSolTransactionsRequest: mutation<
       /** success */
       true,
-      ProcessSignTransactionRequestPayload
+      ProcessSignSolTransactionsRequestPayload
     >({
       queryFn: async (arg, { endpoint }, extraOptions, baseQuery) => {
         try {
           const { data: api } = baseQuery(undefined)
 
-          await processSignTransactionRequest(
-            api.braveWalletService,
-            arg,
-            api.panelHandler
-          )
-
-          return {
-            data: true
-          }
-        } catch (error) {
-          return handleEndpointError(
-            endpoint,
-            'Failed to process Sign-Transaction request',
-            error
-          )
-        }
-      },
-      invalidatesTags: ['PendingSignTransactionRequests']
-    }),
-
-    processSignTransactionRequestHardware: mutation<
-      { success: boolean; errorCode?: string | number },
-      {
-        request: BraveWallet.SignTransactionRequest
-        account: BraveWallet.AccountInfo
-      }
-    >({
-      queryFn: async (arg, { endpoint, ...store }, extraOptions, baseQuery) => {
-        try {
-          const { data: api } = baseQuery(undefined)
-          const { braveWalletService, panelHandler } = api
-
-          assert(arg.account.accountId.coin === BraveWallet.CoinType.SOL)
-
-          if (!isHardwareAccount(arg.account.accountId)) {
-            const errorString = getLocale('braveWalletHardwareAccountNotFound')
-
-            braveWalletService.notifySignTransactionRequestProcessed(
-              false,
-              arg.request.id,
-              null,
-              errorString
-            )
-
-            const hasPendingRequests = await getHasPendingRequests()
-
-            if (!hasPendingRequests) {
-              api.panelHandler?.closeUI()
-            }
-
-            return {
-              data: {
-                success: false,
-                errorCode: errorString
-              }
-            }
-          }
-
-          const info = arg.account.hardware
-
-          if (!info) {
-            throw new Error('No hardware account info')
-          }
-
-          if (panelHandler) {
-            navigateToConnectHardwareWallet(panelHandler, store)
-          }
-
-          const signed = await signRawTransactionWithHardwareKeyring(
-            info.vendor,
-            info.path,
-            arg.request.rawMessage,
-            () => {
-              // dismiss hardware connect screen
-              store.dispatch(PanelActions.navigateToMain())
-            }
-          )
-
-          if (signed?.code === 'unauthorized') {
-            store.dispatch(
-              PanelActions.setHardwareWalletInteractionError(signed.code)
-            )
-            return {
-              data: {
-                success: false,
-                errorCode: signed.code
-              }
-            }
-          }
-
-          processSignTransactionRequest(
-            api.braveWalletService,
-            signed.success
-              ? {
-                  approved: signed.success,
-                  id: arg.request.id,
-                  signature:
-                    arg.account.accountId.coin === BraveWallet.CoinType.SOL
-                      ? toByteArrayStringUnion({
-                          bytes: [...(signed.payload as Buffer)]
-                        })
-                      : toByteArrayStringUnion({
-                          str: signed.payload as string
-                        })
-                }
-              : {
-                  approved: signed.success,
-                  id: arg.request.id,
-                  error: (signed.error || undefined) as string | undefined
-                },
-            api.panelHandler
-          )
-
-          return {
-            data: {
-              success: true
-            }
-          }
-        } catch (error) {
-          return handleEndpointError(
-            endpoint,
-            'Failed to Sign-All-Transactions (Hardware)',
-            error
-          )
-        }
-      },
-      invalidatesTags: ['PendingSignTransactionRequests']
-    }),
-
-    processSignAllTransactionsRequest: mutation<
-      /** success */
-      true,
-      SignAllTransactionsProcessedPayload
-    >({
-      queryFn: async (arg, { endpoint }, extraOptions, baseQuery) => {
-        try {
-          const { data: api } = baseQuery(undefined)
-
-          await processSignAllTransactionsRequest(
+          await processSignSolTransactionsRequest(
             api.braveWalletService,
             arg,
             api.panelHandler
@@ -604,25 +436,24 @@ export const transactionEndpoints = ({
           )
         }
       },
-      invalidatesTags: ['PendingSignAllTransactionsRequests']
+      invalidatesTags: ['PendingSignSolTransactionsRequests']
     }),
 
-    processSignAllTransactionsRequestHardware: mutation<
+    processSignSolTransactionsRequestHardware: mutation<
       { success: boolean; errorCode?: string | number },
       {
-        request: BraveWallet.SignAllTransactionsRequest
-        account: BraveWallet.AccountInfo
+        request: BraveWallet.SignSolTransactionsRequest
       }
     >({
       queryFn: async (arg, { endpoint, ...store }, extraOptions, baseQuery) => {
         try {
-          const { data: api } = baseQuery(undefined)
+          const { data: api, cache } = baseQuery(undefined)
           const { braveWalletService, panelHandler } = api
 
-          if (!isHardwareAccount(arg.account.accountId)) {
+          if (!isHardwareAccount(arg.request.fromAccountId)) {
             const errorString = getLocale('braveWalletHardwareAccountNotFound')
 
-            braveWalletService.notifySignAllTransactionsRequestProcessed(
+            braveWalletService.notifySignSolTransactionsRequestProcessed(
               false,
               arg.request.id,
               null,
@@ -643,7 +474,11 @@ export const transactionEndpoints = ({
             }
           }
 
-          const info = arg.account.hardware
+          const accountsRegistry = await cache.getAccountsRegistry()
+          const info = findAccountByAccountId(
+            arg.request.fromAccountId,
+            accountsRegistry
+          )?.hardware
 
           if (!info) {
             throw new Error('No hardware account info')
@@ -654,17 +489,18 @@ export const transactionEndpoints = ({
           }
 
           // Send serialized requests to hardware keyring to sign.
-          const payload: SignAllTransactionsProcessedPayload = {
+          const payload: ProcessSignSolTransactionsRequestPayload = {
             approved: true,
             id: arg.request.id,
-            signatures: []
+            hwSignatures: [],
+            error: null
           }
 
           for (const rawMessage of arg.request.rawMessages) {
-            const signed = await signRawTransactionWithHardwareKeyring(
+            const signed = await signSolTransactionWithHardwareKeyring(
               info.vendor,
               info.path,
-              rawMessage,
+              Buffer.from(rawMessage),
               () => {
                 // dismiss hardware connect screen
                 store.dispatch(PanelActions.navigateToMain())
@@ -684,21 +520,19 @@ export const transactionEndpoints = ({
                 }
               }
               payload.approved = false
-              payload.signatures = undefined
+              payload.hwSignatures = null
               payload.error = signed.error as string
               break
             }
 
-            payload.signatures?.push(
-              arg.account.accountId.coin === BraveWallet.CoinType.SOL
-                ? toByteArrayStringUnion({
-                    bytes: [...(signed.payload as Buffer)]
-                  })
-                : toByteArrayStringUnion({ str: signed.payload as string })
-            )
+            if (signed.payload) {
+              payload.hwSignatures?.push({
+                signatureBytes: [...signed.payload]
+              })
+            }
           }
 
-          await processSignAllTransactionsRequest(
+          await processSignSolTransactionsRequest(
             braveWalletService,
             payload,
             panelHandler
@@ -717,7 +551,7 @@ export const transactionEndpoints = ({
           )
         }
       },
-      invalidatesTags: ['PendingSignAllTransactionsRequests']
+      invalidatesTags: ['PendingSignSolTransactionsRequests']
     }),
 
     // BTC
@@ -1841,34 +1675,15 @@ async function sendEvmTransaction({
   }
 }
 
-async function processSignTransactionRequest(
+async function processSignSolTransactionsRequest(
   braveWalletService: BraveWallet.BraveWalletServiceRemote,
-  arg: ProcessSignTransactionRequestPayload,
+  arg: ProcessSignSolTransactionsRequestPayload,
   panelHandler: BraveWallet.PanelHandlerRemote | undefined
 ) {
-  braveWalletService.notifySignTransactionRequestProcessed(
+  braveWalletService.notifySignSolTransactionsRequestProcessed(
     arg.approved,
     arg.id,
-    arg.signature || null,
-    arg.error || null
-  )
-
-  const hasPendingRequests = await getHasPendingRequests()
-
-  if (!hasPendingRequests) {
-    panelHandler?.closeUI()
-  }
-}
-
-async function processSignAllTransactionsRequest(
-  braveWalletService: BraveWallet.BraveWalletServiceRemote,
-  arg: SignAllTransactionsProcessedPayload,
-  panelHandler: BraveWallet.PanelHandlerRemote | undefined
-) {
-  braveWalletService.notifySignAllTransactionsRequestProcessed(
-    arg.approved,
-    arg.id,
-    arg.signatures || null,
+    arg.hwSignatures || null,
     arg.error || null
   )
 

@@ -170,9 +170,13 @@ interface EthereumProvider {
   IsLocked() => (bool isLocked);
 };
 
+struct SignatureBytes {
+  array<uint8> signature_bytes;
+};
+
 // https://github.com/solana-labs/solana-web3.js/blob/6482d0d/src/transaction.ts#L126
 struct SignaturePubkeyPair {
-  array<uint8>? signature;
+  SignatureBytes? signature;
   string public_key;
 };
 
@@ -1964,10 +1968,6 @@ interface TxService {
   RetryTransaction(CoinType coin_type, string chain_id, string tx_meta_id)
     => (bool success, string tx_meta_id, string error_message);
 
-  GetTransactionMessageToSign(CoinType coin_type,
-                              string chain_id, string tx_meta_id)
-    => (MessageToSignUnion? message);
-
   // Adds an observer for TxService
   AddObserver(pending_remote<TxServiceObserver> observer);
 
@@ -1976,11 +1976,6 @@ interface TxService {
 
   // Resets the keyring and the related preferences
   Reset();
-};
-
-union MessageToSignUnion {
-  string message_str;
-  array<uint8> message_bytes;
 };
 
 // Transaction related APIs specific to EVM.
@@ -2007,10 +2002,12 @@ interface EthTxManagerProxy {
   // Gas estimation API via eth_feeHistory API
   GetGasEstimation1559(string chain_id) => (GasEstimation1559? estimation);
 
+  GetEthTransactionMessageToSign(string tx_meta_id)
+    => (string? hex_message);
+
   GetNonceForHardwareTransaction(string chain_id, string tx_meta_id)
     => (string? nonce);
-  ProcessHardwareSignature(
-    string chain_id, string tx_meta_id, string v, string r, string s)
+  ProcessEthHardwareSignature(string tx_meta_id, string v, string r, string s)
     => (bool status, ProviderError error, string error_message);
 };
 
@@ -2019,10 +2016,12 @@ interface SolanaTxManagerProxy {
   MakeSystemProgramTransferTxData(string from, string to, uint64 lamports)
       => (SolanaTxData? tx_data, SolanaProviderError error, string error_message);
 
+  GetSolTransactionMessageToSign(string tx_meta_id)
+      => (array<uint8>? message);
+
   ProcessSolanaHardwareSignature(
-      string chain_id,
       string tx_meta_id,
-      array<uint8> signature_bytes)
+      SignatureBytes signature_bytes)
       => (bool status, ProviderErrorUnion error_union, string error_message);
 
   // Get transaction data for transfering SPL tokens from one associated token
@@ -2069,9 +2068,11 @@ interface SolanaTxManagerProxy {
 };
 
 interface FilTxManagerProxy {
+  GetFilTransactionMessageToSign(string tx_meta_id)
+    => (string? json_message);
+
   // Publishes signed transaction.
-  ProcessFilHardwareSignature(
-    string chain_id, string tx_meta_id, string signed_message)
+  ProcessFilHardwareSignature(string tx_meta_id, string signed_message)
     => (bool status, ProviderErrorUnion error_union, string error_message);
 };
 
@@ -2198,25 +2199,13 @@ struct SignMessageError {
   string? chain_id;
 };
 
-struct SignTransactionRequest {
+struct SignSolTransactionsRequest {
   OriginInfo origin_info;
   int32 id;
   AccountId from_account_id;
   string from_address;
-  TxDataUnion tx_data;
-  ByteArrayStringUnion raw_message;
-  CoinType coin;
-  string chain_id;
-};
-
-struct SignAllTransactionsRequest {
-  OriginInfo origin_info;
-  int32 id;
-  AccountId from_account_id;
-  string from_address;
-  array<TxDataUnion> tx_datas;
-  array<ByteArrayStringUnion> raw_messages;
-  CoinType coin;
+  array<SolanaTxData> tx_datas;
+  array<array<uint8>> raw_messages;
   string chain_id;
 };
 
@@ -2228,11 +2217,6 @@ enum ExternalWalletType {
 struct AddSuggestTokenRequest {
   OriginInfo origin;
   BlockchainToken token;
-};
-
-union ByteArrayStringUnion {
-  array<uint8> bytes;
-  string str;
 };
 
 // For default wallet setting, user assets, permission checks, importing
@@ -2334,7 +2318,7 @@ interface BraveWalletService {
   // EthereumProviderService https://github.com/brave/brave-browser/issues/32313
 
   // These are used for UI notifying native when the user approve/reject SignMessage[Hardware]Request
-  NotifySignMessageRequestProcessed(bool approved, int32 id, ByteArrayStringUnion? signature, string? error);
+  NotifySignMessageRequestProcessed(bool approved, int32 id, SignatureBytes? hw_signature, string? error);
   // Obtains the pending sign message requests
   GetPendingSignMessageRequests() => (array<SignMessageRequest> requests);
 
@@ -2342,16 +2326,11 @@ interface BraveWalletService {
   // Used for UI notifying native when the error has been displayed to users
   NotifySignMessageErrorProcessed(string error_id);
 
-  GetPendingSignTransactionRequests() => (array<SignTransactionRequest> requests);
-  // Used for UI notifying native when the user approve/reject sign
-  // transaction request.
-  NotifySignTransactionRequestProcessed(bool approved, int32 id, ByteArrayStringUnion? signature, string? error);
-
-  GetPendingSignAllTransactionsRequests() => (array<SignAllTransactionsRequest> requests);
+  GetPendingSignSolTransactionsRequests() => (array<SignSolTransactionsRequest> requests);
   // Used for UI notifying native when the user approve/reject sign all
   // transactions request.
-  NotifySignAllTransactionsRequestProcessed(bool approved, int32 id,
-      array<ByteArrayStringUnion>? signatures, string? error);
+  NotifySignSolTransactionsRequestProcessed(bool approved, int32 id,
+      array<SignatureBytes>? hw_signatures, string? error);
 
   // Used for UI notifying native when the user approve/reject add suggest
   // token requests.
@@ -2653,9 +2632,8 @@ struct OnRampCurrency {
 };
 
 union SolanaTransactionRequestUnion {
-  SignTransactionRequest sign_transaction_request;
-  SignAllTransactionsRequest sign_all_transactions_request;
-  TransactionInfo transaction_info;
+  SignSolTransactionsRequest? sign_sol_transactions_request;
+  TransactionInfo? transaction_info;
 };
 
 // Common Blowfish types for both EVM and Solana.
@@ -3115,10 +3093,9 @@ interface SimulationService {
 
   // Scans a Solana transaction to obtain simulation results.
   //
-  // request contains the transaction to scan, and must be one of three types:
+  // request contains the transaction to scan, and must be one of two types:
   //   1. TransactionInfo: mostly transactions originating from the wallet.
-  //   2. SignTransactionRequest: dapp request to sign a single transaction.
-  //   3. SignAllTransactionsRequest: dapp request to sign multiple
+  //   2. SignSolTransactionsRequest: dapp request to sign multiple
   //      transactions.
   //
   // language indicates the language to use in the returned human-readable

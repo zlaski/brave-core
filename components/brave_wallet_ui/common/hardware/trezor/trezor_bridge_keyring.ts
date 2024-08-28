@@ -33,7 +33,8 @@ import {
   HardwareImportScheme,
   GetAccountsHardwareOperationResult,
   HardwareOperationResult,
-  SignHardwareOperationResult
+  SignHardwareOperationResult,
+  SignMessageHardwareOperationResult
 } from '../types'
 import { BridgeType, BridgeTypes } from '../untrusted_shared_types'
 import { Unsuccessful } from './trezor-connect-types'
@@ -132,7 +133,7 @@ export default class TrezorBridgeKeyring implements TrezorKeyring {
   signPersonalMessage = async (
     path: string,
     message: string
-  ): Promise<SignHardwareOperationResult> => {
+  ): Promise<SignMessageHardwareOperationResult> => {
     if (!this.isUnlocked()) {
       const unlocked = await this.unlock()
       if (!unlocked.success) {
@@ -156,14 +157,17 @@ export default class TrezorBridgeKeyring implements TrezorKeyring {
       const unsuccess = response.payload
       return { success: false, error: unsuccess.error, code: unsuccess.code }
     }
-    return { success: true, payload: '0x' + response.payload.signature }
+    return {
+      success: true,
+      payload: Buffer.from(response.payload.signature, 'hex')
+    }
   }
 
   signEip712Message = async (
     path: string,
     domainSeparatorHex: string,
     hashStructMessageHex: string
-  ): Promise<SignHardwareOperationResult> => {
+  ): Promise<SignMessageHardwareOperationResult> => {
     if (!this.isUnlocked()) {
       const unlocked = await this.unlock()
       if (!unlocked.success) {
@@ -205,7 +209,10 @@ export default class TrezorBridgeKeyring implements TrezorKeyring {
       }
       return { success: false, error: unsuccess.error, code: unsuccess.code }
     }
-    return { success: true, payload: response.payload.signature }
+    return {
+      success: true,
+      payload: Buffer.from(response.payload.signature.slice(2), 'hex')
+    }
   }
 
   private async sendTrezorCommand<T>(

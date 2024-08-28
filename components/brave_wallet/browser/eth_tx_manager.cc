@@ -438,24 +438,23 @@ void EthTxManager::GetNonceForHardwareTransaction(
   }
 }
 
-void EthTxManager::GetTransactionMessageToSign(
+void EthTxManager::GetEthTransactionMessageToSign(
     const std::string& tx_meta_id,
-    GetTransactionMessageToSignCallback callback) {
+    GetEthTransactionMessageToSignCallback callback) {
   std::unique_ptr<EthTxMeta> meta =
       GetEthTxStateManager()->GetEthTx(tx_meta_id);
   if (!meta) {
     VLOG(1) << __FUNCTION__ << "No transaction found with id:" << tx_meta_id;
-    std::move(callback).Run(nullptr);
+    std::move(callback).Run(std::nullopt);
     return;
   }
   uint256_t chain_id = 0;
   if (!HexValueToUint256(meta->chain_id(), &chain_id)) {
-    std::move(callback).Run(nullptr);
+    std::move(callback).Run(std::nullopt);
     return;
   }
-  auto message = meta->tx()->GetMessageToSign(chain_id, false);
-  auto encoded = brave_wallet::ToHex(message);
-  std::move(callback).Run(mojom::MessageToSignUnion::NewMessageStr(encoded));
+  std::move(callback).Run(
+      brave_wallet::ToHex(meta->tx()->GetMessageToSign(chain_id, false)));
 }
 
 mojom::CoinType EthTxManager::GetCoinType() const {
@@ -488,7 +487,7 @@ void EthTxManager::ProcessHardwareSignature(
     const std::string& v,
     const std::string& r,
     const std::string& s,
-    ProcessHardwareSignatureCallback callback) {
+    ProcessEthHardwareSignatureCallback callback) {
   std::unique_ptr<EthTxMeta> meta =
       GetEthTxStateManager()->GetEthTx(tx_meta_id);
   if (!meta) {
@@ -528,7 +527,7 @@ void EthTxManager::ProcessHardwareSignature(
 }
 
 void EthTxManager::ContinueProcessHardwareSignature(
-    ProcessHardwareSignatureCallback callback,
+    ProcessEthHardwareSignatureCallback callback,
     bool status,
     mojom::ProviderErrorUnionPtr error_union,
     const std::string& error_message) {

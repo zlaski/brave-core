@@ -26,12 +26,11 @@ import {
   dialogErrorFromTrezorErrorCode,
   signMessageWithHardwareKeyring
 } from '../../async/hardware'
-import { toByteArrayStringUnion } from '../../../utils/mojo-utils'
 
 interface ProcessSignMessageRequestArgs {
   approved: boolean
   id: number
-  signature?: BraveWallet.ByteArrayStringUnion | undefined
+  signature?: BraveWallet.SignatureBytes | undefined
   error?: string | undefined
 }
 
@@ -93,7 +92,7 @@ export const signingEndpoints = ({
         try {
           const { data: api } = baseQuery(undefined)
 
-          await processSignMessageRequest(api, arg)
+          await processSignMessageRequestInternal(api, arg)
 
           return {
             data: true
@@ -180,7 +179,6 @@ export const signingEndpoints = ({
             navigateToConnectHardwareWallet(api.panelHandler, store)
           }
 
-          const coin = arg.account.accountId.coin
           const info = arg.account.hardware
 
           if (!info) {
@@ -224,20 +222,13 @@ export const signingEndpoints = ({
             }
           }
 
-          await processSignMessageRequest(
+          await processSignMessageRequestInternal(
             api,
-            signed.success
+            signed.success && signed.payload
               ? {
                   approved: signed.success,
                   id: arg.request.id,
-                  signature:
-                    coin === BraveWallet.CoinType.SOL
-                      ? toByteArrayStringUnion({
-                          bytes: [...(signed.payload as Buffer)]
-                        })
-                      : toByteArrayStringUnion({
-                          str: signed.payload as string
-                        })
+                  signature: { signatureBytes: [...signed.payload] }
                 }
               : {
                   approved: signed.success,
@@ -273,7 +264,7 @@ export const signingEndpoints = ({
 }
 
 // internals
-async function processSignMessageRequest(
+async function processSignMessageRequestInternal(
   api: {
     braveWalletService: BraveWallet.BraveWalletServiceRemote
     panelHandler?: BraveWallet.PanelHandlerRemote

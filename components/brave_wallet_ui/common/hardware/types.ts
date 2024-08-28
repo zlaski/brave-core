@@ -33,6 +33,10 @@ export type SignHardwareOperationResult = HardwareOperationResult & {
   payload?: EthereumSignedTx | FilSignedLotusMessage | Buffer | string
 }
 
+export type SignMessageHardwareOperationResult = HardwareOperationResult & {
+  payload?: Buffer
+}
+
 export const DerivationSchemes = {
   EthLedgerLive: 'EthLedgerLive',
   EthLedgerLegacy: 'EthLedgerLegacy',

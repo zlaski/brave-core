@@ -3,6 +3,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import { assert } from 'chrome://resources/js/assert.js'
+
 // types
 import {
   BraveWallet,
@@ -12,7 +14,6 @@ import {
 import { WalletApiEndpointBuilderParams } from '../api-base.slice'
 
 // utils
-import { toMojoUnion } from '../../../utils/mojo-utils'
 import { handleEndpointError } from '../../../utils/api-utils'
 
 export const transactionSimulationEndpoints = ({
@@ -180,29 +181,16 @@ export const transactionSimulationEndpoints = ({
     getSolanaTransactionSimulation: query<
       BraveWallet.SolanaSimulationResponse,
       {
-        mode: keyof Parameters<
-          BraveWallet.SimulationServiceRemote['scanSolanaTransaction']
-        >[0]
-        chainId: string
-        id: Pick<
-          | BraveWallet.SignAllTransactionsRequest
-          | BraveWallet.SignTransactionRequest
-          | BraveWallet.TransactionInfo,
-          'id'
-        >['id']
+        transactionId?: { txMetaId: string; chainId: string }
+        signSolTransactionsRequest?: BraveWallet.SignSolTransactionsRequest
       }
     >({
       queryFn: async (arg, { endpoint }, extraOptions, baseQuery) => {
         try {
-          const { data: api, cache } = baseQuery(undefined)
-          const { simulationService, braveWalletService, txService } = api
+          assert(arg.transactionId || arg.signSolTransactionsRequest)
 
-          const { isTransactionSimulationsFeatureEnabled } =
-            await cache.getWalletInfo()
-
-          if (!isTransactionSimulationsFeatureEnabled) {
-            throw new Error('Transaction simulation feature is not enabled')
-          }
+          const { data: api } = baseQuery(undefined)
+          const { simulationService, txService } = api
 
           const { status } =
             await api.braveWalletService.getTransactionSimulationOptInStatus()
@@ -211,72 +199,28 @@ export const transactionSimulationEndpoints = ({
             throw new Error('Transaction simulation is not allowed')
           }
 
-          const params: Parameters<
-            BraveWallet.SimulationServiceRemote['scanSolanaTransaction']
-          >[0] = {
-            signAllTransactionsRequest: undefined,
-            signTransactionRequest: undefined,
-            transactionInfo: undefined
+          // TODO(apaymyshev): should send only ids to backend.
+          const params: BraveWallet.SolanaTransactionRequestUnion = {
+            transactionInfo: undefined,
+            signSolTransactionsRequest: arg.signSolTransactionsRequest
           }
 
-          switch (arg.mode) {
-            case 'signAllTransactionsRequest': {
-              const { requests } = await braveWalletService //
-                .getPendingSignAllTransactionsRequests()
-
-              params.signAllTransactionsRequest = requests.find(
-                (r) => r.id === arg?.id
-              )
-              break
-            }
-
-            case 'signTransactionRequest': {
-              const { requests } =
-                await braveWalletService.getPendingSignTransactionRequests()
-              params.signTransactionRequest = requests.find(
-                (r) => r.id === arg?.id
-              )
-              break
-            }
-
-            case 'transactionInfo': {
-              const { transactionInfo } = await txService.getTransactionInfo(
-                CoinTypes.SOL,
-                arg.chainId,
-                arg.id.toString()
-              )
-              params.transactionInfo = transactionInfo || undefined
-              break
-            }
-
-            default: {
-              throw new Error(`Unsupported SVM simulation mode: ${arg.mode}`)
-            }
-          }
-
-          const request = params[arg.mode]
-          if (!request) {
-            throw new Error(
-              `Unable to find ${arg.mode || 'MODE'} with Id: ${arg.id}`
+          if (arg.transactionId) {
+            const { transactionInfo } = await txService.getTransactionInfo(
+              CoinTypes.SOL,
+              arg.transactionId.chainId,
+              arg.transactionId.txMetaId
             )
-          }
-
-          const { result } = await simulationService.hasTransactionScanSupport(
-            request.chainId,
-            CoinTypes.SOL
-          )
-
-          if (!result) {
-            throw new Error(
-              `Solana transaction simulation not supported for chain/coin: ${
-                request.chainId //
-              }/${CoinTypes.SOL}`
-            )
+            if (!transactionInfo) {
+              throw new Error(`Invalid tx ${arg.transactionId.txMetaId}`)
+            }
+            params.transactionInfo = transactionInfo
+            params.signSolTransactionsRequest = undefined
           }
 
           const { errorResponse, errorString, response } =
             await simulationService.scanSolanaTransaction(
-              toMojoUnion(params, arg.mode),
+              params,
               navigator.language
             )
 
@@ -284,7 +228,7 @@ export const transactionSimulationEndpoints = ({
             throw new Error(
               `scanSolanaTransaction({${
                 //
-                JSON.stringify(toMojoUnion(params, arg.mode))
+                JSON.stringify(params)
               }}) failed -- ${errorString}: ${errorResponse}`
             )
           }

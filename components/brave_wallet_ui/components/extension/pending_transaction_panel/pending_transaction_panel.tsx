@@ -120,9 +120,10 @@ export const PendingTransactionPanel: React.FC<Props> = ({
       networkHasTxSimulationSupport &&
       selectedPendingTxCoinType === CoinTypes.SOL
       ? {
-          chainId: selectedPendingTransaction.chainId,
-          id: selectedPendingTransaction.id,
-          mode: 'transactionInfo'
+          transactionId: {
+            txMetaId: selectedPendingTransaction.id,
+            chainId: selectedPendingTransaction.chainId
+          }
         }
       : skipToken
   )

@@ -407,72 +407,6 @@ export const mockFilInvalilAddresses: string[] = [
   'd3wv3u6pmfi3j6pf3fhjkch372pkyg2tgtlb3jpu3eo6mnt7ttsft6x2xr54ct7fl2oz4o4tpa4mvigcrayh4a'
 ]
 
-export const mockSolDappSignTransactionRequest: //
-BraveWallet.SignTransactionRequest = {
-  originInfo: {
-    originSpec: 'https://f40y4d.csb.app',
-    eTldPlusOne: 'csb.app'
-  },
-  id: 0,
-  fromAccountId: mockSolanaAccount.accountId,
-  fromAddress: mockSolanaAccount.address,
-  txData: {
-    ethTxData: undefined,
-    ethTxData1559: undefined,
-    filTxData: undefined,
-    btcTxData: undefined,
-    zecTxData: undefined,
-    solanaTxData: {
-      recentBlockhash: 'B7Kg79jDm48LMdB4JB2hu82Yfsuz5xYm2cQDBYmKdDSn',
-      lastValidBlockHeight: 0 as unknown as bigint,
-      feePayer: mockSolanaAccount.address,
-      toWalletAddress: '',
-      splTokenMintAddress: '',
-      lamports: 0 as unknown as bigint,
-      amount: 0 as unknown as bigint,
-      txType: 12,
-      instructions: [
-        {
-          programId: '11111111111111111111111111111111',
-          accountMetas: [
-            {
-              pubkey: mockSolanaAccount.address,
-              addrTableLookupIndex: undefined,
-              isSigner: true,
-              isWritable: true
-            },
-            {
-              pubkey: mockSolanaAccount.address,
-              addrTableLookupIndex: undefined,
-              isSigner: true,
-              isWritable: true
-            }
-          ],
-          data: [2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0],
-          decodedData: undefined
-        }
-      ],
-      version: BraveWallet.SolanaMessageVersion.kLegacy,
-      messageHeader: {
-        numRequiredSignatures: 1,
-        numReadonlySignedAccounts: 0,
-        numReadonlyUnsignedAccounts: 1
-      },
-      staticAccountKeys: [
-        mockSolanaAccount.address,
-        '11111111111111111111111111111111'
-      ],
-      addressTableLookups: [],
-      sendOptions: undefined,
-      signTransactionParam: undefined,
-      feeEstimation: undefined
-    }
-  },
-  rawMessage: { bytes: [1], str: undefined },
-  coin: BraveWallet.CoinType.SOL,
-  chainId: BraveWallet.SOLANA_MAINNET
-}
-
 // BraveWallet.TransactionInfo (selectedPendingTransaction)
 export const mockSolDappSignAndSendTransactionRequest: //
 SerializableTransactionInfo = {
@@ -570,7 +504,7 @@ SerializableTransactionInfo = {
 }
 
 export const mockSolDappSignAllTransactionsRequest: //
-BraveWallet.SignAllTransactionsRequest = {
+BraveWallet.SignSolTransactionsRequest = {
   originInfo: {
     originSpec: 'https://f40y4d.csb.app',
     eTldPlusOne: 'csb.app'
@@ -580,112 +514,97 @@ BraveWallet.SignAllTransactionsRequest = {
   fromAddress: mockSolanaAccount.address,
   txDatas: [
     {
-      ethTxData: undefined,
-      ethTxData1559: undefined,
-      filTxData: undefined,
-      btcTxData: undefined,
-      zecTxData: undefined,
-      solanaTxData: {
-        recentBlockhash: '8Yq6DGZBh9oEJsCVhUjTqN9kPiLoeYJ7J4n9TnpPYjqW',
-        lastValidBlockHeight: 0 as unknown as bigint,
-        feePayer: mockSolanaAccount.address,
-        toWalletAddress: '',
-        splTokenMintAddress: '',
-        lamports: 0 as unknown as bigint,
-        amount: 0 as unknown as bigint,
-        txType: 12,
-        instructions: [
-          {
-            programId: '11111111111111111111111111111111',
-            accountMetas: [
-              {
-                pubkey: mockSolanaAccount.address,
-                addrTableLookupIndex: undefined,
-                isSigner: true,
-                isWritable: true
-              },
-              {
-                pubkey: mockSolanaAccount.address,
-                addrTableLookupIndex: undefined,
-                isSigner: true,
-                isWritable: true
-              }
-            ],
-            data: [2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0],
-            decodedData: undefined
-          }
-        ],
-        version: BraveWallet.SolanaMessageVersion.kLegacy,
-        messageHeader: {
-          numRequiredSignatures: 1,
-          numReadonlySignedAccounts: 0,
-          numReadonlyUnsignedAccounts: 1
-        },
-        staticAccountKeys: [
-          mockSolanaAccount.address,
-          '11111111111111111111111111111111'
-        ],
-        addressTableLookups: [],
-        sendOptions: undefined,
-        signTransactionParam: undefined,
-        feeEstimation: undefined
-      }
+      recentBlockhash: '8Yq6DGZBh9oEJsCVhUjTqN9kPiLoeYJ7J4n9TnpPYjqW',
+      lastValidBlockHeight: 0 as unknown as bigint,
+      feePayer: mockSolanaAccount.address,
+      toWalletAddress: '',
+      splTokenMintAddress: '',
+      lamports: 0 as unknown as bigint,
+      amount: 0 as unknown as bigint,
+      txType: 12,
+      instructions: [
+        {
+          programId: '11111111111111111111111111111111',
+          accountMetas: [
+            {
+              pubkey: mockSolanaAccount.address,
+              addrTableLookupIndex: undefined,
+              isSigner: true,
+              isWritable: true
+            },
+            {
+              pubkey: mockSolanaAccount.address,
+              addrTableLookupIndex: undefined,
+              isSigner: true,
+              isWritable: true
+            }
+          ],
+          data: [2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0],
+          decodedData: undefined
+        }
+      ],
+      version: BraveWallet.SolanaMessageVersion.kLegacy,
+      messageHeader: {
+        numRequiredSignatures: 1,
+        numReadonlySignedAccounts: 0,
+        numReadonlyUnsignedAccounts: 1
+      },
+      staticAccountKeys: [
+        mockSolanaAccount.address,
+        '11111111111111111111111111111111'
+      ],
+      addressTableLookups: [],
+      sendOptions: undefined,
+      signTransactionParam: undefined,
+      feeEstimation: undefined
     },
     {
-      ethTxData: undefined,
-      ethTxData1559: undefined,
-      filTxData: undefined,
-      btcTxData: undefined,
-      zecTxData: undefined,
-      solanaTxData: {
-        recentBlockhash: '8Yq6DGZBh9oEJsCVhUjTqN9kPiLoeYJ7J4n9TnpPYjqW',
-        lastValidBlockHeight: 0 as unknown as bigint,
-        feePayer: mockSolanaAccount.address,
-        toWalletAddress: '',
-        splTokenMintAddress: '',
-        lamports: 0 as unknown as bigint,
-        amount: 0 as unknown as bigint,
-        txType: 12,
-        instructions: [
-          {
-            programId: '11111111111111111111111111111111',
-            accountMetas: [
-              {
-                pubkey: mockSolanaAccount.address,
-                addrTableLookupIndex: undefined,
-                isSigner: true,
-                isWritable: true
-              },
-              {
-                pubkey: mockSolanaAccount.address,
-                addrTableLookupIndex: undefined,
-                isSigner: true,
-                isWritable: true
-              }
-            ],
-            data: [2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0],
-            decodedData: undefined
-          }
-        ],
-        version: BraveWallet.SolanaMessageVersion.kLegacy,
-        messageHeader: {
-          numRequiredSignatures: 1,
-          numReadonlySignedAccounts: 0,
-          numReadonlyUnsignedAccounts: 1
-        },
-        staticAccountKeys: [
-          mockSolanaAccount.address,
-          '11111111111111111111111111111111'
-        ],
-        addressTableLookups: [],
-        sendOptions: undefined,
-        signTransactionParam: undefined,
-        feeEstimation: undefined
-      }
+      recentBlockhash: '8Yq6DGZBh9oEJsCVhUjTqN9kPiLoeYJ7J4n9TnpPYjqW',
+      lastValidBlockHeight: 0 as unknown as bigint,
+      feePayer: mockSolanaAccount.address,
+      toWalletAddress: '',
+      splTokenMintAddress: '',
+      lamports: 0 as unknown as bigint,
+      amount: 0 as unknown as bigint,
+      txType: 12,
+      instructions: [
+        {
+          programId: '11111111111111111111111111111111',
+          accountMetas: [
+            {
+              pubkey: mockSolanaAccount.address,
+              addrTableLookupIndex: undefined,
+              isSigner: true,
+              isWritable: true
+            },
+            {
+              pubkey: mockSolanaAccount.address,
+              addrTableLookupIndex: undefined,
+              isSigner: true,
+              isWritable: true
+            }
+          ],
+          data: [2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0],
+          decodedData: undefined
+        }
+      ],
+      version: BraveWallet.SolanaMessageVersion.kLegacy,
+      messageHeader: {
+        numRequiredSignatures: 1,
+        numReadonlySignedAccounts: 0,
+        numReadonlyUnsignedAccounts: 1
+      },
+      staticAccountKeys: [
+        mockSolanaAccount.address,
+        '11111111111111111111111111111111'
+      ],
+      addressTableLookups: [],
+      sendOptions: undefined,
+      signTransactionParam: undefined,
+      feeEstimation: undefined
     }
   ],
-  rawMessages: [{ bytes: [1], str: undefined }],
-  coin: BraveWallet.CoinType.SOL,
+  rawMessages: [[1]],
   chainId: BraveWallet.SOLANA_MAINNET
 }
 
