@@ -8,7 +8,8 @@ let pickerDiv: HTMLDivElement | null
 
 const api = {
   cosmeticFilterCreate: (selector: string) => {
-    chrome.braveShields.addSiteCosmeticFilter(selector)
+    // @ts-expect-error
+    cf_worker.addSiteCosmeticFilter(selector)
 
     const styleId = 'brave-content-picker-style'
     let style = document.getElementById(styleId)
