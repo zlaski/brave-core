@@ -1126,6 +1126,7 @@ public class BytecodeTest {
                         WindowAndroid.class,
                         PropertyModel.class,
                         BottomControlsStacker.class,
+                        BrowserStateBrowserControlsVisibilityDelegate.class,
                         FullscreenManager.class,
                         TabObscuringHandler.class,
                         int.class,
