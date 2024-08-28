@@ -192,6 +192,15 @@ void BraveVpnService::OnRegionDataReady(bool success) {
 void BraveVpnService::OnSelectedRegionChanged(const std::string& region_name) {
   const auto region_ptr = GetRegionPtrWithNameFromRegionList(
       region_name, connection_manager_->GetRegionDataManager().GetRegions());
+  const auto selected_region_name =
+      local_prefs_->GetString(prefs::kBraveVPNSelectedRegion);
+  if (region_ptr->region_precision ==
+          brave_vpn::mojom::kRegionPrecisionCountry &&
+      selected_region_name.empty()) {
+    region_ptr->is_automatic = true;
+  } else {
+    region_ptr->is_automatic = false;
+  }
   for (const auto& obs : observers_) {
     obs->OnSelectedRegionChanged(region_ptr.Clone());
   }
@@ -253,14 +262,25 @@ void BraveVpnService::GetSelectedRegion(GetSelectedRegionCallback callback) {
 
   auto region_name =
       connection_manager_->GetRegionDataManager().GetSelectedRegion();
-  std::move(callback).Run(GetRegionPtrWithNameFromRegionList(
-      region_name, connection_manager_->GetRegionDataManager().GetRegions()));
+  auto region_ptr = GetRegionPtrWithNameFromRegionList(
+      region_name, connection_manager_->GetRegionDataManager().GetRegions());
+  const auto selected_region_name =
+      local_prefs_->GetString(prefs::kBraveVPNSelectedRegion);
+
+  if (region_ptr->region_precision ==
+          brave_vpn::mojom::kRegionPrecisionCountry &&
+      selected_region_name.empty()) {
+    region_ptr->is_automatic = true;
+  } else {
+    region_ptr->is_automatic = false;
+  }
+  std::move(callback).Run(std::move(region_ptr));
 }
 
 void BraveVpnService::SetSelectedRegion(mojom::RegionPtr region_ptr) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
 
-  VLOG(2) << __func__ << " : " << region_ptr->name_pretty;
+  VLOG(2) << __func__ << " : " << region_ptr->name;
   connection_manager_->SetSelectedRegion(region_ptr->name);
 }
 
@@ -892,11 +912,6 @@ void BraveVpnService::Shutdown() {
 
 void BraveVpnService::GetTimezonesForRegions(ResponseCallback callback) {
   api_request_->GetTimezonesForRegions(std::move(callback));
-}
-
-void BraveVpnService::GetHostnamesForRegion(ResponseCallback callback,
-                                            const std::string& region) {
-  api_request_->GetHostnamesForRegion(std::move(callback), region);
 }
 
 void BraveVpnService::GetHostnamesForRegion(

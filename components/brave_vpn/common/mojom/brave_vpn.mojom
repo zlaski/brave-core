@@ -131,6 +131,7 @@ struct Region {
   double latitude;
   double longitude;
   int32 server_count;
+  bool is_automatic;
 };
 
 const string kRegionPrecisionDefault = "default";
