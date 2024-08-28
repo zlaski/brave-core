@@ -3,25 +3,25 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import { DialogProps } from '@brave/leo/react/dialog'
 import * as React from 'react'
+import { DialogProps } from '@brave/leo/react/dialog'
 import { spacing } from '@brave/leo/tokens/css/variables'
 
-// types
+// Types
 import { BraveWallet } from '../../../../../constants/types'
 
-// utils
+// Utils
 import { reduceAddress } from '../../../../../utils/reduce-address'
+import { getLocale } from '../../../../../../common/locale'
 
-// components
-import { CreateAccountIcon } from '../../../../../components/shared/create-account-icon/create-account-icon'
-
-// styles
-import { ContainerButton, Dialog, DialogTitle } from '../shared/style'
+// Components
 import {
-  Column,
-  Row
-} from '../../../../../components/shared/style'
+  CreateAccountIcon //
+} from '../../../../../components/shared/create-account-icon/create-account-icon'
+
+// Styled Components
+import { ContainerButton, Dialog, DialogTitle } from '../shared/style'
+import { Column, Row } from '../../../../../components/shared/style'
 import { AccountAddress, AccountName } from './select_account.style'
 
 interface SelectAccountProps extends DialogProps {
@@ -37,9 +37,7 @@ interface AccountProps {
 
 export const Account = ({ account, onSelect }: AccountProps) => {
   return (
-    <ContainerButton
-      onClick={() => onSelect(account)}
-    >
+    <ContainerButton onClick={() => onSelect(account)}>
       <Row
         gap={spacing.xl}
         width='100%'
@@ -67,7 +65,9 @@ export const SelectAccount = (props: SelectAccountProps) => {
       showClose
       {...rest}
     >
-      <DialogTitle slot='title'>Select Account</DialogTitle>
+      <DialogTitle slot='title'>
+        {getLocale('braveWalletSelectAccount')}
+      </DialogTitle>
 
       <Column width='100%'>
         {accounts.map((account) => (

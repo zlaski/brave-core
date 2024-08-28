@@ -7,17 +7,20 @@ import * as React from 'react'
 import { DialogProps } from '@brave/leo/react/dialog'
 import Icon from '@brave/leo/react/icon'
 
-// types
+// Types
 import { MeldFiatCurrency } from '../../../../../constants/types'
 
-// styles
+// Utils
+import { getLocale } from '../../../../../../common/locale'
+
+// Styled Components
 import { Column, Row } from '../../../../../components/shared/style'
 import {
   CurrencyImage,
   CurrencyName,
   CurrencyCode,
   SearchInput,
-  SelectedLabel,
+  SelectedLabel
 } from './select_currency.style'
 import { ContainerButton, Dialog, DialogTitle } from '../shared/style'
 
@@ -49,7 +52,9 @@ export const CurrencyListItem = ({
         justifyContent='flex-end'
         gap='16px'
       >
-        {isSelected && <SelectedLabel>Selected</SelectedLabel>}
+        {isSelected && (
+          <SelectedLabel>{getLocale('braveWalletSelected')}</SelectedLabel>
+        )}
         <CurrencyCode>{currency.currencyCode}</CurrencyCode>
       </Row>
     </ContainerButton>
@@ -59,10 +64,10 @@ export const CurrencyListItem = ({
 export const SelectCurrency = (props: SelectCurrencyProps) => {
   const { currencies, selectedCurrency, onSelectCurrency, ...rest } = props
 
-  // state
+  // State
   const [searchText, setSearchText] = React.useState('')
 
-  // memos
+  // Memos
   const searchResults = React.useMemo(() => {
     if (searchText === '') return currencies
 
@@ -80,13 +85,15 @@ export const SelectCurrency = (props: SelectCurrencyProps) => {
       showClose
       size='mobile'
     >
-      <DialogTitle slot='title'>Select Currency</DialogTitle>
+      <DialogTitle slot='title'>
+        {getLocale('braveWalletSelectCurrency')}
+      </DialogTitle>
       <Row
         padding='24px 0 0 0'
         slot='subtitle'
       >
         <SearchInput
-          placeholder='Search currency'
+          placeholder={getLocale('braveWalletSearchCurrency')}
           onInput={(e) => setSearchText(e.value)}
         >
           <Icon
@@ -105,7 +112,7 @@ export const SelectCurrency = (props: SelectCurrencyProps) => {
             justifyContent='center'
             alignItems='center'
           >
-            No available currencies
+            {getLocale('braveWalletNoAvailableCurrencies')}
           </Row>
         ) : (
           searchResults.map((currency) => (

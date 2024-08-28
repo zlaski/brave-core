@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import * as leo from '@brave/leo/tokens/css/variables'
 import { Row } from '../../shared/style'
 
-const minCardHeight = 497
+const minCardHeight = 466
 export const maxCardWidth = 768
 const layoutSmallCardBottom = 67
 export const layoutSmallWidth = 1100
