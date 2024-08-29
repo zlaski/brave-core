@@ -1,5 +1,5 @@
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
-index b2fae4a95035a0b371288ce9e85bcb83f04d809b..17e1197f7afbe82223e645986c5b3a3f89832094 100644
+index ba4281703f35be79d1aab9b37ed65288b9e13074..9e041bed4b1f2ddb91148ba1fa5ce36fe3854781 100644
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
 @@ -1900,6 +1900,7 @@ void NetworkContext::ResolveHost(
@@ -8,5 +8,5 @@ index b2fae4a95035a0b371288ce9e85bcb83f04d809b..17e1197f7afbe82223e645986c5b3a3f
    if (network_anonymization_key.GetNonce().has_value() &&
 +      host->is_scheme_host_port() &&
        !IsNetworkForNonceAndUrlAllowed(
-           network_anonymization_key.GetNonce().value(),
-           host->get_scheme_host_port().GetURL())) {
+           /*nonce=*/network_anonymization_key.GetNonce().value(),
+           /*url=*/host->is_host_port_pair()

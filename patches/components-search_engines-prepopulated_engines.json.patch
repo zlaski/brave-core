@@ -1,5 +1,5 @@
 diff --git a/components/search_engines/prepopulated_engines.json b/components/search_engines/prepopulated_engines.json
-index d96182f0b06c85c0e06c7176245c32c4fce63802..a897824b6fc01a0a937d603e9a9e86664a4f37ec 100644
+index 40a13e733cbcb351898eefb64242a3a8187d198f..a897824b6fc01a0a937d603e9a9e86664a4f37ec 100644
 --- a/components/search_engines/prepopulated_engines.json
 +++ b/components/search_engines/prepopulated_engines.json
 @@ -116,23 +116,6 @@
@@ -41,7 +41,7 @@ index d96182f0b06c85c0e06c7176245c32c4fce63802..a897824b6fc01a0a937d603e9a9e8666
 -      "regulatory_extensions": [
 -        {
 -          "variant": "RegulatoryExtensionType::kDefault",
--          "search_params": "client=opensearch",
+-          "search_params": "client=cs-chrome",
 -          "suggest_params": "client=opensearch"
 -        },
 -        {
