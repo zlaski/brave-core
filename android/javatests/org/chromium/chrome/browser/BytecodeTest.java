@@ -1164,7 +1164,6 @@ public class BytecodeTest {
                         DataSharingTabManager.class,
                         TabModelSelector.class,
                         TabContentManager.class,
-                        ViewGroup.class,
                         TabCreatorManager.class,
                         OneshotSupplier.class,
                         ModalDialogManager.class));
