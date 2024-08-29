@@ -1734,11 +1734,13 @@ public class BytecodeTest {
                         "org/chromium/chrome/browser/tasks/tab_management/IncognitoTabSwitcherPane",
                         "org/chromium/chrome/browser/tasks/tab_management/BraveIncognitoTabSwitcherPane", // presubmit: ignore-long-line
                         Context.class,
+                        OneshotSupplier.class,
                         TabSwitcherPaneCoordinatorFactory.class,
                         Supplier.class,
                         View.OnClickListener.class,
                         OneshotSupplier.class,
-                        DoubleConsumer.class));
+                        DoubleConsumer.class,
+                        UserEducationHelper.class));
     }
 
     @Test
