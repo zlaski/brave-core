@@ -37,7 +37,6 @@ class BraveContentSettingsAgentImpl
       public brave_shields::mojom::BraveShields {
  public:
   BraveContentSettingsAgentImpl(content::RenderFrame* render_frame,
-                                bool should_whitelist,
                                 std::unique_ptr<Delegate> delegate);
   BraveContentSettingsAgentImpl(const BraveContentSettingsAgentImpl&) = delete;
   BraveContentSettingsAgentImpl& operator=(

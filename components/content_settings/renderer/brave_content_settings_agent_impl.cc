@@ -85,10 +85,8 @@ bool ShouldSkipResource(const GURL& resource_url) {
 
 BraveContentSettingsAgentImpl::BraveContentSettingsAgentImpl(
     content::RenderFrame* render_frame,
-    bool should_whitelist,
     std::unique_ptr<Delegate> delegate)
     : ContentSettingsAgentImpl(render_frame,
-                               should_whitelist,
                                std::move(delegate)) {
   render_frame->GetAssociatedInterfaceRegistry()
       ->AddInterface<brave_shields::mojom::BraveShields>(base::BindRepeating(
@@ -191,22 +189,22 @@ bool BraveContentSettingsAgentImpl::AllowScriptFromSource(
 
   // scripts with whitelisted protocols, such as chrome://extensions should
   // be allowed
-  bool should_white_list = IsAllowlistedForContentSettings(
-      blink::WebSecurityOrigin::Create(script_url),
-      render_frame()->GetWebFrame()->GetDocument().Url());
-  auto is_shields_down =
-      IsBraveShieldsDown(render_frame()->GetWebFrame(), secondary_url);
-  auto is_script_temprily_allowed = IsScriptTemporilyAllowed(secondary_url);
-  allow = allow || should_white_list || is_shields_down ||
-          is_script_temprily_allowed;
+  // bool should_white_list = IsAllowlistedForContentSettings(
+  //     blink::WebSecurityOrigin::Create(script_url),
+  //     render_frame()->GetWebFrame()->GetDocument().Url());
+  // auto is_shields_down =
+  //     IsBraveShieldsDown(render_frame()->GetWebFrame(), secondary_url);
+  // auto is_script_temprily_allowed = IsScriptTemporilyAllowed(secondary_url);
+  // allow = allow || should_white_list || is_shields_down ||
+  //         is_script_temprily_allowed;
 
-  if (!allow) {
-    blocked_script_url_ = secondary_url;
-  } else if (!is_shields_down) {
-    if (is_script_temprily_allowed) {
-      BraveSpecificDidAllowJavaScriptOnce(secondary_url);
-    }
-  }
+  // if (!allow) {
+  //   blocked_script_url_ = secondary_url;
+  // } else if (!is_shields_down) {
+  //   if (is_script_temprily_allowed) {
+  //     BraveSpecificDidAllowJavaScriptOnce(secondary_url);
+  //   }
+  // }
 
   return allow;
 }
