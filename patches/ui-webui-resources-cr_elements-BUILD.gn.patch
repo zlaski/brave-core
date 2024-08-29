@@ -1,8 +1,8 @@
 diff --git a/ui/webui/resources/cr_elements/BUILD.gn b/ui/webui/resources/cr_elements/BUILD.gn
-index 02c0a5e1e72885e6355454feeabc296baa67aa18..afd3435ea01c343602d1e466b3ca2116ea8c2ca6 100644
+index 1948289920a22e144778e3703411f55d14950f1f..0952cb59a77ef70ecdb3ccf89a11913b004dbc60 100644
 --- a/ui/webui/resources/cr_elements/BUILD.gn
 +++ b/ui/webui/resources/cr_elements/BUILD.gn
-@@ -215,6 +215,7 @@ build_webui("build") {
+@@ -217,6 +217,7 @@ build_webui("build") {
    ts_composite = true
    ts_deps = [ "../js:build_ts" ]
    if (include_polymer) {

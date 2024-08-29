@@ -1,5 +1,5 @@
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
-index dff1afbe01fcd5904c50d5a546934fada8efd491..69f6e93286a6aeb5657b415aa8f47af40726d65b 100644
+index b2fae4a95035a0b371288ce9e85bcb83f04d809b..17e1197f7afbe82223e645986c5b3a3f89832094 100644
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
 @@ -1900,6 +1900,7 @@ void NetworkContext::ResolveHost(
