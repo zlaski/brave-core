@@ -19,6 +19,7 @@
 #include "brave/components/ai_chat/core/browser/engine/engine_consumer.h"
 #include "brave/components/ai_chat/core/browser/model_service.h"
 #include "brave/components/ai_chat/core/browser/text_embedder.h"
+#include "brave/components/ai_chat/core/browser/types.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom-forward.h"
 #include "brave/components/ai_chat/core/common/mojom/ai_chat.mojom.h"
 #include "mojo/public/cpp/bindings/pending_receiver.h"
@@ -53,6 +54,11 @@ class ConversationHandler : public mojom::ConversationHandler,
   using GeneratedTextCallback =
       base::RepeatingCallback<void(const std::string& text)>;
 
+  // TODO(petemill): consider making SearchQuerySummary generic (StagedEntries)
+  // or a list of ConversationTurn objects.
+  using GetStagedEntriesCallback = base::OnceCallback<void(
+      const std::optional<SearchQuerySummary>& search_query_summary)>;
+
   // Supplements a conversation with associated page content
   class AssociatedContentDelegate {
    public:
@@ -77,6 +83,10 @@ class ConversationHandler : public mojom::ConversationHandler,
     // fetch for the content.
     virtual std::string_view GetCachedTextContent() = 0;
     virtual bool GetCachedIsVideo() = 0;
+    // Get summarizer-key meta tag content from Brave Search SERP if exists and
+    // use it to fetch search query and summary from Brave search chatllm
+    // endpoint.
+    virtual void GetStagedEntriesFromContent(GetStagedEntriesCallback callback);
 
     void GetTopSimilarityWithPromptTilContextLimit(
         const std::string& prompt,
@@ -246,6 +256,12 @@ class ConversationHandler : public mojom::ConversationHandler,
   void SetAPIError(const mojom::APIError& error);
   void UpdateOrCreateLastAssistantEntry(mojom::ConversationEntryEventPtr text);
   void MaybeSeedOrClearSuggestions();
+
+  // Some associated content may provide some conversation that the user wants
+  // to continue, e.g. Brave Search.
+  void MaybeFetchOrClearContentStagedConversation();
+  void OnGetStagedEntriesFromContent(
+      const std::optional<SearchQuerySummary>& search_query_summary);
 
   void GeneratePageContent(GetPageContentCallback callback);
   void SetPageContent(std::string contents_text,

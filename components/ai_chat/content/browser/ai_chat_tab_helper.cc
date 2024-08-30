@@ -17,6 +17,7 @@
 #include "base/strings/string_util.h"
 #include "brave/components/ai_chat/content/browser/page_content_fetcher.h"
 #include "brave/components/ai_chat/content/browser/pdf_utils.h"
+#include "brave/components/ai_chat/core/browser/associated_content_driver.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
 #include "brave/components/ai_chat/core/browser/utils.h"
 #include "brave/components/ai_chat/core/common/mojom/page_content_extractor.mojom.h"
@@ -88,6 +89,9 @@ AIChatTabHelper::AIChatTabHelper(
     ExtractPrintPreviewContentFunction extract_print_preview_content_function)
     : content::WebContentsObserver(web_contents),
       content::WebContentsUserData<AIChatTabHelper>(*web_contents),
+      AssociatedContentDriver(web_contents->GetBrowserContext()
+                                  ->GetDefaultStoragePartition()
+                                  ->GetURLLoaderFactoryForBrowserProcess()),
       extract_print_preview_content_function_(
           extract_print_preview_content_function) {
   CHECK(extract_print_preview_content_function);

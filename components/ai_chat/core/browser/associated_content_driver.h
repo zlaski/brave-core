@@ -18,6 +18,8 @@
 #include "brave/components/ai_chat/core/browser/ai_chat_service.h"
 #include "brave/components/ai_chat/core/browser/conversation_handler.h"
 #include "brave/components/ai_chat/core/browser/model_service.h"
+#include "brave/components/ai_chat/core/common/mojom/page_content_extractor.mojom.h"
+#include "brave/components/api_request_helper/api_request_helper.h"
 
 class PrefService;
 
@@ -35,7 +37,8 @@ class AssociatedContentDriver
     virtual void OnAssociatedContentNavigated(int new_navigation_id) {}
   };
 
-  AssociatedContentDriver();
+  explicit AssociatedContentDriver(
+      scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory);
   ~AssociatedContentDriver() override;
 
   AssociatedContentDriver(const AssociatedContentDriver&) = delete;
@@ -55,6 +58,8 @@ class AssociatedContentDriver
       ConversationHandler::GetPageContentCallback callback) override;
   std::string_view GetCachedTextContent() override;
   bool GetCachedIsVideo() override;
+  void GetStagedEntriesFromContent(
+      ConversationHandler::GetStagedEntriesCallback callback) override;
   //   // Implementer should use alternative method of page content fetching
   // void PrintPreviewFallback(ConversationHandler::GetPageContentCallback
   // callback) override;
@@ -66,6 +71,9 @@ class AssociatedContentDriver
  protected:
   virtual GURL GetPageURL() const = 0;
   virtual std::u16string GetPageTitle() const = 0;
+  // Get summarizer-key meta tag content from Brave Search SERP if exists.
+  virtual void GetSearchSummarizerKey(
+      mojom::PageContentExtractor::GetSearchSummarizerKeyCallback callback) = 0;
 
   // Implementer should fetch content from the "page" associated with this
   // conversation.
@@ -120,11 +128,25 @@ class AssociatedContentDriver
       ConversationHandler::GetPageContentCallback callback,
       int64_t navigation_id);
 
+  void OnSearchSummarizerKeyFetched(
+      ConversationHandler::GetStagedEntriesCallback callback,
+      int64_t navigation_id,
+      const std::optional<std::string>& key);
+  void OnSearchQuerySummaryFetched(
+      ConversationHandler::GetStagedEntriesCallback callback,
+      int64_t navigation_id,
+      api_request_helper::APIRequestResult result);
+  static std::optional<SearchQuerySummary> ParseSearchQuerySummaryResponse(
+      const base::Value& value);
+
   raw_ptr<PrefService> pref_service_;
   raw_ptr<AIChatMetrics> ai_chat_metrics_;
   std::unique_ptr<AIChatCredentialManager> credential_manager_;
 
   scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory_;
+
+  // Used for fetching search query summary.
+  std::unique_ptr<api_request_helper::APIRequestHelper> api_request_helper_;
 
   base::ObserverList<Observer> observers_;
   std::unique_ptr<base::OneShotEvent> on_page_text_fetch_complete_;

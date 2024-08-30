@@ -17,13 +17,46 @@
 #include "base/one_shot_event.h"
 #include "base/ranges/algorithm.h"
 #include "base/strings/string_util.h"
+#include "brave/brave_domains/service_domains.h"
+#include "brave/components/ai_chat/core/browser/brave_search_responses.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
 #include "brave/components/ai_chat/core/browser/conversation_handler.h"
-
+#include "brave/components/ai_chat/core/browser/utils.h"
+#include "net/base/url_util.h"
+#include "net/traffic_annotation/network_traffic_annotation.h"
 namespace ai_chat {
 
-AssociatedContentDriver::AssociatedContentDriver()
-    : on_page_text_fetch_complete_(std::make_unique<base::OneShotEvent>()) {}
+namespace {
+
+net::NetworkTrafficAnnotationTag
+GetSearchQuerySummaryNetworkTrafficAnnotationTag() {
+  return net::DefineNetworkTrafficAnnotation(
+      "ai_chat_associated_content_driver",
+      R"(
+      semantics {
+        sender: "Brave Leo AI Chat"
+        description:
+          "This sender is used to get search query summary from Brave search."
+        trigger:
+          "Triggered by uses of Brave Leo AI Chat on Brave Search SERP."
+        data:
+          "User's search query and the corresponding summary."
+        destination: WEBSITE
+      }
+      policy {
+        cookies_allowed: NO
+        policy_exception_justification:
+          "Not implemented."
+      }
+    )");
+}
+
+}  // namespace
+
+AssociatedContentDriver::AssociatedContentDriver(
+    scoped_refptr<network::SharedURLLoaderFactory> url_loader_factory)
+    : url_loader_factory_(url_loader_factory),
+      on_page_text_fetch_complete_(std::make_unique<base::OneShotEvent>()) {}
 
 AssociatedContentDriver::~AssociatedContentDriver() {
   for (auto& conversation : associated_conversations_) {
@@ -139,6 +172,89 @@ bool AssociatedContentDriver::GetCachedIsVideo() {
   return is_video_;
 }
 
+void AssociatedContentDriver::GetStagedEntriesFromContent(
+    ConversationHandler::GetStagedEntriesCallback callback) {
+  // At the moment we only know about staged entries from:
+  // - Brave Search results page
+  if (!IsBraveSearchSERP(GetPageURL())) {
+    std::move(callback).Run(std::nullopt);
+    return;
+  }
+  GetSearchSummarizerKey(
+      base::BindOnce(&AssociatedContentDriver::OnSearchSummarizerKeyFetched,
+                     weak_ptr_factory_.GetWeakPtr(), std::move(callback),
+                     current_navigation_id_));
+}
+
+void AssociatedContentDriver::OnSearchSummarizerKeyFetched(
+    ConversationHandler::GetStagedEntriesCallback callback,
+    int64_t navigation_id,
+    const std::optional<std::string>& key) {
+  if (!key || key->empty() || navigation_id != current_navigation_id_) {
+    std::move(callback).Run(std::nullopt);
+    return;
+  }
+
+  if (!api_request_helper_) {
+    api_request_helper_ =
+        std::make_unique<api_request_helper::APIRequestHelper>(
+            GetSearchQuerySummaryNetworkTrafficAnnotationTag(),
+            url_loader_factory_);
+  }
+
+  // https://search.brave.com/api/chatllm/raw_data?key=<key>
+  GURL base_url(
+      base::StrCat({url::kHttpsScheme, url::kStandardSchemeSeparator,
+                    brave_domains::GetServicesDomain(kBraveSearchURLPrefix),
+                    "/api/chatllm/raw_data"}));
+  CHECK(base_url.is_valid());
+  GURL url = net::AppendQueryParameter(base_url, "key", *key);
+
+  api_request_helper_->Request(
+      "GET", url, "", "application/json",
+      base::BindOnce(&AssociatedContentDriver::OnSearchQuerySummaryFetched,
+                     weak_ptr_factory_.GetWeakPtr(), std::move(callback),
+                     navigation_id),
+      {}, {});
+}
+
+void AssociatedContentDriver::OnSearchQuerySummaryFetched(
+    ConversationHandler::GetStagedEntriesCallback callback,
+    int64_t navigation_id,
+    api_request_helper::APIRequestResult result) {
+  if (!result.Is2XXResponseCode() || navigation_id != current_navigation_id_) {
+    std::move(callback).Run(std::nullopt);
+    return;
+  }
+
+  auto search_query_summary =
+      ParseSearchQuerySummaryResponse(result.value_body());
+  if (!search_query_summary) {
+    std::move(callback).Run(std::nullopt);
+    return;
+  }
+
+  std::move(callback).Run(search_query_summary);
+}
+
+// static
+std::optional<SearchQuerySummary>
+AssociatedContentDriver::ParseSearchQuerySummaryResponse(
+    const base::Value& value) {
+  auto search_query_response =
+      brave_search_responses::QuerySummaryResponse::FromValue(value);
+  if (!search_query_response || search_query_response->conversation.empty()) {
+    return std::nullopt;
+  }
+
+  const auto& query_summary = search_query_response->conversation[0];
+  if (query_summary.answer.empty()) {
+    return std::nullopt;
+  }
+
+  return SearchQuerySummary(query_summary.query, query_summary.answer[0].text);
+}
+
 void AssociatedContentDriver::OnFaviconImageDataChanged() {
   for (auto& conversation : associated_conversations_) {
     conversation->OnFaviconImageDataChanged();
@@ -161,6 +277,7 @@ void AssociatedContentDriver::OnNewPage(int64_t navigation_id) {
   cached_text_content_.clear();
   content_invalidation_token_.clear();
   is_video_ = false;
+  api_request_helper_.reset();
   ConversationHandler::AssociatedContentDelegate::OnNewPage(navigation_id);
 }
 
