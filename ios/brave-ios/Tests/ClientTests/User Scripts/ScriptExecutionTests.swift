@@ -30,6 +30,7 @@ final class ScriptExecutionTests: XCTestCase {
     let removedClass: Bool
     let removedAttribute: Bool
     let styledElement: Bool
+    let hasTextDisplayIsNone: Bool
   }
 
   @MainActor func testSiteStateListenerScript() async throws {
@@ -251,6 +252,7 @@ final class ScriptExecutionTests: XCTestCase {
         "brave.com###test-remove-class:remove-class(test)",
         "brave.com###test-remove-attribute:remove-attr(test)",
         "brave.com###test-style-element:style(background-color: red !important)",
+        "brave.com###test-has-text:has-text(hide me)",
       ].joined(separator: "\n")
     )
     let proceduralFilters = try engine.cosmeticFilterModel(
@@ -417,5 +419,6 @@ final class ScriptExecutionTests: XCTestCase {
     XCTAssertTrue(resultsAfterPump?.removedAttribute ?? false)
     XCTAssertTrue(resultsAfterPump?.removedClass ?? false)
     XCTAssertTrue(resultsAfterPump?.styledElement ?? false)
+    XCTAssertTrue(resultsAfterPump?.hasTextDisplayIsNone ?? false)
   }
 }
