@@ -39,12 +39,16 @@ class CreativeSearchResultAdTabHelper
 
   bool ShouldHandleCreativeAdEvents() const;
 
-  void MaybeTriggerCreativeAdClickedEvent(const GURL& url);
+  void MaybeTriggerCreativeAdClickedEvent(
+      const GURL& url,
+      base::OnceCallback<void(bool success)> callback);
 
  private:
   friend class content::WebContentsUserData<CreativeSearchResultAdTabHelper>;
 
   AdsService* GetAdsService() const;
+
+  void MaybeTriggerCreativeAdClickedEventCallback(bool success);
 
   void MaybeCreateCreativeSearchResultAdHandler(
       content::NavigationHandle* navigation_handle);

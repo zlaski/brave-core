@@ -337,3 +337,13 @@ extension Strings {
     comment: "Question shown to user when tapping a link that opens the App Store app"
   )
 }
+
+// Search result ads privacy notice toast text
+extension Strings {
+  public static let searchResultAdsClickedToastTitle = NSLocalizedString(
+    "SearchResultAdsClickedToastTitle",
+    bundle: .module,
+    value: "You’ve just clicked on a Brave Search ad. Unlike Big Tech, we measure ad performance anonymously and preserve your privacy.",
+    comment: "Toast displayed after a user clicked a search result ad for the first time."
+  )
+}

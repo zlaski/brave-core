@@ -15,6 +15,8 @@ if (!is_android) {
     "//brave/browser/infobars/brave_confirm_p3a_infobar_delegate.h",
     "//brave/browser/infobars/brave_sync_account_deleted_infobar_delegate.cc",
     "//brave/browser/infobars/brave_sync_account_deleted_infobar_delegate.h",
+    "//brave/browser/infobars/creative_search_result_ad_infobar_delegate.cc",
+    "//brave/browser/infobars/creative_search_result_ad_infobar_delegate.h",
     "//brave/browser/infobars/dev_channel_deprecation_infobar_delegate.cc",
     "//brave/browser/infobars/dev_channel_deprecation_infobar_delegate.h",
     "//brave/browser/infobars/request_otr_infobar_delegate.cc",

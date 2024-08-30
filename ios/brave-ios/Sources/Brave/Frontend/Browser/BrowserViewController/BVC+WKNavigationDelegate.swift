@@ -419,6 +419,11 @@ extension BrowserViewController: WKNavigationDelegate {
         braveSearchResultAdManager.isSearchResultAdClickedURL(requestURL),
         navigationAction.navigationType == .linkActivated
       {
+        let searchResultClickToast = CreativeSearchResultAdToast(
+          tabManager: self.tabManager
+        )
+        self.show(toast: searchResultClickToast, duration: nil)
+
         braveSearchResultAdManager.maybeTriggerSearchResultAdClickedEvent(requestURL)
         tab?.braveSearchResultAdManager = nil
       } else {
