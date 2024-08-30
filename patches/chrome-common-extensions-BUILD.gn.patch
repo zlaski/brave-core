@@ -1,5 +1,5 @@
 diff --git a/chrome/common/extensions/BUILD.gn b/chrome/common/extensions/BUILD.gn
-index 886af083f2b1309c15ebae604abf3bcab5268503..41917bbbac42310558e94b488b45e562ee66ac94 100644
+index 886af083f2b1309c15ebae604abf3bcab5268503..d9c212233ed6823d6a875d093cb92b28add4cd83 100644
 --- a/chrome/common/extensions/BUILD.gn
 +++ b/chrome/common/extensions/BUILD.gn
 @@ -121,6 +121,7 @@ source_set("extensions") {
