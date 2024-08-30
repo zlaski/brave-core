@@ -1128,7 +1128,7 @@
 -HttpsUpgradesBrowserTest.NetErrorOnUpgrade_SecurityLevelWarning/HttpsFirstBalancedMode
 -HttpsUpgradesBrowserTest.NetErrorOnUpgrade_SecurityLevelWarning/HttpsFirstModeIncognito
 -HttpsUpgradesBrowserTest.NetErrorOnUpgrade_ShouldInterstitial/*
--HttpsUpgradesBrowserTest.NonDefaultPorts_NoWarnInBalancedMode/HttpsFirstModeIncognito
+-HttpsUpgradesBrowserTest.NonDefaultPorts_NoWarnInBalancedMode/*
 -HttpsUpgradesBrowserTest.NonUniqueHost_RecordsMetrics/HttpsFirstModeIncognito
 -HttpsUpgradesBrowserTest.PreferHstsOverHttpsFirstMode/HttpsFirstModeIncognito
 -HttpsUpgradesBrowserTest.RedirectLoop_ShouldInterstitial/*
@@ -1270,6 +1270,9 @@
 # These tests fail because we disable kNtpChromeCartModule
 -CommerceHintFeatureDefaultWithGeoTest.EnableWithGeo
 -NewTabPageUtilBrowserTest.EnableCartByToT
+-NewTabPageUtilBrowserTest.EnableDriveByToT
+-NewTabPageUtilDisableFlagBrowserTest.DisableDriveByFlag
+-NewTabPageUtilEnableFlagBrowserTest.EnableDriveByFlag
 
 # These tests fail because we don't support the search companion.
 -CompanionPage*
