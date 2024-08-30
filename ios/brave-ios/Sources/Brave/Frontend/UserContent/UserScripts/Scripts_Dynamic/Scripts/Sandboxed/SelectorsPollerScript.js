@@ -1118,7 +1118,7 @@ window.__firefox__.execute(function($) {
 
     const performAction = (selector, element, action) => {
       if (action === undefined) {
-        addStyleRule(selector, 'display: none !important')
+        element.style.setProperty("display", "none", "important")
       } else if (action.type === 'style') {
         addStyleRule(selector, action.arg)
       } else if (action.type === 'remove') {
