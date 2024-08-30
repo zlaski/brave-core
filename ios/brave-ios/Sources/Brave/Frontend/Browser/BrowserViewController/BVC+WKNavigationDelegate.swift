@@ -1834,24 +1834,36 @@ extension BrowserViewController: WKUIDelegate {
     }
 
     // Attempt to upgrade to HTTPS
-    if FeatureList.kBraveHttpsByDefault.enabled, ShieldPreferences.httpsUpgradeLevel.isEnabled,
-      let upgradedURL = braveCore.httpsUpgradeExceptionsService.upgradeToHTTPS(for: requestURL)
+    if FeatureList.kBraveHttpsByDefault.enabled,
+      let httpUpgradeService = HttpsUpgradeServiceFactory.get(privateMode: tab.isPrivate),
+      requestURL.scheme == "http"
     {
-      guard tab.upgradedHTTPSRequest?.url?.baseDomain != requestURL.baseDomain else {
-        // Avoid circular upgrades. This should be nil or we already tried to upgrade this
-        // and somehow it went back to http (i.e. server side redirect).
-        // We handle this as an invalid https upgrade right away
-        tab.upgradedHTTPSRequest = navigationAction.request
-        return handleInvalidHTTPSUpgrade(tab: tab, responseURL: upgradedURL)
+      let isInAllowList = httpUpgradeService.isHttpAllowed(forHost: requestURL.absoluteString)
+      let shouldUpgrade: Bool
+      switch ShieldPreferences.httpsUpgradeLevel {
+      case .strict:
+        shouldUpgrade = !isInAllowList
+      case .standard:
+        shouldUpgrade =
+          braveCore.httpsUpgradeExceptionsService.canUpgradeToHTTPS(for: requestURL)
+          && !isInAllowList
+      case .disabled:
+        shouldUpgrade = false
       }
-      Self.log.debug(
-        "Upgrading `\(requestURL.absoluteString)` to HTTPS"
-      )
-
-      tab.upgradedHTTPSRequest = navigationAction.request
-      var request = navigationAction.request
-      request.url = upgradedURL
-      return request
+      if shouldUpgrade,
+        var urlComponents = URLComponents(url: requestURL, resolvingAgainstBaseURL: true)
+      {
+        urlComponents.scheme = "https"
+        if let upgradedURL = urlComponents.url {
+          Self.log.debug(
+            "Upgrading `\(requestURL.absoluteString)` to HTTPS"
+          )
+          tab.upgradedHTTPSRequest = navigationAction.request
+          var request = navigationAction.request
+          request.url = upgradedURL
+          return request
+        }
+      }
     }
 
     return nil
@@ -1884,7 +1896,8 @@ extension BrowserViewController: WKUIDelegate {
       )
 
       tab.upgradedHTTPSRequest = nil
-      braveCore.httpsUpgradeExceptionsService.addException(for: originalURL)
+      let httpsUpgradeService = HttpsUpgradeServiceFactory.get(privateMode: tab.isPrivate)
+      httpsUpgradeService?.allowHttp(forHost: originalURL.absoluteString)
       return originalRequest
     }
   }

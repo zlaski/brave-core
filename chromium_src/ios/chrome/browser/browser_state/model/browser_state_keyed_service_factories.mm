@@ -25,6 +25,7 @@
 #include "ios/chrome/browser/history/model/history_service_factory.h"
 #include "ios/chrome/browser/history/model/top_sites_factory.h"
 #include "ios/chrome/browser/history/model/web_history_service_factory.h"
+#include "ios/chrome/browser/https_upgrades/model/https_upgrade_service_factory.h"
 #include "ios/chrome/browser/invalidation/model/ios_chrome_profile_invalidation_provider_factory.h"
 #include "ios/chrome/browser/metrics/model/google_groups_manager_factory.h"
 #include "ios/chrome/browser/optimization_guide/model/optimization_guide_service_factory.h"
@@ -107,6 +108,7 @@ void EnsureBrowserStateKeyedServiceFactoriesBuilt() {
   IOSChromeProfileInvalidationProviderFactory::GetInstance();
   IOSPasskeyModelFactory::GetInstance();
   IOSUserEventServiceFactory::GetInstance();
+  HttpsUpgradeServiceFactory::GetInstance();
   ListFamilyMembersServiceFactory::GetInstance();
   OptimizationGuideServiceFactory::GetInstance();
   ModelTypeStoreServiceFactory::GetInstance();
