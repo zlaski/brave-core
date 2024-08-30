@@ -13,7 +13,7 @@
 #include "base/strings/utf_string_conversions.h"
 #include "base/values.h"
 #include "brave/browser/brave_ads/ads_service_factory.h"
-#include "brave/browser/infobars/creative_search_result_ad_infobar_delegate.h"
+#include "brave/browser/brave_ads/creatives/search_result_ad/creative_search_result_ad_infobar_delegate.h"
 #include "brave/components/brave_ads/browser/ads_service.h"
 #include "brave/components/brave_ads/content/browser/creatives/search_result_ad/creative_search_result_ad_handler.h"
 #include "brave/components/brave_ads/core/public/ads_feature.h"

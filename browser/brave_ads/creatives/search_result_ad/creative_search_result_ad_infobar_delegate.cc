@@ -3,10 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-#include "brave/browser/infobars/creative_search_result_ad_infobar_delegate.h"
+#include "brave/browser/brave_ads/creatives/search_result_ad/creative_search_result_ad_infobar_delegate.h"
 
 #include <memory>
 
+#include "brave/components/vector_icons/vector_icons.h"
 #include "brave/grit/brave_generated_resources.h"
 #include "chrome/browser/infobars/confirm_infobar_creator.h"
 #include "components/infobars/content/content_infobar_manager.h"
@@ -15,7 +16,6 @@
 #include "components/vector_icons/vector_icons.h"
 #include "content/public/browser/web_contents.h"
 #include "ui/base/l10n/l10n_util.h"
-#include "ui/views/vector_icons.h"
 #include "url/gurl.h"
 
 // static
@@ -46,7 +46,7 @@ CreativeSearchResultAdInfoBarDelegate::GetIdentifier() const {
 
 const gfx::VectorIcon& CreativeSearchResultAdInfoBarDelegate::GetVectorIcon()
     const {
-  return views::kInfoIcon;
+  return kLeoBraveIconMonochromeIcon;
 }
 
 std::u16string CreativeSearchResultAdInfoBarDelegate::GetMessageText() const {

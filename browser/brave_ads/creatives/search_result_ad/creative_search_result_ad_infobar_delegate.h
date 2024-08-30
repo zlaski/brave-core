@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-#ifndef BRAVE_BROWSER_INFOBARS_CREATIVE_SEARCH_RESULT_AD_INFOBAR_DELEGATE_H_
-#define BRAVE_BROWSER_INFOBARS_CREATIVE_SEARCH_RESULT_AD_INFOBAR_DELEGATE_H_
+#ifndef BRAVE_BROWSER_BRAVE_ADS_CREATIVES_SEARCH_RESULT_AD_CREATIVE_SEARCH_RESULT_AD_INFOBAR_DELEGATE_H_
+#define BRAVE_BROWSER_BRAVE_ADS_CREATIVES_SEARCH_RESULT_AD_CREATIVE_SEARCH_RESULT_AD_INFOBAR_DELEGATE_H_
 
 #include "components/infobars/core/confirm_infobar_delegate.h"
 
@@ -33,4 +33,4 @@ class CreativeSearchResultAdInfoBarDelegate : public ConfirmInfoBarDelegate {
   GURL GetLinkURL() const override;
 };
 
-#endif  // BRAVE_BROWSER_INFOBARS_CREATIVE_SEARCH_RESULT_AD_INFOBAR_DELEGATE_H_
+#endif  // BRAVE_BROWSER_BRAVE_ADS_CREATIVES_SEARCH_RESULT_AD_CREATIVE_SEARCH_RESULT_AD_INFOBAR_DELEGATE_H_

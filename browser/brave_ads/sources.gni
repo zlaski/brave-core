@@ -17,6 +17,8 @@ brave_browser_brave_ads_sources = [
   "//brave/browser/brave_ads/application_state/notification_helper/notification_helper.h",
   "//brave/browser/brave_ads/application_state/notification_helper/notification_helper_impl.cc",
   "//brave/browser/brave_ads/application_state/notification_helper/notification_helper_impl.h",
+  "//brave/browser/brave_ads/creatives/search_result_ad/creative_search_result_ad_infobar_delegate.cc",
+  "//brave/browser/brave_ads/creatives/search_result_ad/creative_search_result_ad_infobar_delegate.h",
   "//brave/browser/brave_ads/creatives/search_result_ad/creative_search_result_ad_tab_helper.cc",
   "//brave/browser/brave_ads/creatives/search_result_ad/creative_search_result_ad_tab_helper.h",
   "//brave/browser/brave_ads/tabs/ads_tab_helper.cc",
