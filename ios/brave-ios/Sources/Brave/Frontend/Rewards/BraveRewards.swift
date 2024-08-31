@@ -77,10 +77,10 @@ public class BraveRewards: PreferencesObserver {
     rewardsAPI.currentWalletInfo { wallet in
       var walletInfo: BraveAds.WalletInfo?
       if let wallet {
-        let seed = wallet.recoverySeed.map(\.uint8Value)
+        let seed = wallet.recoverySeedBase64.map(\.uint8Value)
         walletInfo = .init(
           paymentId: wallet.paymentId,
-          recoverySeed: Data(seed).base64EncodedString()
+          recoverySeedBase64: Data(seed).base64EncodedString()
         )
       }
       // If ads is already initialized just toggle rewards ads and update the wallet info
@@ -88,7 +88,7 @@ public class BraveRewards: PreferencesObserver {
         if let walletInfo {
           self.ads.notifyRewardsWalletDidUpdate(
             walletInfo.paymentId,
-            base64Seed: walletInfo.recoverySeed
+            base64Seed: walletInfo.recoverySeedBase64
           )
         }
         if let toggleAds {
