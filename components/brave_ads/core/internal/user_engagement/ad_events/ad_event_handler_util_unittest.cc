@@ -110,7 +110,7 @@ TEST_F(BraveAdsAdEventHandlerUtilTest, WasAdServedIfNoPreviousEvents) {
                                   /*should_generate_random_uuids=*/true);
 
   // Act & Assert
-  EXPECT_TRUE(WasAdServed(ad, /*ad_events*/ {},
+  EXPECT_TRUE(WasAdServed(ad, /*ad_events=*/{},
                           mojom::InlineContentAdEventType::kServedImpression));
 }
 
@@ -120,7 +120,7 @@ TEST_F(BraveAdsAdEventHandlerUtilTest, WasAdNeverServed) {
                                   /*should_generate_random_uuids=*/true);
 
   // Act & Assert
-  EXPECT_FALSE(WasAdServed(ad, /*ad_events*/ {},
+  EXPECT_FALSE(WasAdServed(ad, /*ad_events=*/{},
                            mojom::InlineContentAdEventType::kViewedImpression));
 }
 
