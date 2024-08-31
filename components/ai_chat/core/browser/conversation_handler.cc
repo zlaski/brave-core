@@ -14,7 +14,6 @@
 #include "base/files/file_path.h"
 #include "base/memory/weak_ptr.h"
 #include "base/no_destructor.h"
-#include "base/strings/string_split.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/task/sequenced_task_runner.h"
 #include "base/task/thread_pool.h"
@@ -24,7 +23,7 @@
 #include "brave/components/ai_chat/core/browser/ai_chat_service.h"
 #include "brave/components/ai_chat/core/browser/associated_archive_content.h"
 #include "brave/components/ai_chat/core/browser/constants.h"
-#include "brave/components/ai_chat/core/browser/leo_local_models_updater.h"
+#include "brave/components/ai_chat/core/browser/local_models_updater.h"
 #include "brave/components/ai_chat/core/browser/model_service.h"
 #include "brave/components/ai_chat/core/browser/types.h"
 #include "brave/components/ai_chat/core/common/features.h"
@@ -143,7 +142,7 @@ void ConversationHandler::AssociatedContentDelegate::
   // Start initialization if not already started
   if (!text_embedder_) {
     base::FilePath universal_qa_model_path =
-        LeoLocalModelsUpdaterState::GetInstance()->GetUniversalQAModel();
+        LocalModelsUpdaterState::GetInstance()->GetUniversalQAModel();
     // Tasks in TextEmbedder are run on |embedder_task_runner|. The
     // text_embedder_ must be deleted on that sequence to guarantee that pending
     // tasks can safely be executed.
