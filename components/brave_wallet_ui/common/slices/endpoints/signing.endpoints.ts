@@ -228,7 +228,7 @@ export const signingEndpoints = ({
               ? {
                   approved: signed.success,
                   id: arg.request.id,
-                  signature: { signatureBytes: [...signed.payload] }
+                  signature: { bytes: [...signed.payload] }
                 }
               : {
                   approved: signed.success,

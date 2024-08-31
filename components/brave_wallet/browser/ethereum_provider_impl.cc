@@ -793,7 +793,7 @@ void EthereumProviderImpl::OnSignMessageRequestProcessed(
           l10n_util::GetStringUTF8(IDS_WALLET_INTERNAL_ERROR));
       reject = true;
     } else {
-      formed_response = base::Value(ToHex(hw_signature->signature_bytes));
+      formed_response = base::Value(ToHex(hw_signature->bytes));
     }
   }
 

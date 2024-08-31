@@ -840,7 +840,7 @@ void SolanaProviderImpl::OnSignMessageRequestProcessed(
     sig_bytes = keyring_service_->SignMessageBySolanaKeyring(
         account->account_id, blob_msg);
   } else if (hw_signature) {
-    sig_bytes = std::move(hw_signature->signature_bytes);
+    sig_bytes = std::move(hw_signature->bytes);
   }
 
   if (!sig_bytes || sig_bytes->empty()) {

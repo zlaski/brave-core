@@ -254,7 +254,7 @@ export async function signLedgerSolanaTransaction(
   const result =
     await apiProxy.solanaTxManagerProxy.processSolanaHardwareSignature(
       txInfo.id,
-      { signatureBytes: [...signedMessage] }
+      { bytes: [...signedMessage] }
     )
   if (!result || !result.status) {
     return {

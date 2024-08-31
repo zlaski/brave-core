@@ -870,16 +870,16 @@ TEST_F(SolanaTransactionUnitTest, GetSignedTransactionBytes) {
       keyring_service(), from_account->account_id, signature_bytes);
   ASSERT_TRUE(signed_tx_bytes);
   std::vector<uint8_t> expect_signed_tx_bytes = {3};
-  base::Extend(expect_signed_tx_bytes, signature_bytes->signature_bytes);
+  base::Extend(expect_signed_tx_bytes, signature_bytes->bytes);
   base::Extend(expect_signed_tx_bytes,
                std::vector<uint8_t>(kSolanaSignatureSize, 0));
-  base::Extend(expect_signed_tx_bytes, signature_bytes->signature_bytes);
+  base::Extend(expect_signed_tx_bytes, signature_bytes->bytes);
   base::Extend(expect_signed_tx_bytes, *serialized_msg);
   EXPECT_EQ(*signed_tx_bytes, expect_signed_tx_bytes);
 
   transaction3.set_sign_tx_param(nullptr);
   std::vector<uint8_t> expect_signed_tx_bytes2 = {3};
-  base::Extend(expect_signed_tx_bytes2, signature_bytes->signature_bytes);
+  base::Extend(expect_signed_tx_bytes2, signature_bytes->bytes);
   base::Extend(expect_signed_tx_bytes2,
                std::vector<uint8_t>(kSolanaSignatureSize * 2, 0));
   base::Extend(expect_signed_tx_bytes2, *serialized_msg);

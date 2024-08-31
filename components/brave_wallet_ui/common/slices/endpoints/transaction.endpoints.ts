@@ -527,7 +527,7 @@ export const transactionEndpoints = ({
 
             if (signed.payload) {
               payload.hwSignatures?.push({
-                signatureBytes: [...signed.payload]
+                bytes: [...signed.payload]
               })
             }
           }

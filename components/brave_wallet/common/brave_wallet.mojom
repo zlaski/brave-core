@@ -171,7 +171,7 @@ interface EthereumProvider {
 };
 
 struct SignatureBytes {
-  array<uint8> signature_bytes;
+  array<uint8> bytes;
 };
 
 // https://github.com/solana-labs/solana-web3.js/blob/6482d0d/src/transaction.ts#L126

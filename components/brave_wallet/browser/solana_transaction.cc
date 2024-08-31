@@ -245,8 +245,7 @@ SolanaTransaction::GetSignedTransactionBytes(
   CHECK(keyring_service);
 
   if (selected_account_signature &&
-      selected_account_signature->signature_bytes.size() !=
-          kSolanaSignatureSize) {
+      selected_account_signature->bytes.size() != kSolanaSignatureSize) {
     return std::nullopt;
   }
 
@@ -277,8 +276,7 @@ SolanaTransaction::GetSignedTransactionBytes(
   for (const auto& signer : signers) {
     if (base::EqualsCaseInsensitiveASCII(selected_account->address, signer)) {
       if (selected_account_signature) {
-        base::Extend(transaction_bytes,
-                     selected_account_signature->signature_bytes);
+        base::Extend(transaction_bytes, selected_account_signature->bytes);
       } else {
         std::vector<uint8_t> signature =
             keyring_service->SignMessageBySolanaKeyring(selected_account,
@@ -292,10 +290,8 @@ SolanaTransaction::GetSignedTransactionBytes(
       for (const auto& sig_pubkey_pair : sign_tx_param_->signatures) {
         if (sig_pubkey_pair->public_key == signer &&
             sig_pubkey_pair->signature &&
-            sig_pubkey_pair->signature->signature_bytes.size() ==
-                kSolanaSignatureSize) {
-          base::Extend(transaction_bytes,
-                       sig_pubkey_pair->signature->signature_bytes);
+            sig_pubkey_pair->signature->bytes.size() == kSolanaSignatureSize) {
+          base::Extend(transaction_bytes, sig_pubkey_pair->signature->bytes);
           ++num_of_sig;
           found = true;
           break;
@@ -411,8 +407,8 @@ base::Value::Dict SolanaTransaction::ToValue() const {
       signature_dict.Set(kPublicKey, signature_pubkey_pair->public_key);
       if (signature_pubkey_pair->signature) {
         signature_dict.Set(
-            kSignature, base::Base64Encode(
-                            signature_pubkey_pair->signature->signature_bytes));
+            kSignature,
+            base::Base64Encode(signature_pubkey_pair->signature->bytes));
       }
       signatures_list.Append(std::move(signature_dict));
     }
@@ -662,8 +658,8 @@ bool SolanaTransaction::IsPartialSigned() const {
   for (const auto& sig_pubkey_pair : sign_tx_param_->signatures) {
     // Has non-empty signature.
     if (sig_pubkey_pair->signature &&
-        !sig_pubkey_pair->signature->signature_bytes.empty() &&
-        sig_pubkey_pair->signature->signature_bytes !=
+        !sig_pubkey_pair->signature->bytes.empty() &&
+        sig_pubkey_pair->signature->bytes !=
             std::vector<uint8_t>(kSolanaSignatureSize, 0)) {
       return true;
     }
