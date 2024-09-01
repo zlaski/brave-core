@@ -862,7 +862,7 @@ TEST_F(SolanaProviderImplUnitTest, SignMessage_Hardware) {
   std::string signature =
       SignMessage(mock_msg, std::nullopt, &error, &error_message, true, true,
                   mock_hw_sig.Clone());
-  EXPECT_EQ(signature, Base58Encode(mock_hw_sig->signature_bytes));
+  EXPECT_EQ(signature, Base58Encode(mock_hw_sig->bytes));
   EXPECT_EQ(error, mojom::SolanaProviderError::kSuccess);
   EXPECT_TRUE(error_message.empty());
 
@@ -990,8 +990,8 @@ TEST_F(SolanaProviderImplUnitTest, SignTransactionAPIs_Hardware) {
   mock_hw_sigs.push_back(mock_hw_sig.Clone());
   std::vector<uint8_t> expected_signed_tx = {1};  // size of sig array
   expected_signed_tx.insert(expected_signed_tx.end(),
-                            mock_hw_sig->signature_bytes.begin(),
-                            mock_hw_sig->signature_bytes.end());
+                            mock_hw_sig->bytes.begin(),
+                            mock_hw_sig->bytes.end());
   expected_signed_tx.insert(expected_signed_tx.end(), serialized_msg->begin(),
                             serialized_msg->end());
   std::vector<std::vector<uint8_t>> expected_signed_txs;
