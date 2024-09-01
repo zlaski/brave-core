@@ -62,7 +62,6 @@ public class BraveWalletDAppsActivity extends BraveWalletBaseActivity
         CONFIRM_TRANSACTION(5),
         DECRYPT_REQUEST(6),
         GET_ENCRYPTION_PUBLIC_KEY_REQUEST(7),
-        SIGN_TRANSACTION(8),
         SIGN_SOL_TRANSACTIONS(9),
         SIWE_MESSAGE(10),
         SIGN_MESSAGE_ERROR(11),
@@ -244,9 +243,8 @@ public class BraveWalletDAppsActivity extends BraveWalletBaseActivity
         } else if (mActivityType == ActivityType.ADD_ETHEREUM_CHAIN
                 || mActivityType == ActivityType.SWITCH_ETHEREUM_CHAIN) {
             mFragment = new AddSwitchChainNetworkFragment(mActivityType, this);
-        } else if (mActivityType == ActivityType.SIGN_TRANSACTION
-                || mActivityType == ActivityType.SIGN_SOL_TRANSACTIONS) {
-            mFragment = SignTransactionFragment.newInstance(mActivityType);
+        } else if (mActivityType == ActivityType.SIGN_SOL_TRANSACTIONS) {
+            mFragment = SignTransactionFragment.newInstance();
         } else if (mActivityType == ActivityType.CONNECT_ACCOUNT) {
             mFragment = new ConnectAccountFragment();
         } else if (mActivityType == GET_ENCRYPTION_PUBLIC_KEY_REQUEST
