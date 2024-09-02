@@ -87,9 +87,11 @@ IN_PROC_BROWSER_TEST_F(SidebarContainerViewBrowserTest,
   EXPECT_FALSE(toolbar_button()->GetVisible());
 
   // Adding a new default item should cause the button to become visible again.
+  LOG(ERROR) << ">>> ABOUT TO ADD SIDEBAR ITEM";
   GetService()->AddItem(sidebar::SidebarItem::Create(
       u"Test", sidebar::SidebarItem::Type::kTypeBuiltIn,
       sidebar::SidebarItem::BuiltInItemType::kReadingList, true));
+  // EXPECT_TRUE(false);
   EXPECT_EQ(1u, GetService()->items().size());
   EXPECT_TRUE(toolbar_button()->GetVisible());
 }

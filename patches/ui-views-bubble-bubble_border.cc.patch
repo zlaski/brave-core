@@ -1,0 +1,15 @@
+diff --git a/ui/views/bubble/bubble_border.cc b/ui/views/bubble/bubble_border.cc
+index 422caf712bf3c62fb90f1d139c2cb43c4ae1ba97..484a1d10f9c33853facecf40d4aa80788ee173ae 100644
+--- a/ui/views/bubble/bubble_border.cc
++++ b/ui/views/bubble/bubble_border.cc
+@@ -463,6 +463,10 @@ void BubbleBorder::DrawBorderAndShadow(
+ }
+ 
+ gfx::Insets BubbleBorder::GetInsets() const {
++  LOG(ERROR) << "BubbleBorder::GetInsets: insets = "
++             << insets_.has_value()
++             << " shadow = " << shadow_
++             << " visible_arrow = " << visible_arrow_;
+   // Visible arrow is not compatible with OS-drawn shadow or with manual insets.
+   DCHECK((!insets_ && shadow_ != NO_SHADOW) || !visible_arrow_);
+   if (insets_.has_value()) {

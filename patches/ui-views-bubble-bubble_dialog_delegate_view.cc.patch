@@ -1,0 +1,21 @@
+diff --git a/ui/views/bubble/bubble_dialog_delegate_view.cc b/ui/views/bubble/bubble_dialog_delegate_view.cc
+index 6747b4179e977be04d561e3ff602cc55cadfa993..662658787c46896ad0995f748977f8c30c0e75ac 100644
+--- a/ui/views/bubble/bubble_dialog_delegate_view.cc
++++ b/ui/views/bubble/bubble_dialog_delegate_view.cc
+@@ -939,6 +939,8 @@ gfx::Rect BubbleDialogDelegate::GetBubbleBounds() {
+   // If GetAnchorView() returns nullptr or GetAnchorRect() returns an empty rect
+   // at (0, 0), don't try and adjust arrow if off-screen.
+   gfx::Rect anchor_rect = GetAnchorRect();
++  LOG(ERROR) << "BubbleDialogDelegate::GetBubbleBounds: anchor_rect "
++             << anchor_rect.height() << "x" << anchor_rect.width();
+   bool has_anchor = GetAnchorView() || anchor_rect != gfx::Rect();
+   return GetBubbleFrameView()->GetUpdatedWindowBounds(
+       anchor_rect, arrow(), GetWidget()->client_view()->GetPreferredSize({}),
+@@ -965,6 +967,7 @@ ax::mojom::Role BubbleDialogDelegate::GetAccessibleWindowRole() {
+ }
+ 
+ gfx::Rect BubbleDialogDelegate::GetDesiredBubbleBounds() {
++  LOG(ERROR) << ">>>>> BubbleDialogDelegate::GetDesiredBubbleBounds";
+   CHECK(use_custom_frame())
+       << "GetBubbleBounds() for native frame dialogs is not supported.";
+ 

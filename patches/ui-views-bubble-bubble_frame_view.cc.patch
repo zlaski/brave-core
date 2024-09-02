@@ -1,0 +1,13 @@
+diff --git a/ui/views/bubble/bubble_frame_view.cc b/ui/views/bubble/bubble_frame_view.cc
+index 28043186179569693d1c043d2cdabb129d74ba85..9d537a15ebd49f4660945a2049deccd7ddcf9204 100644
+--- a/ui/views/bubble/bubble_frame_view.cc
++++ b/ui/views/bubble/bubble_frame_view.cc
+@@ -1048,6 +1048,8 @@ int BubbleFrameView::GetFrameWidthForClientWidth(int client_width) const {
+ 
+ gfx::Size BubbleFrameView::GetFrameSizeForClientSize(
+     const gfx::Size& client_size) const {
++  LOG(ERROR) << "BubbleFrameView::GetFrameSizeForClientSize: client_size = "
++             << client_size.height() << "x" << client_size.width();
+   const int frame_width = GetFrameWidthForClientWidth(client_size.width());
+   const gfx::Insets client_insets = GetClientInsetsForFrameWidth(frame_width);
+   DCHECK_GE(frame_width, client_size.width());
