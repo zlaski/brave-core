@@ -65,6 +65,7 @@ group("core") {
 source_set("headers") {
   visibility = [
     ":*",
+    "//brave/browser/extensions:api_implementations",
     "//brave/browser/extensions:extensions",
     "//brave/browser/ui:ui",
     "//brave/components/brave_rewards/browser:browser",
