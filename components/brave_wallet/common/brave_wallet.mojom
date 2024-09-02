@@ -2179,7 +2179,7 @@ struct SignMessageRequest {
   int32 id;
   AccountId account_id;
   SignDataUnion sign_data;
-  CoinType coin;
+  CoinType coin;  // ETH or SOL.
   string chain_id;
 };
 

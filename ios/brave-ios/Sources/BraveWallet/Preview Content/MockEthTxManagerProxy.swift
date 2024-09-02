@@ -81,6 +81,13 @@ class MockEthTxManagerProxy: BraveWalletEthTxManagerProxy {
     completion(nil)
   }
 
+  func ethTransactionMessageToSign(
+    txMetaId: String,
+    completion: @escaping (String?) -> Void
+  ) {
+    completion(nil)
+  }
+
   func nonceForHardwareTransaction(
     chainId: String,
     txMetaId: String,
@@ -90,7 +97,6 @@ class MockEthTxManagerProxy: BraveWalletEthTxManagerProxy {
   }
 
   func processEthHardwareSignature(
-    chainId: String,
     txMetaId: String,
     v: String,
     r: String,
