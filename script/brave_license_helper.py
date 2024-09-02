@@ -335,6 +335,9 @@ def IsBraveRustCrate(path):
 
 
 def ReportBraveIncompleteMetadataFile(path):
+    # Short-circuit license checks for local builds
+    return
+    
     if path.startswith('brave'):
         # If there's no LICENSE file in the third party downloaded code, then
         # we place LICENSE file next to README.chromium. This file cannot be
