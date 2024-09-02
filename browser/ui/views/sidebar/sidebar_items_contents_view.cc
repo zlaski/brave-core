@@ -361,6 +361,9 @@ void SidebarItemsContentsView::ShowItemAddedFeedbackBubble(
                     current_count + 1);
   CHECK_LT(item_added_index, children().size());
   views::View* lastly_added_view = children()[item_added_index];
+  LOG(ERROR) << ">>>>>> SidebarItemsContentsView::ShowItemAddedFeedbackBubble:"
+             << "SIZE: " << lastly_added_view->height() << "x"
+             << lastly_added_view->width();
   ShowItemAddedFeedbackBubble(lastly_added_view);
 }
 
