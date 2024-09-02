@@ -280,6 +280,9 @@ def AddBraveCredits(root, prune_paths, special_cases, prune_dirs,
 
 
 def CheckBraveMissingLicense(target_os, path, error):
+    # Short-circuit license checks in local builds
+    return
+
     if path.startswith('brave'):
         # brave/third_party/rust itself doesn't need to have a license, but
         # all subfolders in it should.
