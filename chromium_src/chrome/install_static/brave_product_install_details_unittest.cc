@@ -78,42 +78,42 @@ struct TestData {
 #if defined(OFFICIAL_BUILD)
 constexpr TestData kTestData[] = {
     {
-        L"C:\\Program Files (x86)\\BraveSoftware\\Brave-Browser\\Application"
+        L"C:\\Program Files (x86)\\PoltoonLtd\\Brave-Browser\\Application"
         L"\\brave.exe",
         STABLE_INDEX, true, L"",
     },
     {
-        L"C:\\Users\\user\\AppData\\Local\\BraveSoftware\\Brave-Browser"
+        L"C:\\Users\\user\\AppData\\Local\\PoltoonLtd\\Brave-Browser"
         L"\\Application\\brave.exe",
         STABLE_INDEX, false, L"",
     },
     {
-        L"C:\\Program Files (x86)\\BraveSoftware\\Brave-Browser-Beta"
+        L"C:\\Program Files (x86)\\PoltoonLtd\\Brave-Browser-Beta"
         L"\\Application\\brave.exe",
         BETA_INDEX, true, L"beta",
     },
     {
-        L"C:\\Users\\user\\AppData\\Local\\BraveSoftware\\Brave-Browser-Beta"
+        L"C:\\Users\\user\\AppData\\Local\\PoltoonLtd\\Brave-Browser-Beta"
         L"\\Application\\brave.exe",
         BETA_INDEX, false, L"beta",
     },
     {
-        L"C:\\Program Files (x86)\\BraveSoftware\\Brave-Browser-Dev"
+        L"C:\\Program Files (x86)\\PoltoonLtd\\Brave-Browser-Dev"
         L"\\Application\\brave.exe",
         DEV_INDEX, true, L"dev",
     },
     {
-        L"C:\\Users\\user\\AppData\\Local\\BraveSoftware\\Brave-Browser-Dev"
+        L"C:\\Users\\user\\AppData\\Local\\PoltoonLtd\\Brave-Browser-Dev"
         L"\\Application\\brave.exe",
         DEV_INDEX, false, L"dev",
     },
     {
-        L"C:\\Users\\user\\AppData\\Local\\BraveSoftware\\Brave-Browser-Nightly"
+        L"C:\\Users\\user\\AppData\\Local\\PoltoonLtd\\Brave-Browser-Nightly"
         L"\\Application\\brave.exe",
         NIGHTLY_INDEX, false, L"nightly",
     },
     {
-        L"C:\\Users\\user\\AppData\\Local\\BraveSoftware\\Brave-Browser-Nightly"
+        L"C:\\Users\\user\\AppData\\Local\\PoltoonLtd\\Brave-Browser-Nightly"
         L"\\Application\\brave.exe",
         NIGHTLY_INDEX, false, L"nightly",
     },
@@ -121,14 +121,14 @@ constexpr TestData kTestData[] = {
 #else   // OFFICIAL_BUILD
 constexpr TestData kTestData[] = {
     {
-        L"C:\\Program Files (x86)\\BraveSoftware\\Brave-Browser-Development"
+        L"C:\\Program Files (x86)\\PoltoonLtd\\Brave-Browser-Development"
         L"\\Application\\brave.exe",
         DEVELOPER_INDEX,
         true,
         L"",
     },
     {
-        L"C:\\Users\\user\\AppData\\Local\\BraveSoftware\\Brave-Browser-"
+        L"C:\\Users\\user\\AppData\\Local\\PoltoonLtd\\Brave-Browser-"
         L"Development\\Application\\brave.exe",
         DEVELOPER_INDEX,
         false,
@@ -187,7 +187,7 @@ class MakeProductDetailsTest : public testing::TestWithParam<TestData> {
   std::wstring GetClientStateKeyPath() {
     std::wstring result(L"Software\\");
 #if defined(OFFICIAL_BUILD)
-      result.append(L"BraveSoftware\\Update\\ClientState\\");
+      result.append(L"PoltoonLtd\\Update\\ClientState\\");
       result.append(kInstallModes[test_data().index].app_guid);
 #else
       result.append(kProductPathName);

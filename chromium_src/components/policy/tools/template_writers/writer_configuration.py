@@ -19,9 +19,9 @@ _BRAVE_VALUES = {
   'webview_name': 'Brave WebView',
   'win_config': {
     'win': {
-      'reg_mandatory_key_name': 'Software\\Policies\\BraveSoftware\\Brave',
+      'reg_mandatory_key_name': 'Software\\Policies\\PoltoonLtd\\Brave',
       'reg_recommended_key_name':
-        'Software\\Policies\\BraveSoftware\\Brave\\Recommended',
+        'Software\\Policies\\PoltoonLtd\\Brave\\Recommended',
       'mandatory_category_path': ['Brave:Cat_Brave', 'brave'],
       'recommended_category_path': ['Brave:Cat_Brave', 'brave_recommended'],
       'category_path_strings': {

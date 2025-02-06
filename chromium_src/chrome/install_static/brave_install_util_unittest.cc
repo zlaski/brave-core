@@ -299,10 +299,10 @@ class InstallStaticUtilTest
   void SetMetricsReportingPolicy(DWORD value) {
 #if defined(OFFICIAL_BUILD)
     static constexpr wchar_t kPolicyKey[] =
-        L"Software\\Policies\\BraveSoftware\\Brave-Browser";
+        L"Software\\Policies\\PoltoonLtd\\Brave-Browser";
 #else
     static constexpr wchar_t kPolicyKey[] =
-        L"Software\\Policies\\BraveSoftware\\Brave-Browser-Development";
+        L"Software\\Policies\\PoltoonLtd\\Brave-Browser-Development";
 #endif
 
     ASSERT_EQ(ERROR_SUCCESS,
@@ -318,7 +318,7 @@ class InstallStaticUtilTest
 
     std::wstring result(L"Software\\");
 #if defined(OFFICIAL_BUILD)
-      result.append(L"BraveSoftware\\Update\\ClientState");
+      result.append(L"PoltoonLtd\\Update\\ClientState");
       if (medium)
         result.append(L"Medium");
       result.push_back(L'\\');
@@ -342,16 +342,16 @@ TEST_P(InstallStaticUtilTest, GetChromeInstallSubDirectory) {
   // The directory strings for the brand's install modes; parallel to
   // kInstallModes.
   static constexpr const wchar_t* kInstallDirs[] = {
-      L"BraveSoftware\\Brave-Browser",
-      L"BraveSoftware\\Brave-Browser-Beta",
-      L"BraveSoftware\\Brave-Browser-Dev",
-      L"BraveSoftware\\Brave-Browser-Nightly",
+      L"PoltoonLtd\\Brave-Browser",
+      L"PoltoonLtd\\Brave-Browser-Beta",
+      L"PoltoonLtd\\Brave-Browser-Dev",
+      L"PoltoonLtd\\Brave-Browser-Nightly",
   };
 #else
   // The directory strings for the brand's install modes; parallel to
   // kInstallModes.
   static constexpr const wchar_t* kInstallDirs[] = {
-      L"BraveSoftware\\Brave-Browser-Development",
+      L"PoltoonLtd\\Brave-Browser-Development",
   };
 #endif
   static_assert(std::size(kInstallDirs) == NUM_INSTALL_MODES,
@@ -365,16 +365,16 @@ TEST_P(InstallStaticUtilTest, GetRegistryPath) {
   // The registry path strings for the brand's install modes; parallel to
   // kInstallModes.
   static constexpr const wchar_t* kRegistryPaths[] = {
-      L"Software\\BraveSoftware\\Brave-Browser",
-      L"Software\\BraveSoftware\\Brave-Browser-Beta",
-      L"Software\\BraveSoftware\\Brave-Browser-Dev",
-      L"Software\\BraveSoftware\\Brave-Browser-Nightly",
+      L"Software\\PoltoonLtd\\Brave-Browser",
+      L"Software\\PoltoonLtd\\Brave-Browser-Beta",
+      L"Software\\PoltoonLtd\\Brave-Browser-Dev",
+      L"Software\\PoltoonLtd\\Brave-Browser-Nightly",
   };
 #else
   // The registry path strings for the brand's install modes; parallel to
   // kInstallModes.
   static constexpr const wchar_t* kRegistryPaths[] = {
-      L"Software\\BraveSoftware\\Brave-Browser-Development",
+      L"Software\\PoltoonLtd\\Brave-Browser-Development",
   };
 #endif
   static_assert(std::size(kRegistryPaths) == NUM_INSTALL_MODES,
@@ -389,20 +389,20 @@ TEST_P(InstallStaticUtilTest, GetUninstallRegistryPath) {
   // to kInstallModes.
   static constexpr const wchar_t* kUninstallRegistryPaths[] = {
       L"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\"  // (cont'd)
-      L"BraveSoftware Brave-Browser",
+      L"PoltoonLtd Brave-Browser",
       L"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\"  // (cont'd)
-      L"BraveSoftware Brave-Browser-Beta",
+      L"PoltoonLtd Brave-Browser-Beta",
       L"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\"  // (cont'd)
-      L"BraveSoftware Brave-Browser-Dev",
+      L"PoltoonLtd Brave-Browser-Dev",
       L"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\"  // (cont'd)
-      L"BraveSoftware Brave-Browser-Nightly",
+      L"PoltoonLtd Brave-Browser-Nightly",
   };
 #else
   // The registry path strings for the brand's install modes; parallel to
   // kInstallModes.
   static constexpr const wchar_t* kUninstallRegistryPaths[] = {
       L"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\"  // (cont'd)
-      L"BraveSoftware Brave-Browser-Development",
+      L"PoltoonLtd Brave-Browser-Development",
   };
 #endif
   static_assert(std::size(kUninstallRegistryPaths) == NUM_INSTALL_MODES,

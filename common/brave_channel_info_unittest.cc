@@ -38,7 +38,7 @@ TEST(BraveChannelInfoTest, ChannelByNameTest) {
 TEST(BraveChannelInfoTest, ParentDirectoryOfUserDataDirectoryTest) {
   base::FilePath path;
   EXPECT_TRUE(chrome::GetDefaultUserDataDirectory(&path));
-  EXPECT_EQ("BraveSoftware", path.DirName().BaseName().AsUTF8Unsafe());
+  EXPECT_EQ("PoltoonLtd", path.DirName().BaseName().AsUTF8Unsafe());
 }
 
 TEST(BraveChannelInfoTest, DefaultUserDataDirectoryAndChannelTest) {

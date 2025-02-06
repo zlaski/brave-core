@@ -18,7 +18,7 @@ namespace brave_vpn {
 namespace {
 // Registry path to Wireguard vpn service storage.
 constexpr wchar_t kBraveVpnWireguardServiceRegistryStoragePath[] =
-    L"Software\\BraveSoftware\\Vpn\\";
+    L"Software\\PoltoonLtd\\Vpn\\";
 constexpr wchar_t kBraveWireguardConfigKeyName[] = L"ConfigPath";
 constexpr wchar_t kBraveWireguardEnableTrayIconKeyName[] = L"EnableTrayIcon";
 constexpr wchar_t kBraveWireguardActiveKeyName[] = L"WireGuardActive";

@@ -7,7 +7,7 @@ index 255428eb7df8f19ec541227a420456be5127451c..e4a4163110fe3a823fcd7ce5d37fc1be
  
  const wchar_t GoogleUpdateSettings::kPoliciesKey[] =
 +#if defined(OFFICIAL_BUILD)
-+    L"SOFTWARE\\Policies\\BraveSoftware\\Update";
++    L"SOFTWARE\\Policies\\PoltoonLtd\\Update";
 +#else
      L"SOFTWARE\\Policies\\Google\\Update";
 +#endif

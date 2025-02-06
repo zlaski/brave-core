@@ -16,7 +16,7 @@
   wchar_t value[MAX_PATH] = {0, };                                           \
   const bool result =                                                        \
       RegKey::ReadSZValue(HKEY_CURRENT_USER,                                 \
-                          L"Software\\BraveSoftware\\Promo",                 \
+                          L"Software\\PoltoonLtd\\Promo",                 \
                           L"StubInstallerPath", value, _countof(value)) ;    \
   if (result &&                                                              \
        installer_filename.assign(value) &&                                   \

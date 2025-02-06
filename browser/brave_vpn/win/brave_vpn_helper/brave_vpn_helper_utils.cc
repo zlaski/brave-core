@@ -102,15 +102,15 @@ std::wstring GetBraveVpnHelperServiceDescription() {
 std::wstring GetBraveVpnHelperRegistryStoragePath() {
   switch (chrome::GetChannel()) {
     case version_info::Channel::CANARY:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\HelperServiceNightly";
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\HelperServiceNightly";
     case version_info::Channel::DEV:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\HelperServiceDev";
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\HelperServiceDev";
     case version_info::Channel::BETA:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\HelperServiceBeta";
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\HelperServiceBeta";
     case version_info::Channel::STABLE:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\HelperService";
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\HelperService";
     case version_info::Channel::UNKNOWN:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\HelperServiceDevelopment";
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\HelperServiceDevelopment";
   }
 
   NOTREACHED();
@@ -119,16 +119,16 @@ std::wstring GetBraveVpnHelperRegistryStoragePath() {
 std::wstring GetBraveVpnOneTimeServiceCleanupStoragePath() {
   switch (chrome::GetChannel()) {
     case version_info::Channel::CANARY:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\OneTimeServiceCleanupNightl"
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\OneTimeServiceCleanupNightl"
              L"y";
     case version_info::Channel::DEV:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\OneTimeServiceCleanupDev";
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\OneTimeServiceCleanupDev";
     case version_info::Channel::BETA:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\OneTimeServiceCleanupBeta";
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\OneTimeServiceCleanupBeta";
     case version_info::Channel::STABLE:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\OneTimeServiceCleanup";
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\OneTimeServiceCleanup";
     case version_info::Channel::UNKNOWN:
-      return L"Software\\BraveSoftware\\Brave\\Vpn\\OneTimeServiceCleanupDevelo"
+      return L"Software\\PoltoonLtd\\Brave\\Vpn\\OneTimeServiceCleanupDevelo"
              L"pment";
   }
 

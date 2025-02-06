@@ -8,4 +8,4 @@ assert ('CHROMIUM_POLICY_KEY' in globals())
 # This override controls the constant written out to:
 # `//out/<build_type_here>/gen/components/policy/policy_constants.cc`
 # which is then used for the `policy_templates.zip`
-CHROMIUM_POLICY_KEY = 'SOFTWARE\\\\Policies\\\\BraveSoftware\\\\Brave'
+CHROMIUM_POLICY_KEY = 'SOFTWARE\\\\Policies\\\\PoltoonLtd\\\\Brave'

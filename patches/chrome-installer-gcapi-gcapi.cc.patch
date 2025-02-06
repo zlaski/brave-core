@@ -7,14 +7,14 @@ index b418979309d15d592d1b905b532ef1ca861db5ff..c4b2b1f327c6ef7685ecde617d7aac59
  namespace {
  
 +#if defined(OFFICIAL_BUILD)
-+const wchar_t kGCAPITempKey[] = L"Software\\BraveSoftware\\GCAPITemp";
++const wchar_t kGCAPITempKey[] = L"Software\\PoltoonLtd\\GCAPITemp";
 +const wchar_t kChromeRegVersion[] = L"pv";
 +const wchar_t kNoChromeOfferUntil[] =
-+    L"SOFTWARE\\BraveSoftware\\No Chrome Offer Until";
++    L"SOFTWARE\\PoltoonLtd\\No Chrome Offer Until";
 +const wchar_t kC1FPendingKey[] =
-+    L"Software\\BraveSoftware\\Common\\Rlz\\Events\\C";
++    L"Software\\PoltoonLtd\\Common\\Rlz\\Events\\C";
 +const wchar_t kC1FSentKey[] =
-+    L"Software\\BraveSoftware\\Common\\Rlz\\StatefulEvents\\C";
++    L"Software\\PoltoonLtd\\Common\\Rlz\\StatefulEvents\\C";
 +#else
  const wchar_t kGCAPITempKey[] = L"Software\\Google\\GCAPITemp";
  

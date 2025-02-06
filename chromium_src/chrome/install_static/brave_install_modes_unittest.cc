@@ -120,7 +120,7 @@ TEST(InstallModes, GetClientsKeyPath) {
 
 #if defined(OFFICIAL_BUILD)
     ASSERT_THAT(GetClientsKeyPath(kAppGuid),
-                StrEq(L"Software\\BraveSoftware\\Update\\Clients\\test"));
+                StrEq(L"Software\\PoltoonLtd\\Update\\Clients\\test"));
 #else
     ASSERT_THAT(GetClientsKeyPath(kAppGuid),
                 StrEq(std::wstring(L"Software\\").append(kProductPathName)));
@@ -132,7 +132,7 @@ TEST(InstallModes, GetClientStateKeyPath) {
 
 #if defined(OFFICIAL_BUILD)
     ASSERT_THAT(GetClientStateKeyPath(kAppGuid),
-                StrEq(L"Software\\BraveSoftware\\Update\\ClientState\\test"));
+                StrEq(L"Software\\PoltoonLtd\\Update\\ClientState\\test"));
 #else
     ASSERT_THAT(GetClientStateKeyPath(kAppGuid),
                 StrEq(std::wstring(L"Software\\").append(kProductPathName)));
@@ -145,7 +145,7 @@ TEST(InstallModes, GetClientStateMediumKeyPath) {
 #if defined(OFFICIAL_BUILD)
     ASSERT_THAT(
         GetClientStateMediumKeyPath(kAppGuid),
-        StrEq(L"Software\\BraveSoftware\\Update\\ClientStateMedium\\test"));
+        StrEq(L"Software\\PoltoonLtd\\Update\\ClientStateMedium\\test"));
 #else
     ASSERT_THAT(GetClientStateMediumKeyPath(kAppGuid),
                 StrEq(std::wstring(L"Software\\").append(kProductPathName)));

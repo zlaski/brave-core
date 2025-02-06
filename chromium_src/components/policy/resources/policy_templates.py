@@ -32,8 +32,8 @@ def _LoadPolicies(orig_func):
     assert policy_definition_yaml, "'policy_definitions' is None (did upstream change?)"  # pylint: disable=line-too-long
 
     brave_policies = []
-    brave_policy_section = policy_definition_yaml['BraveSoftware']
-    assert brave_policy_section, "'policy_definitions > BraveSoftware' entries not found (failed to copy?)"  # pylint: disable=line-too-long
+    brave_policy_section = policy_definition_yaml['PoltoonLtd']
+    assert brave_policy_section, "'policy_definitions > PoltoonLtd' entries not found (failed to copy?)"  # pylint: disable=line-too-long
 
     brave_policy_items = brave_policy_section['policies']
     for key, _ in brave_policy_items.items():
@@ -79,7 +79,6 @@ def sync_policy_files():
         for policy in brave_policies["policies"]:
             copy_only_if_modified(f'{brave_policies["copy_from"]}/{policy}',
                                   f'{brave_policies["copy_to"]}/{policy}')
-
 
 def copy_only_if_modified(src, dst):
     """Copy file if it doesn't exist or if its hash is different."""
