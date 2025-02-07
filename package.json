@@ -50,7 +50,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brave/brave-core.git"
+    "url": "git+https://github.com/zlaski/brave-core.git"
   },
   "author": {
     "name": "Brave Software <support@brave.com>"
@@ -69,8 +69,9 @@
       "chrome": {
         "dir": "src",
         "tag": "133.0.6943.54",
+        "branch": "hybrid-chunk-store",
         "repository": {
-          "url": "https://github.com/brave/chromium"
+          "url": "https://github.com/zlaski/chromium.git#hybrid-chunk-store"
         }
       },
       "depot_tools": {
@@ -220,7 +221,7 @@
     "redux-thunk": "^2.3.0",
     "throttleit": "^1.0.0",
     "webext-redux": "^2.1.4",
-    "webtorrent": "1.9.7"
+    "webtorrent": "github:zlaski/webtorrent#hybrid-chunk-store"
   },
   "overrides": {
     "axios": "1.7.4",
