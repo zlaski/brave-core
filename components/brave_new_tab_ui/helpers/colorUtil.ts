@@ -168,6 +168,6 @@ export default function isReadableOnBackground (background: NewTab.BackgroundWal
   }
 
   return isReadable(backgroundData, new ColorData('#fff')) &&
-         isReadable(backgroundData, new ColorData('#FB542B'/* --interactive2 */)) &&
+         isReadable(backgroundData, new ColorData('#248B2B'/* --interactive2 */)) &&
          isReadable(backgroundData, new ColorData('#A0A5EB'/* --interactive9 */))
 }
