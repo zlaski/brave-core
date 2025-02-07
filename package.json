@@ -50,7 +50,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zlaski/brave-core.git"
+    "url": "git+https://github.com/zlaski/brave-core.git#hybrid-chunk-store"
   },
   "author": {
     "name": "Brave Software <support@brave.com>"
