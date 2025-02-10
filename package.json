@@ -178,6 +178,9 @@
     "webpack": "5.97.1",
     "webpack-cli": "5.1.4"
   },
+  "optionalDependencies": {
+    "registry-js": "^1.16.0"
+  },
   "dependencies": {
     "@brave/brave-ui": "0.40.6",
     "@brave/leo": "github:brave/leo#3956271274191f3519d0ccd4d7d6e52de3644539",

@@ -8,6 +8,7 @@
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
+const registry_js = (process.platform === 'win32'? require('registry-js'): null)
 const dotenvPopulateWithIncludes = require('./dotenvPopulateWithIncludes')
 const Log = require('./logging')
 
@@ -82,6 +83,27 @@ const getDepotToolsDir = (rootDir) => {
   return path.normalize(depotToolsDir)
 }
 
+const getGithubDesktopDir =() => {
+  var githubDesktopDir = undefined
+  if (process.platform === 'win32' && registry_js !== undefined) {
+    var installLocation, displayVersion
+    const values = registry_js.enumerateValues(registry_js.HKEY.HKEY_CURRENT_USER,
+      "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\GitHubDesktop")
+    for (const value of values) {
+      if (value.name === "InstallLocation" && value.type === registry_js.RegistryValueType.REG_SZ) {
+          installLocation = value.data
+      }
+      if (value.name === "DisplayVersion" && value.type === registry_js.RegistryValueType.REG_SZ) {
+          displayVersion = value.data
+      }
+    }
+    if (installLocation !== undefined && displayVersion !== undefined) {
+        githubDesktopDir = installLocation + "\\app-" + displayVersion + "\\resources\\app\\git\\mingw64\\bin"
+    }
+  }
+  return githubDesktopDir
+}
+
 const parseExtraInputs = (inputs, accumulator, callback) => {
   for (let input of inputs) {
     let separatorIndex = input.indexOf(':')
@@ -138,6 +160,7 @@ const Config = function () {
   this.braveCoreDir = braveCoreDir
   this.buildToolsDir = path.join(this.srcDir, 'build')
   this.resourcesDir = path.join(this.rootDir, 'resources')
+  this.githubDesktopDir = getGithubDesktopDir()
   this.depotToolsDir = getDepotToolsDir(this.braveCoreDir)
   this.depotToolsRepo = getEnvConfig(['projects', 'depot_tools', 'repository', 'url'])
   this.defaultGClientFile = path.join(this.rootDir, '.gclient')
@@ -1040,6 +1063,9 @@ Object.defineProperty(Config.prototype, 'defaultOptions', {
       const crossCompilePath = path.join(this.srcDir, 'brave', 'build', 'mac',
                                          'cross-compile', 'path')
       env = this.addPathToEnv(env, crossCompilePath, true)
+    }
+    if (this.githubDesktopDir !== undefined) {
+      env = this.addPathToEnv(env, this.githubDesktopDir, true)
     }
     const pythonPaths = [
       ['brave', 'script'],
