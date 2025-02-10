@@ -68,7 +68,6 @@
     "projects": {
       "chrome": {
         "dir": "src",
-        "tag": "133.0.6943.54",
         "branch": "hybrid-chunk-store",
         "repository": {
           "url": "https://github.com/zlaski/chromium.git#hybrid-chunk-store"
@@ -179,7 +178,7 @@
     "webpack-cli": "5.1.4"
   },
   "optionalDependencies": {
-    "registry-js": "^1.16.0"
+    "registry-js": "github:zlaski/registry-js#hybrid-chunk-store"
   },
   "dependencies": {
     "@brave/brave-ui": "0.40.6",
